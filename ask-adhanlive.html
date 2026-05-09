@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ask AdhanLive</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/adhan@4.4.3/lib/bundles/adhan.umd.min.js"></script>
+<script src="/adhan-utils.js"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -253,6 +255,27 @@
     .input-area { padding: 10px 16px 14px; }
     .chip { font-size: 12px; padding: 6px 12px; }
   }
+
+  /* ── LOCATION BANNER ── */
+  .location-banner {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--bg2); border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 10px; padding: 12px 16px; margin: 8px 0;
+    font-size: 13px; color: var(--text-dim); animation: msgIn 0.2s ease both;
+  }
+  .location-banner .loc-icon { font-size: 18px; flex-shrink: 0; }
+  .location-banner .loc-text { flex: 1; }
+  .location-banner .loc-text strong { color: var(--text); display: block; margin-bottom: 2px; }
+  .loc-actions { display: flex; gap: 8px; flex-shrink: 0; }
+  .loc-btn {
+    padding: 6px 14px; border-radius: 6px; border: none;
+    font-family: 'Inter', sans-serif; font-size: 12px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .loc-btn.allow { background: var(--cyan); color: #000; font-weight: 600; }
+  .loc-btn.allow:hover { background: #33eeff; }
+  .loc-btn.deny { background: var(--bg3); color: var(--text-muted); border: 1px solid var(--border); }
+  .loc-btn.deny:hover { color: var(--text); }
 </style>
 </head>
 <body>
@@ -340,6 +363,8 @@ setInterval(updateClock, 1000);
 
 let history = [];
 let loading = false;
+let userLocation = null; // { lat, lon, city, country, countryCode }
+let locationDenied = false;
 
 const inputEl  = document.getElementById('input');
 const sendBtn  = document.getElementById('sendBtn');
@@ -427,6 +452,85 @@ function addTyping() {
 function removeTyping() { document.getElementById('typing')?.remove(); }
 function scrollBottom() { chatArea.scrollTop = chatArea.scrollHeight; }
 
+// ── Location banner ──
+function showLocationBanner(onAllow, onDeny) {
+  showMessages();
+  const banner = document.createElement('div');
+  banner.className = 'location-banner';
+  banner.id = 'locationBanner';
+  banner.innerHTML = `
+    <div class="loc-icon">📍</div>
+    <div class="loc-text">
+      <strong>Share your location for accurate prayer times</strong>
+      Used only to calculate prayer times — never stored.
+    </div>
+    <div class="loc-actions">
+      <button class="loc-btn allow" id="locAllow">Allow</button>
+      <button class="loc-btn deny" id="locDeny">Skip</button>
+    </div>`;
+  msgsEl.appendChild(banner);
+  scrollBottom();
+  document.getElementById('locAllow').onclick = () => { banner.remove(); onAllow(); };
+  document.getElementById('locDeny').onclick  = () => { banner.remove(); onDeny(); };
+}
+
+// ── Prayer time context builder ──
+async function getPrayerTimesContext(userMessage) {
+  try {
+    const isPrayerQuery = AdhanUtils.isPrayerTimeQuery(userMessage);
+    if (!isPrayerQuery) return null;
+
+    // Detect override method from message
+    const methodOverride = AdhanUtils.detectMethodFromText(userMessage);
+
+    // Detect target date (today/tomorrow)
+    const lower = userMessage.toLowerCase();
+    const date = new Date();
+    if (lower.includes('tomorrow')) date.setDate(date.getDate() + 1);
+
+    // Try to detect a city name in the message (simple: if not "my location")
+    const isMyLocation = lower.includes('my location') || lower.includes('my city') ||
+                         lower.includes('here') || lower.includes('near me') ||
+                         lower.includes('where i am') || lower.includes('my area');
+
+    let lat, lon, locationName, countryCode;
+
+    if (!isMyLocation) {
+      // Try to use cached user location if available
+      if (userLocation) {
+        lat = userLocation.lat;
+        lon = userLocation.lon;
+        locationName = `${userLocation.city}, ${userLocation.country}`;
+        countryCode = userLocation.countryCode;
+      } else if (!locationDenied) {
+        // Ask for location via banner
+        return 'NEEDS_LOCATION';
+      } else {
+        return null; // denied, let AI handle it
+      }
+    } else {
+      if (userLocation) {
+        lat = userLocation.lat;
+        lon = userLocation.lon;
+        locationName = `${userLocation.city}, ${userLocation.country}`;
+        countryCode = userLocation.countryCode;
+      } else if (!locationDenied) {
+        return 'NEEDS_LOCATION';
+      } else {
+        return null;
+      }
+    }
+
+    const times = AdhanUtils.calculatePrayerTimes({ lat, lon, date, methodKey: methodOverride, countryCode });
+    return AdhanUtils.buildPrayerTimesContext({ times, locationName, date, methodLabel: times.methodLabel });
+
+  } catch (e) {
+    console.warn('Prayer time calculation failed:', e);
+    return null;
+  }
+}
+
+// ── Main send function ──
 async function send() {
   const text = inputEl.value.trim();
   if (!text || loading) return;
@@ -439,21 +543,59 @@ async function send() {
 
   addMessage('user', text);
   history.push({ role: 'user', content: text });
+
+  // Check if prayer time query needs location
+  const isPrayerQuery = AdhanUtils.isPrayerTimeQuery(text);
+  if (isPrayerQuery && !userLocation && !locationDenied) {
+    // Show location banner before typing indicator
+    await new Promise(resolve => {
+      showLocationBanner(
+        async () => {
+          // Allow — get location
+          try {
+            const pos = await AdhanUtils.getUserLocation();
+            const geo = await AdhanUtils.reverseGeocode(pos.lat, pos.lon);
+            userLocation = { ...pos, ...geo };
+          } catch(e) {
+            locationDenied = true;
+          }
+          resolve();
+        },
+        () => { locationDenied = true; resolve(); }
+      );
+    });
+  }
+
   addTyping();
 
   try {
     const now = new Date();
-    const timeContext = 'User local date/time: ' + now.toLocaleString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit', timeZoneName:'short' }) + '. UTC: ' + now.toUTCString() + '.';
+    const timeContext = 'User local date/time: ' + now.toLocaleString('en-GB', {
+      weekday:'long', year:'numeric', month:'long', day:'numeric',
+      hour:'2-digit', minute:'2-digit', timeZoneName:'short'
+    }) + '.';
+
+    // Build prayer time context if applicable
+    let prayerContext = null;
+    if (isPrayerQuery) {
+      prayerContext = await getPrayerTimesContext(text);
+      if (prayerContext === 'NEEDS_LOCATION') prayerContext = null;
+    }
+
+    const fullTimeContext = timeContext + (prayerContext ? '\n\n' + prayerContext : '');
+
     const res = await fetch('/api/muezzin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: history, timeContext })
+      body: JSON.stringify({ messages: history, timeContext: fullTimeContext })
     });
+
     const data = await res.json();
     const reply = data.reply || 'Something went wrong. Please try again.';
     removeTyping();
     addMessage('ai', reply);
     history.push({ role: 'assistant', content: reply });
+
   } catch(e) {
     removeTyping();
     addMessage('ai', 'Could not connect. Please try again.');

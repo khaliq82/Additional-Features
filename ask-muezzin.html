@@ -71,6 +71,11 @@
   .header-title { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
   .header-title span { color: var(--cyan); }
   .header-sub { font-size: 11px; color: var(--text-muted); font-weight: 400; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .header-time {
+    font-size: 11px; color: var(--text-muted);
+    letter-spacing: 0.02em; font-variant-numeric: tabular-nums;
+  }
   .header-status {
     display: flex; align-items: center; gap: 6px;
     font-size: 11px; color: var(--text-muted);
@@ -274,9 +279,12 @@
           <div class="header-sub">Ask the Muezzin</div>
         </div>
       </div>
-      <div class="header-status">
-        <div class="status-dot"></div>
-        Online
+      <div class="header-right">
+        <div class="header-time" id="headerTime"></div>
+        <div class="header-status">
+          <div class="status-dot"></div>
+          Online
+        </div>
       </div>
     </div>
   </div>
@@ -330,6 +338,19 @@
 </div>
 
 <script>
+// Live clock in header
+function updateClock() {
+  const el = document.getElementById('headerTime');
+  if (!el) return;
+  const now = new Date();
+  el.textContent = now.toLocaleString('en-GB', {
+    weekday: 'short', day: 'numeric', month: 'short',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  });
+}
+updateClock();
+setInterval(updateClock, 1000);
+
 let history = [];
 let loading = false;
 

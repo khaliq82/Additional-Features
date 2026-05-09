@@ -477,49 +477,18 @@ function showLocationBanner(onAllow, onDeny) {
 // ── Prayer time context builder ──
 async function getPrayerTimesContext(userMessage) {
   try {
-    const isPrayerQuery = AdhanUtils.isPrayerTimeQuery(userMessage);
-    if (!isPrayerQuery) return null;
-
-    // Detect override method from message
     const methodOverride = AdhanUtils.detectMethodFromText(userMessage);
 
-    // Detect target date (today/tomorrow)
+    // Detect target date
     const lower = userMessage.toLowerCase();
     const date = new Date();
     if (lower.includes('tomorrow')) date.setDate(date.getDate() + 1);
 
-    // Try to detect a city name in the message (simple: if not "my location")
-    const isMyLocation = lower.includes('my location') || lower.includes('my city') ||
-                         lower.includes('here') || lower.includes('near me') ||
-                         lower.includes('where i am') || lower.includes('my area');
+    // We need a location — use cached or fail
+    if (!userLocation) return null;
 
-    let lat, lon, locationName, countryCode;
-
-    if (!isMyLocation) {
-      // Try to use cached user location if available
-      if (userLocation) {
-        lat = userLocation.lat;
-        lon = userLocation.lon;
-        locationName = `${userLocation.city}, ${userLocation.country}`;
-        countryCode = userLocation.countryCode;
-      } else if (!locationDenied) {
-        // Ask for location via banner
-        return 'NEEDS_LOCATION';
-      } else {
-        return null; // denied, let AI handle it
-      }
-    } else {
-      if (userLocation) {
-        lat = userLocation.lat;
-        lon = userLocation.lon;
-        locationName = `${userLocation.city}, ${userLocation.country}`;
-        countryCode = userLocation.countryCode;
-      } else if (!locationDenied) {
-        return 'NEEDS_LOCATION';
-      } else {
-        return null;
-      }
-    }
+    const { lat, lon, city, country, countryCode } = userLocation;
+    const locationName = `${city}, ${country}`;
 
     const times = AdhanUtils.calculatePrayerTimes({ lat, lon, date, methodKey: methodOverride, countryCode });
     return AdhanUtils.buildPrayerTimesContext({ times, locationName, date, methodLabel: times.methodLabel });
@@ -577,9 +546,8 @@ async function send() {
 
     // Build prayer time context if applicable
     let prayerContext = null;
-    if (isPrayerQuery) {
+    if (isPrayerQuery && userLocation) {
       prayerContext = await getPrayerTimesContext(text);
-      if (prayerContext === 'NEEDS_LOCATION') prayerContext = null;
     }
 
     const fullTimeContext = timeContext + (prayerContext ? '\n\n' + prayerContext : '');

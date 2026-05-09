@@ -229,13 +229,20 @@ const AdhanUtils = (() => {
    */
   function isPrayerTimeQuery(text) {
     const lower = text.toLowerCase();
-    const prayerWords = ['prayer time', 'prayer times', 'salah time', 'salat time',
-      'fajr', 'dhuhr', 'asr', 'maghrib', 'isha', 'when is', 'what time is',
-      'namaz time', 'namaz times'];
-    const timeWords = ['today', 'tomorrow', 'tonight', 'now', 'currently', 'time'];
-    const hasPrayer = prayerWords.some(w => lower.includes(w));
-    const hasTime = timeWords.some(w => lower.includes(w));
-    return hasPrayer || (hasPrayer && hasTime);
+    const prayerWords = [
+      'prayer time', 'prayer times', 'salah time', 'salat time',
+      'namaz time', 'namaz times', 'namaz',
+      'fajr', 'dhuhr', 'asr', 'maghrib', 'isha',
+      'prayer for', 'prayers for', 'prayer today', 'prayer tomorrow',
+      'prayers today', 'prayers tomorrow', 'salah today', 'salah tomorrow',
+      'when to pray', 'when is prayer', 'when is fajr', 'when is dhuhr',
+      'when is asr', 'when is maghrib', 'when is isha',
+      'what time is fajr', 'what time is dhuhr', 'what time is asr',
+      'what time is maghrib', 'what time is isha',
+      'what is the prayer', 'what are the prayers',
+      'prayer schedule', 'salah schedule',
+    ];
+    return prayerWords.some(w => lower.includes(w));
   }
 
   /**

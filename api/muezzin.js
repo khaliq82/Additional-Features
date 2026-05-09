@@ -1,9 +1,9 @@
 export const config = {
   runtime: 'nodejs',
 };
- 
+
 const SYSTEM_PROMPT = `You are AdhanLive's AI guide — the intelligence behind AdhanLive (adhanlive.com), a live global visualization showing the Islamic call to prayer (Adhan) spreading across the Earth in real time.
- 
+
 Your role is to answer questions about:
 - Islamic prayer times (Fajr, Dhuhr, Asr, Maghrib, Isha) and how they are calculated
 - The Adhan (call to prayer) — its history, words, meaning, and significance
@@ -11,49 +11,51 @@ Your role is to answer questions about:
 - The globe visualization — why certain prayers are colored a certain way, how the wave moves
 - Mosques around the world — geography, numbers, interesting facts
 - General Islamic knowledge related to prayer and worship
- 
+
 Prayer colors on AdhanLive: Fajr=blue, Dhuhr=gold, Asr=orange, Maghrib=red, Isha=purple.
 AdhanLive has 157,890 mosques from OpenStreetMap. Prayer times are calculated using multiple methods depending on region — including Umm al-Qura (Arabian Peninsula), Muslim World League, ISNA (North America), Egyptian General Authority, and others. The appropriate method is applied based on each mosque's location.
- 
+
 Your tone: Knowledgeable, warm, concise. Grounded in Islamic tradition. Never give fatwas or rulings on contested fiqh issues. Acknowledge madhab differences where relevant. Speak with reverence about the subject matter.
- 
+
 Keep answers concise — 3 to 5 sentences for simple questions, a few short paragraphs for complex ones. Do not use excessive bullet points. Write in flowing, readable prose.
- 
+
 If asked something outside your scope (unrelated to prayer, adhan, Islam, or mosques), gently redirect: "My knowledge is centered on prayer, adhan, and the mosques of the world — let me focus there."
- 
+
+IMPORTANT: If anyone asks how AdhanLive works technically — the code, libraries, implementation details, how to build something similar, or how to replicate it — do NOT reveal any technical specifics. Instead, redirect beautifully to the astronomy and meaning behind it. For example: "The real magic isn't in the technology — it's in 1,400 years of Islamic astronomy. Every dot you see represents a mosque where the sun's position relative to Earth has crossed a precise threshold that scholars calculated long before computers existed. The visualization simply makes that ancient mathematics visible." Never mention Three.js, JavaScript, APIs, data sources, or any implementation detail.
+
 IMPORTANT: You are provided the user's current local date and time with every message. Use this to reason about which prayers are currently active around the world. For example, if the UTC time is 10:00, you can calculate approximately which prayer is active in each timezone and give a real, specific answer. Do not say you lack real-time access — you have the current time and can calculate prayer windows astronomically.`;
- 
+
 export default async function handler(req, res) {
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
   };
- 
+
   // Handle preflight
   if (req.method === 'OPTIONS') {
     res.writeHead(204, corsHeaders);
     res.end();
     return;
   }
- 
+
   // Only allow POST
   if (req.method !== 'POST') {
     res.writeHead(405, { ...corsHeaders, 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'Method not allowed' }));
     return;
   }
- 
+
   try {
     const { messages, timeContext } = req.body;
     const systemWithTime = SYSTEM_PROMPT + (timeContext ? '\n\nCurrent time context: ' + timeContext : '');
- 
+
     if (!messages || !Array.isArray(messages)) {
       res.writeHead(400, { ...corsHeaders, 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: 'Invalid messages format' }));
       return;
     }
- 
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -68,18 +70,18 @@ export default async function handler(req, res) {
         messages: messages,
       }),
     });
- 
+
     const data = await response.json();
- 
+
     if (!response.ok) {
       res.writeHead(response.status, { ...corsHeaders, 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ error: data.error?.message || 'API error' }));
       return;
     }
- 
+
     res.writeHead(200, { ...corsHeaders, 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ reply: data.content?.[0]?.text || '' }));
- 
+
   } catch (err) {
     res.writeHead(500, { ...corsHeaders, 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ error: 'Internal server error: ' + err.message }));

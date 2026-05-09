@@ -64,13 +64,7 @@
     max-width: 800px;
   }
   .header-brand { display: flex; align-items: center; gap: 10px; }
-  .header-logo {
-    width: 30px; height: 30px; border-radius: 7px;
-    background: var(--bg3); border: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 15px;
-  }
-  .header-title { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+  .header-title { font-size: 18px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; }
   .header-title span { color: var(--cyan); }
   .header-sub { font-size: 11px; color: var(--text-muted); font-weight: 400; }
   .header-right { display: flex; align-items: center; gap: 10px; }
@@ -123,10 +117,10 @@
 
   .welcome-icon { font-size: 44px; margin-bottom: 4px; }
   .welcome-title {
-    font-size: 26px; font-weight: 600;
-    color: var(--text); letter-spacing: -0.02em;
+    font-size: 26px; font-weight: 800;
+    color: #ffffff; letter-spacing: -0.02em;
   }
-  .welcome-title em { font-style: italic; color: var(--gold-bright); font-weight: 300; }
+  .welcome-title span { color: var(--cyan); }
   .welcome-sub {
     font-size: 14px; color: var(--text-dim);
     max-width: 420px; line-height: 1.65;
@@ -285,9 +279,8 @@
   <div class="header">
     <div class="header-inner">
       <div class="header-brand">
-        <div class="header-logo">🕌</div>
         <div>
-          <div class="header-title"><span>Adhan</span>Live</div>
+          <div class="header-title">Adhan<span>Live</span></div>
           <div class="header-sub">Ask AdhanLive</div>
         </div>
       </div>
@@ -304,7 +297,7 @@
       <!-- Welcome -->
       <div class="welcome" id="welcome">
         <div class="welcome-icon">🕌</div>
-        <div class="welcome-title">Ask <em>AdhanLive</em></div>
+        <div class="welcome-title">Ask Adhan<span>Live</span></div>
         <div class="welcome-sub">Prayer times, Islamic astronomy, the science of adhan — ask anything about the call to prayer and the mosques of the world.</div>
         <div class="suggestions">
           <div class="chip" onclick="ask(this)">How does AdhanLive show prayer dots in real time?</div>

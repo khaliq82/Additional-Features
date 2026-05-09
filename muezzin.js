@@ -1,5 +1,5 @@
 export const config = {
-  runtime: 'edge',
+  runtime: 'nodejs',
 };
 
 const SYSTEM_PROMPT = `You are the Muezzin — an AI guide on AdhanLive (adhanlive.com), a live global visualization showing the Islamic call to prayer (Adhan) spreading across the Earth in real time.
@@ -21,37 +21,34 @@ Keep answers concise — 3 to 5 sentences for simple questions, a few short para
 
 If asked something outside your scope (unrelated to prayer, adhan, Islam, or mosques), gently redirect: "My knowledge is centered on prayer, adhan, and the mosques of the world — let me focus there."`;
 
-export default async function handler(req) {
-  // Only allow POST
-  if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
-  // CORS headers
+export default async function handler(req, res) {
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Content-Type': 'application/json',
   };
 
   // Handle preflight
   if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders });
+    res.writeHead(204, corsHeaders);
+    res.end();
+    return;
+  }
+
+  // Only allow POST
+  if (req.method !== 'POST') {
+    res.writeHead(405, { ...corsHeaders, 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Method not allowed' }));
+    return;
   }
 
   try {
-    const body = await req.json();
-    const { messages } = body;
+    const { messages } = req.body;
 
     if (!messages || !Array.isArray(messages)) {
-      return new Response(JSON.stringify({ error: 'Invalid messages format' }), {
-        status: 400,
-        headers: corsHeaders,
-      });
+      res.writeHead(400, { ...corsHeaders, 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Invalid messages format' }));
+      return;
     }
 
     const response = await fetch('https://api.anthropic.com/v1/messages', {
@@ -62,7 +59,7 @@ export default async function handler(req) {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001', // Fast + cost efficient for chat
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
         system: SYSTEM_PROMPT,
         messages: messages,
@@ -72,21 +69,16 @@ export default async function handler(req) {
     const data = await response.json();
 
     if (!response.ok) {
-      return new Response(JSON.stringify({ error: data.error?.message || 'API error' }), {
-        status: response.status,
-        headers: corsHeaders,
-      });
+      res.writeHead(response.status, { ...corsHeaders, 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: data.error?.message || 'API error' }));
+      return;
     }
 
-    return new Response(JSON.stringify({ reply: data.content?.[0]?.text || '' }), {
-      status: 200,
-      headers: corsHeaders,
-    });
+    res.writeHead(200, { ...corsHeaders, 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ reply: data.content?.[0]?.text || '' }));
 
   } catch (err) {
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
-      status: 500,
-      headers: corsHeaders,
-    });
+    res.writeHead(500, { ...corsHeaders, 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Internal server error: ' + err.message }));
   }
 }

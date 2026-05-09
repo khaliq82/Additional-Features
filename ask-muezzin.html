@@ -18,16 +18,14 @@
     --bg2: #111111;
     --bg3: #1a1a1a;
     --border: rgba(255,255,255,0.08);
-    --border-hover: rgba(255,255,255,0.15);
     --text: #ececec;
     --text-dim: rgba(236,236,236,0.6);
     --text-muted: rgba(236,236,236,0.35);
-    --user-bg: #1e2a2e;
-    --ai-bg: transparent;
   }
 
   html, body {
     height: 100%;
+    margin: 0;
     background: var(--bg);
     color: var(--text);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -36,217 +34,162 @@
     overflow: hidden;
   }
 
-  /* ── LAYOUT ── */
+  /* Full width layout — scrollbar naturally goes to right edge */
   .layout {
     display: grid;
     grid-template-rows: 56px 1fr auto;
     height: 100vh;
-    max-width: 800px;
-    margin: 0 auto;
+    width: 100%;
   }
 
   /* ── HEADER ── */
   .header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
+    justify-content: center;
     border-bottom: 1px solid var(--border);
-    background: rgba(10,10,10,0.95);
+    background: rgba(10,10,10,0.98);
     backdrop-filter: blur(12px);
-    position: sticky; top: 0; z-index: 10;
+    position: relative;
+    z-index: 10;
+    padding: 0 24px;
   }
-
-  .header-brand {
-    display: flex; align-items: center; gap: 10px;
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 800px;
   }
+  .header-brand { display: flex; align-items: center; gap: 10px; }
   .header-logo {
-    width: 30px; height: 30px;
-    border-radius: 7px;
-    background: var(--bg3);
-    border: 1px solid var(--border);
+    width: 30px; height: 30px; border-radius: 7px;
+    background: var(--bg3); border: 1px solid var(--border);
     display: flex; align-items: center; justify-content: center;
     font-size: 15px;
   }
-  .header-title {
-    font-size: 14px; font-weight: 600;
-    color: var(--text);
-    letter-spacing: -0.01em;
-  }
+  .header-title { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
   .header-title span { color: var(--cyan); }
-  .header-sub {
-    font-size: 11px; color: var(--text-muted);
-    font-weight: 400;
-  }
-
+  .header-sub { font-size: 11px; color: var(--text-muted); font-weight: 400; }
   .header-status {
     display: flex; align-items: center; gap: 6px;
     font-size: 11px; color: var(--text-muted);
-    padding: 4px 10px;
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    background: var(--bg2);
+    padding: 4px 10px; border: 1px solid var(--border);
+    border-radius: 100px; background: var(--bg2);
   }
   .status-dot {
     width: 6px; height: 6px; border-radius: 50%;
-    background: #22c55e;
-    box-shadow: 0 0 6px #22c55e;
+    background: #22c55e; box-shadow: 0 0 6px #22c55e;
     animation: pulse 2s ease-in-out infinite;
   }
   @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
 
-  /* ── CHAT AREA ── */
+  /* ── CHAT AREA — full width, scrollbar at right edge ── */
   .chat-area {
-    overflow-y: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    /* Native scrollbar on right edge */
+    width: 100%;
+    /* Scrollbar always visible at right edge */
     scrollbar-width: thin;
-    scrollbar-color: rgba(255,255,255,0.1) transparent;
+    scrollbar-color: rgba(255,255,255,0.12) transparent;
   }
-  .chat-area::-webkit-scrollbar {
-    width: 6px;
-  }
-  .chat-area::-webkit-scrollbar-track {
-    background: transparent;
-  }
+  .chat-area::-webkit-scrollbar { width: 6px; }
+  .chat-area::-webkit-scrollbar-track { background: transparent; }
   .chat-area::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.12);
     border-radius: 3px;
   }
-  .chat-area::-webkit-scrollbar-thumb:hover {
-    background: rgba(255,255,255,0.2);
+  .chat-area::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.22); }
+
+  /* Content centered inside chat area */
+  .chat-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 24px;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
-  /* ── WELCOME STATE ── */
+  /* ── WELCOME ── */
   .welcome {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 40px 20px;
+    padding: 48px 0 32px;
     text-align: center;
-    gap: 16px;
-    animation: fadeIn 0.5s ease both;
+    gap: 14px;
+    animation: fadeIn 0.4s ease both;
   }
-  @keyframes fadeIn { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
 
-  .welcome-icon {
-    font-size: 42px;
-    margin-bottom: 4px;
-  }
+  .welcome-icon { font-size: 44px; margin-bottom: 4px; }
   .welcome-title {
-    font-size: 24px; font-weight: 600;
+    font-size: 26px; font-weight: 600;
     color: var(--text); letter-spacing: -0.02em;
   }
   .welcome-title em { font-style: italic; color: var(--gold-bright); font-weight: 300; }
   .welcome-sub {
     font-size: 14px; color: var(--text-dim);
-    max-width: 400px; line-height: 1.6;
+    max-width: 420px; line-height: 1.65;
   }
 
-  /* Suggestion chips */
   .suggestions {
     display: flex; flex-wrap: wrap; gap: 8px;
     justify-content: center; margin-top: 8px;
-    max-width: 560px;
+    max-width: 580px;
   }
   .chip {
-    padding: 8px 16px;
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    background: var(--bg2);
+    padding: 8px 16px; border: 1px solid var(--border);
+    border-radius: 100px; background: var(--bg2);
     font-size: 13px; color: var(--text-dim);
     cursor: pointer; transition: all 0.15s ease;
     font-family: 'Inter', sans-serif;
+    white-space: nowrap;
   }
-  .chip:hover {
-    border-color: var(--cyan);
-    color: var(--text);
-    background: var(--cyan-dim);
-  }
+  .chip:hover { border-color: var(--cyan); color: var(--text); background: var(--cyan-dim); }
 
   /* ── MESSAGES ── */
-  .messages {
-    display: flex;
-    flex-direction: column;
-    padding: 8px 0 16px;
-  }
+  .messages { display: flex; flex-direction: column; padding: 8px 0 24px; }
 
   .message {
-    padding: 16px 20px;
-    animation: msgIn 0.25s ease both;
-  }
-  @keyframes msgIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
-
-  .message.user {
-    background: var(--bg2);
-    border-top: 1px solid var(--border);
+    padding: 16px 0;
     border-bottom: 1px solid var(--border);
+    animation: msgIn 0.2s ease both;
   }
-  .message.ai {
-    background: var(--ai-bg);
-  }
+  .message:last-child { border-bottom: none; }
+  @keyframes msgIn { from{opacity:0;transform:translateY(5px);} to{opacity:1;transform:translateY(0);} }
 
-  .message-inner {
-    max-width: 100%;
-    display: flex;
-    gap: 14px;
-    align-items: flex-start;
-  }
+  .message.user { background: transparent; }
+  .message.ai { background: transparent; }
+
+  .message-inner { display: flex; gap: 14px; align-items: flex-start; }
 
   .msg-avatar {
-    width: 28px; height: 28px;
-    border-radius: 6px;
+    width: 28px; height: 28px; border-radius: 6px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 13px; flex-shrink: 0;
-    margin-top: 1px;
+    font-size: 14px; flex-shrink: 0; margin-top: 1px;
   }
-  .msg-avatar.ai {
-    background: var(--cyan-dim);
-    border: 1px solid rgba(0,229,255,0.2);
-    font-size: 14px;
-  }
+  .msg-avatar.ai { background: var(--cyan-dim); border: 1px solid rgba(0,229,255,0.2); }
   .msg-avatar.user {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    font-size: 10px; font-weight: 600;
-    color: var(--gold-bright);
+    background: var(--bg3); border: 1px solid var(--border);
+    font-size: 10px; font-weight: 600; color: var(--gold-bright);
     font-family: 'Inter', sans-serif;
   }
 
-  .msg-content {
-    flex: 1;
-    font-size: 15px;
-    color: var(--text);
-    line-height: 1.7;
-    min-width: 0;
-  }
-
-  /* Rendered markdown in AI responses */
+  .msg-content { flex: 1; font-size: 15px; color: var(--text); line-height: 1.75; min-width: 0; }
   .msg-content p { margin-bottom: 10px; }
   .msg-content p:last-child { margin-bottom: 0; }
-  .msg-content strong { font-weight: 600; color: var(--text); }
+  .msg-content strong { font-weight: 600; color: #fff; }
   .msg-content em { font-style: italic; color: var(--text-dim); }
+  .msg-content code { background: var(--bg3); padding: 2px 6px; border-radius: 4px; font-size: 13px; font-family: monospace; color: var(--cyan); }
   .msg-content ul, .msg-content ol { padding-left: 20px; margin-bottom: 10px; }
   .msg-content li { margin-bottom: 4px; }
-  .msg-content code {
-    background: var(--bg3); padding: 2px 6px; border-radius: 4px;
-    font-size: 13px; font-family: monospace; color: var(--cyan);
-  }
 
-  /* Typing indicator */
-  .typing-wrap { padding: 16px 20px; }
-  .typing {
-    display: flex; align-items: center; gap: 14px;
-  }
-  .typing-dots {
-    display: flex; gap: 4px; align-items: center;
-    padding: 4px 0;
-  }
+  /* Typing */
+  .typing-dots { display: flex; gap: 4px; align-items: center; padding: 6px 0; }
   .typing-dot {
     width: 6px; height: 6px; border-radius: 50%;
     background: var(--cyan); opacity: 0.4;
@@ -258,19 +201,18 @@
 
   /* ── INPUT AREA ── */
   .input-area {
-    padding: 12px 20px 16px;
-    background: var(--bg);
     border-top: 1px solid var(--border);
+    background: var(--bg);
+    padding: 12px 24px 16px;
+    display: flex;
+    justify-content: center;
   }
+  .input-inner { width: 100%; max-width: 800px; }
 
   .input-box {
-    display: flex;
-    align-items: flex-end;
-    gap: 10px;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 10px 10px 10px 16px;
+    display: flex; align-items: flex-end; gap: 10px;
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px 10px 10px 16px;
     transition: border-color 0.2s, box-shadow 0.2s;
   }
   .input-box:focus-within {
@@ -279,106 +221,109 @@
   }
 
   textarea {
-    flex: 1;
-    background: none; border: none; outline: none;
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
+    flex: 1; background: none; border: none; outline: none;
+    color: var(--text); font-family: 'Inter', sans-serif;
     font-size: 15px; line-height: 1.5;
     resize: none; min-height: 24px; max-height: 160px;
   }
   textarea::placeholder { color: var(--text-muted); }
 
   .send-btn {
-    width: 34px; height: 34px;
-    border-radius: 8px;
-    border: none;
-    background: var(--cyan);
-    color: #000;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    transition: all 0.15s ease;
-    font-size: 16px;
+    width: 34px; height: 34px; border-radius: 8px; border: none;
+    background: var(--bg3); color: var(--text-muted);
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.15s ease; font-size: 16px;
   }
-  .send-btn:hover:not(:disabled) {
-    background: #33eeff;
-    box-shadow: 0 0 12px var(--cyan-glow);
-    transform: scale(1.05);
+  .send-btn.active {
+    background: var(--cyan); color: #000;
   }
-  .send-btn:disabled {
-    background: var(--bg3);
-    color: var(--text-muted);
-    cursor: not-allowed;
+  .send-btn.active:hover {
+    background: #33eeff; box-shadow: 0 0 12px var(--cyan-glow); transform: scale(1.05);
   }
+  .send-btn:disabled { cursor: not-allowed; }
 
   .input-meta {
     display: flex; justify-content: center;
     font-size: 11px; color: var(--text-muted);
-    margin-top: 8px; letter-spacing: 0.02em;
-    gap: 6px;
+    margin-top: 8px; gap: 4px; align-items: center;
   }
   .input-meta kbd {
     padding: 1px 5px; border-radius: 3px;
-    border: 1px solid var(--border);
-    background: var(--bg3); font-size: 10px;
-    font-family: 'Inter', sans-serif;
-    color: var(--text-dim);
+    border: 1px solid var(--border); background: var(--bg3);
+    font-size: 10px; font-family: 'Inter', sans-serif; color: var(--text-dim);
+  }
+
+  @media (max-width: 600px) {
+    .chat-inner, .header-inner, .input-inner { padding: 0 16px; }
+    .header { padding: 0 16px; }
+    .input-area { padding: 10px 16px 14px; }
+    .chip { font-size: 12px; padding: 6px 12px; }
   }
 </style>
 </head>
 <body>
-
 <div class="layout">
 
   <!-- Header -->
   <div class="header">
-    <div class="header-brand">
-      <div class="header-logo">🕌</div>
-      <div>
-        <div class="header-title"><span>Adhan</span>Live</div>
-        <div class="header-sub">Ask the Muezzin</div>
+    <div class="header-inner">
+      <div class="header-brand">
+        <div class="header-logo">🕌</div>
+        <div>
+          <div class="header-title"><span>Adhan</span>Live</div>
+          <div class="header-sub">Ask the Muezzin</div>
+        </div>
       </div>
-    </div>
-    <div class="header-status">
-      <div class="status-dot"></div>
-      Online
+      <div class="header-status">
+        <div class="status-dot"></div>
+        Online
+      </div>
     </div>
   </div>
 
   <!-- Chat area -->
   <div class="chat-area" id="chatArea">
-    <!-- Welcome -->
-    <div class="welcome" id="welcome">
-      <div class="welcome-icon">🕌</div>
-      <div class="welcome-title">Ask the <em>Muezzin</em></div>
-      <div class="welcome-sub">Prayer times, Islamic astronomy, the science of adhan — ask anything about the call to prayer and the mosques of the world.</div>
-      <div class="suggestions" id="suggestions">
-        <div class="chip" onclick="ask(this)">Why does Maghrib vary so much?</div>
-        <div class="chip" onclick="ask(this)">How is Dhuhr calculated?</div>
-        <div class="chip" onclick="ask(this)">What are the words of the Adhan?</div>
-        <div class="chip" onclick="ask(this)">Which prayer has the most mosques active now?</div>
-        <div class="chip" onclick="ask(this)">What is the history of the call to prayer?</div>
-        <div class="chip" onclick="ask(this)">Why is Fajr blue on the AdhanLive map?</div>
+    <div class="chat-inner" id="chatInner">
+
+      <!-- Welcome -->
+      <div class="welcome" id="welcome">
+        <div class="welcome-icon">🕌</div>
+        <div class="welcome-title">Ask the <em>Muezzin</em></div>
+        <div class="welcome-sub">Prayer times, Islamic astronomy, the science of adhan — ask anything about the call to prayer and the mosques of the world.</div>
+        <div class="suggestions">
+          <div class="chip" onclick="ask(this)">Why does Maghrib vary so much?</div>
+          <div class="chip" onclick="ask(this)">How is Dhuhr calculated?</div>
+          <div class="chip" onclick="ask(this)">What are the words of the Adhan?</div>
+          <div class="chip" onclick="ask(this)">Which prayer has the most mosques active now?</div>
+          <div class="chip" onclick="ask(this)">What is the history of the call to prayer?</div>
+          <div class="chip" onclick="ask(this)">Why is Fajr blue on the AdhanLive map?</div>
+        </div>
       </div>
+
+      <!-- Messages -->
+      <div class="messages" id="messages" style="display:none;"></div>
+
     </div>
-    <!-- Messages injected here -->
-    <div class="messages" id="messages" style="display:none;"></div>
   </div>
 
   <!-- Input -->
   <div class="input-area">
-    <div class="input-box">
-      <textarea
-        id="input"
-        placeholder="Ask about prayer times, adhan, Islamic astronomy..."
-        rows="1"
-        onkeydown="handleKey(event)"
-        oninput="resize(this)"
-      ></textarea>
-      <button class="send-btn" id="sendBtn" onclick="send()" title="Send" disabled>↑</button>
-    </div>
-    <div class="input-meta">
-      <kbd>Enter</kbd> to send &nbsp;·&nbsp; <kbd>Shift</kbd>+<kbd>Enter</kbd> for new line &nbsp;·&nbsp; Powered by Claude · AdhanLive
+    <div class="input-inner">
+      <div class="input-box">
+        <textarea
+          id="input"
+          placeholder="Ask about prayer times, adhan, Islamic astronomy..."
+          rows="1"
+          onkeydown="handleKey(event)"
+          oninput="onInput(this)"
+        ></textarea>
+        <button class="send-btn" id="sendBtn" onclick="send()" title="Send" disabled>↑</button>
+      </div>
+      <div class="input-meta">
+        <kbd>Enter</kbd> to send &nbsp;·&nbsp;
+        <kbd>Shift</kbd>+<kbd>Enter</kbd> for new line &nbsp;·&nbsp;
+        Powered by Claude · AdhanLive
+      </div>
     </div>
   </div>
 
@@ -388,19 +333,18 @@
 let history = [];
 let loading = false;
 
-const inputEl = document.getElementById('input');
-const sendBtn = document.getElementById('sendBtn');
+const inputEl  = document.getElementById('input');
+const sendBtn  = document.getElementById('sendBtn');
 const chatArea = document.getElementById('chatArea');
-const messagesEl = document.getElementById('messages');
-const welcomeEl = document.getElementById('welcome');
+const msgsEl   = document.getElementById('messages');
+const welcomeEl= document.getElementById('welcome');
 
-inputEl.addEventListener('input', () => {
-  sendBtn.disabled = !inputEl.value.trim() || loading;
-});
-
-function resize(el) {
+function onInput(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+  const hasText = el.value.trim().length > 0;
+  sendBtn.disabled = !hasText || loading;
+  sendBtn.classList.toggle('active', hasText && !loading);
 }
 
 function handleKey(e) {
@@ -415,58 +359,52 @@ function ask(el) {
   send();
 }
 
-// Simple markdown renderer
 function renderMarkdown(text) {
   return text
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     .replace(/`(.+?)`/g, '<code>$1</code>')
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/\n/g, '<br>')
-    .replace(/^/, '<p>')
-    .replace(/$/, '</p>');
+    .split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+}
+
+function showMessages() {
+  if (welcomeEl.style.display !== 'none') {
+    welcomeEl.style.display = 'none';
+    msgsEl.style.display = 'flex';
+  }
 }
 
 function addMessage(role, text) {
-  // Hide welcome, show messages
-  if (welcomeEl.style.display !== 'none') {
-    welcomeEl.style.display = 'none';
-    messagesEl.style.display = 'flex';
-  }
-
+  showMessages();
   const msg = document.createElement('div');
   msg.className = `message ${role}`;
-
   const inner = document.createElement('div');
   inner.className = 'message-inner';
-
   const avatar = document.createElement('div');
   avatar.className = `msg-avatar ${role}`;
   avatar.textContent = role === 'ai' ? '🕌' : 'YOU';
-
   const content = document.createElement('div');
   content.className = 'msg-content';
-
   if (role === 'ai') {
     content.innerHTML = renderMarkdown(text);
   } else {
     content.textContent = text;
   }
-
   inner.appendChild(avatar);
   inner.appendChild(content);
   msg.appendChild(inner);
-  messagesEl.appendChild(msg);
+  msgsEl.appendChild(msg);
   scrollBottom();
   return content;
 }
 
 function addTyping() {
-  const wrap = document.createElement('div');
-  wrap.className = 'typing-wrap';
-  wrap.id = 'typingIndicator';
-  wrap.innerHTML = `
-    <div class="typing">
+  showMessages();
+  const msg = document.createElement('div');
+  msg.className = 'message ai';
+  msg.id = 'typing';
+  msg.innerHTML = `
+    <div class="message-inner">
       <div class="msg-avatar ai">🕌</div>
       <div class="typing-dots">
         <div class="typing-dot"></div>
@@ -474,17 +412,12 @@ function addTyping() {
         <div class="typing-dot"></div>
       </div>
     </div>`;
-  messagesEl.appendChild(wrap);
+  msgsEl.appendChild(msg);
   scrollBottom();
 }
 
-function removeTyping() {
-  document.getElementById('typingIndicator')?.remove();
-}
-
-function scrollBottom() {
-  chatArea.scrollTop = chatArea.scrollHeight;
-}
+function removeTyping() { document.getElementById('typing')?.remove(); }
+function scrollBottom() { chatArea.scrollTop = chatArea.scrollHeight; }
 
 async function send() {
   const text = inputEl.value.trim();
@@ -492,17 +425,12 @@ async function send() {
 
   loading = true;
   sendBtn.disabled = true;
+  sendBtn.classList.remove('active');
   inputEl.value = '';
   inputEl.style.height = 'auto';
 
   addMessage('user', text);
   history.push({ role: 'user', content: text });
-
-  // Show typing
-  if (welcomeEl.style.display !== 'none') {
-    welcomeEl.style.display = 'none';
-    messagesEl.style.display = 'flex';
-  }
   addTyping();
 
   try {
@@ -511,17 +439,14 @@ async function send() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ messages: history })
     });
-
     const data = await res.json();
     const reply = data.reply || 'Something went wrong. Please try again.';
-
     removeTyping();
     addMessage('ai', reply);
     history.push({ role: 'assistant', content: reply });
-
   } catch(e) {
     removeTyping();
-    addMessage('ai', 'Could not connect to the knowledge source. Please try again.');
+    addMessage('ai', 'Could not connect. Please try again.');
   }
 
   loading = false;

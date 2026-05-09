@@ -46,9 +46,7 @@ export default async function handler(req, res) {
  
   try {
     const { messages, timeContext } = req.body;
-    const systemWithTime = SYSTEM_PROMPT + (timeContext ? '
- 
-Current time context: ' + timeContext : '');
+    const systemWithTime = SYSTEM_PROMPT + (timeContext ? '\n\nCurrent time context: ' + timeContext : '');
  
     if (!messages || !Array.isArray(messages)) {
       res.writeHead(400, { ...corsHeaders, 'Content-Type': 'application/json' });

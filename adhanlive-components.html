@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdhanLive — Email Capture + Feedback Components</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Mono:wght@300;400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cyan: #00e5ff; --cyan-dim: rgba(0,229,255,0.12); --cyan-glow: rgba(0,229,255,0.35);
+    --gold: #c9a84c; --gold-dim: rgba(201,168,76,0.15); --gold-bright: #e8c96a;
+    --bg: #030a0e; --surface: rgba(255,255,255,0.03); --surface2: rgba(255,255,255,0.06);
+    --border: rgba(0,229,255,0.12); --text: #e8f4f8;
+    --text-dim: rgba(232,244,248,0.5); --text-muted: rgba(232,244,248,0.25);
+  }
+  html, body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: 'DM Mono', monospace; }
+
+  .starfield {
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      radial-gradient(1px 1px at 8% 15%, rgba(0,229,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 55%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 42% 8%, rgba(0,229,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 78% 72%, rgba(0,229,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 92%, rgba(201,168,76,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 65%, rgba(201,168,76,0.4) 0%, transparent 100%);
+    background-size: 500px 500px; animation: drift 90s linear infinite;
+  }
+  @keyframes drift { from { transform: translateY(0); } to { transform: translateY(-500px); } }
+
+  .demo-page { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; padding: 40px 20px 120px; }
+  .demo-label {
+    font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--cyan); margin-bottom: 12px; opacity: 0.7;
+  }
+  .demo-section { margin-bottom: 60px; }
+
+  /* ═══════════════════════════════
+     EMAIL CAPTURE COMPONENT
+  ═══════════════════════════════ */
+  .email-capture {
+    background: linear-gradient(135deg, rgba(0,229,255,0.04) 0%, rgba(0,0,0,0) 60%),
+                rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 28px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .email-capture::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0.4;
+  }
+
+  .ec-eyebrow {
+    font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--cyan); margin-bottom: 8px; opacity: 0.8;
+  }
+  .ec-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-weight: 300; color: var(--text);
+    line-height: 1.2; margin-bottom: 6px;
+  }
+  .ec-title em { font-style: italic; color: var(--gold-bright); }
+  .ec-subtitle {
+    font-size: 11px; color: var(--text-muted); line-height: 1.6;
+    margin-bottom: 20px; letter-spacing: 0.02em;
+  }
+
+  /* Preference toggles */
+  .ec-prefs {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px;
+  }
+  .ec-pref {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 100px;
+    border: 1px solid var(--border); background: var(--surface);
+    cursor: pointer; transition: all 0.2s ease;
+    font-size: 11px; color: var(--text-dim); letter-spacing: 0.03em;
+    user-select: none;
+  }
+  .ec-pref input[type="checkbox"] { display: none; }
+  .ec-pref-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    border: 1px solid currentColor; transition: all 0.2s ease; flex-shrink: 0;
+  }
+  .ec-pref.selected {
+    border-color: var(--cyan); color: var(--cyan); background: var(--cyan-dim);
+  }
+  .ec-pref.selected .ec-pref-dot { background: var(--cyan); border-color: var(--cyan); }
+
+  /* Email input row */
+  .ec-input-row { display: flex; gap: 10px; }
+  .ec-input {
+    flex: 1; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 11px 16px; color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 13px; outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .ec-input:focus {
+    border-color: rgba(0,229,255,0.4);
+    box-shadow: 0 0 0 3px rgba(0,229,255,0.06);
+  }
+  .ec-input::placeholder { color: var(--text-muted); }
+  .ec-btn {
+    padding: 11px 20px; border-radius: 10px;
+    border: 1px solid var(--cyan); background: var(--cyan-dim);
+    color: var(--cyan); font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; cursor: pointer; transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .ec-btn:hover { background: var(--cyan); color: var(--bg); box-shadow: 0 0 20px var(--cyan-glow); }
+  .ec-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .ec-privacy {
+    font-size: 9px; color: var(--text-muted); margin-top: 10px;
+    letter-spacing: 0.05em; opacity: 0.7;
+  }
+
+  /* Success state */
+  .ec-success {
+    display: none; text-align: center; padding: 12px 0 4px;
+    animation: fadeUp 0.4s ease both;
+  }
+  .ec-success-icon { font-size: 28px; margin-bottom: 8px; }
+  .ec-success-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 300; color: var(--cyan);
+    margin-bottom: 4px;
+  }
+  .ec-success-sub { font-size: 11px; color: var(--text-muted); }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ═══════════════════════════════
+     FEEDBACK BOX — END OF PAGE
+  ═══════════════════════════════ */
+  .feedback-section {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    position: relative; overflow: hidden;
+  }
+  .feedback-section::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.3;
+  }
+
+  .fb-eyebrow { font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px; opacity: 0.8; }
+  .fb-title { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--text); margin-bottom: 6px; }
+  .fb-subtitle { font-size: 11px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
+
+  /* Rating */
+  .fb-rating { display: flex; gap: 8px; margin-bottom: 18px; }
+  .fb-star {
+    font-size: 22px; cursor: pointer; transition: transform 0.15s ease;
+    filter: grayscale(1) opacity(0.3);
+  }
+  .fb-star:hover, .fb-star.active { filter: none; transform: scale(1.15); }
+
+  /* Type selector */
+  .fb-types { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .fb-type {
+    padding: 5px 12px; border-radius: 100px;
+    border: 1px solid var(--border); background: var(--surface);
+    font-size: 11px; color: var(--text-dim); cursor: pointer;
+    transition: all 0.2s ease; letter-spacing: 0.03em;
+  }
+  .fb-type.selected { border-color: var(--gold); color: var(--gold-bright); background: var(--gold-dim); }
+
+  .fb-textarea {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 16px; color: var(--text);
+    font-family: 'DM Mono', monospace; font-size: 12px; outline: none;
+    resize: none; height: 90px; line-height: 1.6;
+    transition: border-color 0.2s, box-shadow 0.2s; margin-bottom: 12px;
+  }
+  .fb-textarea:focus { border-color: rgba(201,168,76,0.4); box-shadow: 0 0 0 3px rgba(201,168,76,0.06); }
+  .fb-textarea::placeholder { color: var(--text-muted); }
+
+  .fb-btn {
+    padding: 11px 24px; border-radius: 10px;
+    border: 1px solid var(--gold); background: var(--gold-dim);
+    color: var(--gold-bright); font-family: 'Syne', sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; cursor: pointer; transition: all 0.2s ease;
+  }
+  .fb-btn:hover { background: var(--gold); color: var(--bg); box-shadow: 0 0 16px rgba(201,168,76,0.3); }
+  .fb-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .fb-success { display: none; text-align: center; padding: 8px 0; animation: fadeUp 0.4s ease both; }
+  .fb-success-text { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--gold-bright); margin-bottom: 4px; }
+  .fb-success-sub { font-size: 11px; color: var(--text-muted); }
+
+  /* ═══════════════════════════════
+     FEEDBACK FLOATING BUTTON
+  ═══════════════════════════════ */
+  .fb-float-btn {
+    position: fixed; bottom: 24px; right: 24px; z-index: 1000;
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 18px; border-radius: 100px;
+    border: 1px solid var(--gold); background: rgba(4,13,18,0.92);
+    color: var(--gold-bright); font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .fb-float-btn:hover {
+    background: var(--gold); color: var(--bg);
+    box-shadow: 0 4px 24px rgba(201,168,76,0.3);
+    transform: translateY(-2px);
+  }
+  .fb-float-icon { font-size: 14px; }
+
+  /* Floating feedback modal */
+  .fb-modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 999;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    align-items: flex-end; justify-content: center;
+    padding: 0 16px 80px;
+  }
+  .fb-modal-overlay.open { display: flex; animation: fadeIn 0.2s ease both; }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+  .fb-modal {
+    width: 100%; max-width: 480px;
+    background: #060f15; border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 16px; padding: 24px;
+    animation: slideUp 0.3s ease both;
+    position: relative;
+  }
+  @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+  .fb-modal-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--surface2);
+    color: var(--text-muted); cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s ease;
+  }
+  .fb-modal-close:hover { border-color: var(--gold); color: var(--gold); }
+
+  .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(0,229,255,0.3); border-top-color: var(--cyan); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 6px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="starfield"></div>
+
+<!-- ── FLOATING FEEDBACK BUTTON (goes on every page) ── -->
+<button class="fb-float-btn" onclick="openFeedbackModal()">
+  <span class="fb-float-icon">💬</span> Feedback
+</button>
+
+<!-- ── FLOATING FEEDBACK MODAL ── -->
+<div class="fb-modal-overlay" id="fbModalOverlay" onclick="closeFeedbackModal(event)">
+  <div class="fb-modal">
+    <button class="fb-modal-close" onclick="closeFeedbackModalDirect()">✕</button>
+    <div class="fb-eyebrow">Your Voice Matters</div>
+    <div class="fb-title">Share Feedback</div>
+    <div class="fb-subtitle">Help us improve AdhanLive for the Ummah.</div>
+
+    <div class="fb-rating" id="modalStars">
+      <span class="fb-star" onclick="setModalRating(1)">⭐</span>
+      <span class="fb-star" onclick="setModalRating(2)">⭐</span>
+      <span class="fb-star" onclick="setModalRating(3)">⭐</span>
+      <span class="fb-star" onclick="setModalRating(4)">⭐</span>
+      <span class="fb-star" onclick="setModalRating(5)">⭐</span>
+    </div>
+
+    <div class="fb-types" id="modalTypes">
+      <div class="fb-type" onclick="toggleModalType(this)">🐛 Bug</div>
+      <div class="fb-type" onclick="toggleModalType(this)">💡 Suggestion</div>
+      <div class="fb-type" onclick="toggleModalType(this)">🕌 Missing Mosque</div>
+      <div class="fb-type" onclick="toggleModalType(this)">❤️ Just saying hi</div>
+    </div>
+
+    <textarea class="fb-textarea" id="modalMessage" placeholder="Tell us what's on your mind..."></textarea>
+    <button class="fb-btn" id="modalSubmitBtn" onclick="submitModalFeedback()">Send Feedback</button>
+
+    <div class="fb-success" id="modalSuccess">
+      <div class="fb-success-text">جزاك الله خيراً</div>
+      <div class="fb-success-sub">Your feedback has been received. May Allah bless you.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DEMO PAGE ── -->
+<div class="demo-page">
+
+  <!-- COMPONENT 1: EMAIL CAPTURE -->
+  <div class="demo-section">
+    <div class="demo-label">Component 1 — Email Capture (Hero Page)</div>
+
+    <div class="email-capture">
+      <div class="ec-eyebrow">✦ Stay Connected</div>
+      <div class="ec-title">Join the <em>Adhan</em> Community</div>
+      <div class="ec-subtitle">Choose what you'd like to receive — no spam, unsubscribe anytime.</div>
+
+      <div class="ec-prefs">
+        <label class="ec-pref" onclick="togglePref(this)">
+          <input type="checkbox" value="daily_prayer_times">
+          <div class="ec-pref-dot"></div>
+          🕌 Daily Prayer Times
+        </label>
+        <label class="ec-pref" onclick="togglePref(this)">
+          <input type="checkbox" value="weekly_updates">
+          <div class="ec-pref-dot"></div>
+          📡 Weekly AdhanLive Updates
+        </label>
+        <label class="ec-pref" onclick="togglePref(this)">
+          <input type="checkbox" value="new_features">
+          <div class="ec-pref-dot"></div>
+          ✨ New Features
+        </label>
+        <label class="ec-pref" onclick="togglePref(this)">
+          <input type="checkbox" value="ramadan_special">
+          <div class="ec-pref-dot"></div>
+          🌙 Ramadan Specials
+        </label>
+      </div>
+
+      <div id="ecForm">
+        <div class="ec-input-row">
+          <input type="email" class="ec-input" id="ecEmail" placeholder="your@email.com" />
+          <button class="ec-btn" id="ecBtn" onclick="submitEmail()">Subscribe</button>
+        </div>
+        <div class="ec-privacy">🔒 &nbsp;No spam ever. We respect your inbox.</div>
+      </div>
+
+      <div class="ec-success" id="ecSuccess">
+        <div class="ec-success-icon">🌙</div>
+        <div class="ec-success-text">You're in, Alhamdulillah!</div>
+        <div class="ec-success-sub">Check your inbox to confirm your subscription.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPONENT 2: FEEDBACK — END OF PAGE -->
+  <div class="demo-section">
+    <div class="demo-label">Component 2 — Feedback Section (End of Page)</div>
+
+    <div class="feedback-section">
+      <div class="fb-eyebrow">✦ Your Voice Matters</div>
+      <div class="fb-title">How was your experience?</div>
+      <div class="fb-subtitle">Help us make AdhanLive better for every Muslim around the world.</div>
+
+      <div id="fbPageForm">
+        <div class="fb-rating" id="pageStars">
+          <span class="fb-star" onclick="setPageRating(1)">⭐</span>
+          <span class="fb-star" onclick="setPageRating(2)">⭐</span>
+          <span class="fb-star" onclick="setPageRating(3)">⭐</span>
+          <span class="fb-star" onclick="setPageRating(4)">⭐</span>
+          <span class="fb-star" onclick="setPageRating(5)">⭐</span>
+        </div>
+
+        <div class="fb-types" id="pageTypes">
+          <div class="fb-type" onclick="togglePageType(this)">🐛 Bug Report</div>
+          <div class="fb-type" onclick="togglePageType(this)">💡 Suggestion</div>
+          <div class="fb-type" onclick="togglePageType(this)">🕌 Missing Mosque</div>
+          <div class="fb-type" onclick="togglePageType(this)">🌍 Wrong Data</div>
+          <div class="fb-type" onclick="togglePageType(this)">❤️ General</div>
+        </div>
+
+        <textarea class="fb-textarea" id="pageMessage" placeholder="Tell us what you think or what we can improve..."></textarea>
+        <button class="fb-btn" id="pageSubmitBtn" onclick="submitPageFeedback()">Send Feedback →</button>
+      </div>
+
+      <div class="fb-success" id="fbPageSuccess">
+        <div class="fb-success-text">جزاك الله خيراً</div>
+        <div class="fb-success-sub">Your feedback means a lot. May Allah reward you.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const WEB3FORMS_KEY = 'fe20ffa7-c3a3-4268-8a55-97af16d5bf49';
+
+/* ── PREFERENCES ── */
+function togglePref(el) {
+  el.classList.toggle('selected');
+}
+
+/* ── EMAIL CAPTURE ── */
+async function submitEmail() {
+  const email = document.getElementById('ecEmail').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('ecEmail').focus();
+    return;
+  }
+
+  const prefs = [...document.querySelectorAll('.ec-pref.selected input')]
+    .map(i => i.value).join(', ') || 'No specific preference';
+
+  const btn = document.getElementById('ecBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>';
+
+  try {
+    await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: 'AdhanLive — New Email Subscriber',
+        from_name: 'AdhanLive Subscriptions',
+        email: email,
+        message: `New subscriber: ${email}\nPreferences: ${prefs}`,
+      })
+    });
+
+    document.getElementById('ecForm').style.display = 'none';
+    const s = document.getElementById('ecSuccess');
+    s.style.display = 'block';
+
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Subscribe';
+    alert('Something went wrong. Please try again.');
+  }
+}
+
+/* ── PAGE FEEDBACK ── */
+let pageRating = 0;
+let pageType = '';
+
+function setPageRating(n) {
+  pageRating = n;
+  document.querySelectorAll('#pageStars .fb-star').forEach((s, i) => {
+    s.classList.toggle('active', i < n);
+  });
+}
+
+function togglePageType(el) {
+  document.querySelectorAll('#pageTypes .fb-type').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+  pageType = el.textContent.trim();
+}
+
+async function submitPageFeedback() {
+  const msg = document.getElementById('pageMessage').value.trim();
+  if (!msg) { document.getElementById('pageMessage').focus(); return; }
+
+  const btn = document.getElementById('pageSubmitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Sending...';
+
+  try {
+    await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: `AdhanLive Feedback — ${pageType || 'General'} ${pageRating ? '('+pageRating+'★)' : ''}`,
+        from_name: 'AdhanLive Feedback',
+        message: `Rating: ${pageRating ? pageRating + ' stars' : 'Not rated'}\nType: ${pageType || 'Not selected'}\n\nMessage:\n${msg}`,
+      })
+    });
+
+    document.getElementById('fbPageForm').style.display = 'none';
+    document.getElementById('fbPageSuccess').style.display = 'block';
+
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Send Feedback →';
+    alert('Something went wrong. Please try again.');
+  }
+}
+
+/* ── FLOATING MODAL ── */
+let modalRating = 0;
+let modalType = '';
+
+function openFeedbackModal() {
+  document.getElementById('fbModalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeFeedbackModal(e) {
+  if (e.target === document.getElementById('fbModalOverlay')) closeFeedbackModalDirect();
+}
+
+function closeFeedbackModalDirect() {
+  document.getElementById('fbModalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function setModalRating(n) {
+  modalRating = n;
+  document.querySelectorAll('#modalStars .fb-star').forEach((s, i) => {
+    s.classList.toggle('active', i < n);
+  });
+}
+
+function toggleModalType(el) {
+  document.querySelectorAll('#modalTypes .fb-type').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+  modalType = el.textContent.trim();
+}
+
+async function submitModalFeedback() {
+  const msg = document.getElementById('modalMessage').value.trim();
+  if (!msg) { document.getElementById('modalMessage').focus(); return; }
+
+  const btn = document.getElementById('modalSubmitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Sending...';
+
+  try {
+    await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject: `AdhanLive Feedback — ${modalType || 'General'} ${modalRating ? '('+modalRating+'★)' : ''}`,
+        from_name: 'AdhanLive Feedback',
+        message: `Rating: ${modalRating ? modalRating + ' stars' : 'Not rated'}\nType: ${modalType || 'Not selected'}\n\nMessage:\n${msg}`,
+      })
+    });
+
+    document.getElementById('modalSubmitBtn').style.display = 'none';
+    document.getElementById('modalMessage').style.display = 'none';
+    document.getElementById('modalSuccess').style.display = 'block';
+    setTimeout(closeFeedbackModalDirect, 3000);
+
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = 'Send Feedback';
+    alert('Something went wrong. Please try again.');
+  }
+}
+</script>
+</body>
+</html>

@@ -447,24 +447,26 @@ function scrollBottom() { chatArea.scrollTop = chatArea.scrollHeight; }
 
 // ── Location banner ──
 function showLocationBanner(onAllow, onDeny) {
-  showMessages();
-  const banner = document.createElement('div');
-  banner.className = 'location-banner';
-  banner.id = 'locationBanner';
-  banner.innerHTML = `
-    <div class="loc-icon">📍</div>
-    <div class="loc-text">
-      <strong>Share your location for accurate prayer times</strong>
-      Used only to calculate prayer times — never stored.
-    </div>
-    <div class="loc-actions">
-      <button class="loc-btn allow" id="locAllow">Allow</button>
-      <button class="loc-btn deny" id="locDeny">Skip</button>
-    </div>`;
-  msgsEl.appendChild(banner);
-  scrollBottom();
-  document.getElementById('locAllow').onclick = () => { banner.remove(); onAllow(); };
-  document.getElementById('locDeny').onclick  = () => { banner.remove(); onDeny(); };
+  showMessages(); // ensure messages div is visible first
+  return new Promise(resolve => {
+    const banner = document.createElement('div');
+    banner.className = 'location-banner';
+    banner.id = 'locationBanner';
+    banner.innerHTML = `
+      <div class="loc-icon">📍</div>
+      <div class="loc-text">
+        <strong>Share your location for accurate prayer times</strong>
+        Used only to calculate prayer times — never stored.
+      </div>
+      <div class="loc-actions">
+        <button class="loc-btn allow" id="locAllow">Allow</button>
+        <button class="loc-btn deny" id="locDeny">Skip</button>
+      </div>`;
+    msgsEl.appendChild(banner);
+    scrollBottom();
+    document.getElementById('locAllow').onclick = () => { banner.remove(); onAllow(); resolve(); };
+    document.getElementById('locDeny').onclick  = () => { banner.remove(); onDeny(); resolve(); };
+  });
 }
 
 // ── Prayer time context builder ──
@@ -510,23 +512,18 @@ async function send() {
   const isPrayerQuery = AdhanUtils ? AdhanUtils.isPrayerTimeQuery(text) : false;
   console.log('isPrayerQuery:', isPrayerQuery, '| AdhanUtils:', !!AdhanUtils, '| userLocation:', !!userLocation, '| locationDenied:', locationDenied);
   if (isPrayerQuery && !userLocation && !locationDenied) {
-    // Show location banner before typing indicator
-    await new Promise(resolve => {
-      showLocationBanner(
-        async () => {
-          // Allow — get location
-          try {
-            const pos = await AdhanUtils.getUserLocation();
-            const geo = await AdhanUtils.reverseGeocode(pos.lat, pos.lon);
-            userLocation = { ...pos, ...geo };
-          } catch(e) {
-            locationDenied = true;
-          }
-          resolve();
-        },
-        () => { locationDenied = true; resolve(); }
-      );
-    });
+    await showLocationBanner(
+      async () => {
+        try {
+          const pos = await AdhanUtils.getUserLocation();
+          const geo = await AdhanUtils.reverseGeocode(pos.lat, pos.lon);
+          userLocation = { ...pos, ...geo };
+        } catch(e) {
+          locationDenied = true;
+        }
+      },
+      () => { locationDenied = true; }
+    );
   }
 
   addTyping();

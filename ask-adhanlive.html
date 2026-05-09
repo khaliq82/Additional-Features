@@ -507,7 +507,8 @@ async function send() {
   history.push({ role: 'user', content: text });
 
   // Check if prayer time query needs location
-  const isPrayerQuery = AdhanUtils.isPrayerTimeQuery(text);
+  const isPrayerQuery = AdhanUtils ? AdhanUtils.isPrayerTimeQuery(text) : false;
+  console.log('isPrayerQuery:', isPrayerQuery, '| AdhanUtils:', !!AdhanUtils, '| userLocation:', !!userLocation, '| locationDenied:', locationDenied);
   if (isPrayerQuery && !userLocation && !locationDenied) {
     // Show location banner before typing indicator
     await new Promise(resolve => {

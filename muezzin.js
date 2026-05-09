@@ -13,7 +13,7 @@ Your role is to answer questions about:
 - General Islamic knowledge related to prayer and worship
 
 Prayer colors on AdhanLive: Fajr=blue, Dhuhr=gold, Asr=orange, Maghrib=red, Isha=purple.
-AdhanLive has 157,890 mosques from OpenStreetMap using the Umm al-Qura prayer calculation method.
+AdhanLive has 157,890 mosques from OpenStreetMap. Prayer times are calculated using multiple methods depending on region — including Umm al-Qura (Arabian Peninsula), Muslim World League, ISNA (North America), Egyptian General Authority, and others. The appropriate method is applied based on each mosque's location.
 
 Your tone: Knowledgeable, warm, concise. Grounded in Islamic tradition. Never give fatwas or rulings on contested fiqh issues. Acknowledge madhab differences where relevant. Speak with reverence about the subject matter.
 
@@ -43,7 +43,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { messages } = req.body;
+    const { messages, timeContext } = req.body;
+    const systemWithTime = SYSTEM_PROMPT + (timeContext ? '
+
+Current time context: ' + timeContext : '');
 
     if (!messages || !Array.isArray(messages)) {
       res.writeHead(400, { ...corsHeaders, 'Content-Type': 'application/json' });
@@ -61,7 +64,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 1000,
-        system: SYSTEM_PROMPT,
+        system: systemWithTime,
         messages: messages,
       }),
     });

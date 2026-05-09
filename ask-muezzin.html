@@ -434,10 +434,12 @@ async function send() {
   addTyping();
 
   try {
+    const now = new Date();
+    const timeContext = 'User local date/time: ' + now.toLocaleString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit', timeZoneName:'short' }) + '. UTC: ' + now.toUTCString() + '.';
     const res = await fetch('/api/muezzin', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: history })
+      body: JSON.stringify({ messages: history, timeContext })
     });
     const data = await res.json();
     const reply = data.reply || 'Something went wrong. Please try again.';

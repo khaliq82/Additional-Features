@@ -17,7 +17,7 @@ nav{display:flex;align-items:center;justify-content:space-between;padding:12px 3
 .nav-link{font-size:11px;font-weight:500;color:var(--cyan);text-decoration:none;padding:6px 14px;border:1px solid rgba(0,212,255,0.3);border-radius:4px;transition:all 0.2s;}
 .nav-link:hover{background:rgba(0,212,255,0.08);border-color:var(--cyan);}
 .main{display:flex;flex:1;min-height:0;}
-.left{width:268px;flex-shrink:0;border-right:1px solid var(--border);padding:16px 15px;overflow-y:auto;display:flex;flex-direction:column;gap:16px;}
+.left{width:268px;flex-shrink:0;border-right:1px solid var(--border);padding:16px 15px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;}
 .panel-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;line-height:1.2;}
 .panel-title em{font-style:italic;color:var(--cyan);}
 .panel-sub{font-size:11px;line-height:1.6;font-weight:300;margin-top:4px;color:rgba(255,255,255,0.7);}
@@ -50,10 +50,10 @@ input[type=range]:active::-webkit-slider-thumb{transform:scale(1.2);}
 .icard-title{font-size:12px;font-weight:600;margin-bottom:3px;}
 .icard-body{font-size:10.5px;line-height:1.6;font-weight:300;color:rgba(255,255,255,0.8);}
 .right{flex:1;display:flex;align-items:center;justify-content:center;padding:14px;min-width:0;}
-.clock-container{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;height:100%;}
-.clock-top-label{font-size:8px;letter-spacing:0.2em;color:rgba(255,255,255,0.4);text-transform:uppercase;}
-canvas#clockCanvas{display:block;cursor:grab;flex:1;max-width:100%;max-height:100%;}
-canvas#clockCanvas:active{cursor:grabbing;}
+.clock-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;height:100%;}
+.clock-top{font-size:8px;letter-spacing:0.2em;color:rgba(255,255,255,0.4);text-transform:uppercase;}
+canvas{display:block;cursor:grab;flex:1;min-height:0;max-width:100%;}
+canvas:active{cursor:grabbing;}
 .clock-bottom{display:flex;flex-direction:column;align-items:center;gap:3px;}
 .clock-status{font-size:9px;color:rgba(255,255,255,0.35);}
 .clock-gap{font-size:9px;color:rgba(68,102,255,0.9);display:none;}
@@ -61,22 +61,22 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
 .footer-logo{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;}
 .footer-logo span{color:var(--cyan);}
 .footer-text{font-size:10px;color:rgba(255,255,255,0.3);}
-.mosque-count{font-size:9px;color:rgba(0,212,255,0.6);}
-.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity 0.5s;}
+.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity 0.4s;}
 .loading-overlay.hidden{opacity:0;pointer-events:none;}
-.loading-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:8px;color:var(--cyan);}
-.loading-sub-title{font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:24px;font-style:italic;}
+.loading-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:6px;color:var(--cyan);}
+.loading-sub{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:22px;font-style:italic;}
 .loading-bar-wrap{width:240px;height:1px;background:rgba(255,255,255,0.1);}
-.loading-bar{height:100%;background:var(--cyan);width:0%;transition:width 0.4s;box-shadow:0 0 10px var(--cyan);}
-.loading-msg{margin-top:14px;font-size:11px;color:rgba(255,255,255,0.35);}
+.loading-bar{height:100%;background:var(--cyan);width:0%;transition:width 0.3s;box-shadow:0 0 8px var(--cyan);}
+.loading-msg{margin-top:12px;font-size:11px;color:rgba(255,255,255,0.3);}
 </style>
 </head>
 <body>
+
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-title">The Adhan Clock</div>
-  <div class="loading-sub-title">Reading mosque data…</div>
+  <div class="loading-sub">157,890 mosques · All five prayers · Every day of the year</div>
   <div class="loading-bar-wrap"><div class="loading-bar" id="loadingBar"></div></div>
-  <div class="loading-msg" id="loadingMsg">Loading 157,890 mosques</div>
+  <div class="loading-msg" id="loadingMsg">Loading…</div>
 </div>
 
 <nav>
@@ -89,7 +89,7 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
   <div class="left">
     <div>
       <div class="panel-title">The <em>Adhan</em> Clock</div>
-      <div class="panel-sub" id="mosqueCountLabel">Loading mosque data…</div>
+      <div class="panel-sub">157,890 mosques. All five prayers. Drag the centre dial to separate each prayer into its own orbit.</div>
     </div>
 
     <div class="ctrl">
@@ -99,14 +99,14 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
         <button class="seg-btn" data-mode="utc">UTC</button>
         <button class="seg-btn" data-mode="solar">Solar</button>
       </div>
-      <div class="clock-top-label" id="modeDesc" style="margin-top:4px;text-align:left;">Shows prayer times in your local timezone</div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:2px;" id="modeDesc">Prayer times in your local timezone</div>
     </div>
 
     <div class="ctrl">
-      <div class="ctrl-label">Date</div>
-      <div class="date-disp" id="dateBadge">Loading…</div>
-      <input type="range" id="daySlider" min="1" max="365" value="130">
-      <div class="slider-labels"><span>Jan 1</span><span>Dec 31</span></div>
+      <div class="ctrl-label">Month</div>
+      <div class="date-disp" id="dateBadge">May 2026</div>
+      <input type="range" id="monthSlider" min="1" max="12" value="5">
+      <div class="slider-labels"><span>Jan</span><span>Dec</span></div>
     </div>
 
     <div class="ctrl">
@@ -125,16 +125,16 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
     <div class="ctrl">
       <div class="ctrl-label">Dot Size</div>
       <div class="seg-btns">
-        <button class="seg-btn" data-size="0.5">S</button>
-        <button class="seg-btn active" data-size="1.0">M</button>
-        <button class="seg-btn" data-size="1.8">L</button>
+        <button class="seg-btn" data-size="0.4">S</button>
+        <button class="seg-btn active" data-size="0.8">M</button>
+        <button class="seg-btn" data-size="1.4">L</button>
       </div>
     </div>
 
-    <button class="btn-now" id="btnNow">◎ Jump to Today</button>
+    <button class="btn-now" id="btnNow">◎ This Month</button>
 
     <div class="ctrl">
-      <div class="ctrl-label">Prayer Rings — Separated Order</div>
+      <div class="ctrl-label">Prayer Rings (when separated)</div>
       <div class="legend">
         <div class="leg-item"><div class="leg-dot" style="background:#4466ff"></div><span class="leg-name">Fajr</span><span class="leg-desc">Innermost</span></div>
         <div class="leg-item"><div class="leg-dot" style="background:#ffcc00"></div><span class="leg-name">Dhuhr</span><span class="leg-desc">2nd</span></div>
@@ -148,39 +148,39 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
       <div class="icard">
         <div class="icard-tag" style="color:#4466ff">● Fajr · The Broken Circle</div>
         <div class="icard-title">A gap that breathes with the seasons</div>
-        <div class="icard-body">Fajr is the only prayer with a visible gap. That dark arc = latitudes where the sun never dips 18° below the horizon in summer. Drag to summer — watch the gap open. Drag to winter — watch it close. Earth's axial tilt, made visible.</div>
+        <div class="icard-body">Fajr is the only prayer with a visible gap — latitudes where the sun never dips 18° below the horizon in summer. Change month to June and watch the gap open. In December it closes. Earth's axial tilt, made visible.</div>
       </div>
       <div class="icard">
         <div class="icard-tag" style="color:#ffcc00">● Dhuhr · The Unbroken Ring</div>
         <div class="icard-title">The only prayer with no gaps, ever</div>
-        <div class="icard-body">Solar noon happens at every longitude, every day, without exception. No latitude disrupts it. Dhuhr is the anchor of Islamic time — perpetually active somewhere on Earth, forming the most complete ring of all five prayers.</div>
+        <div class="icard-body">Solar noon happens at every longitude, every day, without exception. No latitude, no season disrupts it. Dhuhr is the anchor of Islamic time — the most complete ring across all twelve months.</div>
       </div>
       <div class="icard">
         <div class="icard-tag" style="color:#e07a2f">● Asr · The Narrowest Band</div>
         <div class="icard-title">The most consistent prayer globally</div>
-        <div class="icard-body">The shadow ratio definition produces times that vary less across latitudes than twilight prayers. Asr's ring is visibly thinner — the most predictable prayer on Earth. The Prophet ﷺ called it "the middle prayer." Geometrically, it is.</div>
+        <div class="icard-body">The shadow ratio produces times that vary less across latitudes than twilight prayers. Asr's ring is visibly thinner — the most predictable prayer on Earth. The Prophet ﷺ called it "the middle prayer." Geometrically, it is.</div>
       </div>
       <div class="icard">
         <div class="icard-tag" style="color:#d94f3d">● Maghrib · The Sharpest Edge</div>
-        <div class="icard-title">Scholarly consensus as geometric precision</div>
-        <div class="icard-body">All four madhabs agree on Maghrib's trigger: actual sunset. That consensus is visible here — the sharpest, densest ring of all five. The least disagreement produces the most precise band.</div>
+        <div class="icard-title">Scholarly consensus as precision</div>
+        <div class="icard-body">All four madhabs agree on Maghrib: actual sunset. That consensus is visible here — the sharpest, densest ring. The least disagreement produces the most precise band.</div>
       </div>
       <div class="icard">
         <div class="icard-tag" style="color:#9b59c4">● Isha · The Mirror of Fajr</div>
         <div class="icard-title">One degree of difference, visible</div>
-        <div class="icard-body">Isha uses 17° below the horizon vs Fajr's 18°. That single degree means Isha remains calculable at slightly higher latitudes — its gap is measurably smaller than Fajr's. One degree, invisible in any table, visible here as arc length.</div>
+        <div class="icard-body">Isha uses 17° below the horizon vs Fajr's 18°. That single degree means Isha's gap is measurably smaller. One degree, invisible in any table, visible here as arc length.</div>
       </div>
       <div class="icard" style="border-color:rgba(0,212,255,0.2);">
         <div class="icard-tag" style="color:var(--cyan)">● The Separation Dial</div>
         <div class="icard-title">Drag to reveal hidden structure</div>
-        <div class="icard-body">Collapsed: beautiful chaos — all prayers overlapping. Separated: five distinct orbits, each telling its own story. The moment of separation is when the structure of Islamic time becomes legible.</div>
+        <div class="icard-body">Collapsed: all prayers as one ring — the beautiful chaos of global worship. Separated: five distinct orbits, each telling its own story. The structure of Islamic time becomes legible.</div>
       </div>
     </div>
   </div>
 
   <div class="right" id="rightPanel">
-    <div class="clock-container">
-      <div class="clock-top-label" id="clockTopLabel">Global Prayer Wave · Your Local Time</div>
+    <div class="clock-wrap">
+      <div class="clock-top" id="clockTopLabel">Global Prayer Wave · Your Local Time</div>
       <canvas id="clockCanvas"></canvas>
       <div class="clock-bottom">
         <div class="clock-status" id="dialLabel">Drag the centre dial to separate prayers</div>
@@ -192,16 +192,23 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
 
 <footer>
   <div class="footer-logo">Adhan<span>Live</span></div>
-  <div class="mosque-count" id="footerCount">Loading…</div>
-  <a href="prayer-arcs.html" target="_blank" class="nav-link" style="font-size:10px;">The Adhan Arc Explorer →</a>
+  <div class="footer-text">157,890 mosques · Pre-computed · All 12 months</div>
+  <a href="prayer-arcs.html" target="_blank" class="nav-link" style="font-size:10px;">Adhan Arc Explorer →</a>
 </footer>
 
 <script>
 // ── Constants ──────────────────────────────────────────────────────
-const DEG=Math.PI/180;
 const PRAYER_COLORS=['#4466ff','#ffcc00','#e07a2f','#d94f3d','#9b59c4'];
 const PRAYER_COLORS_A=PRAYER_COLORS.map(c=>c+'bb');
 const PRAYER_RING_POS=[0.1,0.32,0.54,0.76,0.98];
+const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MODE_DESC={local:'Prayer times in your local timezone',utc:'When prayers fire globally in UTC',solar:'Pure astronomy — the sun\'s own clock'};
+const MODE_LABEL={local:'Your Local Time',utc:'UTC — Global Wave',solar:'Solar Time'};
+// Representative doy for each month
+const MONTH_DOYS=[15,46,74,105,135,166,196,227,258,288,319,349];
+// Fajr gap critical latitude per month (pre-computed)
+const FAJR_GAP=[null,null,null,null,56,49,50,56,null,null,null,null];
+
 const REGION_BOUNDS={
   all:null,
   gulf:{latMin:15,latMax:32,lonMin:35,lonMax:60},
@@ -211,31 +218,24 @@ const REGION_BOUNDS={
   europe:{latMin:35,latMax:72,lonMin:-15,lonMax:45},
   wafrica:{latMin:-5,latMax:20,lonMin:-20,lonMax:25},
 };
-const MODE_DESC={
-  local:'Shows prayer times in your local timezone',
-  utc:'Shows when prayers fire globally in UTC',
-  solar:'Pure astronomy — the sun\'s own clock, no timezones',
-};
-const MODE_LABEL={
-  local:'Your Local Time',
-  utc:'UTC — Global Wave',
-  solar:'Solar Time — Pure Astronomy',
-};
 
 // ── State ──────────────────────────────────────────────────────────
 const canvas=document.getElementById('clockCanvas');
 const ctx=canvas.getContext('2d');
 let CW,CX,CY,R_outer,R_inner,R_dial;
-let dotSize=1.0,dayOfYear=130;
-let separateT=0,dialAngleAccum=-Math.PI/2;
-let clockMode='local'; // local | utc | solar
+let dotSize=0.8;
+let currentMonth=5; // 1-12
+let clockMode='local';
 let activeRegion='all';
-let dotCache=null; // dotCache[doy][mode] = Float32Array
-let worker=null;
-let isDraggingDial=false,lastDialAngle=null;
+let separateT=0,dialAngleAccum=-Math.PI/2;
+let isDragging=false,lastAngle=null;
 let rafPending=false;
-let totalMosques=0;
-let userTZOffset=-(new Date().getTimezoneOffset()/60); // hours offset from UTC
+let userTZ=-(new Date().getTimezoneOffset()/60);
+
+// ── Data storage per month ─────────────────────────────────────────
+// Each month: {utc: Uint16Array, solar: Uint16Array, rNorm: Uint8Array, prayer: Uint8Array, n: number}
+const monthCache=new Array(13).fill(null);
+let currentData=null; // active Float32Array for rendering {angles, rNorms, prayers}
 
 // ── Canvas sizing ──────────────────────────────────────────────────
 function resizeClock(){
@@ -245,35 +245,53 @@ function resizeClock(){
   CX=CY=sz/2;R_outer=sz*0.41;R_inner=sz*0.155;R_dial=sz*0.092;
 }
 
+// ── Build render array for current mode ───────────────────────────
+function buildRenderData(monthData,mode){
+  if(!monthData) return null;
+  const{utc,solar,rNorm,prayer,n}=monthData;
+  // For local mode: shift utc angles by timezone offset
+  const tzFrac=userTZ/24; // fraction of full circle
+  const tzShift=Math.round(tzFrac*65535);
+  const angles=new Float32Array(n);
+  for(let i=0;i<n;i++){
+    let a;
+    if(mode==='utc') a=utc[i];
+    else if(mode==='solar') a=solar[i];
+    else a=((utc[i]+tzShift)%65536+65536)%65536;
+    // Convert uint16 (0-65535) to radians (-PI/2 to 3PI/2)
+    angles[i]=(a/65535)*Math.PI*2-Math.PI/2;
+  }
+  return{angles,rNorm,prayer,n};
+}
+
 // ── Drawing ────────────────────────────────────────────────────────
 function drawBase(){
   ctx.clearRect(0,0,CW,CW);
   const bg=ctx.createRadialGradient(CX,CY,0,CX,CY,CW/2);
   bg.addColorStop(0,'#080c1a');bg.addColorStop(1,'#02040c');
   ctx.fillStyle=bg;ctx.fillRect(0,0,CW,CW);
+
   ctx.save();
   ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(CX,CY,R_outer+13,0,Math.PI*2);ctx.stroke();
   ctx.beginPath();ctx.arc(CX,CY,R_inner-5,0,Math.PI*2);ctx.stroke();
-  // Depth rings
   for(let i=1;i<=4;i++){
     ctx.strokeStyle='rgba(255,255,255,0.02)';ctx.lineWidth=0.5;
     ctx.beginPath();ctx.arc(CX,CY,R_inner+(R_outer-R_inner)*i/5,0,Math.PI*2);ctx.stroke();
   }
-  // Separation guide rings
   if(separateT>0.02){
     const range=R_outer-R_inner;
     for(let pi=0;pi<5;pi++){
       const r=R_inner+range*PRAYER_RING_POS[pi];
       ctx.strokeStyle=PRAYER_COLORS[pi]+'44';
       ctx.lineWidth=Math.max(0.5,separateT*10);
-      ctx.globalAlpha=separateT*0.45;
+      ctx.globalAlpha=separateT*0.4;
       ctx.beginPath();ctx.arc(CX,CY,r,0,Math.PI*2);ctx.stroke();
       ctx.globalAlpha=1;
     }
   }
   ctx.restore();
-  // Hour ticks + labels
+
   ctx.save();
   for(let h=0;h<24;h++){
     const a=(h/24)*Math.PI*2-Math.PI/2;
@@ -291,7 +309,7 @@ function drawBase(){
     ctx.fillText(h.toString().padStart(2,'0'),CX+Math.cos(a)*lr,CY+Math.sin(a)*lr);
   }
   ctx.restore();
-  // Center text
+
   ctx.save();
   ctx.fillStyle='rgba(255,255,255,0.08)';
   ctx.font=`600 ${CW*0.022}px Inter,sans-serif`;
@@ -301,37 +319,30 @@ function drawBase(){
   ctx.restore();
 }
 
-function drawDots(doy,mode){
-  const cache=dotCache&&dotCache[doy]&&dotCache[doy][mode];
-  if(!cache) return;
-  const data=cache,len=data.length,range=R_outer-R_inner;
-  const ds=dotSize*0.6,st=separateT;
+function drawDots(){
+  if(!currentData) return;
+  const{angles,rNorm,prayer,n}=currentData;
+  const range=R_outer-R_inner;
+  const ds=dotSize;
+  const st=separateT;
   const region=REGION_BOUNDS[activeRegion];
 
-  // Data layout: [angle, rNorm, pi, lat, lon] = 5 floats per dot
-  const stride=5;
-
   for(let pi=0;pi<5;pi++){
-    const rNormSep=PRAYER_RING_POS[pi];
+    const rSep=PRAYER_RING_POS[pi];
     ctx.beginPath();
-    for(let i=0;i<len;i+=stride){
-      if((data[i+2]|0)!==pi) continue;
-      // Region filter
-      if(region){
-        const lat=data[i+3],lon=data[i+4];
-        if(lat<region.latMin||lat>region.latMax||lon<region.lonMin||lon>region.lonMax) continue;
-      }
-      const angle=data[i],rNormCol=data[i+1];
+    for(let i=0;i<n;i++){
+      if(prayer[i]!==pi) continue;
+      const rCol=rNorm[i]/255;
       let finalR;
       if(st<0.01){
-        finalR=R_inner+range*rNormCol;
+        finalR=R_inner+range*rCol;
       } else {
-        const rNorm=rNormCol+(rNormSep-rNormCol)*st;
-        const compressed=rNormSep+(rNorm-rNormSep)*(1-st)*0.6;
-        finalR=R_inner+range*compressed;
+        const rN=rCol+(rSep-rCol)*st;
+        finalR=R_inner+range*(rSep+(rN-rSep)*(1-st)*0.6);
       }
-      const x=CX+Math.cos(angle)*finalR;
-      const y=CY+Math.sin(angle)*finalR;
+      const a=angles[i];
+      const x=CX+Math.cos(a)*finalR;
+      const y=CY+Math.sin(a)*finalR;
       ctx.moveTo(x+ds,y);
       ctx.arc(x,y,ds,0,Math.PI*2);
     }
@@ -343,19 +354,16 @@ function drawDots(doy,mode){
 function drawDial(){
   const dialAngle=-Math.PI/2+separateT*Math.PI*2;
   ctx.save();
-  // Dial bg
   ctx.beginPath();ctx.arc(CX,CY,R_dial,0,Math.PI*2);
   const dg=ctx.createRadialGradient(CX,CY,0,CX,CY,R_dial);
   dg.addColorStop(0,'rgba(0,212,255,0.1)');dg.addColorStop(1,'rgba(0,212,255,0.03)');
   ctx.fillStyle=dg;ctx.fill();
   ctx.strokeStyle='rgba(0,212,255,0.25)';ctx.lineWidth=1;ctx.stroke();
-  // Progress arc
   if(separateT>0.01){
     ctx.strokeStyle='rgba(0,212,255,0.65)';ctx.lineWidth=2;
     ctx.shadowColor='rgba(0,212,255,0.4)';ctx.shadowBlur=8;
     ctx.beginPath();ctx.arc(CX,CY,R_dial,-Math.PI/2,dialAngle);ctx.stroke();
   }
-  // Prayer dots on dial
   for(let pi=0;pi<5;pi++){
     const a=-Math.PI/2+(pi/4)*Math.PI*2;
     ctx.globalAlpha=0.4+separateT*0.55;
@@ -363,14 +371,12 @@ function drawDial(){
     ctx.fillStyle=PRAYER_COLORS[pi];ctx.fill();
     ctx.globalAlpha=1;
   }
-  // Knob
   const hx=CX+Math.cos(dialAngle)*R_dial,hy=CY+Math.sin(dialAngle)*R_dial;
   ctx.shadowColor='rgba(0,212,255,0.8)';ctx.shadowBlur=14;
   ctx.beginPath();ctx.arc(hx,hy,7,0,Math.PI*2);
   ctx.fillStyle='rgba(0,212,255,0.95)';ctx.fill();
   ctx.strokeStyle='rgba(255,255,255,0.8)';ctx.lineWidth=1.5;ctx.stroke();
   ctx.shadowBlur=0;
-  // Pct
   ctx.fillStyle='rgba(255,255,255,0.5)';
   ctx.font=`500 ${CW*0.016}px Inter,sans-serif`;
   ctx.textAlign='center';ctx.textBaseline='middle';
@@ -380,15 +386,40 @@ function drawDial(){
 
 function render(){
   drawBase();
-  drawDots(dayOfYear,clockMode);
+  drawDots();
   drawDial();
 }
 
-// ── Schedule render via rAF ────────────────────────────────────────
 function scheduleRender(){
   if(rafPending)return;
   rafPending=true;
   requestAnimationFrame(()=>{rafPending=false;render();});
+}
+
+// ── Load month data ────────────────────────────────────────────────
+async function loadMonth(month){
+  if(monthCache[month]){
+    currentData=buildRenderData(monthCache[month],clockMode);
+    scheduleRender();
+    return;
+  }
+  const pad=month.toString().padStart(2,'0');
+  const res=await fetch(`./m${pad}.bin`);
+  if(!res.ok) throw new Error(`Month ${month} not found`);
+  const buf=await res.arrayBuffer();
+
+  // Layout: n uint16 utc, n uint16 solar, n uint8 rNorm, n uint8 prayer
+  // Total bytes = n*2 + n*2 + n + n = n*6
+  const totalBytes=buf.byteLength;
+  const n=totalBytes/6;
+  const utc=new Uint16Array(buf,0,n);
+  const solar=new Uint16Array(buf,n*2,n);
+  const rNorm=new Uint8Array(buf,n*4,n);
+  const prayer=new Uint8Array(buf,n*5,n);
+
+  monthCache[month]={utc,solar,rNorm,prayer,n};
+  currentData=buildRenderData(monthCache[month],clockMode);
+  scheduleRender();
 }
 
 // ── Dial interaction ───────────────────────────────────────────────
@@ -403,88 +434,65 @@ function nearDial(e){
   const dx=(e.clientX-r.left)*sx-CX,dy=(e.clientY-r.top)*sy-CY;
   return Math.sqrt(dx*dx+dy*dy)<R_dial+22;
 }
-
-canvas.addEventListener('mousedown',e=>{if(nearDial(e)){isDraggingDial=true;lastDialAngle=getAngle(e);e.preventDefault();}});
-canvas.addEventListener('touchstart',e=>{if(nearDial(e.touches[0])){isDraggingDial=true;lastDialAngle=getAngle(e.touches[0]);e.preventDefault();}},{passive:false});
-
+canvas.addEventListener('mousedown',e=>{if(nearDial(e)){isDragging=true;lastAngle=getAngle(e);e.preventDefault();}});
+canvas.addEventListener('touchstart',e=>{if(nearDial(e.touches[0])){isDragging=true;lastAngle=getAngle(e.touches[0]);e.preventDefault();}},{passive:false});
 function onMove(e){
-  if(!isDraggingDial)return;
+  if(!isDragging)return;
   const ce=e.touches?e.touches[0]:e;
-  let delta=getAngle(ce)-lastDialAngle;
+  let delta=getAngle(ce)-lastAngle;
   while(delta>Math.PI)delta-=Math.PI*2;
   while(delta<-Math.PI)delta+=Math.PI*2;
-  dialAngleAccum+=delta;
-  lastDialAngle=getAngle(ce);
+  dialAngleAccum+=delta;lastAngle=getAngle(ce);
   separateT=Math.max(0,Math.min(1,(dialAngleAccum+Math.PI/2)/(Math.PI*2)));
   const lbl=separateT<0.05?'Drag the centre dial to separate prayers':
     separateT>0.95?'Prayers fully separated — each in its own orbit':
     `Separating — ${Math.round(separateT*100)}%`;
   document.getElementById('dialLabel').textContent=lbl;
-  updateGapIndicator();
-  scheduleRender();
+  updateGapIndicator();scheduleRender();
 }
-function onUp(){isDraggingDial=false;}
+function onUp(){isDragging=false;}
 canvas.addEventListener('mousemove',onMove);
 canvas.addEventListener('touchmove',onMove,{passive:false});
-canvas.addEventListener('mouseup',onUp);
-canvas.addEventListener('touchend',onUp);
+canvas.addEventListener('mouseup',onUp);canvas.addEventListener('touchend',onUp);
 window.addEventListener('mouseup',onUp);
 
 // ── Gap indicator ──────────────────────────────────────────────────
-function solarDecJS(doy){return -23.45*Math.cos(DEG*360/365*(doy+10));}
-function haJS(lat,dec,elev){
-  const r=(Math.sin(elev*DEG)-Math.sin(lat*DEG)*Math.sin(dec*DEG))/(Math.cos(lat*DEG)*Math.cos(dec*DEG));
-  return Math.abs(r)>1?null:Math.acos(r)/DEG/15;
-}
-
 function updateGapIndicator(){
-  const dec=solarDecJS(dayOfYear);
   const gap=document.getElementById('gapIndicator');
-  let critFajr=null;
-  for(let lat=48;lat<=85;lat++){
-    if(haJS(lat,dec,-18)===null){critFajr=lat;break;}
-  }
-  if(critFajr&&separateT>0.25){
+  const critLat=FAJR_GAP[currentMonth-1];
+  if(critLat&&separateT>0.2){
     gap.style.display='block';
-    gap.textContent=`↑ Fajr gap visible — no astronomical Fajr above ${critFajr}°N today`;
-  } else if(critFajr){
+    gap.textContent=`↑ Fajr gap visible — no astronomical Fajr above ${critLat}°N this month`;
+  } else if(critLat){
     gap.style.display='block';
-    gap.textContent=`Fajr & Isha disappear above ${critFajr}°N today — separate to see the gap`;
+    gap.textContent=`Fajr disappears above ${critLat}°N this month — separate prayers to see the gap`;
   } else {
     gap.style.display='none';
   }
 }
 
-// ── Date helpers ───────────────────────────────────────────────────
-function doyToDate(doy){const d=new Date(2026,0,doy);return{month:d.toLocaleDateString('en-US',{month:'long'}),day:d.getDate()};}
-function updateDate(doy){
-  const{month,day}=doyToDate(doy);
-  document.getElementById('dateBadge').innerHTML=`${month} <span>${day}</span>, 2026`;
-  updateGapIndicator();
-}
-
 // ── Controls ───────────────────────────────────────────────────────
-document.getElementById('daySlider').addEventListener('input',e=>{
-  dayOfYear=+e.target.value;updateDate(dayOfYear);
-  if(!dotCache[dayOfYear]){
-    worker&&worker.postMessage({type:'computeDay',doy:dayOfYear,tzOffset:userTZOffset});
-  }
-  scheduleRender();
+document.getElementById('monthSlider').addEventListener('input',e=>{
+  currentMonth=+e.target.value;
+  document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
+  updateGapIndicator();
+  loadMonth(currentMonth);
 });
 
 document.getElementById('btnNow').addEventListener('click',()=>{
-  const now=new Date(),s=new Date(now.getFullYear(),0,0);
-  dayOfYear=Math.floor((now-s)/864e5);
-  document.getElementById('daySlider').value=dayOfYear;
-  updateDate(dayOfYear);scheduleRender();
+  currentMonth=new Date().getMonth()+1;
+  document.getElementById('monthSlider').value=currentMonth;
+  document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
+  updateGapIndicator();
+  loadMonth(currentMonth);
 });
 
 document.querySelectorAll('.seg-btn[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.seg-btn[data-mode]').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  clockMode=btn.dataset.mode;
+  btn.classList.add('active');clockMode=btn.dataset.mode;
   document.getElementById('modeDesc').textContent=MODE_DESC[clockMode];
   document.getElementById('clockTopLabel').textContent='Global Prayer Wave · '+MODE_LABEL[clockMode];
+  if(monthCache[currentMonth]) currentData=buildRenderData(monthCache[currentMonth],clockMode);
   scheduleRender();
 }));
 
@@ -500,172 +508,36 @@ document.querySelectorAll('.region-btn').forEach(btn=>btn.addEventListener('clic
 
 window.addEventListener('resize',()=>{resizeClock();render();});
 
-// ── Web Worker ─────────────────────────────────────────────────────
-function startWorker(tzOffset){
-  const workerCode=`
-const DEG=Math.PI/180;
-function solarDec(doy){return -23.45*Math.cos(DEG*360/365*(doy+10));}
-function eot(doy){const B=DEG*360/365*(doy-81);return 9.87*Math.sin(2*B)-7.53*Math.cos(B)-1.5*Math.sin(B);}
-function ha(lat,dec,elev){
-  const r=(Math.sin(elev*DEG)-Math.sin(lat*DEG)*Math.sin(dec*DEG))/(Math.cos(lat*DEG)*Math.cos(dec*DEG));
-  return Math.abs(r)>1?null:Math.acos(r)/DEG/15;
-}
-function asrEl(lat,dec){return Math.atan(1/(1+Math.tan(Math.abs(lat-dec)*DEG)))/DEG;}
-function calcTimes(lat,lon,doy){
-  const dec=solarDec(doy),e=eot(doy),noon=12-lon/15-e/60;
-  const fH=ha(lat,dec,-18),sH=ha(lat,dec,-0.833),aH=ha(lat,dec,asrEl(lat,dec)),iH=ha(lat,dec,-17);
-  return[fH!==null?noon-fH:null,noon,aH!==null?noon+aH:null,sH!==null?noon+sH:null,iH!==null?noon+iH:null];
-}
-
-let mosques=[];
-let tz=0;
-
-function compute(doy){
-  const byP=[[],[],[],[],[]];
-  const dec=solarDec(doy),e=eot(doy);
-  for(const[lat,lon] of mosques){
-    const times=calcTimes(lat,lon,doy);
-    const rNorm=0.1+0.9*(0.3+0.7*(1-Math.abs(lat)/85));
-    for(let pi=0;pi<5;pi++){
-      let t=times[pi];if(t===null)continue;
-      // UTC mode
-      const tUTC=((t%24)+24)%24;
-      // Local mode (apply tz offset)
-      const tLocal=(((t+tz)%24)+24)%24;
-      // Solar mode (remove longitude effect, keep only solar hour offset from noon)
-      const solarNoonAlways=12;
-      let tSolar=null;
-      const noonOffset=t-(12-lon/15-e/60); // prayer's offset from solar noon in hours
-      tSolar=((solarNoonAlways+noonOffset)%24+24)%24;
-
-      const aUTC=(tUTC/24)*Math.PI*2-Math.PI/2;
-      const aLocal=(tLocal/24)*Math.PI*2-Math.PI/2;
-      const aSolar=(tSolar/24)*Math.PI*2-Math.PI/2;
-      byP[pi].push(aUTC,rNorm,pi,lat,lon, aLocal,rNorm,pi,lat,lon, aSolar,rNorm,pi,lat,lon);
-    }
-  }
-  // Flatten into 3 separate arrays per mode
-  const utcDots=[],localDots=[],solarDots=[];
-  for(let pi=0;pi<5;pi++){
-    const d=byP[pi];
-    for(let i=0;i<d.length;i+=15){
-      utcDots.push(d[i],d[i+1],d[i+2],d[i+3],d[i+4]);
-      localDots.push(d[i+5],d[i+6],d[i+7],d[i+8],d[i+9]);
-      solarDots.push(d[i+10],d[i+11],d[i+12],d[i+13],d[i+14]);
-    }
-  }
-  return{
-    utc:new Float32Array(utcDots),
-    local:new Float32Array(localDots),
-    solar:new Float32Array(solarDots),
-  };
-}
-
-self.onmessage=function(e){
-  if(e.data.type==='init'){
-    tz=e.data.tzOffset;
-    
-    // Parse mosque data from raw text if provided
-    if(e.data.rawText){
-      const text=e.data.rawText;
-      const re=/\[(-?\d+\.?\d*),(-?\d+\.?\d*)/g;
-      let match,i=0;
-      while((match=re.exec(text))!==null){
-        if(i%30===0){ // 1-in-30 sample ~5000 mosques
-          const lat=parseFloat(match[1]),lon=parseFloat(match[2]);
-          if(lat>=-85&&lat<=85) mosques.push([lat,lon]);
-        }
-        i++;
-      }
-      postMessage({type:'ready',count:i});
-    } else {
-      mosques=e.data.mosques||[];
-      postMessage({type:'ready',count:mosques.length});
-    }
-    
-    const r=compute(e.data.doy);
-    const ub=r.utc.buffer,lb=r.local.buffer,sb=r.solar.buffer;
-    postMessage({type:'dayReady',doy:e.data.doy,utc:ub,local:lb,solar:sb},[ub,lb,sb]);
-    
-  } else if(e.data.type==='computeDay'){
-    tz=e.data.tzOffset;
-    const r=compute(e.data.doy);
-    const ub=r.utc.buffer,lb=r.local.buffer,sb=r.solar.buffer;
-    postMessage({type:'dayReady',doy:e.data.doy,utc:ub,local:lb,solar:sb},[ub,lb,sb]);
-  }
-};
-`;
-  const blob=new Blob([workerCode],{type:'application/javascript'});
-  const w=new Worker(URL.createObjectURL(blob));
-  w.onmessage=function(e){
-    const{type}=e.data;
-    if(type==='ready'){
-      totalMosques=e.data.count;
-    } else if(type==='dayReady'){
-      const{doy}=e.data;
-      if(!dotCache[doy]) dotCache[doy]={};
-      dotCache[doy].utc=new Float32Array(e.data.utc);
-      dotCache[doy].local=new Float32Array(e.data.local);
-      dotCache[doy].solar=new Float32Array(e.data.solar);
-      if(doy===dayOfYear){
-        const ov=document.getElementById('loadingOverlay');
-        if(ov){ov.classList.add('hidden');setTimeout(()=>ov.remove(),500);}
-        resizeClock();render();
-      } else if(doy===dayOfYear){
-        scheduleRender();
-      } else {
-        scheduleRender(); // re-render in case user is waiting for this day
-      }
-    }
-  };
-  return w;
-}
-
 // ── Init ───────────────────────────────────────────────────────────
 async function init(){
   const bar=document.getElementById('loadingBar');
   const msg=document.getElementById('loadingMsg');
-  const now=new Date(),s=new Date(now.getFullYear(),0,0);
-  dayOfYear=Math.floor((now-s)/864e5);
-  document.getElementById('daySlider').value=dayOfYear;
-  updateDate(dayOfYear);
-  dotCache=new Array(366);
 
-  // Load mosque data
-  bar.style.width='20%';
-  msg.textContent='Reading mosque positions…';
+  currentMonth=new Date().getMonth()+1;
+  document.getElementById('monthSlider').value=currentMonth;
+  document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
+  updateGapIndicator();
 
-  try {
-    bar.style.width='30%';
-    msg.textContent='Downloading mosque data…';
+  bar.style.width='30%';
+  msg.textContent=`Loading ${MONTH_NAMES[currentMonth-1]} prayer data…`;
 
-    const response = await fetch('./mosques_min.js');
-    if(!response.ok) throw new Error('not found');
-    
-    bar.style.width='60%';
-    msg.textContent='Sending to background processor…';
+  try{
+    await loadMonth(currentMonth);
+    bar.style.width='100%';
+    resizeClock();render();
+    await new Promise(r=>setTimeout(r,200));
+    document.getElementById('loadingOverlay').classList.add('hidden');
+    setTimeout(()=>document.getElementById('loadingOverlay').remove(),500);
 
-    const text = await response.text();
-    bar.style.width='80%';
-    msg.textContent='Computing prayer times…';
+    // Preload adjacent months in background
+    const next=currentMonth%12+1;
+    const prev=currentMonth===1?12:currentMonth-1;
+    setTimeout(()=>loadMonth(next),2000);
+    setTimeout(()=>loadMonth(prev),4000);
 
-    // Pass raw text to worker — it does all parsing + computation
-    worker = startWorker(userTZOffset);
-    worker.postMessage({type:'init', rawText:text, doy:dayOfYear, tzOffset:userTZOffset});
-
-  } catch(err) {
-    // Fallback: simulated mosques if file not found
-    msg.textContent='Mosque file not found — using simulated data';
-    const rng=(s=>{let x=s;return()=>{x|=0;x=x+0x6D2B79F5|0;let t=Math.imul(x^x>>>15,1|x);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};})(42);
-    const regions=[[30,45,10,15,5000],[25,70,10,15,6000],[23,90,8,10,4000],[5,110,10,15,5000],[32,53,8,12,3000],[38,35,8,15,2000],[28,20,12,20,4000],[12,17,10,20,3000],[2,32,10,15,2000],[55,50,10,60,1500]];
-    const m=[];
-    for(const[cl,cn,ls,lns,ct]of regions)for(let i=0;i<ct;i++){
-      const lat=cl+(rng()-0.5)*2*ls,lon=cn+(rng()-0.5)*2*lns;
-      if(lat>=-85&&lat<=85)m.push([Math.max(-85,Math.min(85,lat)),Math.max(-180,Math.min(180,lon))]);
-    }
-    bar.style.width='90%';
-    worker=startWorker(userTZOffset);
-    worker.postMessage({type:'init',mosques:m,doy:dayOfYear,tzOffset:userTZOffset});
+  }catch(err){
+    msg.textContent='Error loading data: '+err.message;
+    console.error(err);
   }
 }
 

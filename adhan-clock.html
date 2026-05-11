@@ -467,7 +467,6 @@ function updateDate(doy){
 document.getElementById('daySlider').addEventListener('input',e=>{
   dayOfYear=+e.target.value;updateDate(dayOfYear);
   if(!dotCache[dayOfYear]){
-    // Request from worker if not cached
     worker&&worker.postMessage({type:'computeDay',doy:dayOfYear,tzOffset:userTZOffset});
   }
   scheduleRender();
@@ -568,18 +567,11 @@ self.onmessage=function(e){
     mosques=e.data.mosques;
     tzOffset=e.data.tzOffset;
     postMessage({type:'ready',count:mosques.length});
-    // Compute today first
+    // Compute TODAY only — nothing else until requested
     const doy=e.data.doy;
     const result=computeDay(doy);
     const utcBuf=result.utc.buffer,localBuf=result.local.buffer,solarBuf=result.solar.buffer;
     postMessage({type:'dayReady',doy,utc:utcBuf,local:localBuf,solar:solarBuf},[utcBuf,localBuf,solarBuf]);
-    // Background compute remaining days
-    for(let d=1;d<=365;d++){
-      if(d===doy)continue;
-      const r=computeDay(d);
-      const ub=r.utc.buffer,lb=r.local.buffer,sb=r.solar.buffer;
-      postMessage({type:'dayReady',doy:d,utc:ub,local:lb,solar:sb},[ub,lb,sb]);
-    }
   } else if(type==='computeDay'){
     tzOffset=e.data.tzOffset;
     const result=computeDay(e.data.doy);
@@ -605,10 +597,13 @@ self.onmessage=function(e){
       dotCache[doy].local=new Float32Array(e.data.local);
       dotCache[doy].solar=new Float32Array(e.data.solar);
       if(doy===dayOfYear){
-        // Hide loading overlay on first result
         const ov=document.getElementById('loadingOverlay');
         if(ov){ov.classList.add('hidden');setTimeout(()=>ov.remove(),500);}
         resizeClock();render();
+      } else if(doy===dayOfYear){
+        scheduleRender();
+      } else {
+        scheduleRender(); // re-render in case user is waiting for this day
       }
     }
   };
@@ -633,7 +628,7 @@ async function init(){
     // Load mosques_min.js which defines MOSQUES_OSM
     await new Promise((resolve,reject)=>{
       const script=document.createElement('script');
-      script.src='/mosques_min.js';
+      script.src='./mosques_min.js';
       script.onload=resolve;
       script.onerror=reject;
       document.head.appendChild(script);

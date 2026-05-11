@@ -82,7 +82,11 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
 <nav>
   <div class="nav-logo">Adhan<span>Live</span></div>
   <div class="nav-title">The Adhan Clock</div>
-  <a href="ask-adhanlive.html" target="_blank" class="nav-link">Ask AdhanLive →</a>
+  <div style="display:flex;gap:8px;">
+    <a href="index.html" target="_blank" class="nav-link">Live Map →</a>
+    <a href="prayer-arcs.html" target="_blank" class="nav-link">Arc Explorer →</a>
+    <a href="ask-adhanlive.html" target="_blank" class="nav-link">Ask AdhanLive →</a>
+  </div>
 </nav>
 
 <div class="main">
@@ -106,6 +110,10 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
       <div class="date-disp" id="dateBadge">May 2026</div>
       <input type="range" id="monthSlider" min="1" max="12" value="5">
       <div class="slider-labels"><span>Jan</span><span>Dec</span></div>
+      <div style="display:flex;gap:6px;margin-top:4px;">
+        <button class="seg-btn" id="playBtn" style="flex:1;">▶ Play Year</button>
+        <button class="btn-now" id="btnNow" style="flex:1;padding:6px;">◎ Now</button>
+      </div>
     </div>
 
     <div class="ctrl">
@@ -129,8 +137,6 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
         <button class="seg-btn" data-size="1.4">L</button>
       </div>
     </div>
-
-    <button class="btn-now" id="btnNow">◎ This Month</button>
 
     <div class="ctrl">
       <div class="ctrl-label">Prayer Rings (when separated)</div>
@@ -460,7 +466,10 @@ function updateGapIndicator(){
 }
 
 // ── Controls ───────────────────────────────────────────────────────
+let playing=false, playTimer=null;
+
 document.getElementById('monthSlider').addEventListener('input',e=>{
+  stopPlay();
   currentMonth=+e.target.value;
   document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
   updateGapIndicator();
@@ -468,12 +477,48 @@ document.getElementById('monthSlider').addEventListener('input',e=>{
 });
 
 document.getElementById('btnNow').addEventListener('click',()=>{
+  stopPlay();
   currentMonth=new Date().getMonth()+1;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
   updateGapIndicator();
   loadMonth(currentMonth);
+  showNowMarker=true;
+  scheduleRender();
 });
+
+// Play Year button
+const playBtn=document.getElementById('playBtn');
+playBtn.addEventListener('click',()=>{
+  if(playing){stopPlay();}
+  else{startPlay();}
+});
+
+function startPlay(){
+  playing=true;
+  playBtn.textContent='■ Stop';
+  playBtn.classList.add('active');
+  showNowMarker=false;
+  animateYear();
+}
+function stopPlay(){
+  playing=false;
+  if(playTimer) cancelAnimationFrame(playTimer);
+  playBtn.textContent='▶ Play Year';
+  playBtn.classList.remove('active');
+}
+function animateYear(){
+  if(!playing) return;
+  currentMonth=currentMonth>=12?1:currentMonth+1;
+  document.getElementById('monthSlider').value=currentMonth;
+  document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
+  updateGapIndicator();
+  if(monthCache[currentMonth]){
+    currentData=buildRenderData(monthCache[currentMonth],clockMode);
+    scheduleRender();
+  }
+  playTimer=setTimeout(animateYear, 600);
+}
 
 document.querySelectorAll('.seg-btn[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.seg-btn[data-mode]').forEach(b=>b.classList.remove('active'));
@@ -496,6 +541,44 @@ document.querySelectorAll('.region-btn').forEach(btn=>btn.addEventListener('clic
 
 window.addEventListener('resize',()=>{resizeClock();render();});
 
+// ── Now marker ─────────────────────────────────────────────────────
+let showNowMarker=true;
+function drawNowMarker(){
+  if(!showNowMarker) return;
+  const now=new Date();
+  const h=clockMode==='utc'
+    ? now.getUTCHours()+now.getUTCMinutes()/60
+    : now.getHours()+now.getMinutes()/60;
+  const a=(h/24)*Math.PI*2-Math.PI/2;
+  ctx.save();
+  ctx.strokeStyle='rgba(255,255,255,0.6)';
+  ctx.lineWidth=1.5;
+  ctx.setLineDash([3,5]);
+  ctx.shadowColor='rgba(255,255,255,0.4)';
+  ctx.shadowBlur=6;
+  ctx.beginPath();
+  ctx.moveTo(CX+Math.cos(a)*(R_inner-5),CY+Math.sin(a)*(R_inner-5));
+  ctx.lineTo(CX+Math.cos(a)*(R_outer+10),CY+Math.sin(a)*(R_outer+10));
+  ctx.stroke();
+  ctx.setLineDash([]);
+  // Small label
+  const lr=R_outer+20;
+  ctx.fillStyle='rgba(255,255,255,0.6)';
+  ctx.font=`500 ${CW*0.014}px Inter,sans-serif`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('NOW',CX+Math.cos(a)*lr,CY+Math.sin(a)*lr);
+  ctx.restore();
+}
+
+// Override render to include now marker
+const _render=render;
+function render(){
+  drawBase();
+  drawDots();
+  drawNowMarker();
+  drawDial();
+}
+
 // ── Init ───────────────────────────────────────────────────────────
 async function init(){
   const bar=document.getElementById('loadingBar');
@@ -506,25 +589,27 @@ async function init(){
   document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
   updateGapIndicator();
 
-  bar.style.width='30%';
+  bar.style.width='20%';
   msg.textContent=`Loading ${MONTH_NAMES[currentMonth-1]} prayer data…`;
 
   try{
+    // Load current month first
     await loadMonth(currentMonth);
-    bar.style.width='100%';
+    bar.style.width='50%';
     resizeClock();render();
     await new Promise(r=>setTimeout(r,200));
     document.getElementById('loadingOverlay').classList.add('hidden');
     setTimeout(()=>document.getElementById('loadingOverlay').remove(),500);
 
-    // Preload adjacent months in background
-    const next=currentMonth%12+1;
-    const prev=currentMonth===1?12:currentMonth-1;
-    setTimeout(()=>loadMonth(next),2000);
-    setTimeout(()=>loadMonth(prev),4000);
+    // Preload ALL remaining months in background — 128KB each = instant slider
+    msg.textContent='Pre-loading all months…';
+    for(let m=1;m<=12;m++){
+      if(m===currentMonth) continue;
+      await loadMonth(m);
+      bar.style.width=(50+m/12*50)+'%';
+    }
 
   }catch(err){
-    msg.textContent='Error loading data: '+err.message;
     console.error(err);
   }
 }

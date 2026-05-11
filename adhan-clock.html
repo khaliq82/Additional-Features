@@ -518,9 +518,9 @@ function calcTimes(lat,lon,doy){
 }
 
 let mosques=[];
-let tzOffset=0;
+let tz=0;
 
-function computeDay(doy){
+function compute(doy){
   const byP=[[],[],[],[],[]];
   const dec=solarDec(doy),e=eot(doy);
   for(const[lat,lon] of mosques){
@@ -531,7 +531,7 @@ function computeDay(doy){
       // UTC mode
       const tUTC=((t%24)+24)%24;
       // Local mode (apply tz offset)
-      const tLocal=(((t+tzOffset)%24)+24)%24;
+      const tLocal=(((t+tz)%24)+24)%24;
       // Solar mode (remove longitude effect, keep only solar hour offset from noon)
       const solarNoonAlways=12;
       let tSolar=null;
@@ -562,20 +562,35 @@ function computeDay(doy){
 }
 
 self.onmessage=function(e){
-  const{type}=e.data;
-  if(type==='init'){
-    mosques=e.data.mosques;
-    tzOffset=e.data.tzOffset;
-    postMessage({type:'ready',count:mosques.length});
-    // Compute TODAY only — nothing else until requested
-    const doy=e.data.doy;
-    const result=computeDay(doy);
-    const utcBuf=result.utc.buffer,localBuf=result.local.buffer,solarBuf=result.solar.buffer;
-    postMessage({type:'dayReady',doy,utc:utcBuf,local:localBuf,solar:solarBuf},[utcBuf,localBuf,solarBuf]);
-  } else if(type==='computeDay'){
-    tzOffset=e.data.tzOffset;
-    const result=computeDay(e.data.doy);
-    const ub=result.utc.buffer,lb=result.local.buffer,sb=result.solar.buffer;
+  if(e.data.type==='init'){
+    tz=e.data.tzOffset;
+    
+    // Parse mosque data from raw text if provided
+    if(e.data.rawText){
+      const text=e.data.rawText;
+      const re=/\[(-?\d+\.?\d*),(-?\d+\.?\d*)/g;
+      let match,i=0;
+      while((match=re.exec(text))!==null){
+        if(i%30===0){ // 1-in-30 sample ~5000 mosques
+          const lat=parseFloat(match[1]),lon=parseFloat(match[2]);
+          if(lat>=-85&&lat<=85) mosques.push([lat,lon]);
+        }
+        i++;
+      }
+      postMessage({type:'ready',count:i});
+    } else {
+      mosques=e.data.mosques||[];
+      postMessage({type:'ready',count:mosques.length});
+    }
+    
+    const r=compute(e.data.doy);
+    const ub=r.utc.buffer,lb=r.local.buffer,sb=r.solar.buffer;
+    postMessage({type:'dayReady',doy:e.data.doy,utc:ub,local:lb,solar:sb},[ub,lb,sb]);
+    
+  } else if(e.data.type==='computeDay'){
+    tz=e.data.tzOffset;
+    const r=compute(e.data.doy);
+    const ub=r.utc.buffer,lb=r.local.buffer,sb=r.solar.buffer;
     postMessage({type:'dayReady',doy:e.data.doy,utc:ub,local:lb,solar:sb},[ub,lb,sb]);
   }
 };
@@ -586,11 +601,6 @@ self.onmessage=function(e){
     const{type}=e.data;
     if(type==='ready'){
       totalMosques=e.data.count;
-      const realCount=typeof MOSQUES_OSM!=='undefined'?MOSQUES_OSM.length:totalMosques;
-      document.getElementById('mosqueCountLabel').textContent=
-        `${realCount.toLocaleString()} mosques visualized. Every region on Earth. Drag the dial to separate each prayer into its own orbit.`;
-      document.getElementById('footerCount').textContent=
-        `${realCount.toLocaleString()} mosques · Solar geometry · Real world`;
     } else if(type==='dayReady'){
       const{doy}=e.data;
       if(!dotCache[doy]) dotCache[doy]={};
@@ -626,27 +636,22 @@ async function init(){
   msg.textContent='Reading mosque positions…';
 
   try {
-    await new Promise((resolve,reject)=>{
-      const script=document.createElement('script');
-      script.src='./mosques_min.js';
-      script.onload=resolve;
-      script.onerror=reject;
-      document.head.appendChild(script);
-    });
+    bar.style.width='30%';
+    msg.textContent='Downloading mosque data…';
 
-    const rawMosques=typeof MOSQUES_OSM!=='undefined'?MOSQUES_OSM:[];
+    const response = await fetch('./mosques_min.js');
+    if(!response.ok) throw new Error('not found');
     
-    // Sample ~5000 evenly — visually identical on a clock face
-    const step=Math.max(1,Math.floor(rawMosques.length/5000));
-    const mosqueArray=[];
-    for(let i=0;i<rawMosques.length;i+=step){
-      mosqueArray.push([rawMosques[i][0],rawMosques[i][1]]);
-    }
+    bar.style.width='60%';
+    msg.textContent='Sending to background processor…';
 
+    const text = await response.text();
     bar.style.width='80%';
-    msg.textContent=`Sampled ${mosqueArray.length.toLocaleString()} mosques — computing…`;
-    worker=startWorker(userTZOffset);
-    worker.postMessage({type:'init',mosques:mosqueArray,doy:dayOfYear,tzOffset:userTZOffset});
+    msg.textContent='Computing prayer times…';
+
+    // Pass raw text to worker — it does all parsing + computation
+    worker = startWorker(userTZOffset);
+    worker.postMessage({type:'init', rawText:text, doy:dayOfYear, tzOffset:userTZOffset});
 
   } catch(err) {
     // Fallback: simulated mosques if file not found

@@ -97,7 +97,6 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
       <div class="seg-btns">
         <button class="seg-btn active" data-mode="local">Your Time</button>
         <button class="seg-btn" data-mode="utc">UTC</button>
-        <button class="seg-btn" data-mode="solar">Solar</button>
       </div>
       <div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:2px;" id="modeDesc">Prayer times in your local timezone</div>
     </div>
@@ -202,22 +201,13 @@ const PRAYER_COLORS=['#4466ff','#ffcc00','#e07a2f','#d94f3d','#9b59c4'];
 const PRAYER_COLORS_A=PRAYER_COLORS.map(c=>c+'bb');
 const PRAYER_RING_POS=[0.1,0.32,0.54,0.76,0.98];
 const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
-const MODE_DESC={local:'Prayer times in your local timezone',utc:'When prayers fire globally in UTC',solar:'Pure astronomy — the sun\'s own clock'};
-const MODE_LABEL={local:'Your Local Time',utc:'UTC — Global Wave',solar:'Solar Time'};
+const MODE_DESC={local:'Prayer times in your local timezone',utc:'When prayers fire globally in UTC'};
+const MODE_LABEL={local:'Your Local Time',utc:'UTC — Global Wave'};
 // Representative doy for each month
 const MONTH_DOYS=[15,46,74,105,135,166,196,227,258,288,319,349];
 // Fajr gap critical latitude per month (pre-computed)
 const FAJR_GAP=[null,null,null,null,56,49,50,56,null,null,null,null];
 
-const REGION_BOUNDS={
-  all:null,
-  gulf:{latMin:15,latMax:32,lonMin:35,lonMax:60},
-  southasia:{latMin:8,latMax:38,lonMin:60,lonMax:95},
-  seasia:{latMin:-10,latMax:25,lonMin:95,lonMax:145},
-  nafrica:{latMin:15,latMax:38,lonMin:-10,lonMax:40},
-  europe:{latMin:35,latMax:72,lonMin:-15,lonMax:45},
-  wafrica:{latMin:-5,latMax:20,lonMin:-20,lonMax:25},
-};
 
 // ── State ──────────────────────────────────────────────────────────
 const canvas=document.getElementById('clockCanvas');
@@ -248,18 +238,16 @@ function resizeClock(){
 // ── Build render array for current mode ───────────────────────────
 function buildRenderData(monthData,mode){
   if(!monthData) return null;
-  const{utc,solar,rNorm,prayer,n}=monthData;
+  const{utc,rNorm,prayer,region,n}=monthData;
   const tzShift=Math.round((userTZ/24)*65535);
   const angles=new Float32Array(n);
-  // Process in typed array directly — no loop overhead
   if(mode==='utc'){
     for(let i=0;i<n;i++) angles[i]=(utc[i]/65535)*Math.PI*2-Math.PI/2;
-  } else if(mode==='solar'){
-    for(let i=0;i<n;i++) angles[i]=(solar[i]/65535)*Math.PI*2-Math.PI/2;
   } else {
-    for(let i=0;i<n;i++) angles[i]=(((utc[i]+tzShift)%65536)/65535)*Math.PI*2-Math.PI/2;
+    // local: shift by timezone
+    for(let i=0;i<n;i++) angles[i]=(((utc[i]+tzShift+65536)%65536)/65535)*Math.PI*2-Math.PI/2;
   }
-  return{angles,rNorm,prayer,n};
+  return{angles,rNorm,prayer,region,n};
 }
 
 // ── Drawing ────────────────────────────────────────────────────────
@@ -319,17 +307,20 @@ function drawBase(){
 
 function drawDots(){
   if(!currentData) return;
-  const{angles,rNorm,prayer,n}=currentData;
+  const{angles,rNorm,prayer,region,n}=currentData;
   const range=R_outer-R_inner;
   const ds=dotSize;
   const st=separateT;
-  const region=REGION_BOUNDS[activeRegion];
+  // Region codes: 0=other,1=gulf,2=southasia,3=seasia,4=nafrica,5=europe,6=wafrica
+  const RCODES={all:-1,gulf:1,southasia:2,seasia:3,nafrica:4,europe:5,wafrica:6};
+  const filterCode=RCODES[activeRegion];
 
   for(let pi=0;pi<5;pi++){
     const rSep=PRAYER_RING_POS[pi];
     ctx.beginPath();
     for(let i=0;i<n;i++){
       if(prayer[i]!==pi) continue;
+      if(filterCode!==-1 && region[i]!==filterCode) continue;
       const rCol=rNorm[i]/255;
       let finalR;
       if(st<0.01){
@@ -406,18 +397,14 @@ async function loadMonth(month){
   if(!res.ok) throw new Error(`Month ${month} not found`);
   const buf=await res.arrayBuffer();
 
-  const totalBytes=buf.byteLength;
-  const n=Math.floor(totalBytes/6);
-  // Copy sections to ensure alignment
-  const utcBuf=buf.slice(0, n*2);
-  const solarBuf=buf.slice(n*2, n*4);
+  const n=Math.floor(buf.byteLength/5);
+  const utcBuf=buf.slice(0,n*2);
   const utc=new Uint16Array(utcBuf);
-  const solar=new Uint16Array(solarBuf);
-  const rNorm=new Uint8Array(buf,n*4,n);
-  const prayer=new Uint8Array(buf,n*5,n);
+  const rNorm=new Uint8Array(buf,n*2,n);
+  const prayer=new Uint8Array(buf,n*3,n);
+  const region=new Uint8Array(buf,n*4,n);
 
-  monthCache[month]={utc,solar,rNorm,prayer,n};
-  // Defer heavy processing to avoid blocking
+  monthCache[month]={utc,rNorm,prayer,region,n};
   await new Promise(r=>setTimeout(r,0));
   currentData=buildRenderData(monthCache[month],clockMode);
   scheduleRender();

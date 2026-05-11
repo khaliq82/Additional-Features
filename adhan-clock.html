@@ -449,18 +449,6 @@ canvas.addEventListener('touchmove',onMove,{passive:false});
 canvas.addEventListener('mouseup',onUp);canvas.addEventListener('touchend',onUp);
 window.addEventListener('mouseup',onUp);
 
-// ── Gap indicator ──────────────────────────────────────────────────
-  const gap=document.getElementById('gapIndicator');
-  if(critLat&&separateT>0.2){
-    gap.style.display='block';
-    gap.textContent=`↑ Fajr gap visible — no astronomical Fajr above ${critLat}°N this month`;
-  } else if(critLat){
-    gap.style.display='block';
-    gap.textContent=`Fajr disappears above ${critLat}°N this month — separate prayers to see the gap`;
-  } else {
-    gap.style.display='none';
-  }
-}
 
 // ── Controls ───────────────────────────────────────────────────────
 let playing=false, playTimer=null;

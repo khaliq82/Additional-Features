@@ -189,7 +189,6 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
       <canvas id="clockCanvas"></canvas>
       <div class="clock-bottom">
         <div class="clock-status" id="dialLabel">Drag the centre dial to separate prayers</div>
-        <div class="clock-gap" id="gapIndicator"></div>
       </div>
     </div>
   </div>
@@ -212,7 +211,6 @@ const MODE_LABEL={local:'Your Local Time',utc:'UTC — Global Wave'};
 // Representative doy for each month
 const MONTH_DOYS=[15,46,74,105,135,166,196,227,258,288,319,349];
 // Fajr gap critical latitude per month (pre-computed)
-const FAJR_GAP=[null,null,null,null,56,49,50,56,null,null,null,null];
 
 
 // ── State ──────────────────────────────────────────────────────────
@@ -444,7 +442,6 @@ function onMove(e){
     separateT>0.95?'Prayers fully separated — each in its own orbit':
     `Separating — ${Math.round(separateT*100)}%`;
   document.getElementById('dialLabel').textContent=lbl;
-  updateGapIndicator();scheduleRender();
 }
 function onUp(){isDragging=false;}
 canvas.addEventListener('mousemove',onMove);
@@ -453,9 +450,7 @@ canvas.addEventListener('mouseup',onUp);canvas.addEventListener('touchend',onUp)
 window.addEventListener('mouseup',onUp);
 
 // ── Gap indicator ──────────────────────────────────────────────────
-function updateGapIndicator(){
   const gap=document.getElementById('gapIndicator');
-  const critLat=FAJR_GAP[currentMonth-1];
   if(critLat&&separateT>0.2){
     gap.style.display='block';
     gap.textContent=`↑ Fajr gap visible — no astronomical Fajr above ${critLat}°N this month`;
@@ -474,7 +469,6 @@ document.getElementById('monthSlider').addEventListener('input',e=>{
   stopPlay();
   currentMonth=+e.target.value;
   document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
-  updateGapIndicator();
   loadMonth(currentMonth);
 });
 
@@ -483,7 +477,6 @@ document.getElementById('btnNow').addEventListener('click',()=>{
   currentMonth=new Date().getMonth()+1;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
-  updateGapIndicator();
   loadMonth(currentMonth);
   showNowMarker=true;
   scheduleRender();
@@ -514,7 +507,6 @@ function animateYear(){
   currentMonth=currentMonth>=12?1:currentMonth+1;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
-  updateGapIndicator();
   if(monthCache[currentMonth]){
     currentData=buildRenderData(monthCache[currentMonth],clockMode);
     scheduleRender();
@@ -589,7 +581,6 @@ async function init(){
   currentMonth=new Date().getMonth()+1;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
-  updateGapIndicator();
 
   bar.style.width='20%';
   msg.textContent=`Loading ${MONTH_NAMES[currentMonth-1]} prayer data…`;

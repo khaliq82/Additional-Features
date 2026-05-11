@@ -412,8 +412,10 @@ async function loadMonth(month){
 
   monthCache[month]={utc,rNorm,prayer,region,n};
   await new Promise(r=>setTimeout(r,0));
-  currentData=buildRenderData(monthCache[month],clockMode);
-  scheduleRender();
+  if(month===currentMonth){
+    currentData=buildRenderData(monthCache[month],clockMode);
+    scheduleRender();
+  }
 }
 
 // ── Dial interaction ───────────────────────────────────────────────
@@ -602,11 +604,9 @@ async function init(){
     setTimeout(()=>document.getElementById('loadingOverlay').remove(),500);
 
     // Preload ALL remaining months in background — 128KB each = instant slider
-    msg.textContent='Pre-loading all months…';
     for(let m=1;m<=12;m++){
       if(m===currentMonth) continue;
       await loadMonth(m);
-      bar.style.width=(50+m/12*50)+'%';
     }
 
   }catch(err){

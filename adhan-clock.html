@@ -249,17 +249,15 @@ function resizeClock(){
 function buildRenderData(monthData,mode){
   if(!monthData) return null;
   const{utc,solar,rNorm,prayer,n}=monthData;
-  // For local mode: shift utc angles by timezone offset
-  const tzFrac=userTZ/24; // fraction of full circle
-  const tzShift=Math.round(tzFrac*65535);
+  const tzShift=Math.round((userTZ/24)*65535);
   const angles=new Float32Array(n);
-  for(let i=0;i<n;i++){
-    let a;
-    if(mode==='utc') a=utc[i];
-    else if(mode==='solar') a=solar[i];
-    else a=((utc[i]+tzShift)%65536+65536)%65536;
-    // Convert uint16 (0-65535) to radians (-PI/2 to 3PI/2)
-    angles[i]=(a/65535)*Math.PI*2-Math.PI/2;
+  // Process in typed array directly — no loop overhead
+  if(mode==='utc'){
+    for(let i=0;i<n;i++) angles[i]=(utc[i]/65535)*Math.PI*2-Math.PI/2;
+  } else if(mode==='solar'){
+    for(let i=0;i<n;i++) angles[i]=(solar[i]/65535)*Math.PI*2-Math.PI/2;
+  } else {
+    for(let i=0;i<n;i++) angles[i]=(((utc[i]+tzShift)%65536)/65535)*Math.PI*2-Math.PI/2;
   }
   return{angles,rNorm,prayer,n};
 }
@@ -408,16 +406,19 @@ async function loadMonth(month){
   if(!res.ok) throw new Error(`Month ${month} not found`);
   const buf=await res.arrayBuffer();
 
-  // Layout: n uint16 utc, n uint16 solar, n uint8 rNorm, n uint8 prayer
-  // Total bytes = n*2 + n*2 + n + n = n*6
   const totalBytes=buf.byteLength;
-  const n=totalBytes/6;
-  const utc=new Uint16Array(buf,0,n);
-  const solar=new Uint16Array(buf,n*2,n);
+  const n=Math.floor(totalBytes/6);
+  // Copy sections to ensure alignment
+  const utcBuf=buf.slice(0, n*2);
+  const solarBuf=buf.slice(n*2, n*4);
+  const utc=new Uint16Array(utcBuf);
+  const solar=new Uint16Array(solarBuf);
   const rNorm=new Uint8Array(buf,n*4,n);
   const prayer=new Uint8Array(buf,n*5,n);
 
   monthCache[month]={utc,solar,rNorm,prayer,n};
+  // Defer heavy processing to avoid blocking
+  await new Promise(r=>setTimeout(r,0));
   currentData=buildRenderData(monthCache[month],clockMode);
   scheduleRender();
 }

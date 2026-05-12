@@ -6,75 +6,242 @@
 <title>The Adhan Clock — AdhanLive</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#02040c;--bg2:#060912;--border:rgba(255,255,255,0.08);--cyan:#00d4ff;--text:#ffffff;}
+:root{
+  --bg:#02040c;--bg2:#060912;--border:rgba(255,255,255,0.08);
+  --cyan:#00d4ff;--text:#ffffff;
+  --fajr:#4466ff;--dhuhr:#ffcc00;--asr:#e07a2f;--mag:#d94f3d;--isha:#9b59c4;
+}
 *{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;background:var(--bg);color:var(--text);overflow:hidden;}
-body{font-family:'Inter',sans-serif;display:flex;flex-direction:column;}
-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 32px;border-bottom:1px solid var(--border);background:rgba(2,4,12,0.97);backdrop-filter:blur(16px);flex-shrink:0;}
+html,body{height:100%;background:var(--bg);color:var(--text);}
+body{font-family:'Inter',sans-serif;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ── NAV ── */
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:11px 28px;border-bottom:1px solid var(--border);
+  background:rgba(2,4,12,0.97);backdrop-filter:blur(16px);
+  flex-shrink:0;z-index:100;
+}
 .nav-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;}
 .nav-logo span{color:var(--cyan);}
-.nav-title{font-size:12px;letter-spacing:0.18em;font-weight:600;text-transform:uppercase;}
-.nav-link{font-size:11px;font-weight:500;color:var(--cyan);text-decoration:none;padding:6px 14px;border:1px solid rgba(0,212,255,0.3);border-radius:4px;transition:all 0.2s;}
+.nav-title{font-size:11px;letter-spacing:0.18em;font-weight:600;text-transform:uppercase;}
+.nav-links{display:flex;gap:6px;}
+.nav-link{font-size:10px;font-weight:500;color:var(--cyan);text-decoration:none;padding:5px 12px;border:1px solid rgba(0,212,255,0.3);border-radius:4px;transition:all 0.2s;white-space:nowrap;}
 .nav-link:hover{background:rgba(0,212,255,0.08);border-color:var(--cyan);}
-.main{display:flex;flex:1;min-height:0;}
-.left{width:268px;flex-shrink:0;border-right:1px solid var(--border);padding:16px 15px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;}
-.panel-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;line-height:1.2;}
+
+/* ── THREE COLUMN LAYOUT ── */
+.main{display:flex;flex:1;min-height:0;overflow:hidden;}
+
+/* ── LEFT PANEL: Controls ── */
+.left{
+  width:300px;flex-shrink:0;
+  border-right:1px solid var(--border);
+  padding:18px 16px;
+  overflow-y:auto;
+  display:flex;flex-direction:column;gap:16px;
+}
+.left::-webkit-scrollbar{width:3px;}
+.left::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.15);border-radius:2px;}
+
+.panel-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;line-height:1.2;}
 .panel-title em{font-style:italic;color:var(--cyan);}
-.panel-sub{font-size:11px;line-height:1.6;font-weight:300;margin-top:4px;color:rgba(255,255,255,0.7);}
+.panel-sub{font-size:11px;line-height:1.6;font-weight:300;margin-top:4px;color:rgba(255,255,255,0.6);}
+
 .ctrl{display:flex;flex-direction:column;gap:6px;}
-.ctrl-label{font-size:8px;letter-spacing:0.2em;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,0.45);}
-.date-disp{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;}
+.ctrl-label{font-size:8px;letter-spacing:0.2em;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,0.4);}
+.date-disp{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;}
 .date-disp span{color:var(--cyan);}
-.slider-labels{display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,0.35);}
-input[type=range]{-webkit-appearance:none;width:100%;height:2px;background:rgba(255,255,255,0.15);border-radius:2px;outline:none;cursor:pointer;}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--bg2);border:2px solid var(--cyan);box-shadow:0 0 8px rgba(0,212,255,0.5);cursor:pointer;transition:transform 0.1s;}
-input[type=range]:active::-webkit-slider-thumb{transform:scale(1.2);}
+.slider-labels{display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,0.3);}
+
+input[type=range]{
+  -webkit-appearance:none;width:100%;height:2px;
+  background:rgba(255,255,255,0.15);border-radius:2px;outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:14px;height:14px;border-radius:50%;
+  background:var(--bg2);border:2px solid var(--cyan);
+  box-shadow:0 0 8px rgba(0,212,255,0.5);cursor:pointer;
+}
+
 .seg-btns{display:flex;gap:4px;}
-.seg-btn{flex:1;padding:6px 0;border-radius:4px;border:1px solid var(--border);background:transparent;color:rgba(255,255,255,0.6);font-family:'Inter',sans-serif;font-size:10px;font-weight:500;cursor:pointer;transition:all 0.15s ease;text-align:center;}
+.seg-btn{
+  flex:1;padding:6px 0;border-radius:4px;
+  border:1px solid var(--border);background:transparent;
+  color:rgba(255,255,255,0.6);font-family:'Inter',sans-serif;
+  font-size:10px;font-weight:500;cursor:pointer;
+  transition:all 0.15s ease;text-align:center;
+}
 .seg-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.08);}
 .seg-btn:hover:not(.active){border-color:rgba(255,255,255,0.3);color:#fff;}
-.btn-now{width:100%;padding:7px;border-radius:4px;border:1px solid rgba(0,212,255,0.3);background:transparent;color:var(--cyan);font-family:'Inter',sans-serif;font-size:11px;font-weight:500;cursor:pointer;transition:all 0.2s;}
+
+.play-now{display:flex;gap:6px;}
+.btn-play{
+  flex:1;padding:7px 0;border-radius:4px;
+  border:1px solid var(--border);background:transparent;
+  color:rgba(255,255,255,0.7);font-family:'Inter',sans-serif;
+  font-size:11px;font-weight:500;cursor:pointer;transition:all 0.2s;
+}
+.btn-play.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.06);}
+.btn-play:hover:not(.active){border-color:rgba(255,255,255,0.3);color:#fff;}
+.btn-now{
+  flex:1;padding:7px 0;border-radius:4px;
+  border:1px solid rgba(0,212,255,0.35);background:transparent;
+  color:var(--cyan);font-family:'Inter',sans-serif;
+  font-size:11px;font-weight:500;cursor:pointer;transition:all 0.2s;
+}
 .btn-now:hover{background:rgba(0,212,255,0.08);border-color:var(--cyan);}
+
 .region-btns{display:flex;flex-wrap:wrap;gap:4px;}
-.region-btn{padding:4px 8px;border-radius:3px;border:1px solid var(--border);background:transparent;color:rgba(255,255,255,0.6);font-family:'Inter',sans-serif;font-size:9px;font-weight:500;cursor:pointer;transition:all 0.15s;}
+.region-btn{
+  padding:4px 9px;border-radius:3px;
+  border:1px solid var(--border);background:transparent;
+  color:rgba(255,255,255,0.55);font-family:'Inter',sans-serif;
+  font-size:9px;font-weight:500;cursor:pointer;transition:all 0.15s;
+}
 .region-btn.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.06);}
 .region-btn:hover:not(.active){border-color:rgba(255,255,255,0.3);color:#fff;}
-.legend{display:flex;flex-direction:column;gap:6px;}
-.leg-item{display:flex;align-items:center;gap:8px;}
-.leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+.legend{display:flex;flex-direction:column;gap:7px;}
+.leg-item{
+  display:flex;align-items:center;gap:9px;
+  padding:6px 8px;border-radius:5px;
+  border:1px solid transparent;
+  cursor:pointer;transition:all 0.2s;
+}
+.leg-item.highlighted{border-color:currentColor;background:rgba(255,255,255,0.03);}
+.leg-item:hover{background:rgba(255,255,255,0.02);}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .leg-name{font-size:12px;font-weight:500;}
-.leg-desc{font-size:9px;color:rgba(255,255,255,0.4);margin-left:auto;}
-.insights{display:flex;flex-direction:column;gap:8px;}
-.icard{padding:11px 12px;border:1px solid var(--border);border-radius:6px;background:rgba(255,255,255,0.02);}
-.icard-tag{font-size:8px;letter-spacing:0.14em;font-weight:600;margin-bottom:3px;text-transform:uppercase;}
-.icard-title{font-size:12px;font-weight:600;margin-bottom:3px;}
-.icard-body{font-size:10.5px;line-height:1.6;font-weight:300;color:rgba(255,255,255,0.8);}
-.right{flex:1;display:flex;align-items:center;justify-content:center;padding:14px;min-width:0;}
-.clock-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;width:100%;height:100%;}
-.clock-top{font-size:8px;letter-spacing:0.2em;color:rgba(255,255,255,0.4);text-transform:uppercase;}
-canvas{display:block;cursor:grab;flex:1;min-height:0;max-width:100%;}
-canvas:active{cursor:grabbing;}
-.clock-bottom{display:flex;flex-direction:column;align-items:center;gap:3px;}
-.clock-status{font-size:9px;color:rgba(255,255,255,0.35);}
-.clock-gap{font-size:9px;color:rgba(68,102,255,0.9);display:none;}
-footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.leg-pos{font-size:9px;color:rgba(255,255,255,0.35);margin-left:auto;}
+
+/* ── CENTRE: Clock ── */
+.centre{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  padding:12px;min-width:0;position:relative;
+}
+.clock-wrap{display:flex;flex-direction:column;align-items:center;gap:5px;width:100%;height:100%;}
+.clock-top{font-size:8px;letter-spacing:0.2em;color:rgba(255,255,255,0.35);text-transform:uppercase;}
+canvas{display:block;flex:1;min-height:0;max-width:100%;touch-action:none;}
+.clock-status{font-size:9px;color:rgba(255,255,255,0.3);text-align:center;}
+
+/* ── RIGHT PANEL: Stories ── */
+.right{
+  width:300px;flex-shrink:0;
+  border-left:1px solid var(--border);
+  overflow-y:auto;
+  padding:0;
+}
+.right::-webkit-scrollbar{width:3px;}
+.right::-webkit-scrollbar-thumb{background:rgba(0,212,255,0.15);border-radius:2px;}
+
+.story-header{
+  padding:20px 20px 16px;
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;
+  background:rgba(2,4,12,0.97);backdrop-filter:blur(12px);
+  z-index:10;
+}
+.story-header-title{
+  font-family:'Playfair Display',serif;
+  font-size:13px;font-weight:700;
+  color:rgba(255,255,255,0.6);
+  letter-spacing:0.04em;
+}
+.story-header-sub{font-size:10px;color:rgba(255,255,255,0.3);margin-top:3px;}
+
+.story-card{
+  padding:24px 20px;
+  border-bottom:1px solid var(--border);
+  transition:background 0.3s;
+  position:relative;
+}
+.story-card::before{
+  content:'';
+  position:absolute;left:0;top:0;bottom:0;
+  width:2px;background:transparent;
+  transition:background 0.3s;
+}
+.story-card.active{background:rgba(255,255,255,0.015);}
+.story-card.active::before{background:var(--story-color);}
+
+.story-num{
+  font-size:9px;letter-spacing:0.2em;
+  color:rgba(255,255,255,0.25);
+  margin-bottom:10px;font-weight:500;
+}
+.story-prayer{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:8px;letter-spacing:0.18em;font-weight:600;
+  text-transform:uppercase;margin-bottom:10px;
+  padding:3px 8px;border-radius:3px;
+  border:1px solid currentColor;opacity:0.85;
+}
+.story-dot{width:5px;height:5px;border-radius:50%;}
+.story-title{
+  font-family:'Playfair Display',serif;
+  font-size:17px;font-weight:700;
+  line-height:1.25;margin-bottom:10px;
+  letter-spacing:-0.01em;
+}
+.story-title em{font-style:italic;color:var(--story-color);}
+.story-body{
+  font-size:12px;color:rgba(255,255,255,0.72);
+  line-height:1.75;font-weight:300;
+}
+.story-body strong{color:#ffffff;font-weight:500;}
+.story-quote{
+  margin-top:14px;padding:10px 14px;
+  border-left:2px solid var(--story-color);
+  font-size:11px;color:rgba(255,255,255,0.45);
+  line-height:1.65;font-style:italic;
+  border-radius:0 4px 4px 0;
+  background:rgba(255,255,255,0.02);
+  opacity:0.8;
+}
+.story-footer{
+  padding:24px 20px;
+  font-size:11px;color:rgba(255,255,255,0.25);
+  line-height:1.7;text-align:center;font-style:italic;
+}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);padding:10px 28px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
 .footer-logo{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;}
 .footer-logo span{color:var(--cyan);}
-.footer-text{font-size:10px;color:rgba(255,255,255,0.3);}
-.loading-overlay{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;transition:opacity 0.4s;}
+.footer-text{font-size:10px;color:rgba(255,255,255,0.25);}
+
+/* ── LOADING ── */
+.loading-overlay{
+  position:fixed;inset:0;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:999;transition:opacity 0.4s;
+}
 .loading-overlay.hidden{opacity:0;pointer-events:none;}
 .loading-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;margin-bottom:6px;color:var(--cyan);}
 .loading-sub{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:22px;font-style:italic;}
 .loading-bar-wrap{width:240px;height:1px;background:rgba(255,255,255,0.1);}
 .loading-bar{height:100%;background:var(--cyan);width:0%;transition:width 0.3s;box-shadow:0 0 8px var(--cyan);}
 .loading-msg{margin-top:12px;font-size:11px;color:rgba(255,255,255,0.3);}
+
+/* ── MOBILE ── */
+@media(max-width:900px){
+  body{overflow:auto;}
+  .main{flex-direction:column;overflow:visible;height:auto;}
+  .left{width:100%;border-right:none;border-bottom:1px solid var(--border);}
+  .centre{min-height:340px;border-bottom:1px solid var(--border);}
+  .right{width:100%;border-left:none;}
+  .nav-title{display:none;}
+}
 </style>
 </head>
 <body>
 
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-title">The Adhan Clock</div>
-  <div class="loading-sub">157,890 mosques · All five prayers · Every day of the year</div>
+  <div class="loading-sub">157,890 mosques · All five prayers · Every month of the year</div>
   <div class="loading-bar-wrap"><div class="loading-bar" id="loadingBar"></div></div>
   <div class="loading-msg" id="loadingMsg">Loading…</div>
 </div>
@@ -82,18 +249,20 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
 <nav>
   <div class="nav-logo">Adhan<span>Live</span></div>
   <div class="nav-title">The Adhan Clock</div>
-  <div style="display:flex;gap:8px;">
-    <a href="index.html" target="_blank" class="nav-link">Live Map →</a>
-    <a href="prayer-arcs.html" target="_blank" class="nav-link">Arc Explorer →</a>
-    <a href="ask-adhanlive.html" target="_blank" class="nav-link">Ask AdhanLive →</a>
+  <div class="nav-links">
+    <a href="index.html" target="_blank" class="nav-link">Live Map</a>
+    <a href="prayer-arcs.html" target="_blank" class="nav-link">Arc Explorer</a>
+    <a href="ask-adhanlive.html" target="_blank" class="nav-link">Ask AdhanLive</a>
   </div>
 </nav>
 
 <div class="main">
+
+  <!-- LEFT: Controls -->
   <div class="left">
     <div>
       <div class="panel-title">The <em>Adhan</em> Clock</div>
-      <div class="panel-sub">157,890 mosques. All five prayers. Drag the centre dial to separate each prayer into its own orbit.</div>
+      <div class="panel-sub">Based on 157,890 mosques. Five prayers. Every hour of the day — occupied.</div>
     </div>
 
     <div class="ctrl">
@@ -102,17 +271,17 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
         <button class="seg-btn active" data-mode="local">Your Time</button>
         <button class="seg-btn" data-mode="utc">UTC</button>
       </div>
-      <div style="font-size:9px;color:rgba(255,255,255,0.35);margin-top:2px;" id="modeDesc">Prayer times in your local timezone</div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:2px;" id="modeDesc">Prayer times in your local timezone</div>
     </div>
 
     <div class="ctrl">
       <div class="ctrl-label">Month</div>
-      <div class="date-disp" id="dateBadge">May 2026</div>
+      <div class="date-disp" id="dateBadge">May <span>2026</span></div>
       <input type="range" id="monthSlider" min="1" max="12" value="5">
       <div class="slider-labels"><span>Jan</span><span>Dec</span></div>
-      <div style="display:flex;gap:6px;margin-top:4px;">
-        <button class="seg-btn" id="playBtn" style="flex:1;">▶ Play Year</button>
-        <button class="btn-now" id="btnNow" style="flex:1;padding:6px;">◎ Now</button>
+      <div class="play-now" style="margin-top:4px;">
+        <button class="btn-play" id="playBtn">▶ Play Year</button>
+        <button class="btn-now" id="btnNow">◎ Now</button>
       </div>
     </div>
 
@@ -139,64 +308,173 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
     </div>
 
     <div class="ctrl">
-      <div class="ctrl-label">Prayer Rings (when separated)</div>
-      <div class="legend">
-        <div class="leg-item"><div class="leg-dot" style="background:#4466ff"></div><span class="leg-name">Fajr</span><span class="leg-desc">Innermost</span></div>
-        <div class="leg-item"><div class="leg-dot" style="background:#ffcc00"></div><span class="leg-name">Dhuhr</span><span class="leg-desc">2nd</span></div>
-        <div class="leg-item"><div class="leg-dot" style="background:#e07a2f"></div><span class="leg-name">Asr</span><span class="leg-desc">Middle</span></div>
-        <div class="leg-item"><div class="leg-dot" style="background:#d94f3d"></div><span class="leg-name">Maghrib</span><span class="leg-desc">4th</span></div>
-        <div class="leg-item"><div class="leg-dot" style="background:#9b59c4"></div><span class="leg-name">Isha</span><span class="leg-desc">Outermost</span></div>
-      </div>
-    </div>
-
-    <div class="insights">
-      <div class="icard">
-        <div class="icard-tag" style="color:#4466ff">● Fajr · The Broken Circle</div>
-        <div class="icard-title">A gap that breathes with the seasons</div>
-        <div class="icard-body">Fajr is the only prayer with a visible gap — latitudes where the sun never dips 18° below the horizon in summer. Change month to June and watch the gap open. In December it closes. Earth's axial tilt, made visible.</div>
-      </div>
-      <div class="icard">
-        <div class="icard-tag" style="color:#ffcc00">● Dhuhr · The Unbroken Ring</div>
-        <div class="icard-title">The only prayer with no gaps, ever</div>
-        <div class="icard-body">Solar noon happens at every longitude, every day, without exception. No latitude, no season disrupts it. Dhuhr is the anchor of Islamic time — the most complete ring across all twelve months.</div>
-      </div>
-      <div class="icard">
-        <div class="icard-tag" style="color:#e07a2f">● Asr · The Narrowest Band</div>
-        <div class="icard-title">The most consistent prayer globally</div>
-        <div class="icard-body">The shadow ratio produces times that vary less across latitudes than twilight prayers. Asr's ring is visibly thinner — the most predictable prayer on Earth. The Prophet ﷺ called it "the middle prayer." Geometrically, it is.</div>
-      </div>
-      <div class="icard">
-        <div class="icard-tag" style="color:#d94f3d">● Maghrib · The Sharpest Edge</div>
-        <div class="icard-title">Scholarly consensus as precision</div>
-        <div class="icard-body">All four madhabs agree on Maghrib: actual sunset. That consensus is visible here — the sharpest, densest ring. The least disagreement produces the most precise band.</div>
-      </div>
-      <div class="icard">
-        <div class="icard-tag" style="color:#9b59c4">● Isha · The Mirror of Fajr</div>
-        <div class="icard-title">One degree of difference, visible</div>
-        <div class="icard-body">Isha uses 17° below the horizon vs Fajr's 18°. That single degree means Isha's gap is measurably smaller. One degree, invisible in any table, visible here as arc length.</div>
-      </div>
-      <div class="icard" style="border-color:rgba(0,212,255,0.2);">
-        <div class="icard-tag" style="color:var(--cyan)">● The Separation Dial</div>
-        <div class="icard-title">Drag to reveal hidden structure</div>
-        <div class="icard-body">Collapsed: all prayers as one ring — the beautiful chaos of global worship. Separated: five distinct orbits, each telling its own story. The structure of Islamic time becomes legible.</div>
+      <div class="ctrl-label">Prayer Rings — Drag Dial to Separate</div>
+      <div class="legend" id="legend">
+        <div class="leg-item" data-pi="0" style="color:var(--fajr);">
+          <div class="leg-dot" style="background:var(--fajr);"></div>
+          <span class="leg-name">Fajr</span><span class="leg-pos">Innermost</span>
+        </div>
+        <div class="leg-item" data-pi="1" style="color:var(--dhuhr);">
+          <div class="leg-dot" style="background:var(--dhuhr);"></div>
+          <span class="leg-name">Dhuhr</span><span class="leg-pos">2nd ring</span>
+        </div>
+        <div class="leg-item" data-pi="2" style="color:var(--asr);">
+          <div class="leg-dot" style="background:var(--asr);"></div>
+          <span class="leg-name">Asr</span><span class="leg-pos">Middle</span>
+        </div>
+        <div class="leg-item" data-pi="3" style="color:var(--mag);">
+          <div class="leg-dot" style="background:var(--mag);"></div>
+          <span class="leg-name">Maghrib</span><span class="leg-pos">4th ring</span>
+        </div>
+        <div class="leg-item" data-pi="4" style="color:var(--isha);">
+          <div class="leg-dot" style="background:var(--isha);"></div>
+          <span class="leg-name">Isha</span><span class="leg-pos">Outermost</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="right" id="rightPanel">
+  <!-- CENTRE: Clock -->
+  <div class="centre">
     <div class="clock-wrap">
       <div class="clock-top" id="clockTopLabel">Global Prayer Wave · Your Local Time</div>
       <canvas id="clockCanvas"></canvas>
-      <div class="clock-bottom">
-        <div class="clock-status" id="dialLabel">Drag the centre dial to separate prayers</div>
-      </div>
+      <div class="clock-status" id="dialLabel">Drag the centre dial to separate prayers</div>
     </div>
   </div>
+
+  <!-- RIGHT: Stories -->
+  <div class="right" id="rightPanel">
+    <div class="story-header">
+      <div class="story-header-title">What the Clock Reveals</div>
+      <div class="story-header-sub">Scroll to explore — the clock responds</div>
+    </div>
+
+    <!-- Story 1: The full clock -->
+    <div class="story-card" data-pi="-1" style="--story-color:var(--cyan);">
+      <div class="story-num">01 / 06</div>
+      <div class="story-prayer" style="color:var(--cyan);">
+        <div class="story-dot" style="background:var(--cyan);"></div>All Five Prayers
+      </div>
+      <div class="story-title">The 24-Hour Clock is <em>Never Empty</em></div>
+      <div class="story-body">
+        Look at the clock. Every hour — from midnight to midnight — is occupied by prayer. There is no gap, no silence, no hour when the Adhan is not sounding somewhere on Earth.
+        <br><br>
+        <strong>157,890 mosques. Five prayers. 24 hours.</strong> The rings fill the entire clock face because the world's Muslims are distributed across every timezone — when it is Fajr in Indonesia, it is Isha in Morocco. The global community of worship never sleeps.
+      </div>
+      <div class="story-quote">
+        "Indeed, prayer has been decreed upon the believers a decree of specified times." — Quran 4:103
+      </div>
+    </div>
+
+    <!-- Story 2: Dhuhr -->
+    <div class="story-card" data-pi="1" style="--story-color:var(--dhuhr);">
+      <div class="story-num">02 / 06</div>
+      <div class="story-prayer" style="color:var(--dhuhr);">
+        <div class="story-dot" style="background:var(--dhuhr);"></div>Dhuhr · Solar Noon
+      </div>
+      <div class="story-title">The <em>Unbroken</em> Ring</div>
+      <div class="story-body">
+        Separate the prayers using the dial. Watch Dhuhr — the golden ring — form the most complete circle of all five prayers. <strong>No gaps. No thin patches. A near-perfect ring.</strong>
+        <br><br>
+        Solar noon moves westward at exactly 15° of longitude per hour — the speed of Earth's rotation. Dhuhr follows it faithfully. At every UTC hour, some longitude is experiencing solar noon. Dhuhr is the only prayer that is permanently, universally active — the anchor of Islamic time.
+      </div>
+      <div class="story-quote">
+        The gold ring proves what astronomy has always known: the sun never stops moving, and neither does the call to Dhuhr.
+      </div>
+    </div>
+
+    <!-- Story 3: Fajr -->
+    <div class="story-card" data-pi="0" style="--story-color:var(--fajr);">
+      <div class="story-num">03 / 06</div>
+      <div class="story-prayer" style="color:var(--fajr);">
+        <div class="story-dot" style="background:var(--fajr);"></div>Fajr · Dawn
+      </div>
+      <div class="story-title">The Circle That <em>Breathes</em></div>
+      <div class="story-body">
+        Separate the prayers and look at the blue Fajr ring. Now change the month slider from June to December. Watch the ring change.
+        <br><br>
+        In summer, <strong>Fajr disappears at high latitudes</strong> — above ~49°N, the sun never dips 18° below the horizon. The ring shows a gap where no Fajr exists astronomically. In winter, the gap closes. The ring breathes with the seasons — expanding and contracting with Earth's axial tilt.
+        <br><br>
+        No prayer table, no app has ever made this visible before. Here it is: the seasonal fragility of Fajr, drawn in light.
+      </div>
+      <div class="story-quote">
+        Switch to June and separate the prayers — watch for the gap in the blue ring above the 18-hour mark.
+      </div>
+    </div>
+
+    <!-- Story 4: Maghrib -->
+    <div class="story-card" data-pi="3" style="--story-color:var(--mag);">
+      <div class="story-num">04 / 06</div>
+      <div class="story-prayer" style="color:var(--mag);">
+        <div class="story-dot" style="background:var(--mag);"></div>Maghrib · Sunset
+      </div>
+      <div class="story-title">Scholarly Consensus as <em>Geometric Precision</em></div>
+      <div class="story-body">
+        When the prayers are separated, Maghrib's red ring is visibly the <strong>sharpest and densest</strong> of all five. Its edges are crisp. Its band is thin.
+        <br><br>
+        This is not a coincidence. Maghrib is the only prayer on which all four madhabs — Hanafi, Maliki, Shafi'i, Hanbali — agree completely. The trigger is actual sunset: when the upper limb of the sun disappears below the horizon. No interpretation. No angle. Just the sun.
+        <br><br>
+        The sharpest ring reflects the least disagreement. <strong>Unity produces precision.</strong>
+      </div>
+      <div class="story-quote">
+        The red ring's sharpness is a visual proof of 1,400 years of scholarly consensus.
+      </div>
+    </div>
+
+    <!-- Story 5: Isha vs Fajr -->
+    <div class="story-card" data-pi="4" style="--story-color:var(--isha);">
+      <div class="story-num">05 / 06</div>
+      <div class="story-prayer" style="color:var(--isha);">
+        <div class="story-dot" style="background:var(--isha);"></div>Isha · Night
+      </div>
+      <div class="story-title">One Degree of Difference, <em>Made Visible</em></div>
+      <div class="story-body">
+        Separate the prayers and compare the two outermost rings: Fajr (blue, innermost) and Isha (purple, outermost).
+        <br><br>
+        Both are twilight prayers. Both have gaps at high latitudes in summer. But look carefully — <strong>Isha's gap is slightly smaller than Fajr's.</strong>
+        <br><br>
+        The reason: Fajr uses 18° below the horizon. Isha uses 17°. That single degree means Isha remains calculable at slightly higher latitudes before it too disappears. <strong>One degree of solar angle, visible as arc length.</strong>
+        <br><br>
+        This difference — invisible in any prayer time table, invisible in any app — is only visible here.
+      </div>
+      <div class="story-quote">
+        This is why the clock exists: to reveal what numbers alone cannot show.
+      </div>
+    </div>
+
+    <!-- Story 6: The dial -->
+    <div class="story-card" data-pi="-1" style="--story-color:var(--cyan);">
+      <div class="story-num">06 / 06</div>
+      <div class="story-prayer" style="color:var(--cyan);">
+        <div class="story-dot" style="background:var(--cyan);"></div>The Separation
+      </div>
+      <div class="story-title">From Chaos to <em>Structure</em></div>
+      <div class="story-body">
+        Drag the centre dial from 0% to 100%. Watch what happens.
+        <br><br>
+        At 0%: all five prayers overlap into one dense, beautiful ring. This is the reality of global worship — inseparable, continuous, constant. The chaos is not disorder. It is the sound of the world praying.
+        <br><br>
+        At 100%: five distinct orbits emerge. Each prayer finds its own place. The structure of Islamic time becomes legible — <strong>five waves, each with its own character, its own story, its own geometry.</strong>
+        <br><br>
+        The transition between them is the moment of revelation.
+      </div>
+      <div class="story-quote">
+        "And establish prayer. Indeed, prayer restrains from immorality and wrongdoing." — Quran 29:45
+      </div>
+    </div>
+
+    <div class="story-footer">
+      The Adhan Clock is part of AdhanLive — a live global visualization of Islamic prayer.<br>
+      Every dot represents a real mosque. Every ring tells a real story.
+    </div>
+  </div>
+
 </div>
 
 <footer>
   <div class="footer-logo">Adhan<span>Live</span></div>
-  <div class="footer-text">157,890 mosques · Pre-computed · All 12 months</div>
+  <div class="footer-text">Based on 157,890 mosques · Pre-computed · Solar geometry</div>
   <a href="prayer-arcs.html" target="_blank" class="nav-link" style="font-size:10px;">Adhan Arc Explorer →</a>
 </footer>
 
@@ -204,51 +482,43 @@ footer{border-top:1px solid var(--border);padding:11px 32px;display:flex;align-i
 // ── Constants ──────────────────────────────────────────────────────
 const PRAYER_COLORS=['#4466ff','#ffcc00','#e07a2f','#d94f3d','#9b59c4'];
 const PRAYER_COLORS_A=PRAYER_COLORS.map(c=>c+'bb');
+const PRAYER_COLORS_DIM=PRAYER_COLORS.map(c=>c+'22');
 const PRAYER_RING_POS=[0.1,0.32,0.54,0.76,0.98];
 const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MODE_DESC={local:'Prayer times in your local timezone',utc:'When prayers fire globally in UTC'};
 const MODE_LABEL={local:'Your Local Time',utc:'UTC — Global Wave'};
-// Representative doy for each month
-const MONTH_DOYS=[15,46,74,105,135,166,196,227,258,288,319,349];
-// Fajr gap critical latitude per month (pre-computed)
-
 
 // ── State ──────────────────────────────────────────────────────────
 const canvas=document.getElementById('clockCanvas');
 const ctx=canvas.getContext('2d');
 let CW,CX,CY,R_outer,R_inner,R_dial;
-let dotSize=0.8;
-let currentMonth=5; // 1-12
-let clockMode='local';
-let activeRegion='all';
+let dotSize=0.8,currentMonth=5,clockMode='local';
+let activeRegion='all',highlightPi=-1; // -1 = show all
 let separateT=0,dialAngleAccum=-Math.PI/2;
 let isDragging=false,lastAngle=null;
-let rafPending=false;
+let rafPending=false,playing=false,playTimer=null;
+let showNowMarker=true;
 let userTZ=-(new Date().getTimezoneOffset()/60);
-
-// ── Data storage per month ─────────────────────────────────────────
-// Each month: {utc: Uint16Array, solar: Uint16Array, rNorm: Uint8Array, prayer: Uint8Array, n: number}
 const monthCache=new Array(13).fill(null);
-let currentData=null; // active Float32Array for rendering {angles, rNorms, prayers}
+let currentData=null;
 
 // ── Canvas sizing ──────────────────────────────────────────────────
 function resizeClock(){
-  const p=document.getElementById('rightPanel');
-  const sz=Math.max(260,Math.min(p.clientWidth-28,p.clientHeight-56));
+  const c=document.querySelector('.centre');
+  const sz=Math.max(240,Math.min(c.clientWidth-24,c.clientHeight-48));
   canvas.width=canvas.height=CW=sz;
   CX=CY=sz/2;R_outer=sz*0.41;R_inner=sz*0.155;R_dial=sz*0.092;
 }
 
-// ── Build render array for current mode ───────────────────────────
-function buildRenderData(monthData,mode){
-  if(!monthData) return null;
-  const{utc,rNorm,prayer,region,n}=monthData;
+// ── Binary parsing ─────────────────────────────────────────────────
+function buildRenderData(d,mode){
+  if(!d) return null;
+  const{utc,rNorm,prayer,region,n}=d;
   const tzShift=Math.round((userTZ/24)*65535);
   const angles=new Float32Array(n);
   if(mode==='utc'){
     for(let i=0;i<n;i++) angles[i]=(utc[i]/65535)*Math.PI*2-Math.PI/2;
   } else {
-    // local: shift by timezone
     for(let i=0;i<n;i++) angles[i]=(((utc[i]+tzShift+65536)%65536)/65535)*Math.PI*2-Math.PI/2;
   }
   return{angles,rNorm,prayer,region,n};
@@ -262,7 +532,7 @@ function drawBase(){
   ctx.fillStyle=bg;ctx.fillRect(0,0,CW,CW);
 
   ctx.save();
-  ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=1;
+  ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(CX,CY,R_outer+13,0,Math.PI*2);ctx.stroke();
   ctx.beginPath();ctx.arc(CX,CY,R_inner-5,0,Math.PI*2);ctx.stroke();
   for(let i=1;i<=4;i++){
@@ -273,9 +543,10 @@ function drawBase(){
     const range=R_outer-R_inner;
     for(let pi=0;pi<5;pi++){
       const r=R_inner+range*PRAYER_RING_POS[pi];
-      ctx.strokeStyle=PRAYER_COLORS[pi]+'44';
+      const isHL=highlightPi===-1||highlightPi===pi;
+      ctx.strokeStyle=PRAYER_COLORS[pi]+(isHL?'44':'18');
       ctx.lineWidth=Math.max(0.5,separateT*10);
-      ctx.globalAlpha=separateT*0.4;
+      ctx.globalAlpha=separateT*(isHL?0.4:0.1);
       ctx.beginPath();ctx.arc(CX,CY,r,0,Math.PI*2);ctx.stroke();
       ctx.globalAlpha=1;
     }
@@ -286,14 +557,14 @@ function drawBase(){
   for(let h=0;h<24;h++){
     const a=(h/24)*Math.PI*2-Math.PI/2;
     const maj=h%6===0,mid=h%3===0;
-    ctx.strokeStyle=maj?'rgba(255,255,255,0.55)':mid?'rgba(255,255,255,0.2)':'rgba(255,255,255,0.07)';
+    ctx.strokeStyle=maj?'rgba(255,255,255,0.5)':mid?'rgba(255,255,255,0.18)':'rgba(255,255,255,0.06)';
     ctx.lineWidth=maj?1.5:0.5;
     ctx.beginPath();
     ctx.moveTo(CX+Math.cos(a)*(R_outer+(maj?5:mid?3:1.5)),CY+Math.sin(a)*(R_outer+(maj?5:mid?3:1.5)));
     ctx.lineTo(CX+Math.cos(a)*(R_outer+13),CY+Math.sin(a)*(R_outer+13));
     ctx.stroke();
     const lr=R_outer+24;
-    ctx.fillStyle=maj?'rgba(255,255,255,0.72)':'rgba(255,255,255,0.28)';
+    ctx.fillStyle=maj?'rgba(255,255,255,0.7)':'rgba(255,255,255,0.25)';
     ctx.font=(maj?`600 ${CW*0.018}px`:`400 ${CW*0.015}px`)+' Inter,sans-serif';
     ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText(h.toString().padStart(2,'0'),CX+Math.cos(a)*lr,CY+Math.sin(a)*lr);
@@ -301,7 +572,7 @@ function drawBase(){
   ctx.restore();
 
   ctx.save();
-  ctx.fillStyle='rgba(255,255,255,0.08)';
+  ctx.fillStyle='rgba(255,255,255,0.07)';
   ctx.font=`600 ${CW*0.022}px Inter,sans-serif`;
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText('ADHAN',CX,CY-CW*0.022);
@@ -312,151 +583,182 @@ function drawBase(){
 function drawDots(){
   if(!currentData) return;
   const{angles,rNorm,prayer,region,n}=currentData;
-  const range=R_outer-R_inner;
-  const ds=dotSize;
-  const st=separateT;
-  // Region codes: 0=other,1=gulf,2=southasia,3=seasia,4=nafrica,5=europe,6=wafrica
+  const range=R_outer-R_inner,ds=dotSize,st=separateT;
   const RCODES={all:-1,gulf:1,southasia:2,seasia:3,nafrica:4,europe:5,wafrica:6};
-  const filterCode=RCODES[activeRegion];
+  const fc=RCODES[activeRegion];
 
   for(let pi=0;pi<5;pi++){
     const rSep=PRAYER_RING_POS[pi];
+    const isHL=highlightPi===-1||highlightPi===pi;
     ctx.beginPath();
     for(let i=0;i<n;i++){
       if(prayer[i]!==pi) continue;
-      if(filterCode!==-1 && region[i]!==filterCode) continue;
+      if(fc!==-1&&region[i]!==fc) continue;
       const rCol=rNorm[i]/255;
       let finalR;
-      if(st<0.01){
-        finalR=R_inner+range*rCol;
-      } else {
+      if(st<0.01) finalR=R_inner+range*rCol;
+      else {
         const rN=rCol+(rSep-rCol)*st;
         finalR=R_inner+range*(rSep+(rN-rSep)*(1-st)*0.6);
       }
-      const a=angles[i];
-      const x=CX+Math.cos(a)*finalR;
-      const y=CY+Math.sin(a)*finalR;
-      ctx.moveTo(x+ds,y);
-      ctx.arc(x,y,ds,0,Math.PI*2);
+      const x=CX+Math.cos(angles[i])*finalR;
+      const y=CY+Math.sin(angles[i])*finalR;
+      ctx.moveTo(x+ds,y);ctx.arc(x,y,ds,0,Math.PI*2);
     }
-    ctx.fillStyle=PRAYER_COLORS_A[pi];
+    ctx.fillStyle=isHL?PRAYER_COLORS_A[pi]:PRAYER_COLORS_DIM[pi];
     ctx.fill();
   }
 }
 
 function drawDial(){
-  const dialAngle=-Math.PI/2+separateT*Math.PI*2;
+  const da=-Math.PI/2+separateT*Math.PI*2;
   ctx.save();
   ctx.beginPath();ctx.arc(CX,CY,R_dial,0,Math.PI*2);
   const dg=ctx.createRadialGradient(CX,CY,0,CX,CY,R_dial);
   dg.addColorStop(0,'rgba(0,212,255,0.1)');dg.addColorStop(1,'rgba(0,212,255,0.03)');
   ctx.fillStyle=dg;ctx.fill();
-  ctx.strokeStyle='rgba(0,212,255,0.25)';ctx.lineWidth=1;ctx.stroke();
+  ctx.strokeStyle='rgba(0,212,255,0.22)';ctx.lineWidth=1;ctx.stroke();
   if(separateT>0.01){
-    ctx.strokeStyle='rgba(0,212,255,0.65)';ctx.lineWidth=2;
-    ctx.shadowColor='rgba(0,212,255,0.4)';ctx.shadowBlur=8;
-    ctx.beginPath();ctx.arc(CX,CY,R_dial,-Math.PI/2,dialAngle);ctx.stroke();
+    ctx.strokeStyle='rgba(0,212,255,0.6)';ctx.lineWidth=2;
+    ctx.shadowColor='rgba(0,212,255,0.35)';ctx.shadowBlur=8;
+    ctx.beginPath();ctx.arc(CX,CY,R_dial,-Math.PI/2,da);ctx.stroke();
   }
   for(let pi=0;pi<5;pi++){
     const a=-Math.PI/2+(pi/4)*Math.PI*2;
-    ctx.globalAlpha=0.4+separateT*0.55;
+    ctx.globalAlpha=0.35+separateT*0.6;
     ctx.beginPath();ctx.arc(CX+Math.cos(a)*R_dial,CY+Math.sin(a)*R_dial,3,0,Math.PI*2);
     ctx.fillStyle=PRAYER_COLORS[pi];ctx.fill();
     ctx.globalAlpha=1;
   }
-  const hx=CX+Math.cos(dialAngle)*R_dial,hy=CY+Math.sin(dialAngle)*R_dial;
+  const hx=CX+Math.cos(da)*R_dial,hy=CY+Math.sin(da)*R_dial;
   ctx.shadowColor='rgba(0,212,255,0.8)';ctx.shadowBlur=14;
   ctx.beginPath();ctx.arc(hx,hy,7,0,Math.PI*2);
   ctx.fillStyle='rgba(0,212,255,0.95)';ctx.fill();
   ctx.strokeStyle='rgba(255,255,255,0.8)';ctx.lineWidth=1.5;ctx.stroke();
   ctx.shadowBlur=0;
-  ctx.fillStyle='rgba(255,255,255,0.5)';
+  ctx.fillStyle='rgba(255,255,255,0.45)';
   ctx.font=`500 ${CW*0.016}px Inter,sans-serif`;
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText(Math.round(separateT*100)+'%',CX,CY);
   ctx.restore();
 }
 
-function render(){
-  drawBase();
-  drawDots();
-  drawDial();
+function drawNowMarker(){
+  if(!showNowMarker) return;
+  const now=new Date();
+  const h=clockMode==='utc'?now.getUTCHours()+now.getUTCMinutes()/60:now.getHours()+now.getMinutes()/60;
+  const a=(h/24)*Math.PI*2-Math.PI/2;
+  ctx.save();
+  ctx.strokeStyle='rgba(255,255,255,0.55)';ctx.lineWidth=1.5;
+  ctx.setLineDash([3,5]);
+  ctx.shadowColor='rgba(255,255,255,0.3)';ctx.shadowBlur=4;
+  ctx.beginPath();
+  ctx.moveTo(CX+Math.cos(a)*(R_inner-4),CY+Math.sin(a)*(R_inner-4));
+  ctx.lineTo(CX+Math.cos(a)*(R_outer+10),CY+Math.sin(a)*(R_outer+10));
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='rgba(255,255,255,0.55)';
+  ctx.font=`600 ${CW*0.014}px Inter,sans-serif`;
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('NOW',CX+Math.cos(a)*(R_outer+22),CY+Math.sin(a)*(R_outer+22));
+  ctx.restore();
 }
 
+function render(){
+  drawBase();drawDots();drawNowMarker();drawDial();
+}
 function scheduleRender(){
   if(rafPending)return;
   rafPending=true;
   requestAnimationFrame(()=>{rafPending=false;render();});
 }
 
-// ── Load month data ────────────────────────────────────────────────
+// ── Dial — fixed lag with passive:false and pointer events ────────
+function getAngle(e){
+  const r=canvas.getBoundingClientRect();
+  return Math.atan2((e.clientY-r.top)*CW/r.height-CY,(e.clientX-r.left)*CW/r.width-CX);
+}
+function nearDial(e){
+  const r=canvas.getBoundingClientRect();
+  const dx=(e.clientX-r.left)*CW/r.width-CX;
+  const dy=(e.clientY-r.top)*CW/r.height-CY;
+  return Math.sqrt(dx*dx+dy*dy)<R_dial+24;
+}
+
+canvas.addEventListener('pointerdown',e=>{
+  if(nearDial(e)){
+    isDragging=true;lastAngle=getAngle(e);
+    canvas.setPointerCapture(e.pointerId);
+    e.preventDefault();
+  }
+});
+canvas.addEventListener('pointermove',e=>{
+  if(!isDragging)return;
+  let delta=getAngle(e)-lastAngle;
+  while(delta>Math.PI)delta-=Math.PI*2;
+  while(delta<-Math.PI)delta+=Math.PI*2;
+  dialAngleAccum+=delta;lastAngle=getAngle(e);
+  separateT=Math.max(0,Math.min(1,(dialAngleAccum+Math.PI/2)/(Math.PI*2)));
+  const lbl=separateT<0.05?'Drag the centre dial to separate prayers':
+    separateT>0.95?'Fully separated — each prayer in its own orbit':
+    `Separating — ${Math.round(separateT*100)}%`;
+  document.getElementById('dialLabel').textContent=lbl;
+  scheduleRender();
+});
+canvas.addEventListener('pointerup',()=>{isDragging=false;});
+canvas.addEventListener('pointercancel',()=>{isDragging=false;});
+
+// ── Load month ─────────────────────────────────────────────────────
 async function loadMonth(month){
   if(monthCache[month]){
-    currentData=buildRenderData(monthCache[month],clockMode);
-    scheduleRender();
+    if(month===currentMonth){
+      currentData=buildRenderData(monthCache[month],clockMode);
+      scheduleRender();
+    }
     return;
   }
   const pad=month.toString().padStart(2,'0');
   const res=await fetch(`./m${pad}.bin`);
-  if(!res.ok) throw new Error(`Month ${month} not found`);
+  if(!res.ok) throw new Error(`m${pad}.bin not found`);
   const buf=await res.arrayBuffer();
-
   const n=Math.floor(buf.byteLength/5);
-  const utcBuf=buf.slice(0,n*2);
-  const utc=new Uint16Array(utcBuf);
+  const utc=new Uint16Array(buf.slice(0,n*2));
   const rNorm=new Uint8Array(buf,n*2,n);
   const prayer=new Uint8Array(buf,n*3,n);
   const region=new Uint8Array(buf,n*4,n);
-
   monthCache[month]={utc,rNorm,prayer,region,n};
-  await new Promise(r=>setTimeout(r,0));
   if(month===currentMonth){
     currentData=buildRenderData(monthCache[month],clockMode);
     scheduleRender();
   }
 }
 
-// ── Dial interaction ───────────────────────────────────────────────
-function getAngle(e){
-  const r=canvas.getBoundingClientRect();
-  const sx=CW/r.width,sy=CW/r.height;
-  return Math.atan2((e.clientY-r.top)*sy-CY,(e.clientX-r.left)*sx-CX);
+// ── Scroll-triggered story highlights ─────────────────────────────
+function initStoryObserver(){
+  const cards=document.querySelectorAll('.story-card');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        cards.forEach(c=>c.classList.remove('active'));
+        entry.target.classList.add('active');
+        const pi=parseInt(entry.target.dataset.pi);
+        highlightPi=pi;
+        // Update legend highlights
+        document.querySelectorAll('.leg-item').forEach(li=>{
+          li.classList.toggle('highlighted',pi===-1||parseInt(li.dataset.pi)===pi);
+        });
+        scheduleRender();
+      }
+    });
+  },{root:document.getElementById('rightPanel'),threshold:0.5});
+  cards.forEach(c=>obs.observe(c));
 }
-function nearDial(e){
-  const r=canvas.getBoundingClientRect();
-  const sx=CW/r.width,sy=CW/r.height;
-  const dx=(e.clientX-r.left)*sx-CX,dy=(e.clientY-r.top)*sy-CY;
-  return Math.sqrt(dx*dx+dy*dy)<R_dial+22;
-}
-canvas.addEventListener('mousedown',e=>{if(nearDial(e)){isDragging=true;lastAngle=getAngle(e);e.preventDefault();}});
-canvas.addEventListener('touchstart',e=>{if(nearDial(e.touches[0])){isDragging=true;lastAngle=getAngle(e.touches[0]);e.preventDefault();}},{passive:false});
-function onMove(e){
-  if(!isDragging)return;
-  const ce=e.touches?e.touches[0]:e;
-  let delta=getAngle(ce)-lastAngle;
-  while(delta>Math.PI)delta-=Math.PI*2;
-  while(delta<-Math.PI)delta+=Math.PI*2;
-  dialAngleAccum+=delta;lastAngle=getAngle(ce);
-  separateT=Math.max(0,Math.min(1,(dialAngleAccum+Math.PI/2)/(Math.PI*2)));
-  const lbl=separateT<0.05?'Drag the centre dial to separate prayers':
-    separateT>0.95?'Prayers fully separated — each in its own orbit':
-    `Separating — ${Math.round(separateT*100)}%`;
-  document.getElementById('dialLabel').textContent=lbl;
-}
-function onUp(){isDragging=false;}
-canvas.addEventListener('mousemove',onMove);
-canvas.addEventListener('touchmove',onMove,{passive:false});
-canvas.addEventListener('mouseup',onUp);canvas.addEventListener('touchend',onUp);
-window.addEventListener('mouseup',onUp);
-
 
 // ── Controls ───────────────────────────────────────────────────────
-let playing=false, playTimer=null;
-
 document.getElementById('monthSlider').addEventListener('input',e=>{
   stopPlay();
   currentMonth=+e.target.value;
-  document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
+  document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
   loadMonth(currentMonth);
 });
 
@@ -464,42 +766,33 @@ document.getElementById('btnNow').addEventListener('click',()=>{
   stopPlay();
   currentMonth=new Date().getMonth()+1;
   document.getElementById('monthSlider').value=currentMonth;
-  document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
-  loadMonth(currentMonth);
+  document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
   showNowMarker=true;
-  scheduleRender();
+  loadMonth(currentMonth);
 });
 
-// Play Year button
 const playBtn=document.getElementById('playBtn');
-playBtn.addEventListener('click',()=>{
-  if(playing){stopPlay();}
-  else{startPlay();}
-});
+playBtn.addEventListener('click',()=>playing?stopPlay():startPlay());
 
 function startPlay(){
-  playing=true;
-  playBtn.textContent='■ Stop';
-  playBtn.classList.add('active');
-  showNowMarker=false;
+  playing=true;showNowMarker=false;
+  playBtn.textContent='■ Stop';playBtn.classList.add('active');
   animateYear();
 }
 function stopPlay(){
-  playing=false;
-  if(playTimer) cancelAnimationFrame(playTimer);
-  playBtn.textContent='▶ Play Year';
-  playBtn.classList.remove('active');
+  playing=false;if(playTimer)clearTimeout(playTimer);
+  playBtn.textContent='▶ Play Year';playBtn.classList.remove('active');
 }
 function animateYear(){
-  if(!playing) return;
+  if(!playing)return;
   currentMonth=currentMonth>=12?1:currentMonth+1;
   document.getElementById('monthSlider').value=currentMonth;
-  document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
+  document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
   if(monthCache[currentMonth]){
     currentData=buildRenderData(monthCache[currentMonth],clockMode);
     scheduleRender();
   }
-  playTimer=setTimeout(animateYear, 600);
+  playTimer=setTimeout(animateYear,600);
 }
 
 document.querySelectorAll('.seg-btn[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{
@@ -507,7 +800,7 @@ document.querySelectorAll('.seg-btn[data-mode]').forEach(btn=>btn.addEventListen
   btn.classList.add('active');clockMode=btn.dataset.mode;
   document.getElementById('modeDesc').textContent=MODE_DESC[clockMode];
   document.getElementById('clockTopLabel').textContent='Global Prayer Wave · '+MODE_LABEL[clockMode];
-  if(monthCache[currentMonth]) currentData=buildRenderData(monthCache[currentMonth],clockMode);
+  if(monthCache[currentMonth])currentData=buildRenderData(monthCache[currentMonth],clockMode);
   scheduleRender();
 }));
 
@@ -521,75 +814,40 @@ document.querySelectorAll('.region-btn').forEach(btn=>btn.addEventListener('clic
   btn.classList.add('active');activeRegion=btn.dataset.region;scheduleRender();
 }));
 
+// Legend click to highlight
+document.getElementById('legend').addEventListener('click',e=>{
+  const item=e.target.closest('.leg-item');
+  if(!item)return;
+  const pi=parseInt(item.dataset.pi);
+  highlightPi=highlightPi===pi?-1:pi;
+  document.querySelectorAll('.leg-item').forEach(li=>
+    li.classList.toggle('highlighted',highlightPi===-1||parseInt(li.dataset.pi)===highlightPi));
+  scheduleRender();
+});
+
 window.addEventListener('resize',()=>{resizeClock();render();});
-
-// ── Now marker ─────────────────────────────────────────────────────
-let showNowMarker=true;
-function drawNowMarker(){
-  if(!showNowMarker) return;
-  const now=new Date();
-  const h=clockMode==='utc'
-    ? now.getUTCHours()+now.getUTCMinutes()/60
-    : now.getHours()+now.getMinutes()/60;
-  const a=(h/24)*Math.PI*2-Math.PI/2;
-  ctx.save();
-  ctx.strokeStyle='rgba(255,255,255,0.6)';
-  ctx.lineWidth=1.5;
-  ctx.setLineDash([3,5]);
-  ctx.shadowColor='rgba(255,255,255,0.4)';
-  ctx.shadowBlur=6;
-  ctx.beginPath();
-  ctx.moveTo(CX+Math.cos(a)*(R_inner-5),CY+Math.sin(a)*(R_inner-5));
-  ctx.lineTo(CX+Math.cos(a)*(R_outer+10),CY+Math.sin(a)*(R_outer+10));
-  ctx.stroke();
-  ctx.setLineDash([]);
-  // Small label
-  const lr=R_outer+20;
-  ctx.fillStyle='rgba(255,255,255,0.6)';
-  ctx.font=`500 ${CW*0.014}px Inter,sans-serif`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('NOW',CX+Math.cos(a)*lr,CY+Math.sin(a)*lr);
-  ctx.restore();
-}
-
-// Override render to include now marker
-const _render=render;
-function render(){
-  drawBase();
-  drawDots();
-  drawNowMarker();
-  drawDial();
-}
 
 // ── Init ───────────────────────────────────────────────────────────
 async function init(){
   const bar=document.getElementById('loadingBar');
-  const msg=document.getElementById('loadingMsg');
-
   currentMonth=new Date().getMonth()+1;
   document.getElementById('monthSlider').value=currentMonth;
-  document.getElementById('dateBadge').textContent=MONTH_NAMES[currentMonth-1]+' 2026';
+  document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
 
-  bar.style.width='20%';
-  msg.textContent=`Loading ${MONTH_NAMES[currentMonth-1]} prayer data…`;
+  bar.style.width='25%';
+  await loadMonth(currentMonth);
+  bar.style.width='60%';
+  resizeClock();render();
+  await new Promise(r=>setTimeout(r,150));
+  document.getElementById('loadingOverlay').classList.add('hidden');
+  setTimeout(()=>document.getElementById('loadingOverlay').remove(),450);
 
-  try{
-    // Load current month first
-    await loadMonth(currentMonth);
-    bar.style.width='50%';
-    resizeClock();render();
-    await new Promise(r=>setTimeout(r,200));
-    document.getElementById('loadingOverlay').classList.add('hidden');
-    setTimeout(()=>document.getElementById('loadingOverlay').remove(),500);
+  initStoryObserver();
 
-    // Preload ALL remaining months in background — 128KB each = instant slider
-    for(let m=1;m<=12;m++){
-      if(m===currentMonth) continue;
-      await loadMonth(m);
-    }
-
-  }catch(err){
-    console.error(err);
+  // Preload all months silently
+  for(let m=1;m<=12;m++){
+    if(m===currentMonth)continue;
+    await loadMonth(m);
   }
 }
 

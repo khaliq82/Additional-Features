@@ -6,6 +6,23 @@
 <title>The Adhan Arc Explorer — AdhanLive</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
+</head>
+<body>
+
+<!-- ROTATE OVERLAY -->
+<div id="rotate-overlay">
+  <svg class="rotate-icon" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Phone outline -->
+    <rect x="22" y="8" width="36" height="64" rx="6" stroke="rgba(0,212,255,0.5)" stroke-width="2.5"/>
+    <rect x="28" y="14" width="24" height="40" rx="2" fill="rgba(0,212,255,0.08)"/>
+    <circle cx="40" cy="62" r="3" fill="rgba(0,212,255,0.4)"/>
+    <!-- Rotation arrow -->
+    <path d="M62 18 Q72 28 68 42" stroke="#00d4ff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <polyline points="65,42 68,42 68,48" stroke="#00d4ff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </svg>
+  <h2>Rotate Your Phone</h2>
+  <p>The Adhan Arc Explorer is best experienced in landscape mode.</p>
+</div>
 <style>
 :root {
   --bg:      #03050e;
@@ -27,6 +44,47 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── ROTATE OVERLAY ── */
+#rotate-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  text-align: center;
+  padding: 40px;
+}
+#rotate-overlay .rotate-icon {
+  width: 80px;
+  height: 80px;
+  animation: rotateHint 2s ease-in-out infinite;
+}
+@keyframes rotateHint {
+  0%   { transform: rotate(0deg); }
+  30%  { transform: rotate(-90deg); }
+  60%  { transform: rotate(-90deg); }
+  100% { transform: rotate(0deg); }
+}
+#rotate-overlay h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  color: var(--text);
+}
+#rotate-overlay p {
+  color: var(--text4);
+  font-size: 0.95rem;
+  max-width: 260px;
+  line-height: 1.6;
+}
+/* Show overlay only on portrait mobile */
+@media (max-width: 768px) and (orientation: portrait) {
+  #rotate-overlay { display: flex; }
+}
 
 html { scroll-behavior: smooth; }
 

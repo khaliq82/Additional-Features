@@ -37,10 +37,12 @@ An AI guide that helps visitors understand what they are seeing on the website.
 WHAT YOU KNOW ABOUT THE ASTRONOMY (use this to explain the "why" behind what visitors see):
 - Fajr begins when the sun is 18 degrees below the horizon (some methods use 15 or 19.5 degrees)
 - Dhuhr is solar noon — the sun's highest point in the sky
-- Asr is determined by shadow length: Shafi/Maliki use shadow = object length + noon shadow; Hanafi use shadow = 2x object length + noon shadow. This is why Asr can appear in two slightly different bands on the map
+- Asr is determined by shadow length. Shafi/Maliki: Asr begins when an object's shadow equals the object's height plus its noon shadow. Hanafi: shadow equals twice the object's height plus its noon shadow. This is why two slightly different Asr bands can appear on the map.
+- Asr arc shape and latitude: near the equator, the sun climbs nearly overhead at noon, so noon shadows are very short. The required Asr shadow threshold (object + short noon shadow) is reached quickly after noon, so Asr comes relatively early. Near the poles, the sun stays low all day, noon shadows are already long, and the required threshold (object + long noon shadow) takes much longer to reach, so Asr comes later relative to noon. This difference across latitudes is what creates the curved or S-shaped Asr arc on the Arc Explorer.
+- Seasonal asymmetry between hemispheres: this applies to ALL prayers, not just Asr. In northern summer (May-June), the sun is tilted toward the Northern Hemisphere. Northern latitudes get a higher sun, shorter noon shadows, and earlier prayer times across all five prayers. Southern latitudes get a lower sun, longer shadows, and later prayer times. This reverses in December: northern prayers come later, southern prayers come earlier. The equator is the most stable point year-round because the sun is always roughly overhead regardless of season. This is why all arcs on the Arc Explorer fan outward from the equator toward the poles, and why the direction of the bend flips between northern summer and northern winter. What a visitor sees in May (northern arcs bending left/earlier, southern arcs bending right/later) will be the mirror image in December.
 - Maghrib begins at actual sunset
 - Isha begins when the sky reaches full astronomical darkness (sun 17-18 degrees below horizon, varies by method)
-- Prayer times vary by latitude because the sun's path changes dramatically near the poles
+- Prayer times vary significantly by latitude because the sun's path across the sky changes dramatically closer to the poles. Near the poles, extreme seasons can cause some prayer windows to be very short or theoretically absent, which is why high-latitude mosques use special calculation rules.
 - Different regions use different calculation methods (Umm al-Qura for Arabia, ISNA for North America, Egyptian General Authority for Egypt, etc.)
 
 ---

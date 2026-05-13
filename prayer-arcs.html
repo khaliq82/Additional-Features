@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Adhan Arc Explorer — AdhanLive</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/topojson-client@3/dist/topojson-client.min.js"></script>
+<style>
+:root {
+  --bg:      #03050e;
+  --bg2:     #070a18;
+  --bg3:     #0c1020;
+  --border:  rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.15);
+  --cyan:    #00d4ff;
+  --cyan2:   rgba(0,212,255,0.15);
+  --fajr:    #4466ff;
+  --dhuhr:   #ffcc00;
+  --asr:     #e07a2f;
+  --maghrib: #d94f3d;
+  --isha:    #9b59c4;
+  --text:    #ffffff;
+  --text2:   #ffffff;
+  --text3:   #ffffff;
+  --text4:   rgba(255,255,255,0.45);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.2); border-radius: 2px; }
+
+/* ── NAV ── */
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 40px;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(3,5,14,0.94);
+  backdrop-filter: blur(16px);
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.nav-logo span { color: var(--cyan); }
+.nav-center {
+  font-size: 13px; letter-spacing: 0.12em;
+  color: #ffffff; font-weight: 600;
+  text-transform: uppercase;
+}
+.nav-ask {
+  font-size: 10px; letter-spacing: 0.12em;
+  color: var(--cyan); text-decoration: none;
+  padding: 7px 16px;
+  border: 1px solid rgba(0,212,255,0.3);
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-ask:hover {
+  background: rgba(0,212,255,0.08);
+  border-color: rgba(0,212,255,0.6);
+}
+.nav-ask::after { content: '→'; }
+
+/* ── SECTION DIVIDER ── */
+.section-divider {
+  max-width: 1280px; margin: 0 auto;
+  padding: 0 40px;
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 32px;
+}
+.section-divider-line { flex: 1; height: 1px; background: var(--border); }
+.section-divider-label {
+  font-size: 8px; letter-spacing: 0.28em;
+  color: var(--text4); font-weight: 400;
+}
+.hero {
+  padding: 56px 40px 48px;
+  max-width: 1280px; margin: 0 auto;
+}
+.hero-eyebrow {
+  font-size: 9px; letter-spacing: 0.26em;
+  color: var(--cyan); opacity: 0.75;
+  margin-bottom: 14px; font-weight: 400;
+}
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 700; line-height: 1.08;
+  margin-bottom: 16px; letter-spacing: -0.02em;
+}
+.hero-title em { font-style: italic; color: var(--cyan); font-weight: 400; }
+.hero-sub {
+  font-size: 13px; color: var(--text2);
+  line-height: 1.8; max-width: 560px; font-weight: 300;
+}
+.hero-meta {
+  margin-top: 20px;
+  display: flex; align-items: center; gap: 20px;
+  font-size: 9px; letter-spacing: 0.14em; color: var(--text3);
+}
+.hero-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text4); }
+
+/* ── CONTROLS — compact single strip ── */
+.controls-wrap {
+  padding: 0 20px;
+  margin-bottom: 8px;
+}
+.controls {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.controls-row {
+  display: flex; align-items: center;
+  gap: 20px; flex-wrap: wrap;
+}
+.control-group { display: flex; flex-direction: column; gap: 5px; }
+.control-label {
+  font-size: 8px; letter-spacing: 0.18em;
+  color: var(--text4); font-weight: 400;
+  text-transform: uppercase;
+}
+.date-display {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px; font-weight: 600;
+  color: var(--text); min-width: 160px; line-height: 1;
+}
+.date-display span { color: var(--cyan); }
+
+.slider-wrap { display: flex; align-items: center; gap: 10px; }
+.day-label { font-size: 9px; color: var(--text3); white-space: nowrap; }
+
+input[type=range] {
+  -webkit-appearance: none;
+  height: 2px;
+  background: var(--border2);
+  border-radius: 2px; outline: none; cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--cyan);
+  box-shadow: 0 0 8px rgba(0,212,255,0.5);
+  cursor: pointer;
+}
+
+/* Auto-play button */
+.btn-play {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; font-weight: 400;
+  cursor: pointer; transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-play:hover { border-color: var(--cyan); color: var(--cyan); }
+.btn-play.playing { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,255,0.05); }
+.play-icon { font-size: 10px; }
+
+/* Prayer toggles */
+.prayer-toggles { display: flex; gap: 5px; flex-wrap: wrap; }
+.ptoggle {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 4px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px; font-weight: 400;
+  transition: all 0.18s; user-select: none;
+}
+.ptoggle.active { border-color: currentColor; background: rgba(255,255,255,0.03); }
+.ptoggle:not(.active) { opacity: 0.25; border-color: var(--border); }
+.ptoggle-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── MAP ── */
+.map-wrap {
+  padding: 0 20px;
+  margin-bottom: 8px;
+}
+.map-outer {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: 10px; overflow: hidden;
+  background: #040710;
+  height: calc(100vh - 52px - 110px - 16px);
+  min-height: 320px;
+}
+canvas#mapCanvas {
+  display: block;
+  width: 100%; height: 100%;
+}
+.map-corner-label {
+  position: absolute; top: 14px; right: 18px;
+  font-size: 8px; letter-spacing: 0.18em;
+  color: var(--text4);
+}
+.map-corner-label2 {
+  position: absolute; bottom: 14px; left: 18px;
+  font-size: 8px; letter-spacing: 0.14em;
+  color: var(--text4);
+}
+
+/* ── STATS ROW ── */
+.stats-row {
+  max-width: 1280px; margin: 0 auto 56px;
+  padding: 0 40px;
+  display: grid; grid-template-columns: repeat(5,1fr); gap: 10px;
+}
+.stat-card {
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg2);
+  transition: border-color 0.2s, transform 0.2s;
+  cursor: default;
+}
+.stat-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.sc-prayer { font-size: 8px; letter-spacing: 0.2em; margin-bottom: 10px; font-weight: 400; }
+.sc-angle { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+.sc-note { font-size: 9px; color: var(--text3); line-height: 1.55; font-weight: 300; }
+.sc-coverage { font-size: 9px; color: var(--text4); margin-top: 8px; font-weight: 300; }
+
+/* ── EDUCATIONAL SECTION ── */
+.edu-section {
+  max-width: 1280px; margin: 0 auto 80px;
+  padding: 0 40px;
+}
+.edu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.edu-card {
+  padding: 40px 40px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s;
+}
+.edu-card:hover { background: var(--bg3); }
+.edu-card:nth-child(2n) { border-right: none; }
+.edu-card:nth-last-child(-n+2) { border-bottom: none; }
+.edu-card.full-width {
+  grid-column: 1 / -1;
+  border-right: none;
+  border-bottom: none;
+}
+
+.edu-card-glow {
+  position: absolute; top: -40px; right: -40px;
+  width: 140px; height: 140px;
+  border-radius: 50%;
+  opacity: 0.06;
+  filter: blur(40px);
+  pointer-events: none;
+}
+.edu-number {
+  font-family: 'Playfair Display', serif;
+  font-size: 60px; font-weight: 300;
+  position: absolute; top: 20px; right: 28px;
+  color: var(--text4);
+  line-height: 1;
+}
+.edu-prayer-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 8px; letter-spacing: 0.2em;
+  padding: 4px 10px;
+  border-radius: 3px;
+  margin-bottom: 20px;
+  border: 1px solid currentColor;
+  opacity: 0.8;
+}
+.edu-badge-dot { width: 6px; height: 6px; border-radius: 50%; }
+.edu-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; font-weight: 400;
+  line-height: 1.2; margin-bottom: 14px;
+  letter-spacing: -0.01em;
+}
+.edu-title em { font-style: italic; }
+.edu-body {
+  font-size: 11px; color: var(--text2);
+  line-height: 1.85; font-weight: 300;
+  max-width: 440px;
+}
+.edu-body strong { color: var(--text); font-weight: 400; }
+.edu-fact {
+  margin-top: 20px;
+  padding: 12px 16px;
+  background: rgba(255,255,255,0.02);
+  border-left: 2px solid currentColor;
+  border-radius: 0 4px 4px 0;
+  font-size: 10px; color: var(--text3);
+  line-height: 1.65; font-style: italic;
+}
+
+/* ── HIGH LATITUDE SECTION ── */
+.polar-section {
+  max-width: 1280px; margin: 0 auto 80px;
+  padding: 0 40px;
+}
+.polar-inner {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+}
+.polar-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 34px; font-weight: 400;
+  line-height: 1.15; margin-bottom: 16px;
+}
+.polar-title em { font-style: italic; color: var(--cyan); }
+.polar-body {
+  font-size: 11px; color: var(--text2);
+  line-height: 1.85; font-weight: 300;
+  margin-bottom: 20px;
+}
+.polar-body strong { color: var(--text); font-weight: 400; }
+.polar-solutions { display: flex; flex-direction: column; gap: 10px; }
+.polar-solution {
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 10px; color: var(--text2); line-height: 1.6;
+}
+.polar-solution strong { color: var(--cyan); font-weight: 400; display: block; margin-bottom: 3px; font-size: 9px; letter-spacing: 0.12em; }
+
+canvas#polarCanvas {
+  width: 100%; height: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 40px;
+  max-width: 1280px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 600;
+}
+.footer-logo span { color: var(--cyan); }
+.footer-text { font-size: 9px; color: var(--text4); letter-spacing: 0.14em; }
+.footer-link {
+  font-size: 10px; color: var(--cyan);
+  text-decoration: none; letter-spacing: 0.1em;
+  opacity: 0.7; transition: opacity 0.2s;
+}
+.footer-link:hover { opacity: 1; }
+
+/* ── TOOLTIP ── */
+#tooltip {
+  position: fixed; pointer-events: none;
+  background: rgba(3,5,14,0.96);
+  border: 1px solid var(--border2);
+  border-radius: 8px; padding: 12px 16px;
+  font-size: 11px; color: var(--text2);
+  display: none; z-index: 300;
+  backdrop-filter: blur(12px);
+  line-height: 1.8; min-width: 200px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+#tooltip strong { color: var(--text); display: block; margin-bottom: 6px; font-size: 11px; }
+.tt-row { display: flex; align-items: center; gap: 8px; }
+.tt-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.hero        { animation: fadeUp 0.7s ease both; }
+.controls-wrap { animation: fadeUp 0.7s 0.1s ease both; }
+.map-wrap    { animation: fadeUp 0.7s 0.15s ease both; }
+.stats-row   { animation: fadeUp 0.7s 0.2s ease both; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px) {
+  nav, .hero, .controls-wrap, .map-wrap, .stats-row,
+  .edu-section, .polar-section, footer { padding-left:20px; padding-right:20px; }
+  .stats-row { grid-template-columns: repeat(3,1fr); }
+  .edu-grid { grid-template-columns: 1fr; }
+  .edu-card:nth-child(2n) { border-right: none; }
+  .polar-inner { grid-template-columns: 1fr; }
+  input[type=range] { width: 180px; }
+  .controls { gap: 18px; }
+  .nav-center { display: none; }
+  .hero-title { font-size: clamp(32px,8vw,52px); }
+}
+@media(max-width:600px) {
+  .stats-row { grid-template-columns: repeat(2,1fr); }
+  .edu-card { padding: 28px 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Adhan<span>Live</span></div>
+  <div class="nav-center">The Adhan Arc Explorer</div>
+  <a href="ask-adhanlive.html" target="_blank" class="nav-ask">Ask AdhanLive</a>
+</nav>
+
+<!-- CONTROLS -->
+<div class="controls-wrap">
+  <div class="controls">
+
+    <!-- Row 1: Date + Day slider + Play -->
+    <div class="controls-row">
+      <div class="control-group">
+        <div class="control-label">Date</div>
+        <div class="date-display" id="dateDisplay">May <span>9</span>, 2026</div>
+      </div>
+
+      <div class="control-group" style="flex:1">
+        <div class="control-label">Day of Year — seasonal arc shape</div>
+        <div class="slider-wrap">
+          <span class="day-label">Jan 1</span>
+          <input type="range" id="daySlider" min="1" max="365" value="129" style="flex:1">
+          <span class="day-label">Dec 31</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">Animate</div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn-play" id="playDayBtn">
+            <span class="play-icon" id="playDayIcon">▶</span>
+            <span>Year</span>
+          </button>
+          <button class="btn-play" id="playHourBtn">
+            <span class="play-icon" id="playHourIcon">▶</span>
+            <span>Day</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Hour slider + Toggles + Now button -->
+    <div class="controls-row" style="margin-top:16px; padding-top:16px; border-top:1px solid var(--border);">
+      <div class="control-group" style="flex:1">
+        <div class="control-label">UTC Hour — arc position on Earth (east → west)</div>
+        <div class="slider-wrap">
+          <span class="day-label">00:00</span>
+          <input type="range" id="hourSlider" min="0" max="23.99" step="0.1" value="12" style="flex:1">
+          <span class="day-label">24:00</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">UTC Time</div>
+        <div class="date-display" id="hourDisplay" style="font-size:20px;min-width:80px;">12:00</div>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">Jump to Now</div>
+        <button class="btn-play" id="nowBtn">
+          ◎ Now
+        </button>
+      </div>
+
+      <div class="control-group">
+        <div class="control-label">Prayer Arcs</div>
+        <div class="prayer-toggles" id="pToggles">
+          <div class="ptoggle active" data-prayer="fajr" style="color:#4466ff">
+            <div class="ptoggle-dot" style="background:#4466ff"></div>Fajr
+          </div>
+          <div class="ptoggle active" data-prayer="dhuhr" style="color:#ffcc00">
+            <div class="ptoggle-dot" style="background:#ffcc00"></div>Dhuhr
+          </div>
+          <div class="ptoggle active" data-prayer="asr" style="color:#e07a2f">
+            <div class="ptoggle-dot" style="background:#e07a2f"></div>Asr
+          </div>
+          <div class="ptoggle active" data-prayer="maghrib" style="color:#d94f3d">
+            <div class="ptoggle-dot" style="background:#d94f3d"></div>Maghrib
+          </div>
+          <div class="ptoggle active" data-prayer="isha" style="color:#9b59c4">
+            <div class="ptoggle-dot" style="background:#9b59c4"></div>Isha
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MAP -->
+<div class="map-wrap">
+  <div class="map-outer">
+    <canvas id="mapCanvas" width="1200" height="600"></canvas>
+    <div class="map-corner-label">Equirectangular Projection</div>
+    <div class="map-corner-label2" id="seasonLabel">Northern Hemisphere Summer approaching</div>
+  </div>
+</div>
+
+<!-- STATS ROW -->
+<div class="stats-row" id="statsRow"></div>
+
+<!-- HERO — below fold -->
+<div class="hero">
+  <div class="hero-eyebrow">The Adhan Arc · Global Prayer Wave Geometry</div>
+  <h1 class="hero-title">The Shape of<br><em>Sacred Time</em></h1>
+  <p class="hero-sub">
+    Five times a day, the call to prayer sweeps across Earth as a curved wavefront —
+    bending with the seasons, bowing toward the poles, vanishing at the edges of the world.
+    This is the geometry of 1,400 years of Islamic astronomy, made visible.
+  </p>
+  <div class="hero-meta">
+    <span>157,890 Mosques</span>
+    <div class="hero-meta-dot"></div>
+    <span>5 Daily Prayers</span>
+    <div class="hero-meta-dot"></div>
+    <span>Equirectangular Projection</span>
+    <div class="hero-meta-dot"></div>
+    <span>Solar Geometry Engine</span>
+  </div>
+</div>
+
+<!-- SECTION: EDUCATIONAL -->
+<div class="section-divider">
+  <div class="section-divider-line"></div>
+  <div class="section-divider-label">The Astronomy of Prayer</div>
+  <div class="section-divider-line"></div>
+</div>
+
+<div class="edu-section">
+  <div class="edu-grid">
+
+    <!-- Fajr -->
+    <div class="edu-card">
+      <div class="edu-card-glow" style="background:#4466ff"></div>
+      <div class="edu-number">01</div>
+      <div class="edu-prayer-badge" style="color:#4466ff">
+        <div class="edu-badge-dot" style="background:#4466ff"></div>Fajr · Dawn
+      </div>
+      <div class="edu-title">The Most <em>Curved</em> Arc</div>
+      <div class="edu-body">
+        Fajr begins when the sun is <strong>18° below the horizon</strong> — a moment called astronomical twilight.
+        At this angle, the sky begins to faint from black to the deepest navy, barely perceptible to the eye.
+        <br><br>
+        Of all five prayers, Fajr produces the most dramatically curved arc. This is because the sun's angle of approach to the horizon changes
+        the most with latitude — near the poles in summer, the sun never dips 18° below, so Fajr <strong>ceases to exist astronomically</strong>.
+        The arc terminates abruptly where this occurs.
+        <br><br>
+        On the globe, Fajr appears as a <strong>deep blue wave</strong> sweeping westward each day, racing just ahead of the sun's rising.
+      </div>
+      <div class="edu-fact" style="border-color:#4466ff; color:rgba(68,102,255,0.7)">
+        "And eat and drink until the white thread of dawn becomes distinct to you from the black thread of night." — Quran 2:187
+      </div>
+    </div>
+
+    <!-- Dhuhr -->
+    <div class="edu-card">
+      <div class="edu-card-glow" style="background:#ffcc00"></div>
+      <div class="edu-number">02</div>
+      <div class="edu-prayer-badge" style="color:#ffcc00">
+        <div class="edu-badge-dot" style="background:#ffcc00"></div>Dhuhr · Solar Noon
+      </div>
+      <div class="edu-title">The <em>Vertical</em> Line</div>
+      <div class="edu-body">
+        Dhuhr is the only prayer that produces a perfectly vertical arc — a straight line on the map.
+        This is because Dhuhr begins at <strong>solar noon</strong>, the moment the sun reaches its highest point
+        in the sky (the zenith). This moment is purely a function of longitude, not latitude.
+        <br><br>
+        Every mosque on the same meridian experiences solar noon at exactly the same instant.
+        The gold vertical wave on the globe moves westward at exactly <strong>15° of longitude per hour</strong> —
+        the same rate as Earth's rotation.
+        <br><br>
+        Interestingly, solar noon almost never coincides with clock noon — the <strong>Equation of Time</strong>
+        can shift it by up to ±16 minutes throughout the year.
+      </div>
+      <div class="edu-fact" style="border-color:#ffcc00; color:rgba(255,204,0,0.6)">
+        The gold wave on AdhanLive is the most clocklike of all prayers — moving with the mathematical precision of Earth's rotation.
+      </div>
+    </div>
+
+    <!-- Asr -->
+    <div class="edu-card">
+      <div class="edu-card-glow" style="background:#e07a2f"></div>
+      <div class="edu-number">03</div>
+      <div class="edu-prayer-badge" style="color:#e07a2f">
+        <div class="edu-badge-dot" style="background:#e07a2f"></div>Asr · Afternoon
+      </div>
+      <div class="edu-title">The Shadow <em>Theorem</em></div>
+      <div class="edu-body">
+        Asr is the most mathematically elegant prayer. Rather than a fixed angle, it is defined by a
+        <strong>shadow ratio</strong>: Asr begins when an object's shadow equals its own length plus its shadow at solar noon.
+        This is the Shafi, Maliki, and Hanbali position — the Hanafi madhab uses shadow = 2× the object.
+        <br><br>
+        This definition creates a curved arc that changes character dramatically with the seasons.
+        In summer, when the sun is high, Asr comes relatively late in the afternoon. In winter,
+        when the sun is low, Asr arrives much earlier — sometimes only an hour after Dhuhr.
+        <br><br>
+        On the map, Asr's arc is distinctly <strong>S-shaped</strong>, reflecting the changing solar declination.
+      </div>
+      <div class="edu-fact" style="border-color:#e07a2f; color:rgba(224,122,47,0.7)">
+        The Prophet ﷺ said: "Whoever prays the two cool prayers (Fajr and Asr) will go to Paradise." — Bukhari
+      </div>
+    </div>
+
+    <!-- Maghrib -->
+    <div class="edu-card">
+      <div class="edu-card-glow" style="background:#d94f3d"></div>
+      <div class="edu-number">04</div>
+      <div class="edu-prayer-badge" style="color:#d94f3d">
+        <div class="edu-badge-dot" style="background:#d94f3d"></div>Maghrib · Sunset
+      </div>
+      <div class="edu-title">The <em>Precise</em> Moment</div>
+      <div class="edu-body">
+        Maghrib is the most universally agreed-upon prayer time — all four madhabs agree it begins at
+        <strong>actual sunset</strong>, when the upper limb of the sun disappears below the horizon.
+        Astronomically, this is when the sun is at <strong>−0.833°</strong> (accounting for atmospheric refraction
+        and the sun's angular radius).
+        <br><br>
+        Unlike Fajr and Isha, Maghrib never disappears at high latitudes in the same way —
+        the sun always sets (except at the poles). However, in summer near the Arctic Circle,
+        Maghrib can occur very late, sometimes after 11 PM local time.
+        <br><br>
+        The red wave on AdhanLive is the most dramatic — it sweeps across the terminator line,
+        precisely tracing <strong>where day becomes night</strong> on Earth.
+      </div>
+      <div class="edu-fact" style="border-color:#d94f3d; color:rgba(217,79,61,0.7)">
+        Maghrib traces the sunset terminator — the same boundary that Apollo astronauts photographed from space.
+      </div>
+    </div>
+
+    <!-- Isha — full width -->
+    <div class="edu-card full-width">
+      <div class="edu-card-glow" style="background:#9b59c4; width:200px; height:200px; top:-60px; right:-60px;"></div>
+      <div class="edu-number">05</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:40px;">
+        <div>
+          <div class="edu-prayer-badge" style="color:#9b59c4">
+            <div class="edu-badge-dot" style="background:#9b59c4"></div>Isha · Night
+          </div>
+          <div class="edu-title">The <em>Widest</em> Wave</div>
+          <div class="edu-body">
+            Isha begins when the red twilight (shafaq) has completely disappeared — when the sun is
+            <strong>17–18° below the horizon</strong> depending on the calculation method used.
+            Like Fajr, it is defined by twilight angle, but on the opposite side of the night.
+            <br><br>
+            Isha is often described as the "widest" prayer in terms of simultaneous global coverage.
+            Because it spans from late sunset to before midnight, it covers the broadest arc of longitude
+            at any given moment — the purple wave on AdhanLive covers up to <strong>40% of Earth's surface</strong> simultaneously.
+          </div>
+          <div class="edu-fact" style="border-color:#9b59c4; color:rgba(155,89,196,0.7); margin-top:20px;">
+            There are at least 7 different Isha angle values used globally — from 15° to 18° — explaining why Isha times
+            can differ by up to 30 minutes between apps for the same location.
+          </div>
+        </div>
+        <div>
+          <div class="edu-prayer-badge" style="color:rgba(255,255,255,0.3)">
+            <div class="edu-badge-dot" style="background:rgba(255,255,255,0.2)"></div>The Equation of Time
+          </div>
+          <div class="edu-title">Why <em>Solar Noon</em> Moves</div>
+          <div class="edu-body">
+            All prayer times are anchored to solar noon — but solar noon itself is not fixed.
+            Due to Earth's elliptical orbit and axial tilt, the sun runs up to <strong>16 minutes fast or slow</strong>
+            compared to a perfect clock throughout the year. This is called the Equation of Time.
+            <br><br>
+            Islamic astronomers understood this centuries before modern timekeeping. The seasonal
+            breathing of the arcs you see in the visualizer above is partly due to this effect —
+            the arc positions shift subtly each day even at the same latitude, a direct consequence
+            of <strong>orbital mechanics</strong>.
+          </div>
+          <div class="edu-fact" style="border-color:rgba(255,255,255,0.15); color:var(--text4); margin-top:20px;">
+            The figure-8 path traced by the sun at the same clock time each day — called the Analemma —
+            is a direct visualization of the Equation of Time. Muslim astronomers called it taqwīm al-shams.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- HIGH LATITUDE SECTION -->
+<div class="section-divider">
+  <div class="section-divider-line"></div>
+  <div class="section-divider-label">The High Latitude Problem</div>
+  <div class="section-divider-line"></div>
+</div>
+
+<div class="polar-section">
+  <div class="polar-inner">
+    <div>
+      <div class="polar-title">Where <em>Fajr</em><br>Disappears</div>
+      <div class="polar-body">
+        Above roughly <strong>48°N latitude</strong>, something remarkable happens in summer:
+        the sun never dips far enough below the horizon for Fajr and Isha to occur astronomically.
+        The sky never fully darkens. These prayers have no astronomical trigger.
+        <br><br>
+        This is not a modern problem — Islamic scholars have grappled with it for centuries,
+        particularly as Islam spread to Northern Europe, Scandinavia, and Canada.
+        The question "when do you pray when the sun doesn't set?" has produced several scholarly solutions:
+      </div>
+      <div class="polar-solutions">
+        <div class="polar-solution">
+          <strong>Nearest Day Method</strong>
+          Use prayer times from the last day when times were astronomically calculable — typically the nearest spring/autumn equinox period.
+        </div>
+        <div class="polar-solution">
+          <strong>Makkah / Madinah Method</strong>
+          Use the prayer times of Makkah or Madinah for all affected locations, as the spiritual center of Islam.
+        </div>
+        <div class="polar-solution">
+          <strong>One-Seventh of Night</strong>
+          Divide the night into sevenths and assign the first seventh to Isha and the last to Fajr — a purely mathematical solution endorsed by some scholars.
+        </div>
+        <div class="polar-solution">
+          <strong>Angle-Based Estimation</strong>
+          Use a fixed twilight angle even when the sun technically doesn't reach it, extrapolating from the nearest normal period.
+        </div>
+      </div>
+    </div>
+    <div>
+      <canvas id="polarCanvas" width="520" height="460"></canvas>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Adhan<span>Live</span></div>
+  <div class="footer-text">Prayer Arc Explorer · Solar Geometry Visualization</div>
+  <a href="ask-adhanlive.html" target="_blank" class="footer-link">Ask AdhanLive →</a>
+</footer>
+
+
+
+<script>
+const DEG = Math.PI / 180;
+
+const PRAYERS = {
+  fajr:    { color:'#4466ff', label:'Fajr',    angle:-18,    note:'18° below horizon' },
+  dhuhr:   { color:'#ffcc00', label:'Dhuhr',   angle:null,   note:'Solar noon' },
+  asr:     { color:'#e07a2f', label:'Asr',     angle:'asr',  note:'Shadow = object height' },
+  maghrib: { color:'#d94f3d', label:'Maghrib', angle:-0.833, note:'Sunset · −0.833°' },
+  isha:    { color:'#9b59c4', label:'Isha',    angle:-17,    note:'17° below horizon' },
+};
+
+let dayOfYear = 129;
+let utcHour = 12;
+let visible = {fajr:true,dhuhr:true,asr:true,maghrib:true,isha:true};
+let playingDay = false;
+let playingHour = false;
+let playTimer = null;
+
+// ── Solar Math ──────────────────────────────────────────────────────
+function solarDeclination(doy) {
+  return -23.45 * Math.cos(DEG * 360/365 * (doy + 10));
+}
+
+function equationOfTime(doy) {
+  const B = DEG * 360/365 * (doy - 81);
+  return 9.87*Math.sin(2*B) - 7.53*Math.cos(B) - 1.5*Math.sin(B);
+}
+
+function hourAngle(lat, dec, elev) {
+  const num = Math.sin(elev*DEG) - Math.sin(lat*DEG)*Math.sin(dec*DEG);
+  const den = Math.cos(lat*DEG)*Math.cos(dec*DEG);
+  const r = num/den;
+  if(Math.abs(r)>1) return null;
+  return Math.acos(r)/DEG/15;
+}
+
+function asrElevation(lat, dec) {
+  return Math.atan(1/(1+Math.tan(Math.abs(lat-dec)*DEG)))/DEG;
+}
+
+function prayerOffsets(lat, doy) {
+  const dec = solarDeclination(doy);
+  const fajrHA  = hourAngle(lat, dec, -18);
+  const sunHA   = hourAngle(lat, dec, -0.833);
+  const asrElev = asrElevation(lat, dec);
+  const asrHA   = hourAngle(lat, dec, asrElev);
+  const ishaHA  = hourAngle(lat, dec, -17);
+  return {
+    fajr:    fajrHA  !== null ? -fajrHA  : null,
+    dhuhr:   0,
+    asr:     asrHA   !== null ? +asrHA   : null,
+    maghrib: sunHA   !== null ? +sunHA   : null,
+    isha:    ishaHA  !== null ? +ishaHA  : null,
+  };
+}
+
+// ── Date helpers ────────────────────────────────────────────────────
+function doyToDate(doy) {
+  const d = new Date(2026, 0, doy);
+  return {
+    month: d.toLocaleDateString('en-US',{month:'long'}),
+    day:   d.getDate(),
+    short: d.toLocaleDateString('en-US',{month:'short',day:'numeric'}),
+  };
+}
+
+function seasonLabel(doy) {
+  if(doy < 80)  return 'Northern Winter · Southern Summer';
+  if(doy < 172) return 'Northern Spring · Southern Autumn';
+  if(doy < 266) return 'Northern Summer · Southern Winter';
+  if(doy < 355) return 'Northern Autumn · Southern Spring';
+  return 'Northern Winter · Southern Summer';
+}
+
+// ── Continent outlines (Natural Earth 110m simplified) ────────────────
+// ── World map (Natural Earth via world-atlas TopoJSON) ────────────────
+let worldLand = null;
+
+async function loadWorldMap() {
+  try {
+    const res = await fetch('https://unpkg.com/world-atlas@2/countries-110m.json');
+    const world = await res.json();
+    worldLand = topojson.feature(world, world.objects.land);
+  } catch(e) {
+    console.warn('World map data failed to load:', e);
+  }
+}
+
+function drawGeoPath(context, feature, w, h) {
+  const geom = feature.geometry;
+  if(!geom) return;
+  const polys = geom.type === 'Polygon' ? [geom.coordinates]
+              : geom.type === 'MultiPolygon' ? geom.coordinates : [];
+  for(const poly of polys) {
+    for(const ring of poly) {
+      let first = true;
+      for(const [lon, lat] of ring) {
+        const [x, y] = lonLatToXY(lon, lat, w, h);
+        first ? context.moveTo(x,y) : context.lineTo(x,y);
+        first = false;
+      }
+      context.closePath();
+    }
+  }
+}
+
+function drawContinents() {
+  if(!worldLand) return;
+  ctx.save();
+  // Clip to ±83° latitude to avoid Arctic/Antarctic blobs
+  const yTop = lonLatToXY(0, 83)[1];
+  const yBot = lonLatToXY(0, -83)[1];
+  ctx.beginPath();
+  ctx.rect(0, yTop, canvas.width, yBot - yTop);
+  ctx.clip();
+
+  ctx.fillStyle = 'rgba(11,17,36,0.88)';
+  ctx.strokeStyle = 'rgba(255,255,255,0.055)';
+  ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  for(const feature of worldLand.features) {
+    drawGeoPath(ctx, feature, canvas.width, canvas.height);
+  }
+  ctx.fill();
+  ctx.stroke();
+  ctx.restore();
+}
+
+
+
+// ── Canvas setup ─────────────────────────────────────────────────────
+const canvas = document.getElementById('mapCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  const outer = canvas.parentElement;
+  canvas.width = outer.clientWidth;
+  canvas.height = outer.clientHeight;
+}
+
+const W_ref = 1200, H_ref = 600; // reference dimensions for calculations
+let W = canvas.width, H = canvas.height;
+
+function lonLatToXY(lon, lat, w, h) {
+  w = w || canvas.width; h = h || canvas.height;
+  return [(lon+180)/360*w, (90-lat)/180*h];
+}
+
+function drawGraticule() {
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.035)';
+  ctx.lineWidth = 0.5;
+  for(let lon=-150; lon<=180; lon+=30) {
+    const x = lonLatToXY(lon,0)[0];
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+  }
+  for(let lat=-60; lat<=90; lat+=30) {
+    const y = lonLatToXY(0,lat)[1];
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke();
+  }
+  // Equator
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.lineWidth = 0.8;
+  const ye = lonLatToXY(0,0)[1];
+  ctx.beginPath(); ctx.moveTo(0,ye); ctx.lineTo(canvas.width,ye); ctx.stroke();
+  // Tropics
+  ctx.strokeStyle = 'rgba(255,200,80,0.07)';
+  ctx.lineWidth = 0.5; ctx.setLineDash([3,7]);
+  for(const t of [23.5,-23.5]) {
+    const yt = lonLatToXY(0,t)[1];
+    ctx.beginPath(); ctx.moveTo(0,yt); ctx.lineTo(canvas.width,yt); ctx.stroke();
+  }
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+function drawLabels(doy) {
+  const dec = solarDeclination(doy);
+  ctx.save();
+  ctx.font = '500 10px Inter, sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.7)';
+  ctx.textAlign = 'left';
+  for(const lat of [-60,-30,30,60]) {
+    const [,y] = lonLatToXY(0,lat);
+    ctx.fillText(lat>0?lat+'°N':Math.abs(lat)+'°S', 6, y-3);
+  }
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  const [,ye] = lonLatToXY(0,0);
+  ctx.fillText('EQ', 6, ye-3);
+
+  // Declination line
+  ctx.strokeStyle = 'rgba(255,220,100,0.25)';
+  ctx.lineWidth = 1; ctx.setLineDash([2,8]);
+  const [,yd] = lonLatToXY(0,dec);
+  ctx.beginPath(); ctx.moveTo(0,yd); ctx.lineTo(canvas.width,yd); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(255,220,100,0.8)';
+  ctx.font = '400 10px Inter, sans-serif';
+  ctx.textAlign = 'right';
+  ctx.fillText(`☀ ${dec.toFixed(1)}°`, canvas.width-8, yd-4);
+  ctx.restore();
+}
+
+function buildArcPoints(prayer, doy, utcH) {
+  const eot = equationOfTime(doy);
+  const pts = [];
+  let prevLon = null;
+  let prevOff = null;
+
+  for(let lat=85; lat>=-85; lat-=0.5) {
+    const off = prayerOffsets(lat, doy)[prayer];
+    if(off===null) continue;
+
+    const solarNoonLon = (12 - utcH) * 15 - eot / 4;
+    let lon = solarNoonLon + off * 15;
+    lon = ((lon % 360) + 360) % 360;
+    if(lon > 180) lon -= 360;
+
+    // For Asr: stop when longitude reverses by more than 2° (the kink)
+    if(prayer === 'asr' && prevLon !== null) {
+      const lonDiff = lon - prevLon;
+      // Asr arc moves in one direction — if it reverses significantly, clip
+      if(Math.abs(lonDiff) > 2 && pts.length > 10) break;
+    }
+
+    // For all prayers: break on large longitude jump (antimeridian wrap)
+    if(prevLon !== null && Math.abs(lon - prevLon) > 90) {
+      pts.push(null);
+    }
+
+    pts.push([lon, lat]);
+    prevLon = lon;
+    prevOff = off;
+  }
+  return pts;
+}
+
+function drawPrayerArc(prayer, doy, meta, utcH) {
+  const pts = buildArcPoints(prayer, doy, utcH);
+  if(pts.length < 2) return;
+
+  // Clip to canvas bounds
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, canvas.width, canvas.height);
+  ctx.clip();
+
+  // Glow pass
+  ctx.save();
+  ctx.strokeStyle = meta.color;
+  ctx.globalAlpha = 0.15;
+  ctx.lineWidth = 8;
+  ctx.shadowColor = meta.color;
+  ctx.shadowBlur = 20;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  let started=false, prevLat=null, prevLon=null;
+  for(const pt of pts) {
+    if(pt === null) { started=false; prevLat=null; prevLon=null; continue; }
+    const [lon,lat] = pt;
+    const [x,y] = lonLatToXY(lon, lat);
+    if(!started) { ctx.moveTo(x,y); started=true; }
+    else ctx.lineTo(x,y);
+    prevLat=lat; prevLon=lon;
+  }
+  ctx.stroke();
+  ctx.restore();
+
+  // Main line
+  ctx.save();
+  ctx.strokeStyle = meta.color;
+  ctx.globalAlpha = 0.9;
+  ctx.lineWidth = 2;
+  ctx.shadowColor = meta.color;
+  ctx.shadowBlur = 6;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  started=false; prevLat=null; prevLon=null;
+  for(const pt of pts) {
+    if(pt === null) { started=false; prevLat=null; prevLon=null; continue; }
+    const [lon,lat] = pt;
+    const [x,y] = lonLatToXY(lon, lat);
+    if(!started) { ctx.moveTo(x,y); started=true; }
+    else ctx.lineTo(x,y);
+    prevLat=lat; prevLon=lon;
+  }
+  ctx.stroke();
+  ctx.restore();
+
+  // Label at equator
+  const eqPt = pts.filter(p => p !== null).find(([,lat]) => Math.abs(lat)<1.5);
+  if(eqPt) {
+    const [lx,ly] = lonLatToXY(eqPt[0], eqPt[1]);
+    ctx.save();
+    ctx.fillStyle = meta.color;
+    ctx.globalAlpha = 1;
+    ctx.font = '600 11px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.shadowColor = meta.color;
+    ctx.shadowBlur = 14;
+    ctx.fillText(meta.label.toUpperCase(), lx, ly - 14);
+    ctx.restore();
+  }
+
+  ctx.restore(); // close clip region
+}
+
+function drawNightShading(doy, utcH) {
+  const fajrPts = buildArcPoints('fajr', doy, utcH);
+  if(fajrPts.length < 2) return;
+  ctx.save();
+  const validFajr = fajrPts.filter(p => p !== null);
+  if(validFajr.length < 2) return;
+  ctx.globalAlpha = 0.06;
+  ctx.fillStyle = '#000820';
+  ctx.beginPath();
+  const [fx0,fy0] = lonLatToXY(validFajr[0][0], validFajr[0][1]);
+  ctx.moveTo(canvas.width, fy0);
+  ctx.lineTo(fx0, fy0);
+  for(const [lon,lat] of validFajr) {
+    const [x,y] = lonLatToXY(lon, lat);
+    ctx.lineTo(x, y);
+  }
+  const last = validFajr[validFajr.length-1];
+  ctx.lineTo(canvas.width, lonLatToXY(last[0], last[1])[1]);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function render(doy, utcH) {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const bg = ctx.createLinearGradient(0,0,0,canvas.height);
+  bg.addColorStop(0, '#050814');
+  bg.addColorStop(1, '#020408');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  drawGraticule();
+  drawContinents();
+  drawNightShading(doy, utcH);
+  drawLabels(doy);
+
+  for(const [p, meta] of Object.entries(PRAYERS)) {
+    if(!visible[p]) continue;
+    drawPrayerArc(p, doy, meta, utcH);
+  }
+
+  // UTC time indicator line on map
+  const eot = equationOfTime(doy);
+  const solarNoonLon = (12 - utcH) * 15 - eot / 4;
+  const normLon = ((solarNoonLon % 360) + 360) % 360;
+  const displayLon = normLon > 180 ? normLon - 360 : normLon;
+  const [sx] = lonLatToXY(displayLon, 0);
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 8]);
+  ctx.beginPath(); ctx.moveTo(sx, 0); ctx.lineTo(sx, canvas.height); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.font = '300 8px "Geist Mono", monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('☀ SOLAR NOON', sx, 12);
+  ctx.restore();
+
+  document.getElementById('seasonLabel').textContent = seasonLabel(doy);
+}
+
+// ── Stats row ────────────────────────────────────────────────────────
+function updateStats(doy) {
+  const row = document.getElementById('statsRow');
+  row.innerHTML='';
+  const dec = solarDeclination(doy);
+
+  for(const [p, meta] of Object.entries(PRAYERS)) {
+    let minLat=null, maxLat=null;
+    for(let lat=-85; lat<=85; lat+=1) {
+      const off = prayerOffsets(lat, doy)[p];
+      if(off!==null) {
+        if(minLat===null) minLat=lat;
+        maxLat=lat;
+      }
+    }
+    const angleStr = meta.angle===null ? 'Solar noon' :
+                     meta.angle==='asr' ? 'Shadow ∝ height' :
+                     meta.angle>0 ? `+${meta.angle}°` : `${meta.angle}°`;
+
+    const coverageStr = (minLat!==null && maxLat!==null)
+      ? `${Math.abs(minLat)}°S – ${maxLat}°N`
+      : 'Polar disruption';
+
+    const card = document.createElement('div');
+    card.className='stat-card';
+    card.innerHTML=`
+      <div class="sc-prayer" style="color:${meta.color}">${meta.label.toUpperCase()}</div>
+      <div class="sc-angle" style="color:${meta.color}">${angleStr}</div>
+      <div class="sc-note">${meta.note}</div>
+      <div class="sc-coverage">Coverage: ${coverageStr}</div>
+    `;
+    row.appendChild(card);
+  }
+}
+
+// ── Date display ─────────────────────────────────────────────────────
+function updateDateDisplay(doy) {
+  const {month, day} = doyToDate(doy);
+  document.getElementById('dateDisplay').innerHTML =
+    `${month} <span>${day}</span>, 2026`;
+}
+
+// ── Sliders ───────────────────────────────────────────────────────────
+const daySlider = document.getElementById('daySlider');
+const hourSlider = document.getElementById('hourSlider');
+
+function updateHourDisplay(h) {
+  const hh = Math.floor(h);
+  const mm = Math.round((h - hh) * 60);
+  document.getElementById('hourDisplay').textContent =
+    hh.toString().padStart(2,'0') + ':' + mm.toString().padStart(2,'0');
+}
+
+daySlider.addEventListener('input', () => {
+  dayOfYear = +daySlider.value;
+  updateDateDisplay(dayOfYear);
+  render(dayOfYear, utcHour);
+  updateStats(dayOfYear);
+});
+
+hourSlider.addEventListener('input', () => {
+  utcHour = +hourSlider.value;
+  updateHourDisplay(utcHour);
+  render(dayOfYear, utcHour);
+});
+
+// ── Auto-play ────────────────────────────────────────────────────────
+const playDayBtn  = document.getElementById('playDayBtn');
+const playHourBtn = document.getElementById('playHourBtn');
+const playDayIcon  = document.getElementById('playDayIcon');
+const playHourIcon = document.getElementById('playHourIcon');
+
+function stopAll() {
+  playingDay = false; playingHour = false;
+  if(playTimer) cancelAnimationFrame(playTimer);
+  playDayIcon.textContent  = '▶';
+  playHourIcon.textContent = '▶';
+  playDayBtn.classList.remove('playing');
+  playHourBtn.classList.remove('playing');
+}
+
+playDayBtn.addEventListener('click', () => {
+  if(playingHour) stopAll();
+  playingDay = !playingDay;
+  playDayBtn.classList.toggle('playing', playingDay);
+  playDayIcon.textContent = playingDay ? '■' : '▶';
+  if(playingDay) animateDay();
+  else if(playTimer) cancelAnimationFrame(playTimer);
+});
+
+playHourBtn.addEventListener('click', () => {
+  if(playingDay) stopAll();
+  playingHour = !playingHour;
+  playHourBtn.classList.toggle('playing', playingHour);
+  playHourIcon.textContent = playingHour ? '■' : '▶';
+  if(playingHour) animateHour();
+  else if(playTimer) cancelAnimationFrame(playTimer);
+});
+
+function animateDay() {
+  if(!playingDay) return;
+  dayOfYear = dayOfYear >= 365 ? 1 : dayOfYear + 0.4;
+  daySlider.value = Math.round(dayOfYear);
+  updateDateDisplay(Math.round(dayOfYear));
+  render(Math.round(dayOfYear), utcHour);
+  updateStats(Math.round(dayOfYear));
+  playTimer = requestAnimationFrame(animateDay);
+}
+
+function animateHour() {
+  if(!playingHour) return;
+  utcHour = utcHour >= 23.9 ? 0 : utcHour + 0.05;
+  hourSlider.value = utcHour;
+  updateHourDisplay(utcHour);
+  render(dayOfYear, utcHour);
+  playTimer = requestAnimationFrame(animateHour);
+}
+
+// ── Now button ────────────────────────────────────────────────────────
+document.getElementById('nowBtn').addEventListener('click', () => {
+  stopAll();
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  const diff = now - start;
+  const oneDay = 1000 * 60 * 60 * 24;
+  dayOfYear = Math.floor(diff / oneDay);
+  utcHour = now.getUTCHours() + now.getUTCMinutes() / 60;
+  daySlider.value = dayOfYear;
+  hourSlider.value = utcHour;
+  updateDateDisplay(dayOfYear);
+  updateHourDisplay(utcHour);
+  render(dayOfYear, utcHour);
+  updateStats(dayOfYear);
+});
+
+// ── Prayer toggles ───────────────────────────────────────────────────
+document.getElementById('pToggles').addEventListener('click', e => {
+  const tog = e.target.closest('.ptoggle');
+  if(!tog) return;
+  const p = tog.dataset.prayer;
+  visible[p] = !visible[p];
+  tog.classList.toggle('active', visible[p]);
+  render(dayOfYear, utcHour);
+});
+
+// ── Tooltip ──────────────────────────────────────────────────────────
+// ── Polar Canvas ──────────────────────────────────────────────────────
+const polarCanvas = document.getElementById('polarCanvas');
+const pctx = polarCanvas.getContext('2d');
+const PW = polarCanvas.width, PH = polarCanvas.height;
+
+function drawPolarChart() {
+  pctx.clearRect(0,0,PW,PH);
+
+  // Background
+  const bg = pctx.createLinearGradient(0,0,0,PH);
+  bg.addColorStop(0,'#060a18');
+  bg.addColorStop(1,'#03050e');
+  pctx.fillStyle=bg;
+  pctx.fillRect(0,0,PW,PH);
+
+  // Grid
+  const margin = {top:36, right:20, bottom:40, left:56};
+  const cw = PW-margin.left-margin.right;
+  const ch = PH-margin.top-margin.bottom;
+
+  // X = day of year (1-365), Y = latitude (90 to -90)
+  // But we show just N hemisphere (0-90N) — where the problem is most dramatic
+  const minLat=0, maxLat=90;
+  const latRange = maxLat-minLat;
+
+  function toCanvasX(doy) { return margin.left + (doy-1)/(364)*cw; }
+  function toCanvasY(lat) { return margin.top + (maxLat-lat)/latRange*ch; }
+
+  // Grid lines
+  pctx.strokeStyle='rgba(255,255,255,0.04)';
+  pctx.lineWidth=0.5;
+  for(let doy=1; doy<=365; doy+=30) {
+    const x=toCanvasX(doy);
+    pctx.beginPath(); pctx.moveTo(x,margin.top); pctx.lineTo(x,margin.top+ch); pctx.stroke();
+  }
+  for(let lat=0; lat<=90; lat+=15) {
+    const y=toCanvasY(lat);
+    pctx.beginPath(); pctx.moveTo(margin.left,y); pctx.lineTo(margin.left+cw,y); pctx.stroke();
+  }
+
+  // Labels
+  pctx.font='300 8px "Geist Mono", monospace';
+  pctx.fillStyle='rgba(255,255,255,0.25)';
+  pctx.textAlign='right';
+  for(const lat of [0,30,48,60,75,90]) {
+    const y=toCanvasY(lat);
+    pctx.fillText(lat+'°N', margin.left-6, y+3);
+    if(lat===48) {
+      pctx.save();
+      pctx.strokeStyle='rgba(0,212,255,0.2)';
+      pctx.lineWidth=1; pctx.setLineDash([3,6]);
+      pctx.beginPath(); pctx.moveTo(margin.left,y); pctx.lineTo(margin.left+cw,y); pctx.stroke();
+      pctx.setLineDash([]);
+      pctx.restore();
+    }
+  }
+  const months=['J','F','M','A','M','J','J','A','S','O','N','D'];
+  pctx.textAlign='center';
+  for(let m=0;m<12;m++) {
+    const doy=Math.round(m*30.4+15);
+    pctx.fillText(months[m], toCanvasX(doy), margin.top+ch+16);
+  }
+
+  // Title
+  pctx.fillStyle='rgba(255,255,255,0.4)';
+  pctx.font='400 9px "Geist Mono", monospace';
+  pctx.textAlign='center';
+  pctx.fillText('Latitude where Fajr & Isha are astronomically impossible', PW/2, 16);
+
+  // Shade: zone where fajr doesn't occur
+  pctx.save();
+  for(const [p, col, a] of [['fajr','#4466ff',0.15],['isha','#9b59c4',0.1]]) {
+    pctx.fillStyle=col;
+    pctx.globalAlpha=a;
+    pctx.beginPath();
+    let started=false;
+    for(let doy=1; doy<=365; doy++) {
+      // Find critical lat where prayer ceases
+      let critLat=null;
+      for(let lat=90; lat>=0; lat--) {
+        const off=prayerOffsets(lat,doy)[p];
+        if(off!==null) { critLat=lat; break; }
+      }
+      if(critLat===null) critLat=0;
+      const x=toCanvasX(doy);
+      const y=toCanvasY(critLat);
+      if(!started) { pctx.moveTo(x,y); started=true; }
+      else pctx.lineTo(x,y);
+    }
+    pctx.lineTo(toCanvasX(365), margin.top);
+    pctx.lineTo(toCanvasX(1), margin.top);
+    pctx.closePath();
+    pctx.fill();
+    pctx.restore();
+    pctx.save();
+
+    // Draw the boundary line
+    pctx.strokeStyle=col;
+    pctx.globalAlpha=0.7;
+    pctx.lineWidth=1.5;
+    pctx.shadowColor=col;
+    pctx.shadowBlur=8;
+    pctx.beginPath();
+    started=false;
+    for(let doy=1; doy<=365; doy++) {
+      let critLat=null;
+      for(let lat=90; lat>=0; lat--) {
+        const off=prayerOffsets(lat,doy)[p];
+        if(off!==null) { critLat=lat; break; }
+      }
+      if(critLat===null) critLat=0;
+      const x=toCanvasX(doy); const y=toCanvasY(critLat);
+      if(!started) { pctx.moveTo(x,y); started=true; }
+      else pctx.lineTo(x,y);
+    }
+    pctx.stroke();
+    pctx.restore();
+    pctx.save();
+  }
+  pctx.restore();
+
+  // 48° threshold label
+  pctx.fillStyle='rgba(0,212,255,0.6)';
+  pctx.font='300 8px "Geist Mono", monospace';
+  pctx.textAlign='left';
+  pctx.fillText('48°N threshold', margin.left+4, toCanvasY(48)-4);
+
+  // Legend
+  pctx.font='300 9px "Geist Mono", monospace';
+  pctx.textAlign='left';
+  for(const [col,label,y] of [['#4466ff','Fajr ceases',PH-10],['#9b59c4','Isha ceases',PH-24]]) {
+    pctx.fillStyle=col;
+    pctx.fillRect(margin.left, y-6, 10, 6);
+    pctx.fillStyle='rgba(255,255,255,0.4)';
+    pctx.fillText(label, margin.left+14, y);
+  }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────
+async function init() {
+  resizeCanvas();
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 0);
+  dayOfYear = Math.floor((now - start) / (1000*60*60*24));
+  utcHour = now.getUTCHours() + now.getUTCMinutes() / 60;
+  daySlider.value = dayOfYear;
+  hourSlider.value = utcHour;
+  updateDateDisplay(dayOfYear);
+  updateHourDisplay(utcHour);
+  updateStats(dayOfYear);
+  await loadWorldMap();
+  render(dayOfYear, utcHour);
+  drawPolarChart();
+}
+
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  render(dayOfYear, utcHour);
+});
+
+init();
+</script>
+</body>
+</html>

@@ -89,7 +89,7 @@
   #rotate-overlay { display: flex; }
 }
 
-html, body { height: 100%; scroll-behavior: smooth; }
+html, body { height: 100%; height: 100dvh; scroll-behavior: smooth; }
 
 body {
   background: var(--bg);
@@ -188,7 +188,7 @@ nav {
 body {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }
 nav {
@@ -553,7 +553,7 @@ canvas#mapCanvas {
 }
 @media (max-width: 768px) and (orientation: landscape) {
   nav { display: none; }
-  .main-layout { height: 100vh; }
+  .main-layout { height: 100dvh; }
   /* Fix map vertical stretch */
   .right-panel { padding: 10px; }
   canvas#mapCanvas { object-fit: contain; }

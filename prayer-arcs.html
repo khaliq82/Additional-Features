@@ -119,10 +119,17 @@ nav {
 }
 .nav-logo span { color: var(--cyan); }
 .nav-center {
-  font-size: 13px; letter-spacing: 0.12em;
-  color: #ffffff; font-weight: 600;
+  display: flex; align-items: center; gap: 4px;
+}
+.nav-link {
+  font-size: 11px; letter-spacing: 0.1em;
+  color: var(--text4); text-decoration: none;
+  padding: 6px 12px; border-radius: 4px;
+  transition: all 0.2s;
   text-transform: uppercase;
 }
+.nav-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+.nav-link.active { color: var(--cyan); }
 .nav-ask {
   font-size: 10px; letter-spacing: 0.12em;
   color: var(--cyan); text-decoration: none;
@@ -195,7 +202,7 @@ nav {
 
 /* ── LEFT PANEL ── */
 .left-panel {
-  width: 340px;
+  width: 380px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -203,9 +210,32 @@ nav {
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--bg);
+  position: relative;
 }
-.left-panel::-webkit-scrollbar { width: 3px; }
-.left-panel::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.15); border-radius: 2px; }
+.left-panel::-webkit-scrollbar { width: 4px; }
+.left-panel::-webkit-scrollbar-track { background: transparent; }
+.left-panel::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.3); border-radius: 2px; }
+
+/* Scroll hint fade at bottom of left panel */
+.scroll-hint {
+  position: sticky;
+  bottom: 0;
+  height: 40px;
+  background: linear-gradient(to bottom, rgba(3,5,14,0) 0%, rgba(3,5,14,0.98) 100%);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 6px;
+  pointer-events: none;
+  margin-top: -40px; /* overlap the content above, don't push it */
+}
+.scroll-hint-arrow {
+  font-size: 11px; color: var(--text4);
+  letter-spacing: 0.1em;
+  animation: scrollBounce 1.8s ease-in-out infinite;
+}
+@keyframes scrollBounce {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50%       { transform: translateY(4px); opacity: 1; }
+}
 
 /* Panel header */
 .panel-header {
@@ -215,16 +245,32 @@ nav {
 }
 .panel-title {
   font-family: 'Playfair Display', serif;
-  font-size: 15px; font-weight: 700;
+  font-size: 18px; font-weight: 700;
   letter-spacing: -0.01em;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 .panel-title em { font-style: italic; color: var(--cyan); font-weight: 400; }
 .panel-intro {
-  font-size: 10px; color: var(--text4);
+  font-size: 12px; color: var(--text4);
   line-height: 1.7; font-weight: 300;
 }
 
+.panel-what {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: rgba(0,212,255,0.04);
+  border: 1px solid rgba(0,212,255,0.12);
+  border-radius: 8px;
+  font-size: 10px; color: var(--text4);
+  line-height: 1.7; font-weight: 300;
+}
+.panel-what em { color: var(--cyan); font-style: normal; }
+.panel-what-label {
+  font-size: 8px; letter-spacing: 0.18em;
+  color: var(--cyan); opacity: 0.7;
+  text-transform: uppercase;
+  margin-bottom: 6px; font-weight: 400;
+}
 /* Controls inside panel */
 .controls-wrap {
   padding: 16px 20px;
@@ -233,23 +279,47 @@ nav {
 }
 .controls { display: flex; flex-direction: column; gap: 16px; }
 .controls-row { display: flex; flex-direction: column; gap: 10px; }
-.control-group { display: flex; flex-direction: column; gap: 5px; }
+.control-group { display: flex; flex-direction: column; gap: 6px; }
 .control-label {
-  font-size: 8px; letter-spacing: 0.18em;
+  font-size: 10px; letter-spacing: 0.14em;
   color: var(--text4); font-weight: 400;
   text-transform: uppercase;
 }
+
+/* Slider with tick marks */
+.slider-wrap {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.slider-track-wrap {
+  position: relative; width: 100%;
+}
+.slider-track-wrap input[type=range] {
+  width: 100%;
+}
+.slider-ticks {
+  display: flex; justify-content: space-between; width: 100%;
+}
+.slider-tick {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+}
+.slider-tick-line {
+  width: 1px; height: 6px;
+  background: rgba(255,255,255,0.2);
+}
+.slider-tick-label {
+  font-size: 10px; color: var(--text4); white-space: nowrap;
+}
 .date-display {
   font-family: 'Playfair Display', serif;
-  font-size: 18px; font-weight: 600;
+  font-size: 22px; font-weight: 600;
   color: var(--text); line-height: 1;
 }
 .date-display span { color: var(--cyan); }
 .slider-wrap { display: flex; align-items: center; gap: 8px; }
-.day-label { font-size: 9px; color: var(--text4); white-space: nowrap; }
+.day-label { font-size: 11px; color: var(--text4); white-space: nowrap; }
 input[type=range] {
   -webkit-appearance: none;
-  height: 2px; flex: 1;
+  height: 2px; width: 100%;
   background: var(--border2);
   border-radius: 2px; outline: none; cursor: pointer;
 }
@@ -263,32 +333,32 @@ input[type=range]::-webkit-slider-thumb {
 }
 .btn-play {
   display: flex; align-items: center; gap: 6px;
-  padding: 6px 12px;
+  padding: 8px 14px;
   border: 1px solid var(--border2);
   border-radius: 6px;
   background: transparent;
   color: var(--text2);
   font-family: 'Inter', sans-serif;
-  font-size: 11px; font-weight: 400;
+  font-size: 12px; font-weight: 400;
   cursor: pointer; transition: all 0.2s;
   white-space: nowrap;
 }
 .btn-play:hover { border-color: var(--cyan); color: var(--cyan); }
 .btn-play.playing { border-color: var(--cyan); color: var(--cyan); background: rgba(0,212,255,0.05); }
-.play-icon { font-size: 10px; }
-.prayer-toggles { display: flex; gap: 5px; flex-wrap: wrap; }
+.play-icon { font-size: 11px; }
+.prayer-toggles { display: flex; gap: 5px; flex-wrap: nowrap; }
 .ptoggle {
   display: flex; align-items: center; gap: 5px;
-  padding: 4px 9px; border-radius: 4px;
+  padding: 6px 11px; border-radius: 4px;
   border: 1px solid transparent;
   cursor: pointer;
   font-family: 'Inter', sans-serif;
-  font-size: 10px; font-weight: 400;
+  font-size: 12px; font-weight: 400;
   transition: all 0.18s; user-select: none;
 }
 .ptoggle.active { border-color: currentColor; background: rgba(255,255,255,0.03); }
 .ptoggle:not(.active) { opacity: 0.25; border-color: var(--border); }
-.ptoggle-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.ptoggle-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 
 /* Stats inside panel */
 .stats-row {
@@ -307,10 +377,17 @@ input[type=range]::-webkit-slider-thumb {
 }
 .stat-card:hover { border-color: var(--border2); }
 .stat-card-left { display: flex; flex-direction: column; gap: 3px; }
-.sc-prayer { font-size: 8px; letter-spacing: 0.2em; font-weight: 400; }
-.sc-note { font-size: 9px; color: var(--text4); font-weight: 300; }
-.sc-coverage { font-size: 8px; color: var(--text4); margin-top: 2px; font-weight: 300; }
-.sc-angle { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 600; }
+.sc-prayer { font-size: 10px; letter-spacing: 0.2em; font-weight: 400; }
+.sc-note { font-size: 11px; color: var(--text4); font-weight: 300; }
+.sc-coverage { font-size: 10px; color: var(--text4); margin-top: 2px; font-weight: 300; }
+.sc-angle { 
+  font-family: 'Playfair Display', serif; 
+  font-size: 18px; font-weight: 600; 
+  text-align: right;
+  flex-shrink: 0;
+  max-width: 110px;
+  line-height: 1.2;
+}
 
 /* Edu cards inside panel */
 .edu-section { padding: 0; }
@@ -347,12 +424,12 @@ input[type=range]::-webkit-slider-thumb {
 .edu-badge-dot { width: 5px; height: 5px; border-radius: 50%; }
 .edu-title {
   font-family: 'Playfair Display', serif;
-  font-size: 18px; font-weight: 400;
+  font-size: 20px; font-weight: 400;
   line-height: 1.2; margin-bottom: 10px;
 }
 .edu-title em { font-style: italic; }
 .edu-body {
-  font-size: 10px; color: var(--text2);
+  font-size: 12px; color: var(--text2);
   line-height: 1.8; font-weight: 300;
 }
 .edu-body strong { color: var(--text); font-weight: 400; }
@@ -362,7 +439,7 @@ input[type=range]::-webkit-slider-thumb {
   background: rgba(255,255,255,0.02);
   border-left: 2px solid currentColor;
   border-radius: 0 4px 4px 0;
-  font-size: 9px; color: var(--text4);
+  font-size: 11px; color: var(--text4);
   line-height: 1.65; font-style: italic;
 }
 
@@ -414,10 +491,13 @@ footer {
   position: relative;
   overflow: hidden;
   background: #050814;
+  padding: 16px;
 }
 canvas#mapCanvas {
   display: block;
   width: 100%; height: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
 }
 .map-corner-label {
   position: absolute; top: 14px; right: 18px;
@@ -469,7 +549,12 @@ canvas#mapCanvas {
 <!-- NAV -->
 <nav>
   <div class="nav-logo">Adhan<span>Live</span></div>
-  <div class="nav-center">The Adhan Arc Explorer</div>
+  <div class="nav-center">
+    <a href="index.html" class="nav-link">Globe</a>
+    <a href="adhan-clock.html" class="nav-link">Clock</a>
+    <a href="prayer-arcs.html" class="nav-link active">Arc Explorer</a>
+    <a href="ask-adhanlive.html" class="nav-link">Ask</a>
+  </div>
   <a href="ask-adhanlive.html" target="_blank" class="nav-ask">Ask AdhanLive</a>
 </nav>
 
@@ -482,7 +567,10 @@ canvas#mapCanvas {
     <!-- Header -->
     <div class="panel-header">
       <div class="panel-title">The Adhan <em>Arc</em> Explorer</div>
-      <div class="panel-intro">Five prayers. One Earth. Watch Islamic astronomy trace curved waves across the globe, shaped by the sun's geometry.</div>
+      <div class="panel-what">
+        <div class="panel-what-label">What is the Adhan Arc?</div>
+        Every day, each of the 5 Islamic prayers begins at a different solar angle. Since the sun is always rising or setting somewhere on Earth, each prayer sweeps across the globe as a continuous curved wave — an <em>arc</em>. Its shape changes with the seasons as the sun's path shifts north and south. This is that arc, mapped live.
+      </div>
     </div>
 
     <!-- Controls -->
@@ -496,9 +584,13 @@ canvas#mapCanvas {
           <div class="control-group">
             <div class="control-label">Day of Year — seasonal arc shape</div>
             <div class="slider-wrap">
-              <span class="day-label">Jan 1</span>
-              <input type="range" id="daySlider" min="1" max="365" value="129">
-              <span class="day-label">Dec 31</span>
+              <div class="slider-track-wrap">
+                <input type="range" id="daySlider" min="1" max="365" value="129">
+              </div>
+              <div class="slider-ticks">
+                <div class="slider-tick"><div class="slider-tick-line"></div><span class="slider-tick-label">Jan</span></div>
+                <div class="slider-tick"><div class="slider-tick-line"></div><span class="slider-tick-label">Dec</span></div>
+              </div>
             </div>
           </div>
           <div class="control-group">
@@ -516,17 +608,21 @@ canvas#mapCanvas {
 
         <div class="controls-row" style="padding-top:12px; border-top:1px solid var(--border);">
           <div class="control-group">
-            <div class="control-label">UTC Hour — arc position on Earth (east → west)</div>
+            <div class="control-label">UTC Hour — shifts arcs east / west</div>
             <div class="slider-wrap">
-              <span class="day-label">00:00</span>
-              <input type="range" id="hourSlider" min="0" max="23.99" step="0.1" value="12">
-              <span class="day-label">24:00</span>
+              <div class="slider-track-wrap">
+                <input type="range" id="hourSlider" min="0" max="23.99" step="0.1" value="12">
+              </div>
+              <div class="slider-ticks">
+                <div class="slider-tick"><div class="slider-tick-line"></div><span class="slider-tick-label">00:00</span></div>
+                <div class="slider-tick"><div class="slider-tick-line"></div><span class="slider-tick-label">24:00</span></div>
+              </div>
             </div>
           </div>
-          <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
             <div class="control-group">
               <div class="control-label">UTC Time</div>
-              <div class="date-display" id="hourDisplay" style="font-size:18px;">12:00</div>
+              <div class="date-display" id="hourDisplay">12:00</div>
             </div>
             <button class="btn-play" id="nowBtn">◎ Now</button>
           </div>
@@ -563,13 +659,6 @@ canvas#mapCanvas {
       <div class="section-divider-label">The Astronomy of Prayer</div>
       <div class="section-divider-line"></div>
     </div>
-
-    <!-- SECTION: EDUCATIONAL -->
-<div class="section-divider">
-  <div class="section-divider-line"></div>
-  <div class="section-divider-label">The Astronomy of Prayer</div>
-  <div class="section-divider-line"></div>
-</div>
 
 <div class="edu-section">
   <div class="edu-grid">
@@ -770,6 +859,11 @@ canvas#mapCanvas {
       <div class="footer-logo">Adhan<span>Live</span></div>
       <a href="ask-adhanlive.html" target="_blank" class="footer-link">Ask AdhanLive →</a>
     </footer>
+
+    <!-- Scroll hint -->
+    <div class="scroll-hint">
+      <div class="scroll-hint-arrow">▼ scroll</div>
+    </div>
 
   </div><!-- end left-panel -->
 
@@ -1174,10 +1268,12 @@ function updateStats(doy) {
     const card = document.createElement('div');
     card.className='stat-card';
     card.innerHTML=`
-      <div class="sc-prayer" style="color:${meta.color}">${meta.label.toUpperCase()}</div>
+      <div class="stat-card-left">
+        <div class="sc-prayer" style="color:${meta.color}">${meta.label.toUpperCase()}</div>
+        <div class="sc-note">${meta.note}</div>
+        <div class="sc-coverage">Coverage: ${coverageStr}</div>
+      </div>
       <div class="sc-angle" style="color:${meta.color}">${angleStr}</div>
-      <div class="sc-note">${meta.note}</div>
-      <div class="sc-coverage">Coverage: ${coverageStr}</div>
     `;
     row.appendChild(card);
   }
@@ -1455,6 +1551,20 @@ window.addEventListener('resize', () => {
 });
 
 init();
+
+// Hide scroll hint once user scrolls
+const leftPanel = document.querySelector('.left-panel');
+const scrollHint = document.querySelector('.scroll-hint');
+if (leftPanel && scrollHint) {
+  leftPanel.addEventListener('scroll', () => {
+    if (leftPanel.scrollTop > 60) {
+      scrollHint.style.opacity = '0';
+      scrollHint.style.transition = 'opacity 0.4s';
+    } else {
+      scrollHint.style.opacity = '1';
+    }
+  });
+}
 </script>
 </body>
 </html>

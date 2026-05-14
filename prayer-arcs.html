@@ -177,7 +177,8 @@ nav {
 
 /* ── CONTROLS — compact single strip ── */
 .controls-wrap {
-  padding: 0 20px;
+  max-width: 1280px; margin: 0 auto;
+  padding: 0 40px;
   margin-bottom: 8px;
 }
 .controls {
@@ -258,16 +259,20 @@ input[type=range]::-webkit-slider-thumb {
 
 /* ── MAP ── */
 .map-wrap {
-  padding: 0 20px;
+  max-width: 1280px; margin: 0 auto;
+  padding: 0 40px;
   margin-bottom: 8px;
 }
 .map-outer {
   position: relative;
   border: 1px solid var(--border);
   border-radius: 10px; overflow: hidden;
-  background: #040710;
+  background: #050814;
   height: calc(100vh - 52px - 110px - 16px);
   min-height: 320px;
+}
+.map-outer::after {
+  display: none;
 }
 canvas#mapCanvas {
   display: block;
@@ -901,12 +906,12 @@ function seasonLabel(doy) {
 }
 
 // ── Continent outlines (Natural Earth 110m simplified) ────────────────
-// ── World map (Natural Earth via world-atlas TopoJSON) ────────────────
+// ── World map (Natural Earth 110m with full polar coverage) ────────────────
 let worldLand = null;
 
 async function loadWorldMap() {
   try {
-    const res = await fetch('https://unpkg.com/world-atlas@2/countries-110m.json');
+    const res = await fetch('https://cdn.jsdelivr.net/npm/visionscarto-world-atlas@0.1.0/world/110m.json');
     const world = await res.json();
     worldLand = topojson.feature(world, world.objects.land);
   } catch(e) {
@@ -935,14 +940,14 @@ function drawGeoPath(context, feature, w, h) {
 function drawContinents() {
   if(!worldLand) return;
   ctx.save();
-  // Clip to ±83° latitude to avoid Arctic/Antarctic blobs
-  const yTop = lonLatToXY(0, 83)[1];
-  const yBot = lonLatToXY(0, -83)[1];
+  // Clip to full latitude range
+  const yTop = lonLatToXY(0, 90)[1];
+  const yBot = lonLatToXY(0, -90)[1];
   ctx.beginPath();
   ctx.rect(0, yTop, canvas.width, yBot - yTop);
   ctx.clip();
 
-  ctx.fillStyle = 'rgba(11,17,36,0.88)';
+  ctx.fillStyle = 'rgba(30,45,80,0.95)';
   ctx.strokeStyle = 'rgba(255,255,255,0.055)';
   ctx.lineWidth = 0.5;
   ctx.beginPath();
@@ -951,6 +956,7 @@ function drawContinents() {
   }
   ctx.fill();
   ctx.stroke();
+
   ctx.restore();
 }
 
@@ -982,22 +988,11 @@ function drawGraticule() {
     const x = lonLatToXY(lon,0)[0];
     ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
   }
-  for(let lat=-60; lat<=90; lat+=30) {
-    const y = lonLatToXY(0,lat)[1];
-    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(canvas.width,y); ctx.stroke();
-  }
   // Equator
   ctx.strokeStyle = 'rgba(255,255,255,0.08)';
   ctx.lineWidth = 0.8;
   const ye = lonLatToXY(0,0)[1];
   ctx.beginPath(); ctx.moveTo(0,ye); ctx.lineTo(canvas.width,ye); ctx.stroke();
-  // Tropics
-  ctx.strokeStyle = 'rgba(255,200,80,0.07)';
-  ctx.lineWidth = 0.5; ctx.setLineDash([3,7]);
-  for(const t of [23.5,-23.5]) {
-    const yt = lonLatToXY(0,t)[1];
-    ctx.beginPath(); ctx.moveTo(0,yt); ctx.lineTo(canvas.width,yt); ctx.stroke();
-  }
   ctx.setLineDash([]);
   ctx.restore();
 }
@@ -1035,7 +1030,7 @@ function buildArcPoints(prayer, doy, utcH) {
   let prevLon = null;
   let prevOff = null;
 
-  for(let lat=85; lat>=-85; lat-=0.5) {
+  for(let lat=90; lat>=-90; lat-=0.5) {
     const off = prayerOffsets(lat, doy)[prayer];
     if(off===null) continue;
 
@@ -1145,14 +1140,16 @@ function drawNightShading(doy, utcH) {
   ctx.fillStyle = '#000820';
   ctx.beginPath();
   const [fx0,fy0] = lonLatToXY(validFajr[0][0], validFajr[0][1]);
-  ctx.moveTo(canvas.width, fy0);
-  ctx.lineTo(fx0, fy0);
+  ctx.moveTo(fx0, fy0);
   for(const [lon,lat] of validFajr) {
     const [x,y] = lonLatToXY(lon, lat);
     ctx.lineTo(x, y);
   }
   const last = validFajr[validFajr.length-1];
-  ctx.lineTo(canvas.width, lonLatToXY(last[0], last[1])[1]);
+  const [lx, ly] = lonLatToXY(last[0], last[1]);
+  // Close via bottom-right, bottom-left corners (no top edge line)
+  ctx.lineTo(lx, canvas.height);
+  ctx.lineTo(fx0, canvas.height);
   ctx.closePath();
   ctx.fill();
   ctx.restore();

@@ -498,6 +498,7 @@ canvas#mapCanvas {
   width: 100%; height: 100%;
   border-radius: 10px;
   border: 1px solid var(--border);
+  object-fit: contain;
 }
 .map-corner-label {
   position: absolute; top: 14px; right: 18px;
@@ -544,6 +545,53 @@ canvas#mapCanvas {
 }
 @media (max-width: 768px) and (orientation: landscape) {
   nav { display: none; }
+  /* Fix map vertical stretch */
+  .right-panel { padding: 10px; }
+  canvas#mapCanvas { object-fit: contain; }
+  /* Shrink toggles to fit single row */
+  .ptoggle { padding: 5px 7px; font-size: 11px; }
+  .ptoggle-dot { width: 6px; height: 6px; }
+}
+
+/* Mobile menu button — only visible on mobile landscape when nav is hidden */
+.mobile-menu-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text4);
+  font-size: 16px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.mobile-menu-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.mobile-nav {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 10px;
+  padding: 8px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav-link {
+  font-size: 12px; color: var(--text4);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+.mobile-nav-link:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+.mobile-nav-link.active { color: var(--cyan); }
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .mobile-menu-btn { display: block; }
 }
 </style>
 </head>
@@ -568,7 +616,17 @@ canvas#mapCanvas {
 
     <!-- Header -->
     <div class="panel-header">
-      <div class="panel-title">The Adhan <em>Arc</em> Explorer</div>
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div class="panel-title">The Adhan <em>Arc</em> Explorer</div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">☰</button>
+      </div>
+      <!-- Mobile nav dropdown -->
+      <div class="mobile-nav" id="mobileNav">
+        <a href="index.html" class="mobile-nav-link">🌍 Globe</a>
+        <a href="adhan-clock.html" class="mobile-nav-link">🕐 Clock</a>
+        <a href="prayer-arcs.html" class="mobile-nav-link active">◉ Arc Explorer</a>
+        <a href="ask-adhanlive.html" class="mobile-nav-link">💬 Ask AdhanLive</a>
+      </div>
       <div class="panel-what">
         <div class="panel-what-label">What is the Adhan Arc?</div>
         Every day, each of the 5 Islamic prayers begins at a different solar angle. Since the sun is always rising or setting somewhere on Earth, each prayer sweeps across the globe as a continuous curved wave — an <em>arc</em>. Its shape changes with the seasons as the sun's path shifts north and south. This is that arc, mapped live.
@@ -1551,6 +1609,14 @@ window.addEventListener('resize', () => {
   resizeCanvas();
   render(dayOfYear, utcHour);
 });
+
+// Mobile menu toggle
+function toggleMobileMenu() {
+  const nav = document.getElementById('mobileNav');
+  const btn = document.getElementById('mobileMenuBtn');
+  nav.classList.toggle('open');
+  btn.textContent = nav.classList.contains('open') ? '✕' : '☰';
+}
 
 init();
 

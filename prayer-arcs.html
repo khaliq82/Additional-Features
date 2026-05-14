@@ -542,6 +542,9 @@ canvas#mapCanvas {
   .left-panel { width: 300px; }
   .nav-center { display: none; }
 }
+@media (max-width: 768px) and (orientation: landscape) {
+  nav { display: none; }
+}
 </style>
 </head>
 <body>
@@ -555,7 +558,6 @@ canvas#mapCanvas {
     <a href="prayer-arcs.html" class="nav-link active">Arc Explorer</a>
     <a href="ask-adhanlive.html" class="nav-link">Ask</a>
   </div>
-  <a href="ask-adhanlive.html" target="_blank" class="nav-ask">Ask AdhanLive</a>
 </nav>
 
 <!-- MAIN TWO-COLUMN LAYOUT -->

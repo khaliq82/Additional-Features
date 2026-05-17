@@ -35,8 +35,8 @@
   }
 
   .layout {
-    display: grid;
-    grid-template-rows: 56px 1fr auto;
+    display: flex;
+    flex-direction: column;
     height: 100vh;
     width: 100%;
   }
@@ -79,12 +79,15 @@
 
   /* CHAT AREA */
   .chat-area {
+    flex: 1;
     overflow-y: scroll;
     overflow-x: hidden;
     width: 100%;
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,0.12) transparent;
+    display: none;
   }
+  .chat-area.active { display: block; }
   .chat-area::-webkit-scrollbar { width: 6px; }
   .chat-area::-webkit-scrollbar-track { background: transparent; }
   .chat-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
@@ -99,17 +102,30 @@
     flex-direction: column;
   }
 
-  /* WELCOME */
-  .welcome {
+  /* WELCOME SCREEN */
+  .welcome-screen {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 48px 0 32px;
+    padding: 24px;
+    overflow-y: auto;
+  }
+  .welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
     gap: 14px;
+    width: 100%;
+    max-width: 800px;
     animation: fadeIn 0.4s ease both;
+  }
+  .welcome-input-wrap {
+    width: 100%;
+    max-width: 680px;
+    margin-top: 8px;
   }
   @keyframes fadeIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
 
@@ -200,14 +216,15 @@
   }
   .limit-notice a:hover { text-decoration: underline; }
 
-  /* INPUT AREA */
+  /* INPUT AREA (chat mode - pinned bottom) */
   .input-area {
     border-top: 1px solid var(--border);
     background: var(--bg);
     padding: 12px 24px 16px;
-    display: flex;
+    display: none;
     justify-content: center;
   }
+  .input-area.active { display: flex; }
   .input-inner { width: 100%; max-width: 800px; }
 
   .input-box {
@@ -286,47 +303,59 @@
     </div>
   </div>
 
-  <!-- Chat area -->
-  <div class="chat-area" id="chatArea">
-    <div class="chat-inner" id="chatInner">
-
-      <!-- Welcome -->
-      <div class="welcome" id="welcome">
-        <div class="welcome-icon">🕌</div>
-        <div class="welcome-title">Ask Adhan<span>Live</span></div>
-        <div class="welcome-sub">Explore what you see on the map. Ask about the live globe, the Adhan Clock, the prayer arcs, or the astronomy behind it all.</div>
-        <div class="suggestions">
-          <div class="chip" onclick="ask(this)">What am I looking at on the live map?</div>
-          <div class="chip" onclick="ask(this)">What do the dot colors mean?</div>
-          <div class="chip" onclick="ask(this)">What is the Adhan Clock?</div>
-          <div class="chip" onclick="ask(this)">Why does the prayer wave move westward?</div>
-          <div class="chip" onclick="ask(this)">What triggers Fajr astronomically?</div>
-          <div class="chip" onclick="ask(this)">Why does Asr time vary between mosques?</div>
-          <div class="chip" onclick="ask(this)">What is the Adhan Arc Explorer?</div>
-          <div class="chip" onclick="ask(this)">Why are there gaps in the Adhan Clock bands?</div>
-        </div>
+  <!-- Welcome screen (shown until first message) -->
+  <div class="welcome-screen" id="welcomeScreen">
+    <div class="welcome" id="welcome">
+      <div class="welcome-icon">🕌</div>
+      <div class="welcome-title">Ask Adhan<span>Live</span></div>
+      <div class="welcome-sub">Explore what you see on the map. Ask about the live globe, the Adhan Clock, the prayer arcs, or the astronomy behind it all.</div>
+      <div class="suggestions">
+        <div class="chip" onclick="ask(this)">What am I looking at on the live map?</div>
+        <div class="chip" onclick="ask(this)">What do the dot colors mean?</div>
+        <div class="chip" onclick="ask(this)">What is the Adhan Clock?</div>
+        <div class="chip" onclick="ask(this)">Why does the prayer wave move westward?</div>
+        <div class="chip" onclick="ask(this)">What triggers Fajr astronomically?</div>
+        <div class="chip" onclick="ask(this)">Why does Asr time vary between mosques?</div>
+        <div class="chip" onclick="ask(this)">What is the Adhan Arc Explorer?</div>
+        <div class="chip" onclick="ask(this)">Why are there gaps in the Adhan Clock bands?</div>
       </div>
-
-      <!-- Messages -->
-      <div class="messages" id="messages" style="display:none;"></div>
-
+      <!-- Input embedded in welcome screen -->
+      <div class="welcome-input-wrap">
+        <div class="input-box" id="inputBox">
+          <textarea
+            id="input"
+            placeholder="Ask about the live map, prayer times, or the astronomy..."
+            rows="1"
+            onkeydown="handleKey(event)"
+            oninput="onInput(this)"
+          ></textarea>
+          <button class="send-btn" id="sendBtn" onclick="send()" title="Send" disabled>↑</button>
+        </div>
+        <div class="input-disclaimer">Responses may not always be accurate. Found something wrong? <a href="https://www.adhanlive.com/contact.html">Let us know.</a></div>
+      </div>
     </div>
   </div>
 
-  <!-- Input -->
-  <div class="input-area">
-    <div class="input-inner">
-      <div class="input-box" id="inputBox">
-        <textarea
-          id="input"
-          placeholder="Ask about the live map, prayer times, or the astronomy..."
-          rows="1"
-          onkeydown="handleKey(event)"
-          oninput="onInput(this)"
-        ></textarea>
-        <button class="send-btn" id="sendBtn" onclick="send()" title="Send" disabled>↑</button>
-      </div>
+  <!-- Chat area (shown after first message) -->
+  <div class="chat-area" id="chatArea">
+    <div class="chat-inner" id="chatInner">
+      <div class="messages" id="messages"></div>
+    </div>
+  </div>
 
+  <!-- Input pinned to bottom (shown after first message) -->
+  <div class="input-area" id="inputArea">
+    <div class="input-inner">
+      <div class="input-box" id="inputBoxChat">
+        <textarea
+          id="inputChat"
+          placeholder="Ask a follow-up..."
+          rows="1"
+          onkeydown="handleKeyChat(event)"
+          oninput="onInputChat(this)"
+        ></textarea>
+        <button class="send-btn" id="sendBtnChat" onclick="send()" title="Send" disabled>↑</button>
+      </div>
     </div>
     <div class="input-disclaimer">Responses may not always be accurate. Found something wrong? <a href="https://www.adhanlive.com/contact.html">Let us know.</a></div>
   </div>
@@ -350,21 +379,32 @@ const MAX_MESSAGES = 15;
 let history = [];
 let messageCount = 0;
 let loading = false;
+let chatStarted = false;
 
-const inputEl  = document.getElementById('input');
-const sendBtn  = document.getElementById('sendBtn');
-const chatArea = document.getElementById('chatArea');
-const msgsEl   = document.getElementById('messages');
-const welcomeEl= document.getElementById('welcome');
-const inputBox = document.getElementById('inputBox');
+// Welcome screen elements
+const inputEl      = document.getElementById('input');
+const sendBtn      = document.getElementById('sendBtn');
+// Chat screen elements
+const inputElChat  = document.getElementById('inputChat');
+const sendBtnChat  = document.getElementById('sendBtnChat');
+const inputAreaEl  = document.getElementById('inputArea');
+const welcomeScreen= document.getElementById('welcomeScreen');
+const chatArea     = document.getElementById('chatArea');
+const msgsEl       = document.getElementById('messages');
+
+function activeInput() { return chatStarted ? inputElChat : inputEl; }
+function activeBtn()   { return chatStarted ? sendBtnChat : sendBtn; }
 
 function onInput(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 160) + 'px';
   const hasText = el.value.trim().length > 0;
-  sendBtn.disabled = !hasText || loading || messageCount >= MAX_MESSAGES;
-  sendBtn.classList.toggle('active', hasText && !loading && messageCount < MAX_MESSAGES);
+  const btn = (el === inputEl) ? sendBtn : sendBtnChat;
+  btn.disabled = !hasText || loading || messageCount >= MAX_MESSAGES;
+  btn.classList.toggle('active', hasText && !loading && messageCount < MAX_MESSAGES);
 }
+
+function onInputChat(el) { onInput(el); }
 
 function handleKey(e) {
   if (e.key === 'Enter' && !e.shiftKey) {
@@ -373,10 +413,26 @@ function handleKey(e) {
   }
 }
 
+function handleKeyChat(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    if (!sendBtnChat.disabled) send();
+  }
+}
+
 function ask(el) {
   inputEl.value = el.textContent;
   onInput(inputEl);
   send();
+}
+
+function switchToChatMode() {
+  if (chatStarted) return;
+  chatStarted = true;
+  welcomeScreen.style.display = 'none';
+  chatArea.classList.add('active');
+  inputAreaEl.classList.add('active');
+  setTimeout(() => inputElChat.focus(), 50);
 }
 
 function renderMarkdown(text) {
@@ -430,10 +486,7 @@ function renderMarkdown(text) {
 }
 
 function showMessages() {
-  if (welcomeEl.style.display !== 'none') {
-    welcomeEl.style.display = 'none';
-    msgsEl.style.display = 'flex';
-  }
+  switchToChatMode();
 }
 
 function addMessage(role, text) {
@@ -482,9 +535,12 @@ function removeTyping() { document.getElementById('typing')?.remove(); }
 function scrollBottom() { chatArea.scrollTop = chatArea.scrollHeight; }
 
 function showLimitNotice() {
-  inputBox.classList.add('disabled');
+  document.getElementById('inputBox').classList.add('disabled');
+  document.getElementById('inputBoxChat').classList.add('disabled');
   inputEl.disabled = true;
   sendBtn.disabled = true;
+  inputElChat.disabled = true;
+  sendBtnChat.disabled = true;
 
   const notice = document.createElement('div');
   notice.className = 'limit-notice';
@@ -493,14 +549,16 @@ function showLimitNotice() {
 }
 
 async function send() {
-  const text = inputEl.value.trim();
+  const inp = activeInput();
+  const btn = activeBtn();
+  const text = inp.value.trim();
   if (!text || loading || messageCount >= MAX_MESSAGES) return;
 
   loading = true;
-  sendBtn.disabled = true;
-  sendBtn.classList.remove('active');
-  inputEl.value = '';
-  inputEl.style.height = 'auto';
+  btn.disabled = true;
+  btn.classList.remove('active');
+  inp.value = '';
+  inp.style.height = 'auto';
 
   addMessage('user', text);
   history.push({ role: 'user', content: text });
@@ -541,9 +599,11 @@ async function send() {
   if (messageCount >= MAX_MESSAGES) {
     showLimitNotice();
   } else {
-    sendBtn.disabled = false;
-    inputEl.focus();
-    onInput(inputEl);
+    const inp = activeInput();
+    const btn = activeBtn();
+    btn.disabled = false;
+    inp.focus();
+    onInput(inp);
   }
 }
 </script>

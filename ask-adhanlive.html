@@ -243,19 +243,20 @@
   .send-btn.active:hover { background: #33eeff; box-shadow: 0 0 12px var(--cyan-glow); transform: scale(1.05); }
   .send-btn:disabled { cursor: not-allowed; }
 
-  .input-meta {
-    display: flex; justify-content: center;
-    font-size: 11px; color: var(--text-muted);
-    margin-top: 8px; gap: 4px; align-items: center;
-  }
-  .input-meta kbd {
-    padding: 1px 5px; border-radius: 3px;
-    border: 1px solid var(--border); background: var(--bg3);
-    font-size: 10px; font-family: 'Inter', sans-serif; color: var(--text-dim);
-  }
-  .input-meta.hidden { visibility: hidden; }
 
-  @media (max-width: 600px) {
+
+  .input-disclaimer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+  .input-disclaimer a {
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .input-disclaimer a:hover { color: var(--cyan); }
     .chat-inner { padding: 0 16px; }
     .header { padding: 0 16px; }
     .header-inner { padding: 0; }
@@ -325,12 +326,9 @@
         ></textarea>
         <button class="send-btn" id="sendBtn" onclick="send()" title="Send" disabled>↑</button>
       </div>
-      <div class="input-meta" id="inputMeta">
-        <kbd>Enter</kbd> to send &nbsp;·&nbsp;
-        <kbd>Shift</kbd>+<kbd>Enter</kbd> for new line &nbsp;·&nbsp;
-        Powered by Claude · AdhanLive
-      </div>
+
     </div>
+    <div class="input-disclaimer">Responses may not always be accurate. Found something wrong? <a href="https://www.adhanlive.com/contact.html">Let us know.</a></div>
   </div>
 
 </div>
@@ -359,7 +357,6 @@ const chatArea = document.getElementById('chatArea');
 const msgsEl   = document.getElementById('messages');
 const welcomeEl= document.getElementById('welcome');
 const inputBox = document.getElementById('inputBox');
-const inputMeta= document.getElementById('inputMeta');
 
 function onInput(el) {
   el.style.height = 'auto';
@@ -486,7 +483,6 @@ function scrollBottom() { chatArea.scrollTop = chatArea.scrollHeight; }
 
 function showLimitNotice() {
   inputBox.classList.add('disabled');
-  inputMeta.classList.add('hidden');
   inputEl.disabled = true;
   sendBtn.disabled = true;
 

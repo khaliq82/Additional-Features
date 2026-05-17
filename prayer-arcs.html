@@ -1135,6 +1135,9 @@ function drawPrayerArc(prayer, doy, meta, utcH) {
   const eqPt = pts.filter(p => p !== null).find(([,lat]) => Math.abs(lat)<1.5);
   if(eqPt) {
     const [lx,ly] = lonLatToXY(eqPt[0], eqPt[1]);
+    // Per-prayer vertical offset to prevent label collisions
+    const labelOffsets = { fajr: -14, dhuhr: -14, asr: -14, maghrib: -28, isha: 10 };
+    const yOff = labelOffsets[prayer] ?? -14;
     ctx.save();
     ctx.fillStyle = meta.color;
     ctx.globalAlpha = 1;
@@ -1142,7 +1145,7 @@ function drawPrayerArc(prayer, doy, meta, utcH) {
     ctx.textAlign = 'center';
     ctx.shadowColor = meta.color;
     ctx.shadowBlur = 14;
-    ctx.fillText(meta.label.toUpperCase(), lx, ly - 14);
+    ctx.fillText(meta.label.toUpperCase(), lx, ly + yOff);
     ctx.restore();
   }
 

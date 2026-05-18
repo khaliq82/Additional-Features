@@ -264,33 +264,37 @@
     padding: 16px 40px;
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
+    width: 100%;
     background: rgba(10,10,10,0.96);
     backdrop-filter: blur(16px);
     z-index: 100;
+    overflow: visible;
   }
   .nav-logo {
     font-family: 'Playfair Display', serif;
     font-size: 18px; font-weight: 600;
     letter-spacing: 0.02em;
     color: #fff; text-decoration: none;
+    flex-shrink: 0;
   }
-  .nav-logo span { color: var(--cyan); }
-  .nav-center { display: flex; align-items: center; gap: 4px; }
+  .nav-logo span { color: #00d4ff; }
+  .nav-center { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; }
   .nav-link {
     font-size: 11px; letter-spacing: 0.1em;
     color: rgba(255,255,255,0.45); text-decoration: none;
     padding: 6px 12px; border-radius: 4px;
     transition: all 0.2s; text-transform: uppercase;
+    white-space: nowrap;
   }
   .nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
-  .nav-link.active { color: var(--cyan); }
-  .nav-clock { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; flex-shrink: 0; }
-  .nav-date { font-size: 11px; color: var(--cyan); font-weight: 400; letter-spacing: 0.04em; }
-  .nav-time { font-size: 14px; color: #fff; font-weight: 500; letter-spacing: 0.08em; font-variant-numeric: tabular-nums; }
+  .nav-link.active { color: #00d4ff; }
+  .nav-clock { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; flex-shrink: 0; min-width: 120px; }
+  .nav-date { font-size: 11px; color: #00d4ff; font-weight: 400; letter-spacing: 0.04em; white-space: nowrap; }
+  .nav-time { font-size: 14px; color: #fff; font-weight: 500; letter-spacing: 0.08em; font-variant-numeric: tabular-nums; white-space: nowrap; }
   @media (max-width: 768px) {
     nav { padding: 12px 16px; }
     .nav-center { display: none; }
-    .nav-clock { display: flex; }
+    .nav-clock { display: flex; min-width: auto; }
   }
 </style>
 </head>

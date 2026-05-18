@@ -34,14 +34,12 @@
     line-height: 1.6;
     overflow: hidden;
   }
-  body { display: flex; flex-direction: column; }
 
   .layout {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    height: 100vh;
     width: 100%;
-    min-height: 0;
     overflow: hidden;
   }
 
@@ -270,7 +268,7 @@
     flex-shrink: 0;
     width: 100%;
     box-sizing: border-box;
-    background: rgba(10,10,10,0.96);
+    background: #0d0d0d;
     backdrop-filter: blur(16px);
     z-index: 100;
   }
@@ -278,8 +276,9 @@
     font-family: 'Playfair Display', serif;
     font-size: 18px; font-weight: 600;
     letter-spacing: 0.02em;
-    color: #fff; text-decoration: none;
+    color: #fff;
     flex-shrink: 0;
+    cursor: default;
   }
   .nav-logo span { color: #00d4ff; }
   .nav-center { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; }
@@ -306,7 +305,7 @@
 <div class="layout">
 
   <nav>
-    <a class="nav-logo" href="index.html">Adhan<span>Live</span></a>
+    <div class="nav-logo">Adhan<span>Live</span></div>
     <div class="nav-center">
       <a href="about.html" class="nav-link">About</a>
       <a href="index.html" class="nav-link">Live Map</a>

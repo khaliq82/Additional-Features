@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ask AdhanLive</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -41,41 +41,7 @@
     width: 100%;
   }
 
-  /* HEADER */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 1px solid var(--border);
-    background: rgba(10,10,10,0.98);
-    backdrop-filter: blur(12px);
-    position: relative;
-    z-index: 10;
-    padding: 0 24px;
-  }
-  .header-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    max-width: 800px;
-  }
-  .header-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-  .header-title { font-size: 18px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; }
-  .header-title span { color: var(--cyan); }
-  .header-sub { font-size: 11px; color: var(--text-muted); font-weight: 400; }
-  .header-right { display: flex; align-items: center; gap: 14px; }
-  .header-time {
-    font-size: 11px; color: var(--text-muted);
-    letter-spacing: 0.02em; font-variant-numeric: tabular-nums;
-  }
-  .back-link {
-    font-size: 12px; color: var(--text-muted); text-decoration: none;
-    border: 1px solid var(--border); border-radius: 6px;
-    padding: 4px 10px; transition: all 0.15s;
-    white-space: nowrap;
-  }
-  .back-link:hover { color: var(--cyan); border-color: rgba(0,229,255,0.3); }
+
 
   /* CHAT AREA */
   .chat-area {
@@ -291,26 +257,61 @@
     .welcome-screen { padding: 16px; }
   }
   }
+
+  /* ── NAV (matches site nav) ── */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 40px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    background: rgba(10,10,10,0.96);
+    backdrop-filter: blur(16px);
+    z-index: 100;
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #fff; text-decoration: none;
+  }
+  .nav-logo span { color: var(--cyan); }
+  .nav-center { display: flex; align-items: center; gap: 4px; }
+  .nav-link {
+    font-size: 11px; letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.45); text-decoration: none;
+    padding: 6px 12px; border-radius: 4px;
+    transition: all 0.2s; text-transform: uppercase;
+  }
+  .nav-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
+  .nav-link.active { color: var(--cyan); }
+  .nav-clock { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; flex-shrink: 0; }
+  .nav-date { font-size: 11px; color: var(--cyan); font-weight: 400; letter-spacing: 0.04em; }
+  .nav-time { font-size: 14px; color: #fff; font-weight: 500; letter-spacing: 0.08em; font-variant-numeric: tabular-nums; }
+  @media (max-width: 768px) {
+    nav { padding: 12px 16px; }
+    .nav-center { display: none; }
+    .nav-clock { display: flex; }
+  }
 </style>
 </head>
 <body>
 <div class="layout">
 
-  <!-- Header -->
-  <div class="header">
-    <div class="header-inner">
-      <a class="header-brand" href="https://www.adhanlive.com" title="Back to AdhanLive">
-        <div>
-          <div class="header-title">Adhan<span>Live</span></div>
-          <div class="header-sub">Ask AdhanLive</div>
-        </div>
-      </a>
-      <div class="header-right">
-        <div class="header-time" id="headerTime"></div>
-        <a class="back-link" href="https://www.adhanlive.com">← Live Map</a>
-      </div>
+  <nav>
+    <a class="nav-logo" href="index.html">Adhan<span>Live</span></a>
+    <div class="nav-center">
+      <a href="about.html" class="nav-link">About</a>
+      <a href="index.html" class="nav-link">Live Map</a>
+      <a href="adhan-clock.html" class="nav-link">Adhan Clock</a>
+      <a href="prayer-arcs.html" class="nav-link">Arc Explorer</a>
+      <a href="ask-adhanlive.html" class="nav-link active">Ask AdhanLive</a>
+      <a href="contact.html" class="nav-link">Contact</a>
     </div>
-  </div>
+    <div class="nav-clock">
+      <div class="nav-date" id="navDate"></div>
+      <div class="nav-time" id="navTime"></div>
+    </div>
+  </nav>
 
   <!-- Welcome screen (shown until first message) -->
   <div class="welcome-screen" id="welcomeScreen">
@@ -372,17 +373,21 @@
 </div>
 
 <script>
-// Live clock in header
-function updateClock() {
-  const el = document.getElementById('headerTime');
-  if (!el) return;
-  el.textContent = new Date().toLocaleString(undefined, {
-    weekday: 'short', day: 'numeric', month: 'short',
-    hour: '2-digit', minute: '2-digit', second: '2-digit'
-  });
+function updateNavClock() {
+  const now = new Date();
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  const h = now.getHours();
+  const m = now.getMinutes().toString().padStart(2,'0');
+  const s = now.getSeconds().toString().padStart(2,'0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = (h % 12 || 12).toString().padStart(2,'0');
+  document.getElementById('navDate').textContent = dateStr;
+  document.getElementById('navTime').textContent = `${h12}:${m}:${s} ${ampm}`;
 }
-updateClock();
-setInterval(updateClock, 1000);
+updateNavClock();
+setInterval(updateNavClock, 1000);
 
 const MAX_MESSAGES = 15;
 let history = [];

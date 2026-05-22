@@ -307,6 +307,15 @@ footer{
     </div>
 
     <div class="ctrl">
+      <div class="ctrl-label">Colour By</div>
+      <div class="seg-btns">
+        <button class="seg-btn active" data-colormode="prayer">Prayer</button>
+        <button class="seg-btn" data-colormode="region">Region</button>
+      </div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:4px;" id="colorModeDesc">Dots coloured by prayer type</div>
+    </div>
+
+    <div class="ctrl">
       <div class="ctrl-label">Prayer Rings — Drag Dial to Separate</div>
       <div class="legend" id="legend">
         <div class="leg-item" data-pi="0" style="color:var(--fajr);">
@@ -329,6 +338,19 @@ footer{
           <div class="leg-dot" style="background:var(--isha);"></div>
           <span class="leg-name">Isha</span><span class="leg-pos">Outermost</span>
         </div>
+      </div>
+    </div>
+
+    <!-- Region legend (shown when colour by region is active) -->
+    <div class="ctrl" id="regionLegendCtrl" style="display:none;">
+      <div class="ctrl-label">Region Colours</div>
+      <div class="legend" id="regionLegend" style="display:none;">
+        <div class="leg-item" style="color:#00d4ff;"><div class="leg-dot" style="background:#00d4ff;"></div><span class="leg-name">Gulf</span></div>
+        <div class="leg-item" style="color:#ff6b35;"><div class="leg-dot" style="background:#ff6b35;"></div><span class="leg-name">South Asia</span></div>
+        <div class="leg-item" style="color:#00e676;"><div class="leg-dot" style="background:#00e676;"></div><span class="leg-name">SE Asia</span></div>
+        <div class="leg-item" style="color:#ffd740;"><div class="leg-dot" style="background:#ffd740;"></div><span class="leg-name">N. Africa</span></div>
+        <div class="leg-item" style="color:#ce93d8;"><div class="leg-dot" style="background:#ce93d8;"></div><span class="leg-name">Europe</span></div>
+        <div class="leg-item" style="color:#ff8a65;"><div class="leg-dot" style="background:#ff8a65;"></div><span class="leg-name">W. Africa</span></div>
       </div>
     </div>
   </div>
@@ -372,14 +394,16 @@ footer{
       <div class="story-prayer" style="color:var(--dhuhr);">
         <div class="story-dot" style="background:var(--dhuhr);"></div>Dhuhr · Solar Noon
       </div>
-      <div class="story-title">The <em>Unbroken</em> Ring</div>
+      <div class="story-title">The <em>Clearest</em> Census</div>
       <div class="story-body">
-        Separate the prayers using the dial. Watch Dhuhr — the golden ring — form the most complete circle of all five prayers. <strong>No gaps. No thin patches. A near-perfect ring.</strong>
+        Separate the prayers and isolate the gold Dhuhr ring. Now drag the month slider from January to December. Watch carefully.
         <br><br>
-        Solar noon moves westward at exactly 15° of longitude per hour — the speed of Earth's rotation. Dhuhr follows it faithfully. At every UTC hour, some longitude is experiencing solar noon. Dhuhr is the only prayer that is permanently, universally active — the anchor of Islamic time.
+        Every other ring shifts. Fajr and Isha compress and expand with the seasons. Maghrib tilts. But Dhuhr — <strong>Dhuhr barely moves.</strong>
+        <br><br>
+        Because Dhuhr follows solar noon, it has no seasonal distortion, no twilight complications, no high-latitude edge cases. What remains is the purest signal in the dataset: <strong>a direct portrait of where Muslims live.</strong> Every gap is an empty longitude. Every dense arc is a populated one. No other prayer gives you this cleanly.
       </div>
       <div class="story-quote">
-        The gold ring proves what astronomy has always known: the sun never stops moving, and neither does the call to Dhuhr.
+        If you wanted to draw a map of the Muslim world using only prayer data, you would use Dhuhr.
       </div>
     </div>
 
@@ -463,7 +487,7 @@ footer{
       </div>
     </div>
 
-    <!-- Story 7: The Gaps (Insight A) -->
+    <!-- Story 7: The Gaps -->
     <div class="story-card" data-pi="-1" style="--story-color:var(--cyan);">
       <div class="story-num">07 / 09</div>
       <div class="story-prayer" style="color:var(--cyan);">
@@ -473,16 +497,16 @@ footer{
       <div class="story-body">
         Look closely at the rings. Every prayer — Fajr, Dhuhr, Asr, Maghrib, Isha — has the same gaps, at the same positions on the clock. The gaps don't belong to any single prayer. They belong to the <strong>longitudes underneath them</strong>.
         <br><br>
-        Those silent clock positions correspond to the Americas, the Pacific Ocean, Central Africa, and Australia — regions with few or no mosques. Where there are no Muslims, there is no Adhan. The clock is not just a clock.
+        Those silent clock positions correspond to the Americas, the Pacific Ocean, Central Africa, and Australia — regions with few or no mosques. Where there are no Muslims, there is no Adhan.
         <br><br>
-        <strong>It is a map of where Muslims live, expressed as time.</strong> Every gap is an empty longitude. Every dense arc is a populated one.
+        <strong>The clock is not just a clock. It is a map of where Muslims live, expressed as time.</strong> Every gap is an empty longitude. Every dense arc is a populated one.
       </div>
       <div class="story-quote">
         The clock's silences are as meaningful as its sound. Both tell you where the Muslim world is — and where it isn't.
       </div>
     </div>
 
-    <!-- Story 8: Band Thickness (Insight B) -->
+    <!-- Story 8: Band Thickness -->
     <div class="story-card" data-pi="-1" style="--story-color:#ffcc00;">
       <div class="story-num">08 / 09</div>
       <div class="story-prayer" style="color:#ffcc00;">
@@ -492,7 +516,7 @@ footer{
       <div class="story-body">
         Separate the prayers with the dial. Now look at the <strong>circumferential thickness</strong> of each ring — how wide the band is at different clock positions. This is not decoration. It is data.
         <br><br>
-        The thickest sections of every ring fall around the same hours: <strong>UTC+5 to UTC+8</strong>. That is South Asia and Southeast Asia — Pakistan, India, Bangladesh, Indonesia, Malaysia. Home to over 800 million Muslims. The most densely Muslim-populated region on Earth.
+        The thickest sections of every ring fall around the same hours: <strong>UTC+5 to UTC+8</strong>. That is South Asia and Southeast Asia — Pakistan, India, Bangladesh, Indonesia, Malaysia. The most densely Muslim-populated region on Earth.
         <br><br>
         The thinner sections — Europe, West Africa, the Gulf — are real too, and visible. The Adhan Clock is a <strong>demographic portrait of the Muslim world</strong>, drawn in the language of prayer.
       </div>
@@ -501,24 +525,22 @@ footer{
       </div>
     </div>
 
-    <!-- Story 9: Radial Spread (Insight C) -->
+    <!-- Story 9: The Handoff -->
     <div class="story-card" data-pi="-1" style="--story-color:var(--isha);">
       <div class="story-num">09 / 09</div>
       <div class="story-prayer" style="color:var(--isha);">
-        <div class="story-dot" style="background:var(--isha);"></div>Latitude · The Full Earth
+        <div class="story-dot" style="background:var(--isha);"></div>The Relay
       </div>
-      <div class="story-title">How Much of the Earth is <em>Praying</em></div>
+      <div class="story-title">A Prayer <em>Never Ends</em></div>
       <div class="story-body">
-        There is a third dimension hidden in the clock. Separate the prayers and look not at the thickness of the rings, but at their <strong>radial depth</strong> — the distance between the outer and inner edge of each band.
+        Watch the NOW marker move through the clock. Notice what it crosses.
         <br><br>
-        The outer edge of each ring represents equatorial mosques — near the equator, prayer times are consistent year-round. The inner edge represents high-latitude mosques — in Scandinavia, Canada, Russia — where prayer times shift dramatically with the seasons.
+        As the marker leaves the dense S.Asia/SE Asia arc, it enters the Gulf. Then East Africa. Then West Africa and Europe. Then it returns to Asia. <strong>Each region picks up the prayer as the previous one puts it down.</strong>
         <br><br>
-        Where the band is <strong>deep radially</strong>, mosques from the tropics and the sub-arctic are calling the Adhan simultaneously. The latitude range of Islam in worship, at that exact hour, made visible.
-        <br><br>
-        This is the full vertical extent of the Muslim world — from equator to the edge of the polar circle — captured in the width of a ring.
+        This is not metaphor. It is visible in the data. The density at the NOW marker never drops to zero — there is always a mosque somewhere in its path. The Adhan is a relay race around the Earth, and no baton is ever dropped.
       </div>
       <div class="story-quote">
-        At its widest radial point, the band spans 100° of latitude — a sixth of the distance from equator to pole — all in prayer at once.
+        "Indeed, prayer has been decreed upon the believers a decree of specified times." — Quran 4:103
       </div>
     </div>
 
@@ -546,6 +568,10 @@ const PRAYER_COLORS=['#4466ff','#ffcc00','#e07a2f','#d94f3d','#9b59c4'];
 const PRAYER_COLORS_A=PRAYER_COLORS.map(c=>c+'bb');
 const PRAYER_COLORS_DIM=PRAYER_COLORS.map(c=>c+'22');
 const PRAYER_RING_POS=[0.1,0.32,0.54,0.76,0.98];
+// Region colors: 0=unknown, 1=Gulf, 2=S.Asia, 3=SE Asia, 4=N.Africa, 5=Europe, 6=W.Africa
+const REGION_COLORS=['#aaaaaa','#00d4ff','#ff6b35','#00e676','#ffd740','#ce93d8','#ff8a65'];
+const REGION_COLORS_A=REGION_COLORS.map(c=>c+'bb');
+const REGION_COLORS_DIM=REGION_COLORS.map(c=>c+'22');
 const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MODE_DESC={local:'Prayer times in your local timezone',utc:'When prayers fire globally in UTC'};
 const MODE_LABEL={local:'Your Local Time',utc:'UTC — Global Wave'};
@@ -554,7 +580,7 @@ const MODE_LABEL={local:'Your Local Time',utc:'UTC — Global Wave'};
 const canvas=document.getElementById('clockCanvas');
 const ctx=canvas.getContext('2d');
 let CW,CX,CY,R_outer,R_inner,R_dial;
-let dotSize=0.8,currentMonth=5,clockMode='local';
+let dotSize=0.8,currentMonth=5,clockMode='local',colorMode='prayer';
 let activeRegion='all',highlightPi=-1; // -1 = show all
 let separateT=0,dialAngleAccum=-Math.PI/2;
 let isDragging=false,lastAngle=null;
@@ -649,56 +675,130 @@ function drawDots(){
   const RCODES={all:-1,gulf:1,southasia:2,seasia:3,nafrica:4,europe:5,wafrica:6};
   const fc=RCODES[activeRegion];
 
-  for(let pi=0;pi<5;pi++){
-    const rSep=PRAYER_RING_POS[pi];
-    const isHL=highlightPi===-1||highlightPi===pi;
-    ctx.beginPath();
-    for(let i=0;i<n;i++){
-      if(prayer[i]!==pi) continue;
-      if(fc!==-1&&region[i]!==fc) continue;
-      const rCol=rNorm[i]/255;
-      let finalR;
-      if(st<0.01) finalR=R_inner+range*rCol;
-      else {
-        const rN=rCol+(rSep-rCol)*st;
-        finalR=R_inner+range*(rSep+(rN-rSep)*(1-st)*0.6);
+  if(colorMode==='prayer'){
+    for(let pi=0;pi<5;pi++){
+      const rSep=PRAYER_RING_POS[pi];
+      const isHL=highlightPi===-1||highlightPi===pi;
+      ctx.beginPath();
+      for(let i=0;i<n;i++){
+        if(prayer[i]!==pi) continue;
+        if(fc!==-1&&region[i]!==fc) continue;
+        const rCol=rNorm[i]/255;
+        let finalR;
+        if(st<0.01) finalR=R_inner+range*rCol;
+        else {
+          const rN=rCol+(rSep-rCol)*st;
+          finalR=R_inner+range*(rSep+(rN-rSep)*(1-st)*0.6);
+        }
+        const x=CX+Math.cos(angles[i])*finalR;
+        const y=CY+Math.sin(angles[i])*finalR;
+        ctx.moveTo(x+ds,y);ctx.arc(x,y,ds,0,Math.PI*2);
       }
-      const x=CX+Math.cos(angles[i])*finalR;
-      const y=CY+Math.sin(angles[i])*finalR;
-      ctx.moveTo(x+ds,y);ctx.arc(x,y,ds,0,Math.PI*2);
+      ctx.fillStyle=isHL?PRAYER_COLORS_A[pi]:PRAYER_COLORS_DIM[pi];
+      ctx.fill();
     }
-    ctx.fillStyle=isHL?PRAYER_COLORS_A[pi]:PRAYER_COLORS_DIM[pi];
-    ctx.fill();
+  } else {
+    // Color by region — group by region code for batched fills
+    for(let rc=0;rc<7;rc++){
+      ctx.beginPath();
+      for(let i=0;i<n;i++){
+        if(fc!==-1&&region[i]!==fc) continue;
+        if(region[i]!==rc) continue;
+        const pi=prayer[i];
+        const rSep=PRAYER_RING_POS[pi];
+        const rCol=rNorm[i]/255;
+        let finalR;
+        if(st<0.01) finalR=R_inner+range*rCol;
+        else {
+          const rN=rCol+(rSep-rCol)*st;
+          finalR=R_inner+range*(rSep+(rN-rSep)*(1-st)*0.6);
+        }
+        const x=CX+Math.cos(angles[i])*finalR;
+        const y=CY+Math.sin(angles[i])*finalR;
+        ctx.moveTo(x+ds,y);ctx.arc(x,y,ds,0,Math.PI*2);
+      }
+      ctx.fillStyle=REGION_COLORS_A[rc];
+      ctx.fill();
+    }
   }
 }
 
 function drawDial(){
   const da=-Math.PI/2+separateT*Math.PI*2;
   ctx.save();
+
+  // ── Outer bezel ring — brushed steel ──
+  const bezelR=R_dial+CW*0.018;
+  const bezelGrad=ctx.createRadialGradient(CX-R_dial*0.3,CY-R_dial*0.3,R_dial*0.1,CX,CY,bezelR);
+  bezelGrad.addColorStop(0,'rgba(210,220,230,0.18)');
+  bezelGrad.addColorStop(0.4,'rgba(140,155,170,0.12)');
+  bezelGrad.addColorStop(0.7,'rgba(80,95,110,0.18)');
+  bezelGrad.addColorStop(1,'rgba(40,55,70,0.22)');
+  ctx.beginPath();ctx.arc(CX,CY,bezelR,0,Math.PI*2);
+  ctx.fillStyle=bezelGrad;ctx.fill();
+  // Bezel highlight rim
+  ctx.strokeStyle='rgba(200,215,230,0.28)';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.arc(CX,CY,bezelR,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle='rgba(30,40,55,0.5)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.arc(CX,CY,R_dial+1,0,Math.PI*2);ctx.stroke();
+
+  // ── Dial face ──
   ctx.beginPath();ctx.arc(CX,CY,R_dial,0,Math.PI*2);
-  const dg=ctx.createRadialGradient(CX,CY,0,CX,CY,R_dial);
-  dg.addColorStop(0,'rgba(0,212,255,0.1)');dg.addColorStop(1,'rgba(0,212,255,0.03)');
+  const dg=ctx.createRadialGradient(CX-R_dial*0.25,CY-R_dial*0.3,0,CX,CY,R_dial);
+  dg.addColorStop(0,'rgba(18,28,45,0.97)');
+  dg.addColorStop(0.6,'rgba(10,18,32,0.97)');
+  dg.addColorStop(1,'rgba(4,8,18,0.98)');
   ctx.fillStyle=dg;ctx.fill();
-  ctx.strokeStyle='rgba(0,212,255,0.22)';ctx.lineWidth=1;ctx.stroke();
+
+  // Separation arc progress
   if(separateT>0.01){
-    ctx.strokeStyle='rgba(0,212,255,0.6)';ctx.lineWidth=2;
-    ctx.shadowColor='rgba(0,212,255,0.35)';ctx.shadowBlur=8;
-    ctx.beginPath();ctx.arc(CX,CY,R_dial,-Math.PI/2,da);ctx.stroke();
+    ctx.strokeStyle='rgba(0,212,255,0.55)';ctx.lineWidth=2;
+    ctx.shadowColor='rgba(0,212,255,0.4)';ctx.shadowBlur=8;
+    ctx.beginPath();ctx.arc(CX,CY,R_dial*0.82,-Math.PI/2,da);ctx.stroke();
+    ctx.shadowBlur=0;
   }
+
+  // Prayer dots on bezel
   for(let pi=0;pi<5;pi++){
     const a=-Math.PI/2+(pi/4)*Math.PI*2;
-    ctx.globalAlpha=0.35+separateT*0.6;
-    ctx.beginPath();ctx.arc(CX+Math.cos(a)*R_dial,CY+Math.sin(a)*R_dial,3,0,Math.PI*2);
-    ctx.fillStyle=PRAYER_COLORS[pi];ctx.fill();
+    const dx=CX+Math.cos(a)*(bezelR-CW*0.008);
+    const dy=CY+Math.sin(a)*(bezelR-CW*0.008);
+    ctx.globalAlpha=0.5+separateT*0.5;
+    ctx.beginPath();ctx.arc(dx,dy,CW*0.008,0,Math.PI*2);
+    const pg=ctx.createRadialGradient(dx-1,dy-1,0,dx,dy,CW*0.008);
+    pg.addColorStop(0,PRAYER_COLORS[pi]+'ee');
+    pg.addColorStop(1,PRAYER_COLORS[pi]+'44');
+    ctx.fillStyle=pg;ctx.fill();
     ctx.globalAlpha=1;
   }
+
+  // ── Chrome centre hub ──
+  const hubR=R_dial*0.28;
+  const hubG=ctx.createRadialGradient(CX-hubR*0.4,CY-hubR*0.5,hubR*0.05,CX,CY,hubR);
+  hubG.addColorStop(0,'rgba(230,240,255,0.95)');
+  hubG.addColorStop(0.25,'rgba(160,180,200,0.85)');
+  hubG.addColorStop(0.6,'rgba(80,100,125,0.9)');
+  hubG.addColorStop(0.85,'rgba(40,55,75,0.95)');
+  hubG.addColorStop(1,'rgba(15,25,40,1)');
+  ctx.beginPath();ctx.arc(CX,CY,hubR,0,Math.PI*2);
+  ctx.fillStyle=hubG;ctx.fill();
+  ctx.strokeStyle='rgba(180,200,220,0.4)';ctx.lineWidth=0.8;
+  ctx.beginPath();ctx.arc(CX,CY,hubR,0,Math.PI*2);ctx.stroke();
+
+  // Handle/drag indicator
   const hx=CX+Math.cos(da)*R_dial,hy=CY+Math.sin(da)*R_dial;
-  ctx.shadowColor='rgba(0,212,255,0.8)';ctx.shadowBlur=14;
-  ctx.beginPath();ctx.arc(hx,hy,7,0,Math.PI*2);
-  ctx.fillStyle='rgba(0,212,255,0.95)';ctx.fill();
-  ctx.strokeStyle='rgba(255,255,255,0.8)';ctx.lineWidth=1.5;ctx.stroke();
+  const hg=ctx.createRadialGradient(hx-3,hy-3,0,hx,hy,9);
+  hg.addColorStop(0,'rgba(180,230,255,1)');
+  hg.addColorStop(0.4,'rgba(0,212,255,0.95)');
+  hg.addColorStop(1,'rgba(0,140,200,0.7)');
+  ctx.shadowColor='rgba(0,212,255,0.9)';ctx.shadowBlur=16;
+  ctx.beginPath();ctx.arc(hx,hy,8,0,Math.PI*2);
+  ctx.fillStyle=hg;ctx.fill();
+  ctx.strokeStyle='rgba(200,240,255,0.7)';ctx.lineWidth=1.2;ctx.stroke();
   ctx.shadowBlur=0;
-  ctx.fillStyle='rgba(255,255,255,0.45)';
+
+  // Percentage label
+  ctx.fillStyle='rgba(255,255,255,0.4)';
   ctx.font=`500 ${CW*0.016}px Inter,sans-serif`;
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText(Math.round(separateT*100)+'%',CX,CY);
@@ -706,23 +806,73 @@ function drawDial(){
 }
 
 function drawNowMarker(){
-  if(!showNowMarker) return;
+  // Always draw — visible at all separation levels
   const now=new Date();
   const h=clockMode==='utc'?now.getUTCHours()+now.getUTCMinutes()/60:now.getHours()+now.getMinutes()/60;
   const a=(h/24)*Math.PI*2-Math.PI/2;
+  const needleLen=R_outer+12;
+  const needleBase=R_inner-8;
   ctx.save();
-  ctx.strokeStyle='rgba(255,255,255,0.55)';ctx.lineWidth=1.5;
-  ctx.setLineDash([3,5]);
-  ctx.shadowColor='rgba(255,255,255,0.3)';ctx.shadowBlur=4;
+
+  // ── 3D tapered needle ──
+  const nx1=CX+Math.cos(a)*needleLen, ny1=CY+Math.sin(a)*needleLen;
+  const nx0=CX+Math.cos(a)*needleBase, ny0=CY+Math.sin(a)*needleBase;
+  const perp=a+Math.PI/2;
+  const baseW=CW*0.009, tipW=CW*0.001;
+
+  // Shadow layer
+  ctx.globalAlpha=0.35;
+  ctx.shadowColor='rgba(0,0,0,0.8)';ctx.shadowBlur=6;
+  ctx.shadowOffsetX=2;ctx.shadowOffsetY=2;
   ctx.beginPath();
-  ctx.moveTo(CX+Math.cos(a)*(R_inner-4),CY+Math.sin(a)*(R_inner-4));
-  ctx.lineTo(CX+Math.cos(a)*(R_outer+10),CY+Math.sin(a)*(R_outer+10));
+  ctx.moveTo(nx0+Math.cos(perp)*baseW,ny0+Math.sin(perp)*baseW);
+  ctx.lineTo(nx1+Math.cos(perp)*tipW,ny1+Math.sin(perp)*tipW);
+  ctx.lineTo(nx1-Math.cos(perp)*tipW,ny1-Math.sin(perp)*tipW);
+  ctx.lineTo(nx0-Math.cos(perp)*baseW,ny0-Math.sin(perp)*baseW);
+  ctx.closePath();
+  ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fill();
+  ctx.globalAlpha=1;ctx.shadowBlur=0;ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;
+
+  // Main needle body — dark steel
+  const ng=ctx.createLinearGradient(
+    CX+Math.cos(perp)*baseW,CY+Math.sin(perp)*baseW,
+    CX-Math.cos(perp)*baseW,CY-Math.sin(perp)*baseW
+  );
+  ng.addColorStop(0,'rgba(60,75,90,0.9)');
+  ng.addColorStop(0.35,'rgba(190,210,230,0.95)');
+  ng.addColorStop(0.5,'rgba(230,245,255,1)');
+  ng.addColorStop(0.65,'rgba(190,210,230,0.95)');
+  ng.addColorStop(1,'rgba(40,55,70,0.9)');
+  ctx.beginPath();
+  ctx.moveTo(nx0+Math.cos(perp)*baseW,ny0+Math.sin(perp)*baseW);
+  ctx.lineTo(nx1+Math.cos(perp)*tipW,ny1+Math.sin(perp)*tipW);
+  ctx.lineTo(nx1-Math.cos(perp)*tipW,ny1-Math.sin(perp)*tipW);
+  ctx.lineTo(nx0-Math.cos(perp)*baseW,ny0-Math.sin(perp)*baseW);
+  ctx.closePath();
+  ctx.fillStyle=ng;ctx.fill();
+
+  // Highlight streak
+  ctx.globalAlpha=0.6;
+  ctx.strokeStyle='rgba(255,255,255,0.9)';ctx.lineWidth=0.8;
+  ctx.beginPath();
+  ctx.moveTo(nx0+Math.cos(perp)*baseW*0.2,ny0+Math.sin(perp)*baseW*0.2);
+  ctx.lineTo(nx1,ny1);
   ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle='rgba(255,255,255,0.55)';
-  ctx.font=`600 ${CW*0.014}px Inter,sans-serif`;
+  ctx.globalAlpha=1;
+
+  // Tip glow
+  ctx.shadowColor='rgba(255,255,255,0.7)';ctx.shadowBlur=8;
+  ctx.beginPath();ctx.arc(nx1,ny1,CW*0.006,0,Math.PI*2);
+  ctx.fillStyle='rgba(220,235,255,0.95)';ctx.fill();
+  ctx.shadowBlur=0;
+
+  // NOW label
+  const labelR=R_outer+24;
+  ctx.fillStyle='rgba(255,255,255,0.8)';
+  ctx.font=`700 ${CW*0.014}px Inter,sans-serif`;
   ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('NOW',CX+Math.cos(a)*(R_outer+22),CY+Math.sin(a)*(R_outer+22));
+  ctx.fillText('NOW',CX+Math.cos(a)*labelR,CY+Math.sin(a)*labelR);
+
   ctx.restore();
 }
 
@@ -863,6 +1013,19 @@ document.querySelectorAll('.seg-btn[data-mode]').forEach(btn=>btn.addEventListen
   document.getElementById('modeDesc').textContent=MODE_DESC[clockMode];
   document.getElementById('clockTopLabel').textContent='Global Prayer Wave · '+MODE_LABEL[clockMode];
   if(monthCache[currentMonth])currentData=buildRenderData(monthCache[currentMonth],clockMode);
+  scheduleRender();
+}));
+
+document.querySelectorAll('.seg-btn[data-colormode]').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('.seg-btn[data-colormode]').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  colorMode=btn.dataset.colormode;
+  const desc=colorMode==='prayer'?'Dots coloured by prayer type':'Dots coloured by geographic region';
+  document.getElementById('colorModeDesc').textContent=desc;
+  // Toggle legend visibility
+  document.getElementById('legend').style.display=colorMode==='prayer'?'flex':'none';
+  document.getElementById('regionLegend').style.display=colorMode==='region'?'flex':'none';
+  document.getElementById('regionLegendCtrl').style.display=colorMode==='region'?'block':'none';
   scheduleRender();
 }));
 

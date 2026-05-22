@@ -727,81 +727,73 @@ function drawDial(){
   const da=-Math.PI/2+separateT*Math.PI*2;
   ctx.save();
 
-  // ── Outer bezel ring — brushed steel ──
-  const bezelR=R_dial+CW*0.018;
-  const bezelGrad=ctx.createRadialGradient(CX-R_dial*0.3,CY-R_dial*0.3,R_dial*0.1,CX,CY,bezelR);
-  bezelGrad.addColorStop(0,'rgba(210,220,230,0.18)');
-  bezelGrad.addColorStop(0.4,'rgba(140,155,170,0.12)');
-  bezelGrad.addColorStop(0.7,'rgba(80,95,110,0.18)');
-  bezelGrad.addColorStop(1,'rgba(40,55,70,0.22)');
+  // ── Slim bezel rim — just a thin ring, not a wide band ──
+  const bezelR=R_dial+CW*0.006;
   ctx.beginPath();ctx.arc(CX,CY,bezelR,0,Math.PI*2);
-  ctx.fillStyle=bezelGrad;ctx.fill();
-  // Bezel highlight rim
-  ctx.strokeStyle='rgba(200,215,230,0.28)';ctx.lineWidth=1.5;
-  ctx.beginPath();ctx.arc(CX,CY,bezelR,0,Math.PI*2);ctx.stroke();
-  ctx.strokeStyle='rgba(30,40,55,0.5)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.arc(CX,CY,R_dial+1,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle='rgba(160,180,200,0.35)';ctx.lineWidth=2;ctx.stroke();
+  ctx.beginPath();ctx.arc(CX,CY,bezelR+CW*0.003,0,Math.PI*2);
+  ctx.strokeStyle='rgba(60,80,100,0.4)';ctx.lineWidth=1;ctx.stroke();
+  ctx.beginPath();ctx.arc(CX,CY,R_dial-1,0,Math.PI*2);
+  ctx.strokeStyle='rgba(30,45,65,0.6)';ctx.lineWidth=1;ctx.stroke();
 
-  // ── Dial face ──
+  // ── Dial face — dark and flat ──
   ctx.beginPath();ctx.arc(CX,CY,R_dial,0,Math.PI*2);
-  const dg=ctx.createRadialGradient(CX-R_dial*0.25,CY-R_dial*0.3,0,CX,CY,R_dial);
-  dg.addColorStop(0,'rgba(18,28,45,0.97)');
-  dg.addColorStop(0.6,'rgba(10,18,32,0.97)');
-  dg.addColorStop(1,'rgba(4,8,18,0.98)');
+  const dg=ctx.createRadialGradient(CX,CY,0,CX,CY,R_dial);
+  dg.addColorStop(0,'rgba(12,18,32,0.98)');
+  dg.addColorStop(1,'rgba(6,10,20,0.99)');
   ctx.fillStyle=dg;ctx.fill();
 
   // Separation arc progress
   if(separateT>0.01){
-    ctx.strokeStyle='rgba(0,212,255,0.55)';ctx.lineWidth=2;
-    ctx.shadowColor='rgba(0,212,255,0.4)';ctx.shadowBlur=8;
-    ctx.beginPath();ctx.arc(CX,CY,R_dial*0.82,-Math.PI/2,da);ctx.stroke();
+    ctx.strokeStyle='rgba(0,212,255,0.5)';ctx.lineWidth=1.5;
+    ctx.shadowColor='rgba(0,212,255,0.35)';ctx.shadowBlur=6;
+    ctx.beginPath();ctx.arc(CX,CY,R_dial*0.78,-Math.PI/2,da);ctx.stroke();
     ctx.shadowBlur=0;
   }
 
-  // Prayer dots on bezel
+  // Prayer dots — small, on the dial face edge
   for(let pi=0;pi<5;pi++){
     const a=-Math.PI/2+(pi/4)*Math.PI*2;
-    const dx=CX+Math.cos(a)*(bezelR-CW*0.008);
-    const dy=CY+Math.sin(a)*(bezelR-CW*0.008);
-    ctx.globalAlpha=0.5+separateT*0.5;
-    ctx.beginPath();ctx.arc(dx,dy,CW*0.008,0,Math.PI*2);
-    const pg=ctx.createRadialGradient(dx-1,dy-1,0,dx,dy,CW*0.008);
-    pg.addColorStop(0,PRAYER_COLORS[pi]+'ee');
-    pg.addColorStop(1,PRAYER_COLORS[pi]+'44');
-    ctx.fillStyle=pg;ctx.fill();
+    const dx=CX+Math.cos(a)*(R_dial*0.88);
+    const dy=CY+Math.sin(a)*(R_dial*0.88);
+    ctx.globalAlpha=0.4+separateT*0.55;
+    ctx.beginPath();ctx.arc(dx,dy,CW*0.005,0,Math.PI*2);
+    ctx.fillStyle=PRAYER_COLORS[pi];ctx.fill();
     ctx.globalAlpha=1;
   }
 
-  // ── Chrome centre hub ──
-  const hubR=R_dial*0.28;
-  const hubG=ctx.createRadialGradient(CX-hubR*0.4,CY-hubR*0.5,hubR*0.05,CX,CY,hubR);
-  hubG.addColorStop(0,'rgba(230,240,255,0.95)');
-  hubG.addColorStop(0.25,'rgba(160,180,200,0.85)');
-  hubG.addColorStop(0.6,'rgba(80,100,125,0.9)');
-  hubG.addColorStop(0.85,'rgba(40,55,75,0.95)');
-  hubG.addColorStop(1,'rgba(15,25,40,1)');
+  // ── Hub — dark steel, no bright centre spot ──
+  const hubR=R_dial*0.32;
+  const hubG=ctx.createRadialGradient(CX,CY,0,CX,CY,hubR);
+  hubG.addColorStop(0,'rgba(45,58,78,1)');
+  hubG.addColorStop(0.5,'rgba(30,42,60,1)');
+  hubG.addColorStop(0.85,'rgba(55,72,95,1)');
+  hubG.addColorStop(1,'rgba(90,110,135,1)');
   ctx.beginPath();ctx.arc(CX,CY,hubR,0,Math.PI*2);
   ctx.fillStyle=hubG;ctx.fill();
-  ctx.strokeStyle='rgba(180,200,220,0.4)';ctx.lineWidth=0.8;
+  // Slim rim highlight
+  ctx.strokeStyle='rgba(140,165,190,0.5)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(CX,CY,hubR,0,Math.PI*2);ctx.stroke();
 
-  // Handle/drag indicator
-  const hx=CX+Math.cos(da)*R_dial,hy=CY+Math.sin(da)*R_dial;
-  const hg=ctx.createRadialGradient(hx-3,hy-3,0,hx,hy,9);
-  hg.addColorStop(0,'rgba(180,230,255,1)');
-  hg.addColorStop(0.4,'rgba(0,212,255,0.95)');
-  hg.addColorStop(1,'rgba(0,140,200,0.7)');
-  ctx.shadowColor='rgba(0,212,255,0.9)';ctx.shadowBlur=16;
-  ctx.beginPath();ctx.arc(hx,hy,8,0,Math.PI*2);
-  ctx.fillStyle=hg;ctx.fill();
-  ctx.strokeStyle='rgba(200,240,255,0.7)';ctx.lineWidth=1.2;ctx.stroke();
-  ctx.shadowBlur=0;
-
-  // Percentage label
-  ctx.fillStyle='rgba(255,255,255,0.4)';
-  ctx.font=`500 ${CW*0.016}px Inter,sans-serif`;
+  // ── Percentage label — clean and readable ──
+  ctx.fillStyle='rgba(255,255,255,0.75)';
+  ctx.font=`600 ${CW*0.017}px Inter,sans-serif`;
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText(Math.round(separateT*100)+'%',CX,CY);
+
+  // ── Drag handle on bezel ──
+  const hx=CX+Math.cos(da)*(R_dial+CW*0.003);
+  const hy=CY+Math.sin(da)*(R_dial+CW*0.003);
+  const hg=ctx.createRadialGradient(hx-1.5,hy-1.5,0,hx,hy,6);
+  hg.addColorStop(0,'rgba(180,230,255,1)');
+  hg.addColorStop(0.5,'rgba(0,212,255,0.9)');
+  hg.addColorStop(1,'rgba(0,150,210,0.6)');
+  ctx.shadowColor='rgba(0,212,255,0.8)';ctx.shadowBlur=12;
+  ctx.beginPath();ctx.arc(hx,hy,6,0,Math.PI*2);
+  ctx.fillStyle=hg;ctx.fill();
+  ctx.strokeStyle='rgba(200,240,255,0.6)';ctx.lineWidth=1;ctx.stroke();
+  ctx.shadowBlur=0;
+
   ctx.restore();
 }
 
@@ -818,7 +810,7 @@ function drawNowMarker(){
   const nx1=CX+Math.cos(a)*needleLen, ny1=CY+Math.sin(a)*needleLen;
   const nx0=CX+Math.cos(a)*needleBase, ny0=CY+Math.sin(a)*needleBase;
   const perp=a+Math.PI/2;
-  const baseW=CW*0.009, tipW=CW*0.001;
+  const baseW=CW*0.005, tipW=CW*0.0005;
 
   // Shadow layer
   ctx.globalAlpha=0.35;
@@ -838,11 +830,11 @@ function drawNowMarker(){
     CX+Math.cos(perp)*baseW,CY+Math.sin(perp)*baseW,
     CX-Math.cos(perp)*baseW,CY-Math.sin(perp)*baseW
   );
-  ng.addColorStop(0,'rgba(60,75,90,0.9)');
-  ng.addColorStop(0.35,'rgba(190,210,230,0.95)');
-  ng.addColorStop(0.5,'rgba(230,245,255,1)');
-  ng.addColorStop(0.65,'rgba(190,210,230,0.95)');
-  ng.addColorStop(1,'rgba(40,55,70,0.9)');
+  ng.addColorStop(0,'rgba(50,65,80,0.85)');
+  ng.addColorStop(0.35,'rgba(150,170,190,0.9)');
+  ng.addColorStop(0.5,'rgba(185,205,225,0.95)');
+  ng.addColorStop(0.65,'rgba(150,170,190,0.9)');
+  ng.addColorStop(1,'rgba(35,50,65,0.85)');
   ctx.beginPath();
   ctx.moveTo(nx0+Math.cos(perp)*baseW,ny0+Math.sin(perp)*baseW);
   ctx.lineTo(nx1+Math.cos(perp)*tipW,ny1+Math.sin(perp)*tipW);
@@ -851,25 +843,25 @@ function drawNowMarker(){
   ctx.closePath();
   ctx.fillStyle=ng;ctx.fill();
 
-  // Highlight streak
-  ctx.globalAlpha=0.6;
-  ctx.strokeStyle='rgba(255,255,255,0.9)';ctx.lineWidth=0.8;
+  // Highlight streak — subtle
+  ctx.globalAlpha=0.35;
+  ctx.strokeStyle='rgba(255,255,255,0.7)';ctx.lineWidth=0.5;
   ctx.beginPath();
   ctx.moveTo(nx0+Math.cos(perp)*baseW*0.2,ny0+Math.sin(perp)*baseW*0.2);
   ctx.lineTo(nx1,ny1);
   ctx.stroke();
   ctx.globalAlpha=1;
 
-  // Tip glow
-  ctx.shadowColor='rgba(255,255,255,0.7)';ctx.shadowBlur=8;
-  ctx.beginPath();ctx.arc(nx1,ny1,CW*0.006,0,Math.PI*2);
-  ctx.fillStyle='rgba(220,235,255,0.95)';ctx.fill();
+  // Tip — small, subtle
+  ctx.shadowColor='rgba(255,255,255,0.4)';ctx.shadowBlur=4;
+  ctx.beginPath();ctx.arc(nx1,ny1,CW*0.003,0,Math.PI*2);
+  ctx.fillStyle='rgba(200,220,240,0.85)';ctx.fill();
   ctx.shadowBlur=0;
 
   // NOW label
   const labelR=R_outer+24;
-  ctx.fillStyle='rgba(255,255,255,0.8)';
-  ctx.font=`700 ${CW*0.014}px Inter,sans-serif`;
+  ctx.fillStyle='rgba(255,255,255,0.55)';
+  ctx.font=`600 ${CW*0.013}px Inter,sans-serif`;
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText('NOW',CX+Math.cos(a)*labelR,CY+Math.sin(a)*labelR);
 
@@ -877,7 +869,7 @@ function drawNowMarker(){
 }
 
 function render(){
-  drawBase();drawDots();drawNowMarker();drawDial();
+  drawBase();drawNowMarker();drawDots();drawDial();
 }
 function scheduleRender(){
   if(rafPending)return;

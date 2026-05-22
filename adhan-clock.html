@@ -590,14 +590,131 @@ const canvas=document.getElementById('clockCanvas');
 const ctx=canvas.getContext('2d');
 let CW,CX,CY,R_outer,R_inner,R_dial;
 let dotSize=0.8,currentMonth=5,clockMode='local',colorMode='prayer';
-let activeRegion='all',highlightPi=-1; // -1 = show all
-let separateT=0,dialAngleAccum=-Math.PI/2;
+let activeRegion='all',highlightPi=-1;
+let separateT=0,targetSeparateT=0,dialAngleAccum=-Math.PI/2;
 let isDragging=false,lastAngle=null;
-let rafPending=false,playing=false,playTimer=null;
+let animating=false,playing=false,playTimer=null;
 let showNowMarker=true;
 let userTZ=-(new Date().getTimezoneOffset()/60);
 const monthCache=new Array(13).fill(null);
 let currentData=null;
+
+// ── Per-dot animated state ─────────────────────────────────────────
+let dotAngles=null;   // current animated angles
+let dotRadii=null;    // current animated radii (normalised 0-1)
+let targetAngles=null;
+let targetRadii=null;
+let dotN=0;
+
+function initDotState(data){
+  const{angles,rNorm,prayer,n}=data;
+  dotN=n;
+  dotAngles=new Float32Array(n);
+  dotRadii=new Float32Array(n);
+  targetAngles=new Float32Array(n);
+  targetRadii=new Float32Array(n);
+  for(let i=0;i<n;i++){
+    dotAngles[i]=angles[i];
+    const rSep=PRAYER_RING_POS[prayer[i]];
+    const rCol=rNorm[i]/255;
+    const rN=rCol+(rSep-rCol)*separateT;
+    dotRadii[i]=separateT<0.01?rCol:rSep+(rN-rSep)*(1-separateT)*0.6;
+    targetAngles[i]=dotAngles[i];
+    targetRadii[i]=dotRadii[i];
+  }
+}
+
+function updateDotTargets(data){
+  if(!data||!dotAngles) return;
+  const{angles,rNorm,prayer,n}=data;
+  // Resize arrays if needed (different month may have same n due to sampling)
+  if(n!==dotN){initDotState(data);return;}
+  for(let i=0;i<n;i++){
+    // Shortest-path angle wrap
+    let diff=angles[i]-dotAngles[i];
+    while(diff>Math.PI) diff-=Math.PI*2;
+    while(diff<-Math.PI) diff+=Math.PI*2;
+    targetAngles[i]=dotAngles[i]+diff;
+    // Target radius based on current separateT
+    const rSep=PRAYER_RING_POS[prayer[i]];
+    const rCol=rNorm[i]/255;
+    const rN=rCol+(rSep-rCol)*separateT;
+    targetRadii[i]=separateT<0.01?rCol:rSep+(rN-rSep)*(1-separateT)*0.6;
+  }
+}
+
+function updateSeparationTargets(){
+  if(!currentData||!targetRadii) return;
+  const{rNorm,prayer,n}=currentData;
+  for(let i=0;i<n;i++){
+    const rSep=PRAYER_RING_POS[prayer[i]];
+    const rCol=rNorm[i]/255;
+    const rN=rCol+(rSep-rCol)*separateT;
+    targetRadii[i]=separateT<0.01?rCol:rSep+(rN-rSep)*(1-separateT)*0.6;
+  }
+}
+
+// ── Animation loop ─────────────────────────────────────────────────
+const LERP_SEPARATE=0.1;  // dial/separation speed
+const LERP_DOT=0.08;      // dot position speed
+const LERP_MONTH=0.06;    // month change speed (slower = more drift feel)
+
+function tick(){
+  let dirty=false;
+
+  // Lerp separateT toward target
+  if(Math.abs(targetSeparateT-separateT)>0.0005){
+    separateT+=(targetSeparateT-separateT)*LERP_SEPARATE;
+    separateT=Math.max(0,Math.min(1,separateT));
+    updateSeparationTargets();
+    // Update dial label
+    const lbl=separateT<0.05?'Drag the centre dial to separate prayers':
+      separateT>0.95?'Fully separated — each prayer in its own orbit':
+      `Separating — ${Math.round(separateT*100)}%`;
+    document.getElementById('dialLabel').textContent=lbl;
+    dirty=true;
+  } else {
+    separateT=targetSeparateT;
+  }
+
+  // Lerp dot positions
+  if(dotAngles&&dotN>0){
+    const speed=dirty?LERP_DOT:LERP_MONTH;
+    for(let i=0;i<dotN;i++){
+      const da=targetAngles[i]-dotAngles[i];
+      const dr=targetRadii[i]-dotRadii[i];
+      if(Math.abs(da)>0.0003||Math.abs(dr)>0.0003){
+        dotAngles[i]+=da*speed;
+        dotRadii[i]+=dr*speed;
+        dirty=true;
+      } else {
+        dotAngles[i]=targetAngles[i];
+        dotRadii[i]=targetRadii[i];
+      }
+    }
+  }
+
+  if(dirty){
+    render();
+    animating=true;
+    requestAnimationFrame(tick);
+  } else {
+    animating=false;
+  }
+}
+
+function startTick(){
+  if(!animating){
+    animating=true;
+    requestAnimationFrame(tick);
+  }
+}
+
+// Keep legacy scheduleRender working
+function scheduleRender(){startTick();}
+
+// Preset snap positions for click
+const PRESETS=[0,0.25,0.5,0.75,1.0];
 
 // ── Canvas sizing ──────────────────────────────────────────────────
 function resizeClock(){
@@ -619,6 +736,17 @@ function buildRenderData(d,mode){
     for(let i=0;i<n;i++) angles[i]=(((utc[i]+tzShift+65536)%65536)/65535)*Math.PI*2-Math.PI/2;
   }
   return{angles,rNorm,prayer,region,n};
+}
+
+function applyNewData(data){
+  if(!dotAngles||dotN!==data.n){
+    currentData=data;
+    initDotState(data);
+  } else {
+    currentData=data;
+    updateDotTargets(data);
+  }
+  startTick();
 }
 
 // ── Drawing ────────────────────────────────────────────────────────
@@ -678,50 +806,35 @@ function drawBase(){
 }
 
 function drawDots(){
-  if(!currentData) return;
-  const{angles,rNorm,prayer,region,n}=currentData;
-  const range=R_outer-R_inner,ds=dotSize,st=separateT;
+  if(!currentData||!dotAngles) return;
+  const{prayer,region,n}=currentData;
+  const range=R_outer-R_inner,ds=dotSize;
   const RCODES={all:-1,gulf:1,southasia:2,seasia:3,nafrica:4,europe:5,wafrica:6};
   const fc=RCODES[activeRegion];
 
   if(colorMode==='prayer'){
     for(let pi=0;pi<5;pi++){
-      const rSep=PRAYER_RING_POS[pi];
       const isHL=highlightPi===-1||highlightPi===pi;
       ctx.beginPath();
       for(let i=0;i<n;i++){
         if(prayer[i]!==pi) continue;
         if(fc!==-1&&region[i]!==fc) continue;
-        const rCol=rNorm[i]/255;
-        let finalR;
-        if(st<0.01) finalR=R_inner+range*rCol;
-        else {
-          const rN=rCol+(rSep-rCol)*st;
-          finalR=R_inner+range*(rSep+(rN-rSep)*(1-st)*0.6);
-        }
-        const x=CX+Math.cos(angles[i])*finalR;
-        const y=CY+Math.sin(angles[i])*finalR;
+        const x=CX+Math.cos(dotAngles[i])*(R_inner+range*dotRadii[i]);
+        const y=CY+Math.sin(dotAngles[i])*(R_inner+range*dotRadii[i]);
         ctx.moveTo(x+ds,y);ctx.arc(x,y,ds,0,Math.PI*2);
       }
       ctx.fillStyle=isHL?PRAYER_COLORS_A[pi]:PRAYER_COLORS_DIM[pi];
       ctx.fill();
     }
   } else {
-    // Color by region — group by region code for batched fills
-    // rc=0 means unassigned — render those with dimmed prayer color as fallback
+    // Unassigned (rc=0) — fallback prayer color
     for(let pi=0;pi<5;pi++){
       ctx.beginPath();
       for(let i=0;i<n;i++){
-        if(prayer[i]!==pi) continue;
+        if(prayer[i]!==pi||region[i]!==0) continue;
         if(fc!==-1&&region[i]!==fc) continue;
-        if(region[i]!==0) continue; // only unassigned here
-        const rSep=PRAYER_RING_POS[pi];
-        const rCol=rNorm[i]/255;
-        let finalR;
-        if(st<0.01) finalR=R_inner+range*rCol;
-        else{const rN=rCol+(rSep-rCol)*st;finalR=R_inner+range*(rSep+(rN-rSep)*(1-st)*0.6);}
-        const x=CX+Math.cos(angles[i])*finalR;
-        const y=CY+Math.sin(angles[i])*finalR;
+        const x=CX+Math.cos(dotAngles[i])*(R_inner+range*dotRadii[i]);
+        const y=CY+Math.sin(dotAngles[i])*(R_inner+range*dotRadii[i]);
         ctx.moveTo(x+ds,y);ctx.arc(x,y,ds,0,Math.PI*2);
       }
       ctx.fillStyle=PRAYER_COLORS_DIM[pi];ctx.fill();
@@ -729,20 +842,13 @@ function drawDots(){
     for(let rc=1;rc<7;rc++){
       ctx.beginPath();
       for(let i=0;i<n;i++){
-        if(fc!==-1&&region[i]!==fc) continue;
         if(region[i]!==rc) continue;
-        const pi=prayer[i];
-        const rSep=PRAYER_RING_POS[pi];
-        const rCol=rNorm[i]/255;
-        let finalR;
-        if(st<0.01) finalR=R_inner+range*rCol;
-        else{const rN=rCol+(rSep-rCol)*st;finalR=R_inner+range*(rSep+(rN-rSep)*(1-st)*0.6);}
-        const x=CX+Math.cos(angles[i])*finalR;
-        const y=CY+Math.sin(angles[i])*finalR;
+        if(fc!==-1&&region[i]!==fc) continue;
+        const x=CX+Math.cos(dotAngles[i])*(R_inner+range*dotRadii[i]);
+        const y=CY+Math.sin(dotAngles[i])*(R_inner+range*dotRadii[i]);
         ctx.moveTo(x+ds,y);ctx.arc(x,y,ds,0,Math.PI*2);
       }
-      ctx.fillStyle=REGION_COLORS_A[rc];
-      ctx.fill();
+      ctx.fillStyle=REGION_COLORS_A[rc];ctx.fill();
     }
   }
 }
@@ -895,13 +1001,8 @@ function drawNowMarker(){
 function render(){
   drawBase();drawNowMarker();drawDots();drawDial();
 }
-function scheduleRender(){
-  if(rafPending)return;
-  rafPending=true;
-  requestAnimationFrame(()=>{rafPending=false;render();});
-}
 
-// ── Dial — fixed lag with passive:false and pointer events ────────
+// ── Dial interaction ───────────────────────────────────────────────
 function getAngle(e){
   const r=canvas.getBoundingClientRect();
   return Math.atan2((e.clientY-r.top)*CW/r.height-CY,(e.clientX-r.left)*CW/r.width-CX);
@@ -913,35 +1014,44 @@ function nearDial(e){
   return Math.sqrt(dx*dx+dy*dy)<R_dial+24;
 }
 
+let pointerMoved=false;
 canvas.addEventListener('pointerdown',e=>{
   if(nearDial(e)){
-    isDragging=true;lastAngle=getAngle(e);
+    isDragging=true;lastAngle=getAngle(e);pointerMoved=false;
     canvas.setPointerCapture(e.pointerId);
     e.preventDefault();
   }
-});
+},{passive:false});
+
 canvas.addEventListener('pointermove',e=>{
   if(!isDragging)return;
+  pointerMoved=true;
   let delta=getAngle(e)-lastAngle;
   while(delta>Math.PI)delta-=Math.PI*2;
   while(delta<-Math.PI)delta+=Math.PI*2;
   dialAngleAccum+=delta;lastAngle=getAngle(e);
-  separateT=Math.max(0,Math.min(1,(dialAngleAccum+Math.PI/2)/(Math.PI*2)));
-  const lbl=separateT<0.05?'Drag the centre dial to separate prayers':
-    separateT>0.95?'Fully separated — each prayer in its own orbit':
-    `Separating — ${Math.round(separateT*100)}%`;
-  document.getElementById('dialLabel').textContent=lbl;
-  scheduleRender();
+  targetSeparateT=Math.max(0,Math.min(1,(dialAngleAccum+Math.PI/2)/(Math.PI*2)));
+  startTick();
 });
-canvas.addEventListener('pointerup',()=>{isDragging=false;});
+
+canvas.addEventListener('pointerup',e=>{
+  if(isDragging&&!pointerMoved){
+    // Click — snap to nearest preset
+    const nearest=PRESETS.reduce((a,b)=>Math.abs(b-targetSeparateT)<Math.abs(a-targetSeparateT)?b:a);
+    targetSeparateT=nearest;
+    dialAngleAccum=nearest*Math.PI*2-Math.PI/2;
+    startTick();
+  }
+  isDragging=false;
+});
 canvas.addEventListener('pointercancel',()=>{isDragging=false;});
 
 // ── Load month ─────────────────────────────────────────────────────
 async function loadMonth(month){
   if(monthCache[month]){
     if(month===currentMonth){
-      currentData=buildRenderData(monthCache[month],clockMode);
-      scheduleRender();
+      const data=buildRenderData(monthCache[month],clockMode);
+      applyNewData(data);
     }
     return;
   }
@@ -956,8 +1066,8 @@ async function loadMonth(month){
   const region=new Uint8Array(buf,n*4,n);
   monthCache[month]={utc,rNorm,prayer,region,n};
   if(month===currentMonth){
-    currentData=buildRenderData(monthCache[month],clockMode);
-    scheduleRender();
+    const data=buildRenderData(monthCache[month],clockMode);
+    applyNewData(data);
   }
 }
 
@@ -971,11 +1081,10 @@ function initStoryObserver(){
         entry.target.classList.add('active');
         const pi=parseInt(entry.target.dataset.pi);
         highlightPi=pi;
-        // Update legend highlights
         document.querySelectorAll('.leg-item').forEach(li=>{
           li.classList.toggle('highlighted',pi===-1||parseInt(li.dataset.pi)===pi);
         });
-        scheduleRender();
+        startTick();
       }
     });
   },{root:document.getElementById('rightPanel'),threshold:0.5});
@@ -1017,8 +1126,8 @@ function animateYear(){
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
   if(monthCache[currentMonth]){
-    currentData=buildRenderData(monthCache[currentMonth],clockMode);
-    scheduleRender();
+    const data=buildRenderData(monthCache[currentMonth],clockMode);
+    applyNewData(data);
   }
   playTimer=setTimeout(animateYear,600);
 }
@@ -1028,8 +1137,10 @@ document.querySelectorAll('.seg-btn[data-mode]').forEach(btn=>btn.addEventListen
   btn.classList.add('active');clockMode=btn.dataset.mode;
   document.getElementById('modeDesc').textContent=MODE_DESC[clockMode];
   document.getElementById('clockTopLabel').textContent='Global Prayer Wave · '+MODE_LABEL[clockMode];
-  if(monthCache[currentMonth])currentData=buildRenderData(monthCache[currentMonth],clockMode);
-  scheduleRender();
+  if(monthCache[currentMonth]){
+    const data=buildRenderData(monthCache[currentMonth],clockMode);
+    applyNewData(data);
+  }
 }));
 
 document.querySelectorAll('.seg-btn[data-colormode]').forEach(btn=>btn.addEventListener('click',()=>{
@@ -1038,21 +1149,20 @@ document.querySelectorAll('.seg-btn[data-colormode]').forEach(btn=>btn.addEventL
   colorMode=btn.dataset.colormode;
   const desc=colorMode==='prayer'?'Dots coloured by prayer type':'Dots coloured by geographic region';
   document.getElementById('colorModeDesc').textContent=desc;
-  // Toggle legend visibility
   document.getElementById('legend').style.display=colorMode==='prayer'?'flex':'none';
   document.getElementById('regionLegend').style.display=colorMode==='region'?'flex':'none';
   document.getElementById('regionLegendCtrl').style.display=colorMode==='region'?'block':'none';
-  scheduleRender();
+  startTick();
 }));
 
 document.querySelectorAll('.seg-btn[data-size]').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.seg-btn[data-size]').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');dotSize=parseFloat(btn.dataset.size);scheduleRender();
+  btn.classList.add('active');dotSize=parseFloat(btn.dataset.size);startTick();
 }));
 
 document.querySelectorAll('.region-btn').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.region-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');activeRegion=btn.dataset.region;scheduleRender();
+  btn.classList.add('active');activeRegion=btn.dataset.region;startTick();
 }));
 
 // Legend click to highlight
@@ -1063,7 +1173,7 @@ document.getElementById('legend').addEventListener('click',e=>{
   highlightPi=highlightPi===pi?-1:pi;
   document.querySelectorAll('.leg-item').forEach(li=>
     li.classList.toggle('highlighted',highlightPi===-1||parseInt(li.dataset.pi)===highlightPi));
-  scheduleRender();
+  startTick();
 });
 
 window.addEventListener('resize',()=>{resizeClock();render();});
@@ -1117,7 +1227,10 @@ async function init(){
   bar.style.width='25%';
   await loadMonth(currentMonth);
   bar.style.width='60%';
-  resizeClock();render();
+  resizeClock();
+  // Init dot state from first data load
+  if(currentData) initDotState(currentData);
+  render();
   await new Promise(r=>setTimeout(r,150));
   document.getElementById('loadingOverlay').classList.add('hidden');
   setTimeout(()=>document.getElementById('loadingOverlay').remove(),450);

@@ -22,12 +22,15 @@ nav{
   background:rgba(2,4,12,0.97);backdrop-filter:blur(16px);
   flex-shrink:0;z-index:100;
 }
-.nav-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;}
+.nav-logo{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#fff;text-decoration:none;}
 .nav-logo span{color:var(--cyan);}
-.nav-title{font-size:11px;letter-spacing:0.18em;font-weight:600;text-transform:uppercase;}
-.nav-links{display:flex;gap:6px;}
-.nav-link{font-size:10px;font-weight:500;color:var(--cyan);text-decoration:none;padding:5px 12px;border:1px solid rgba(0,212,255,0.3);border-radius:4px;transition:all 0.2s;white-space:nowrap;}
-.nav-link:hover{background:rgba(0,212,255,0.08);border-color:var(--cyan);}
+.nav-center{display:flex;gap:28px;align-items:center;}
+.nav-center a{font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.55);text-decoration:none;transition:color 0.2s;}
+.nav-center a:hover{color:#fff;}
+.nav-center a.active{color:var(--cyan);}
+.nav-right{text-align:right;}
+.nav-date{font-size:10px;color:var(--cyan);font-weight:500;letter-spacing:0.05em;}
+.nav-time{font-size:14px;font-weight:600;color:#fff;letter-spacing:0.03em;}
 
 /* ── THREE COLUMN LAYOUT ── */
 .main{display:flex;flex:1;min-height:0;overflow:hidden;}
@@ -247,12 +250,18 @@ footer{
 </div>
 
 <nav>
-  <div class="nav-logo">Adhan<span>Live</span></div>
-  <div class="nav-title" style="font-family:'Playfair Display',serif;font-size:16px;font-weight:700;letter-spacing:0.02em;color:#ffffff;">Adhan<span style="color:var(--cyan);">Live</span> · <em style="font-style:italic;font-weight:400;color:rgba(255,255,255,0.7);font-size:14px;">The Adhan Clock</em></div>
-  <div class="nav-links">
-    <a href="index.html" target="_blank" class="nav-link">Live Map</a>
-    <a href="prayer-arcs.html" target="_blank" class="nav-link">Arc Explorer</a>
-    <a href="ask-adhanlive.html" target="_blank" class="nav-link">Ask AdhanLive</a>
+  <a href="index.html" class="nav-logo">Adhan<span>Live</span></a>
+  <div class="nav-center">
+    <a href="index.html#about">About</a>
+    <a href="index.html">Live Map</a>
+    <a href="adhan-clock.html" class="active">Adhan Clock</a>
+    <a href="prayer-arcs.html">Arc Explorer</a>
+    <a href="ask-adhanlive.html">Ask AdhanLive</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-date" id="navDate"></div>
+    <div class="nav-time" id="navTime"></div>
   </div>
 </nav>
 
@@ -699,7 +708,25 @@ function drawDots(){
     }
   } else {
     // Color by region — group by region code for batched fills
-    for(let rc=0;rc<7;rc++){
+    // rc=0 means unassigned — render those with dimmed prayer color as fallback
+    for(let pi=0;pi<5;pi++){
+      ctx.beginPath();
+      for(let i=0;i<n;i++){
+        if(prayer[i]!==pi) continue;
+        if(fc!==-1&&region[i]!==fc) continue;
+        if(region[i]!==0) continue; // only unassigned here
+        const rSep=PRAYER_RING_POS[pi];
+        const rCol=rNorm[i]/255;
+        let finalR;
+        if(st<0.01) finalR=R_inner+range*rCol;
+        else{const rN=rCol+(rSep-rCol)*st;finalR=R_inner+range*(rSep+(rN-rSep)*(1-st)*0.6);}
+        const x=CX+Math.cos(angles[i])*finalR;
+        const y=CY+Math.sin(angles[i])*finalR;
+        ctx.moveTo(x+ds,y);ctx.arc(x,y,ds,0,Math.PI*2);
+      }
+      ctx.fillStyle=PRAYER_COLORS_DIM[pi];ctx.fill();
+    }
+    for(let rc=1;rc<7;rc++){
       ctx.beginPath();
       for(let i=0;i<n;i++){
         if(fc!==-1&&region[i]!==fc) continue;
@@ -709,10 +736,7 @@ function drawDots(){
         const rCol=rNorm[i]/255;
         let finalR;
         if(st<0.01) finalR=R_inner+range*rCol;
-        else {
-          const rN=rCol+(rSep-rCol)*st;
-          finalR=R_inner+range*(rSep+(rN-rSep)*(1-st)*0.6);
-        }
+        else{const rN=rCol+(rSep-rCol)*st;finalR=R_inner+range*(rSep+(rN-rSep)*(1-st)*0.6);}
         const x=CX+Math.cos(angles[i])*finalR;
         const y=CY+Math.sin(angles[i])*finalR;
         ctx.moveTo(x+ds,y);ctx.arc(x,y,ds,0,Math.PI*2);
@@ -1066,6 +1090,22 @@ if(navigator.share){
     navigator.share({title:'The Adhan Clock — AdhanLive',text:shareText,url:shareUrl});
   });
 }
+
+// ── Nav clock ──────────────────────────────────────────────────────
+function updateNavClock(){
+  const now=new Date();
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('navDate').textContent=
+    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  let h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();
+  const ampm=h>=12?'PM':'AM';
+  h=h%12||12;
+  document.getElementById('navTime').textContent=
+    `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} ${ampm}`;
+}
+updateNavClock();
+setInterval(updateNavClock,1000);
 
 // ── Init ───────────────────────────────────────────────────────────
 async function init(){

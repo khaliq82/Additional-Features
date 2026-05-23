@@ -740,11 +740,25 @@ function buildRenderData(d,mode){
 }
 
 function applyNewData(data){
-  if(!dotAngles||!sourceAngles||dotN!==data.n){
-    currentData=data;
-    initDotState(data);
+  currentData=data;
+  if(!dotAngles||dotN!==data.n){
+    // n changed — reinit arrays but preserve visual continuity
+    // by setting current positions to previous if possible
+    const prevAngles=dotAngles;
+    const prevRadii=dotRadii;
+    const prevN=dotN;
+    initDotState(data); // sets current = target (instant)
+    // If we had previous state, restore current positions from prev
+    // (use modulo so shorter arrays wrap, longer arrays start from 0)
+    if(prevAngles&&prevN>0){
+      for(let i=0;i<dotN;i++){
+        dotAngles[i]=prevAngles[i%prevN];
+        dotRadii[i]=prevRadii[i%prevN];
+      }
+      // Now targets are already set to new data by initDotState
+      // so dots will animate from prev positions to new
+    }
   } else {
-    currentData=data;
     updateDotTargets(data);
   }
   startTick();
@@ -1135,12 +1149,9 @@ async function animateYear(){
   currentMonth=currentMonth>=12?1:currentMonth+1;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
-  console.log(`[animateYear] month=${currentMonth} cached=${!!monthCache[currentMonth]} promise=${!!monthPromises[currentMonth]}`);
   await loadMonth(currentMonth);
-  console.log(`[animateYear] loaded month=${currentMonth} cached=${!!monthCache[currentMonth]}`);
   if(!playing)return;
   const data=buildRenderData(monthCache[currentMonth],clockMode);
-  console.log(`[animateYear] applyNewData n=${data?.n}`);
   applyNewData(data);
   playTimer=setTimeout(animateYear,700);
 }

@@ -275,6 +275,7 @@ footer{
     height:calc(100vw - 80px) !important;
     flex:none !important;
     margin:0 auto;display:block;
+    touch-action:none;
   }
   .clock-top{font-size:8px;text-align:center;margin-bottom:2px;}
   .clock-status{display:block;text-align:center;padding:3px 0 6px;font-size:9px;}
@@ -736,9 +737,9 @@ let currentData=null;
 // ── Canvas sizing ──────────────────────────────────────────────────
 function resizeClock(){
   const dpr=window.devicePixelRatio||1;
-  const c=document.querySelector('.centre');
   const mob=window.innerWidth<=768;
-  const sz=mob?Math.max(240,window.innerWidth-48):Math.max(240,Math.min(c.clientWidth-24,c.clientHeight-48));
+  const c=document.querySelector('.centre');
+  const sz=mob?Math.max(240,window.innerWidth-80):Math.max(240,Math.min(c.clientWidth-24,c.clientHeight-48));
   CW=sz;CX=CY=sz/2;R_outer=sz*0.41;R_inner=sz*0.155;R_dial=sz*0.092;
   canvas.style.width=sz+'px';canvas.style.height=sz+'px';
   canvas.width=Math.round(sz*dpr);canvas.height=Math.round(sz*dpr);

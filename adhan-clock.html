@@ -600,12 +600,14 @@ const monthCache=new Array(13).fill(null);
 let currentData=null;
 
 // ── Per-dot animated state ─────────────────────────────────────────
-let dotAngles=null;   // current animated angles
-let dotRadii=null;    // current animated radii (normalised 0-1)
+let dotAngles=null;
+let dotRadii=null;
 let targetAngles=null;
 let targetRadii=null;
-let sourceAngles=null; // actual source angles from current month data (not animated)
+let sourceAngles=null;
 let dotN=0;
+let dotAlpha=1.0; // for crossfade on month change
+let dotAlphaTarget=1.0;
 
 function calcTargetRadius(rCol, pi, t){
   const rSep=PRAYER_RING_POS[pi];
@@ -625,10 +627,8 @@ function initDotState(data){
   for(let i=0;i<n;i++){
     dotAngles[i]=angles[i];
     sourceAngles[i]=angles[i];
-    const r=calcTargetRadius(rNorm[i]/255, prayer[i], separateT);
-    dotRadii[i]=r;
-    targetAngles[i]=angles[i];
-    targetRadii[i]=r;
+    const r=calcTargetRadius(rNorm[i]/255,prayer[i],separateT);
+    dotRadii[i]=r;targetAngles[i]=angles[i];targetRadii[i]=r;
   }
 }
 
@@ -637,35 +637,33 @@ function updateDotTargets(data){
   const{angles,rNorm,prayer,n}=data;
   if(n!==dotN){initDotState(data);return;}
   for(let i=0;i<n;i++){
-    // Shortest-path from SOURCE (not current animated pos) to new angle
     let diff=angles[i]-sourceAngles[i];
     while(diff>Math.PI) diff-=Math.PI*2;
     while(diff<-Math.PI) diff+=Math.PI*2;
-    // Keep target as offset from current animated angle so lerp continues smoothly
     const remaining=targetAngles[i]-dotAngles[i];
     targetAngles[i]=dotAngles[i]+remaining+diff;
     sourceAngles[i]=angles[i];
-    targetRadii[i]=calcTargetRadius(rNorm[i]/255, prayer[i], targetSeparateT);
+    targetRadii[i]=calcTargetRadius(rNorm[i]/255,prayer[i],targetSeparateT);
   }
 }
 
 function updateSeparationTargets(){
-  // Recompute radii targets using targetSeparateT (stable, not mid-lerp)
   if(!currentData||!targetRadii) return;
   const{rNorm,prayer,n}=currentData;
   for(let i=0;i<n;i++){
-    targetRadii[i]=calcTargetRadius(rNorm[i]/255, prayer[i], targetSeparateT);
+    targetRadii[i]=calcTargetRadius(rNorm[i]/255,prayer[i],targetSeparateT);
   }
 }
 
 // ── Animation loop ─────────────────────────────────────────────────
 const LERP_SEPARATE=0.12;
 const LERP_POS=0.08;
+const LERP_FADE=0.14;
 
 function tick(){
   let dirty=false;
 
-  // Lerp separateT toward target
+  // Lerp separateT
   const ds=targetSeparateT-separateT;
   if(Math.abs(ds)>0.0003){
     separateT+=ds*LERP_SEPARATE;
@@ -678,39 +676,33 @@ function tick(){
     dirty=true;
   }
 
-  // Lerp dot positions
-  if(dotAngles&&dotN>0){
+  // Crossfade alpha
+  const df=dotAlphaTarget-dotAlpha;
+  if(Math.abs(df)>0.005){
+    dotAlpha+=df*LERP_FADE;
+    dirty=true;
+  } else {
+    dotAlpha=dotAlphaTarget;
+  }
+
+  // Lerp dot positions (only when not crossfading month)
+  if(dotAlphaTarget===1&&dotAngles&&dotN>0){
     for(let i=0;i<dotN;i++){
       const da=targetAngles[i]-dotAngles[i];
       const dr=targetRadii[i]-dotRadii[i];
-      if(Math.abs(da)>0.0002){
-        dotAngles[i]+=da*LERP_POS;
-        dirty=true;
-      } else {
-        dotAngles[i]=targetAngles[i];
-      }
-      if(Math.abs(dr)>0.0002){
-        dotRadii[i]+=dr*LERP_POS;
-        dirty=true;
-      } else {
-        dotRadii[i]=targetRadii[i];
-      }
+      if(Math.abs(da)>0.0002){dotAngles[i]+=da*LERP_POS;dirty=true;}
+      else dotAngles[i]=targetAngles[i];
+      if(Math.abs(dr)>0.0002){dotRadii[i]+=dr*LERP_POS;dirty=true;}
+      else dotRadii[i]=targetRadii[i];
     }
   }
 
-  if(dirty){
-    render();
-    requestAnimationFrame(tick);
-  } else {
-    animating=false;
-  }
+  if(dirty){render();requestAnimationFrame(tick);}
+  else animating=false;
 }
 
 function startTick(){
-  if(!animating){
-    animating=true;
-    requestAnimationFrame(tick);
-  }
+  if(!animating){animating=true;requestAnimationFrame(tick);}
 }
 
 function scheduleRender(){startTick();}
@@ -739,29 +731,17 @@ function buildRenderData(d,mode){
   return{angles,rNorm,prayer,region,n};
 }
 
-function applyNewData(data){
+function applyNewData(data, isMonthChange=false){
   currentData=data;
-  if(!dotAngles||dotN!==data.n){
-    const prevAngles=dotAngles;
-    const prevRadii=dotRadii;
-    const prevN=dotN;
+  if(isMonthChange){
+    // Month change: crossfade out → swap → fade in
     initDotState(data);
-    if(prevAngles&&prevN>0){
-      // Restore current positions from previous state
-      for(let i=0;i<dotN;i++){
-        dotAngles[i]=prevAngles[i%prevN];
-        dotRadii[i]=prevRadii[i%prevN];
-      }
-      // Recompute targetAngles with shortest-path wrap from restored dotAngles
-      for(let i=0;i<dotN;i++){
-        let diff=sourceAngles[i]-dotAngles[i];
-        while(diff>Math.PI) diff-=Math.PI*2;
-        while(diff<-Math.PI) diff+=Math.PI*2;
-        targetAngles[i]=dotAngles[i]+diff;
-      }
-    }
+    dotAlpha=0;
+    dotAlphaTarget=1;
   } else {
-    updateDotTargets(data);
+    // Separation/mode change: smooth per-dot lerp
+    if(!dotAngles||dotN!==data.n) initDotState(data);
+    else updateDotTargets(data);
   }
   startTick();
 }
@@ -828,6 +808,7 @@ function drawDots(){
   const range=R_outer-R_inner,ds=dotSize;
   const RCODES={all:-1,gulf:1,southasia:2,seasia:3,nafrica:4,europe:5,wafrica:6};
   const fc=RCODES[activeRegion];
+  ctx.globalAlpha=dotAlpha;
 
   if(colorMode==='prayer'){
     for(let pi=0;pi<5;pi++){
@@ -868,6 +849,7 @@ function drawDots(){
       ctx.fillStyle=REGION_COLORS_A[rc];ctx.fill();
     }
   }
+  ctx.globalAlpha=1;
 }
 
 function drawDial(){
@@ -1120,7 +1102,7 @@ document.getElementById('monthSlider').addEventListener('input',async e=>{
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
   await loadMonth(currentMonth);
   const data=buildRenderData(monthCache[currentMonth],clockMode);
-  applyNewData(data);
+  applyNewData(data, true);
 });
 
 document.getElementById('btnNow').addEventListener('click',async ()=>{
@@ -1131,7 +1113,7 @@ document.getElementById('btnNow').addEventListener('click',async ()=>{
   showNowMarker=true;
   await loadMonth(currentMonth);
   const data=buildRenderData(monthCache[currentMonth],clockMode);
-  applyNewData(data);
+  applyNewData(data, true);
 });
 
 const playBtn=document.getElementById('playBtn');
@@ -1154,7 +1136,7 @@ async function animateYear(){
   await loadMonth(currentMonth);
   if(!playing)return;
   const data=buildRenderData(monthCache[currentMonth],clockMode);
-  applyNewData(data);
+  applyNewData(data, true);
   playTimer=setTimeout(animateYear,700);
 }
 

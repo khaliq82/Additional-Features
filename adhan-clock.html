@@ -742,21 +742,23 @@ function buildRenderData(d,mode){
 function applyNewData(data){
   currentData=data;
   if(!dotAngles||dotN!==data.n){
-    // n changed — reinit arrays but preserve visual continuity
-    // by setting current positions to previous if possible
     const prevAngles=dotAngles;
     const prevRadii=dotRadii;
     const prevN=dotN;
-    initDotState(data); // sets current = target (instant)
-    // If we had previous state, restore current positions from prev
-    // (use modulo so shorter arrays wrap, longer arrays start from 0)
+    initDotState(data);
     if(prevAngles&&prevN>0){
+      // Restore current positions from previous state
       for(let i=0;i<dotN;i++){
         dotAngles[i]=prevAngles[i%prevN];
         dotRadii[i]=prevRadii[i%prevN];
       }
-      // Now targets are already set to new data by initDotState
-      // so dots will animate from prev positions to new
+      // Recompute targetAngles with shortest-path wrap from restored dotAngles
+      for(let i=0;i<dotN;i++){
+        let diff=sourceAngles[i]-dotAngles[i];
+        while(diff>Math.PI) diff-=Math.PI*2;
+        while(diff<-Math.PI) diff+=Math.PI*2;
+        targetAngles[i]=dotAngles[i]+diff;
+      }
     }
   } else {
     updateDotTargets(data);

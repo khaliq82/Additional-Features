@@ -240,24 +240,30 @@ footer{
     border-radius:6px;cursor:pointer;color:rgba(255,255,255,0.7);font-size:16px;}
 
   /* Layout — single column scroll */
-  body{overflow-y:auto;}
-  .main{flex-direction:column;overflow:visible;height:auto;}
+  body{overflow-y:auto;height:auto;}
+  html{height:auto;}
+  .main{flex-direction:column;overflow:visible;height:auto;min-height:0;}
 
-  /* Clock — hero, full width */
+  /* Clock — hero, fixed height, full width */
   .centre{
-    width:100%;min-height:0;border:none;
-    position:sticky;top:0;z-index:50;
-    background:var(--bg);
+    width:100%;flex:none;
+    height:calc(100vw - 24px);
+    min-height:280px;max-height:420px;
+    border:none;padding:8px 12px 4px;
     border-bottom:1px solid var(--border);
+    position:relative;z-index:1;
   }
-  .clock-wrap{padding:8px 0 4px;}
-  .clock-top{font-size:9px;margin-bottom:4px;}
+  .clock-wrap{height:100%;padding:0;}
+  canvas{flex:none;width:calc(100vw - 48px) !important;height:calc(100vw - 48px) !important;max-width:100%;max-height:100%;}
+  .clock-top{font-size:8px;margin-bottom:2px;}
+  .clock-status{font-size:9px;padding:2px 0 4px;}
 
-  /* Mobile controls bar — horizontal strip below clock */
+  /* Mobile controls bar */
   .mobile-controls{
     display:flex;flex-direction:column;gap:0;
     border-bottom:1px solid var(--border);
     background:rgba(2,4,12,0.98);
+    position:relative;z-index:1;
   }
   .mobile-controls-row{
     display:flex;align-items:center;gap:8px;
@@ -265,15 +271,15 @@ footer{
   }
   .mobile-controls-row:last-child{border-bottom:none;}
   .mob-label{font-size:8px;letter-spacing:0.15em;font-weight:600;
-    text-transform:uppercase;color:rgba(255,255,255,0.35);white-space:nowrap;min-width:48px;}
-  .mob-month-badge{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;min-width:72px;}
+    text-transform:uppercase;color:rgba(255,255,255,0.35);white-space:nowrap;min-width:44px;}
+  .mob-month-badge{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;min-width:68px;}
   .mob-month-badge span{color:var(--cyan);}
   .mobile-controls input[type=range]{flex:1;height:2px;}
   .mob-btns{display:flex;gap:6px;margin-left:auto;}
-  .mob-btn{padding:5px 12px;border-radius:4px;border:1px solid var(--border);
+  .mob-btn{padding:5px 10px;border-radius:4px;border:1px solid var(--border);
     background:transparent;color:rgba(255,255,255,0.65);
     font-family:'Inter',sans-serif;font-size:10px;font-weight:500;cursor:pointer;}
-  .mob-btn.active,.mob-btn-now{border-color:var(--cyan);color:var(--cyan);}
+  .mob-btn-now{border-color:var(--cyan) !important;color:var(--cyan) !important;}
   .mob-seg{display:flex;gap:3px;}
   .mob-seg button{padding:4px 10px;border-radius:3px;border:1px solid var(--border);
     background:transparent;color:rgba(255,255,255,0.55);
@@ -293,10 +299,11 @@ footer{
     width:100%;border-left:none;
     max-height:none;overflow:visible;
   }
-  .story-card{padding:24px 20px;}
+  .story-card{padding:20px 16px;}
 
-  /* Dial label */
-  .clock-status{font-size:9px;padding:4px 0 6px;}
+  /* Footer */
+  footer{flex-wrap:wrap;gap:8px;padding:12px 16px;position:relative;z-index:1;}
+  .footer-text{display:none;}
 }
 </style>
 </head>
@@ -796,7 +803,13 @@ const PRESETS=[0,0.25,0.5,0.75,1.0];
 // ── Canvas sizing ──────────────────────────────────────────────────
 function resizeClock(){
   const c=document.querySelector('.centre');
-  const sz=Math.max(240,Math.min(c.clientWidth-24,c.clientHeight-48));
+  let sz;
+  if(isMobile()){
+    sz=Math.min(c.clientWidth-24, c.clientHeight-20, window.innerWidth-48);
+    sz=Math.max(240,sz);
+  } else {
+    sz=Math.max(240,Math.min(c.clientWidth-24,c.clientHeight-48));
+  }
   canvas.width=canvas.height=CW=sz;
   CX=CY=sz/2;R_outer=sz*0.41;R_inner=sz*0.155;R_dial=sz*0.092;
 }

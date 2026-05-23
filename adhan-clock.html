@@ -1058,13 +1058,7 @@ canvas.addEventListener('pointercancel',()=>{isDragging=false;});
 
 // ── Load month ─────────────────────────────────────────────────────
 async function loadMonth(month){
-  if(monthCache[month]){
-    if(month===currentMonth){
-      const data=buildRenderData(monthCache[month],clockMode);
-      applyNewData(data);
-    }
-    return;
-  }
+  if(monthCache[month]) return; // already cached, nothing to do
   const pad=month.toString().padStart(2,'0');
   const res=await fetch(`./m${pad}.bin`);
   if(!res.ok) throw new Error(`m${pad}.bin not found`);
@@ -1075,10 +1069,6 @@ async function loadMonth(month){
   const prayer=new Uint8Array(buf,n*3,n);
   const region=new Uint8Array(buf,n*4,n);
   monthCache[month]={utc,rNorm,prayer,region,n};
-  if(month===currentMonth){
-    const data=buildRenderData(monthCache[month],clockMode);
-    applyNewData(data);
-  }
 }
 
 // ── Scroll-triggered story highlights ─────────────────────────────
@@ -1102,20 +1092,24 @@ function initStoryObserver(){
 }
 
 // ── Controls ───────────────────────────────────────────────────────
-document.getElementById('monthSlider').addEventListener('input',e=>{
+document.getElementById('monthSlider').addEventListener('input',async e=>{
   stopPlay();
   currentMonth=+e.target.value;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
-  loadMonth(currentMonth);
+  await loadMonth(currentMonth);
+  const data=buildRenderData(monthCache[currentMonth],clockMode);
+  applyNewData(data);
 });
 
-document.getElementById('btnNow').addEventListener('click',()=>{
+document.getElementById('btnNow').addEventListener('click',async ()=>{
   stopPlay();
   currentMonth=new Date().getMonth()+1;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
   showNowMarker=true;
-  loadMonth(currentMonth);
+  await loadMonth(currentMonth);
+  const data=buildRenderData(monthCache[currentMonth],clockMode);
+  applyNewData(data);
 });
 
 const playBtn=document.getElementById('playBtn');
@@ -1130,16 +1124,17 @@ function stopPlay(){
   playing=false;if(playTimer)clearTimeout(playTimer);
   playBtn.textContent='▶ Play Year';playBtn.classList.remove('active');
 }
-function animateYear(){
+async function animateYear(){
   if(!playing)return;
   currentMonth=currentMonth>=12?1:currentMonth+1;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
-  if(monthCache[currentMonth]){
-    const data=buildRenderData(monthCache[currentMonth],clockMode);
-    applyNewData(data);
-  }
-  playTimer=setTimeout(animateYear,600);
+  // Always wait for month to be loaded before animating
+  await loadMonth(currentMonth);
+  if(!playing)return; // user may have stopped while loading
+  const data=buildRenderData(monthCache[currentMonth],clockMode);
+  applyNewData(data);
+  playTimer=setTimeout(animateYear,700);
 }
 
 document.querySelectorAll('.seg-btn[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{
@@ -1238,8 +1233,8 @@ async function init(){
   await loadMonth(currentMonth);
   bar.style.width='60%';
   resizeClock();
-  // Init dot state from first data load
-  if(currentData) initDotState(currentData);
+  const data=buildRenderData(monthCache[currentMonth],clockMode);
+  applyNewData(data);
   render();
   await new Promise(r=>setTimeout(r,150));
   document.getElementById('loadingOverlay').classList.add('hidden');
@@ -1247,7 +1242,7 @@ async function init(){
 
   initStoryObserver();
 
-  // Preload all months silently
+  // Preload all months silently in background
   for(let m=1;m<=12;m++){
     if(m===currentMonth)continue;
     await loadMonth(m);

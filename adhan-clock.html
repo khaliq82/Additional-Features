@@ -238,7 +238,8 @@ footer{
 
 /* ── MOBILE ── */
 @media(max-width:768px){
-  /* Nav */
+
+  /* ── Nav ── */
   nav{padding:10px 16px;}
   .nav-center{display:none;}
   .nav-right{display:none;}
@@ -246,35 +247,91 @@ footer{
     width:36px;height:36px;background:none;border:1px solid var(--border);
     border-radius:6px;cursor:pointer;color:rgba(255,255,255,0.7);font-size:16px;}
 
-  /* Layout — single column scroll */
-  body{overflow-y:auto;height:auto;}
-  html{height:auto;}
-  .main{flex-direction:column;overflow:visible;height:auto;min-height:0;}
+  /* ── Base layout ── */
+  html,body{height:auto;overflow-y:auto;}
+  .main{flex-direction:column;overflow:visible;height:auto;}
+  .left{display:none;}
+  .right{width:100%;border-left:none;max-height:none;overflow:visible;}
+  footer{flex-wrap:wrap;gap:8px;padding:12px 16px;}
+  .footer-text{display:none;}
 
-  /* Clock — hero, fixed height, full width */
+  /* ── PANEL 1: Full viewport — clock + controls ── */
+  .mob-panel1{
+    min-height:100svh;
+    display:flex;flex-direction:column;
+    padding:0;
+    background:var(--bg);
+  }
+
+  /* Page title */
+  .mob-page-title{
+    font-family:'Playfair Display',serif;
+    font-size:18px;font-weight:700;
+    text-align:center;
+    padding:10px 16px 4px;
+    color:#fff;
+    flex-shrink:0;
+  }
+  .mob-page-title em{font-style:italic;color:var(--cyan);}
+
+  /* Clock area */
   .centre{
     width:100%;flex:none;
-    height:calc(100vw - 24px);
-    min-height:280px;max-height:420px;
-    border:none;padding:8px 12px 4px;
-    border-bottom:1px solid var(--border);
+    border:none;padding:4px 12px;
     position:relative;z-index:1;
+    flex-shrink:0;
   }
-  .clock-wrap{height:100%;padding:0;}
-  canvas{flex:none;width:calc(100vw - 48px) !important;height:calc(100vw - 48px) !important;max-width:100%;max-height:100%;}
-  .clock-top{font-size:8px;margin-bottom:2px;}
-  .clock-status{font-size:9px;padding:2px 0 4px;}
+  .clock-wrap{height:auto;padding:0;}
+  canvas{
+    display:block;
+    width:calc(100vw - 48px) !important;
+    height:calc(100vw - 48px) !important;
+    max-width:100%;
+    touch-action:none;
+    margin:0 auto;
+  }
+  .clock-top{font-size:8px;margin-bottom:2px;text-align:center;}
+  .clock-status{
+    display:block;font-size:9px;
+    color:rgba(255,255,255,0.4);
+    text-align:center;padding:4px 0 2px;
+  }
+  .clock-reveals-label{display:none;} /* handled separately below */
 
-  /* Mobile controls bar */
+  /* Controls toggle button */
+  .mob-controls-toggle{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:8px 16px;
+    background:rgba(255,255,255,0.03);
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    cursor:pointer;flex-shrink:0;
+  }
+  .mob-controls-toggle-label{
+    font-size:9px;letter-spacing:0.18em;font-weight:600;
+    text-transform:uppercase;color:rgba(255,255,255,0.4);
+  }
+  .mob-controls-toggle-arrow{
+    font-size:10px;color:rgba(255,255,255,0.3);
+    transition:transform 0.25s;
+  }
+  .mob-controls-toggle.open .mob-controls-toggle-arrow{transform:rotate(180deg);}
+
+  /* Controls panel — collapsible */
   .mobile-controls{
     display:flex;flex-direction:column;gap:0;
-    border-bottom:1px solid var(--border);
     background:rgba(2,4,12,0.98);
-    position:relative;z-index:1;
+    border-bottom:1px solid var(--border);
+    overflow:hidden;
+    max-height:0;
+    transition:max-height 0.3s ease;
+    flex-shrink:0;
   }
+  .mobile-controls.open{max-height:300px;}
   .mobile-controls-row{
     display:flex;align-items:center;gap:8px;
-    padding:8px 16px;border-bottom:1px solid rgba(255,255,255,0.05);
+    padding:8px 16px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
   }
   .mobile-controls-row:last-child{border-bottom:none;}
   .mob-label{font-size:8px;letter-spacing:0.15em;font-weight:600;
@@ -298,28 +355,38 @@ footer{
     font-family:'Inter',sans-serif;font-size:9px;cursor:pointer;}
   .mob-region button.active{border-color:var(--cyan);color:var(--cyan);}
 
-  /* Hide desktop left panel */
-  .left{display:none;}
-
-  /* Stories — full width below */
-  .right{
-    width:100%;border-left:none;
-    max-height:none;overflow:visible;
+  /* Scroll hint at bottom of panel 1 */
+  .mob-scroll-hint{
+    margin-top:auto;
+    padding:12px 16px;
+    text-align:center;
+    flex-shrink:0;
   }
-  .story-card{padding:20px 16px;}
+  .mob-scroll-hint-title{
+    font-family:'Playfair Display',serif;
+    font-size:14px;font-weight:700;color:#fff;
+    margin-bottom:4px;
+  }
+  .mob-scroll-hint-sub{
+    font-size:9px;color:rgba(255,255,255,0.3);
+    letter-spacing:0.12em;text-transform:uppercase;
+  }
 
-  /* Dial label visible on mobile */
-  .clock-status{display:block;font-size:9px;color:rgba(255,255,255,0.35);text-align:center;padding:3px 0;}
-
-  /* What the Clock Reveals label — show on mobile */
-  .clock-reveals-label{display:block;}
-
-  /* Hide story header on mobile (label is now below clock) */
+  /* ── PANEL 2–10: Full viewport story cards ── */
   .story-header{display:none;}
-
-  /* Footer */
-  footer{flex-wrap:wrap;gap:8px;padding:12px 16px;position:relative;z-index:1;}
-  .footer-text{display:none;}
+  .story-card{
+    min-height:100svh;
+    padding:32px 20px 24px;
+    display:flex;flex-direction:column;justify-content:center;
+    border-bottom:1px solid var(--border);
+    box-sizing:border-box;
+  }
+  .story-num{font-size:9px;margin-bottom:12px;}
+  .story-prayer{font-size:10px;margin-bottom:12px;}
+  .story-title{font-size:22px;line-height:1.3;margin-bottom:16px;}
+  .story-body{font-size:13px;line-height:1.8;}
+  .story-quote{margin-top:20px;font-size:12px;}
+  .story-footer{min-height:auto;padding:32px 20px;}
 }
 </style>
 </head>
@@ -361,42 +428,74 @@ footer{
 
 <div class="main">
 
-  <!-- MOBILE CONTROLS (hidden on desktop) -->
-  <div class="mobile-controls" id="mobileControls" style="display:none;">
-    <!-- Row 1: Mode + Month -->
-    <div class="mobile-controls-row">
-      <span class="mob-label">Mode</span>
-      <div class="mob-seg" id="mobModeSeg">
-        <button class="active" data-mode="local">Your Time</button>
-        <button data-mode="utc">UTC</button>
-      </div>
-      <div class="mob-btns" style="margin-left:auto;">
-        <button class="mob-btn" id="mobPlayBtn">▶ Play</button>
-        <button class="mob-btn mob-btn-now" id="mobNowBtn">◎ Now</button>
-      </div>
-    </div>
-    <!-- Row 2: Month slider -->
-    <div class="mobile-controls-row">
-      <span class="mob-label">Month</span>
-      <div class="mob-month-badge" id="mobDateBadge">May <span>2026</span></div>
-      <input type="range" id="mobMonthSlider" min="1" max="12" value="5">
-    </div>
-    <!-- Row 3: Region -->
-    <div class="mobile-controls-row">
-      <span class="mob-label">Region</span>
-      <div class="mob-region" id="mobRegionBtns">
-        <button class="active" data-region="all">All</button>
-        <button data-region="gulf">Gulf</button>
-        <button data-region="southasia">S.Asia</button>
-        <button data-region="seasia">SE Asia</button>
-        <button data-region="nafrica">N.Africa</button>
-        <button data-region="europe">Europe</button>
-        <button data-region="wafrica">W.Africa</button>
-      </div>
-    </div>
-  </div>
+  <!-- MOBILE PANEL 1 wrapper (mobile only) -->
+  <div class="mob-panel1" id="mobPanel1">
 
-  <!-- LEFT: Controls -->
+    <!-- Page title (mobile only) -->
+    <div class="mob-page-title">The <em>Adhan</em> Clock</div>
+
+    <!-- MOBILE CONTROLS (hidden on desktop) -->
+    <div class="mobile-controls" id="mobileControls" style="display:none;">
+      <!-- Row 1: Mode + Play/Now -->
+      <div class="mobile-controls-row">
+        <span class="mob-label">Mode</span>
+        <div class="mob-seg" id="mobModeSeg">
+          <button class="active" data-mode="local">Your Time</button>
+          <button data-mode="utc">UTC</button>
+        </div>
+        <div class="mob-btns">
+          <button class="mob-btn" id="mobPlayBtn">▶ Play</button>
+          <button class="mob-btn mob-btn-now" id="mobNowBtn">◎ Now</button>
+        </div>
+      </div>
+      <!-- Row 2: Month slider -->
+      <div class="mobile-controls-row">
+        <span class="mob-label">Month</span>
+        <div class="mob-month-badge" id="mobDateBadge">May <span>2026</span></div>
+        <input type="range" id="mobMonthSlider" min="1" max="12" value="5">
+      </div>
+      <!-- Row 3: Region -->
+      <div class="mobile-controls-row">
+        <span class="mob-label">Region</span>
+        <div class="mob-region" id="mobRegionBtns">
+          <button class="active" data-region="all">All</button>
+          <button data-region="gulf">Gulf</button>
+          <button data-region="southasia">S.Asia</button>
+          <button data-region="seasia">SE Asia</button>
+          <button data-region="nafrica">N.Africa</button>
+          <button data-region="europe">Europe</button>
+          <button data-region="wafrica">W.Africa</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CENTRE: Clock -->
+    <div class="centre">
+      <div class="clock-wrap">
+        <div class="clock-top" id="clockTopLabel">Global Prayer Wave · Your Local Time</div>
+        <canvas id="clockCanvas"></canvas>
+        <div class="clock-status" id="dialLabel">Drag the centre dial to separate prayers</div>
+        <div class="clock-reveals-label">What the Clock Reveals</div>
+      </div>
+    </div>
+
+    <!-- CENTRE: Clock inserted here by JS on mobile -->
+
+    <!-- Controls toggle -->
+    <div class="mob-controls-toggle" id="mobControlsToggle">
+      <span class="mob-controls-toggle-label">Controls</span>
+      <span class="mob-controls-toggle-arrow">▼</span>
+    </div>
+
+    <!-- Scroll hint -->
+    <div class="mob-scroll-hint">
+      <div class="mob-scroll-hint-title">What the Clock Reveals</div>
+      <div class="mob-scroll-hint-sub">Scroll to explore · the clock responds</div>
+    </div>
+
+  </div><!-- end mob-panel1 -->
+
+  <!-- LEFT: Controls (desktop only) -->
   <div class="left">
     <div>
       <div class="panel-title">The <em>Adhan</em> Clock</div>
@@ -493,13 +592,12 @@ footer{
     </div>
   </div>
 
-  <!-- CENTRE: Clock -->
-  <div class="centre">
+  <!-- CENTRE: Clock (single canvas for both desktop and mobile) -->
+  <div class="centre" id="clockCentre">
     <div class="clock-wrap">
       <div class="clock-top" id="clockTopLabel">Global Prayer Wave · Your Local Time</div>
       <canvas id="clockCanvas"></canvas>
       <div class="clock-status" id="dialLabel">Drag the centre dial to separate prayers</div>
-      <div class="clock-reveals-label">What the Clock Reveals</div>
     </div>
   </div>
 
@@ -1320,6 +1418,16 @@ if(navigator.share){
   });
 }
 
+// Controls toggle
+const mobToggle=document.getElementById('mobControlsToggle');
+if(mobToggle){
+  mobToggle.addEventListener('click',()=>{
+    const mc=document.getElementById('mobileControls');
+    const open=mc.classList.toggle('open');
+    mobToggle.classList.toggle('open',open);
+  });
+}
+
 // ── Mobile vs Desktop ─────────────────────────────────────────────
 function isMobile(){return window.innerWidth<=768;}
 
@@ -1329,8 +1437,24 @@ function applyResponsive(){
   document.getElementById('navHamburger').style.display=mob?'flex':'none';
   const mm=document.getElementById('mobileMenu');
   mm.style.display=mob&&mm.classList.contains('open')?'flex':'none';
-  // Force L dot size on mobile
-  if(mob) dotSize=1.4;
+  // Move clock between desktop centre and mobile panel1
+  const clock=document.getElementById('clockCentre');
+  const panel1=document.getElementById('mobPanel1');
+  const toggle=document.getElementById('mobControlsToggle');
+  if(mob){
+    // Insert clock after page title (first child), before controls toggle
+    if(clock.parentNode!==panel1){
+      panel1.insertBefore(clock, toggle);
+    }
+    dotSize=1.4;
+  } else {
+    // Return clock to .main
+    const mainEl=document.querySelector('.main');
+    const left=document.querySelector('.left');
+    if(clock.parentNode!==mainEl){
+      mainEl.insertBefore(clock, left.nextSibling);
+    }
+  }
 }
 applyResponsive();
 window.addEventListener('resize',()=>{applyResponsive();resizeClock();render();});

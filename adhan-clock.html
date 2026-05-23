@@ -1135,10 +1135,12 @@ async function animateYear(){
   currentMonth=currentMonth>=12?1:currentMonth+1;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
-  // Always wait for month to be loaded before animating
+  console.log(`[animateYear] month=${currentMonth} cached=${!!monthCache[currentMonth]} promise=${!!monthPromises[currentMonth]}`);
   await loadMonth(currentMonth);
-  if(!playing)return; // user may have stopped while loading
+  console.log(`[animateYear] loaded month=${currentMonth} cached=${!!monthCache[currentMonth]}`);
+  if(!playing)return;
   const data=buildRenderData(monthCache[currentMonth],clockMode);
+  console.log(`[animateYear] applyNewData n=${data?.n}`);
   applyNewData(data);
   playTimer=setTimeout(animateYear,700);
 }

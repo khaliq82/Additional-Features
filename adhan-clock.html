@@ -471,6 +471,45 @@ footer{
     </div>
   </div>
 
+  <!-- MOBILE: Controls + scroll hint (right after clock, hidden on desktop) -->
+  <div id="mobPanelBottom">
+    <div class="mobile-controls" id="mobileControls">
+      <div class="mobile-controls-row">
+        <span class="mob-label">Mode</span>
+        <div class="mob-seg" id="mobModeSeg">
+          <button class="active" data-mode="local">Your Time</button>
+          <button data-mode="utc">UTC</button>
+        </div>
+        <div class="mob-btns">
+          <button class="mob-btn" id="mobPlayBtn">▶ Play</button>
+          <button class="mob-btn mob-btn-now" id="mobNowBtn">◎ Now</button>
+        </div>
+      </div>
+      <div class="mobile-controls-row">
+        <span class="mob-label">Month</span>
+        <div class="mob-month-badge" id="mobDateBadge">May <span>2026</span></div>
+        <input type="range" id="mobMonthSlider" min="1" max="12" value="5">
+      </div>
+      <div class="mobile-controls-row">
+        <span class="mob-label">Region</span>
+        <div class="mob-region" id="mobRegionBtns">
+          <button class="active" data-region="all">All</button>
+          <button data-region="gulf">Gulf</button>
+          <button data-region="southasia">S.Asia</button>
+          <button data-region="seasia">SE Asia</button>
+          <button data-region="nafrica">N.Africa</button>
+          <button data-region="europe">Europe</button>
+          <button data-region="wafrica">W.Africa</button>
+        </div>
+      </div>
+    </div>
+    <div class="mob-scroll-hint">
+      <div class="mob-scroll-hint-title">What the Clock Reveals</div>
+      <div class="mob-scroll-hint-sub">Scroll to explore</div>
+      <div class="mob-scroll-arrow">↓</div>
+    </div>
+  </div>
+
   <!-- RIGHT: Stories -->
   <div class="right" id="rightPanel">
     <div class="story-header">
@@ -657,49 +696,6 @@ footer{
     </div>
   </div>
 
-</div>
-
-<!-- Mobile bottom panel: controls + scroll hint -->
-<div id="mobPanelBottom">
-  <div class="mob-controls-toggle" id="mobControlsToggle">
-    <span class="mob-controls-toggle-label">⚙ Controls</span>
-    <span class="mob-controls-toggle-arrow">▼</span>
-  </div>
-  <div class="mobile-controls" id="mobileControls">
-    <div class="mobile-controls-row">
-      <span class="mob-label">Mode</span>
-      <div class="mob-seg" id="mobModeSeg">
-        <button class="active" data-mode="local">Your Time</button>
-        <button data-mode="utc">UTC</button>
-      </div>
-      <div class="mob-btns">
-        <button class="mob-btn" id="mobPlayBtn">▶ Play</button>
-        <button class="mob-btn mob-btn-now" id="mobNowBtn">◎ Now</button>
-      </div>
-    </div>
-    <div class="mobile-controls-row">
-      <span class="mob-label">Month</span>
-      <div class="mob-month-badge" id="mobDateBadge">May <span>2026</span></div>
-      <input type="range" id="mobMonthSlider" min="1" max="12" value="5">
-    </div>
-    <div class="mobile-controls-row">
-      <span class="mob-label">Region</span>
-      <div class="mob-region" id="mobRegionBtns">
-        <button class="active" data-region="all">All</button>
-        <button data-region="gulf">Gulf</button>
-        <button data-region="southasia">S.Asia</button>
-        <button data-region="seasia">SE Asia</button>
-        <button data-region="nafrica">N.Africa</button>
-        <button data-region="europe">Europe</button>
-        <button data-region="wafrica">W.Africa</button>
-      </div>
-    </div>
-  </div>
-  <div class="mob-scroll-hint">
-    <div class="mob-scroll-hint-title">What the Clock Reveals</div>
-    <div class="mob-scroll-hint-sub">Scroll to explore</div>
-    <div class="mob-scroll-arrow">↓</div>
-  </div>
 </div>
 
 <footer>

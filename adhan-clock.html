@@ -236,6 +236,9 @@ footer{
 .loading-bar{height:100%;background:var(--cyan);width:0%;transition:width 0.3s;box-shadow:0 0 8px var(--cyan);}
 .loading-msg{margin-top:12px;font-size:11px;color:rgba(255,255,255,0.3);}
 
+/* Mobile panels hidden on desktop */
+#mobPanel1,#mobPanelTop,#mobPanelBottom{display:none;}
+
 /* ── MOBILE ── */
 @media(max-width:768px){
 
@@ -249,27 +252,23 @@ footer{
 
   /* ── Base layout ── */
   html,body{height:auto;overflow-y:auto;}
-  .main{flex-direction:column;overflow:visible;height:auto;flex-wrap:nowrap;}
+  .main{flex-direction:column;overflow:visible;height:auto;}
   .left{display:none;}
-  .right{width:100%;border-left:none;max-height:none;overflow:visible;order:4;}
-  footer{flex-wrap:wrap;gap:8px;padding:12px 16px;order:5;}
+  .right{width:100%;border-left:none;max-height:none;overflow:visible;}
+  footer{flex-wrap:wrap;gap:8px;padding:12px 16px;}
   .footer-text{display:none;}
 
-  /* mob-panel1 splits into title (order:1) and controls+hint (order:3) */
-  /* clock centre sits between them (order:2) */
-  #mobPanel1{order:1;display:flex;flex-direction:column;}
-  #clockCentre{order:2;}
+  /* Show mobile panels */
+  #mobPanelTop{display:flex;flex-direction:column;}
+  #mobPanelBottom{display:flex;flex-direction:column;}
 
-  /* ── PANEL 1 structure ── */
-  .mob-panel1{
-    background:var(--bg);
-    display:flex;flex-direction:column;
-  }
+  /* ── Mobile panel top (title) ── */
+  .mob-panel-top{background:var(--bg);}
   .mob-page-title{
     font-family:'Playfair Display',serif;
     font-size:17px;font-weight:700;
     text-align:center;padding:8px 16px 4px;
-    color:#fff;flex-shrink:0;
+    color:#fff;
   }
   .mob-page-title em{font-style:italic;color:var(--cyan);}
 
@@ -422,63 +421,9 @@ footer{
 
 <div class="main">
 
-  <!-- MOBILE PANEL 1 wrapper (mobile only, contains title/controls/scroll hint) -->
-  <div class="mob-panel1" id="mobPanel1">
+  <!-- MOBILE: Page title (above clock) -->
+  <div id="mobPanelTop" class="mob-panel-top">
     <div class="mob-page-title">The <em>Adhan</em> Clock</div>
-
-    <!-- Controls toggle -->
-    <div class="mob-controls-toggle" id="mobControlsToggle">
-      <span class="mob-controls-toggle-label">⚙ Controls</span>
-      <span class="mob-controls-toggle-arrow">▼</span>
-    </div>
-
-    <!-- MOBILE CONTROLS (collapsible) -->
-    <div class="mobile-controls" id="mobileControls">
-      <div class="mobile-controls-row">
-        <span class="mob-label">Mode</span>
-        <div class="mob-seg" id="mobModeSeg">
-          <button class="active" data-mode="local">Your Time</button>
-          <button data-mode="utc">UTC</button>
-        </div>
-        <div class="mob-btns">
-          <button class="mob-btn" id="mobPlayBtn">▶ Play</button>
-          <button class="mob-btn mob-btn-now" id="mobNowBtn">◎ Now</button>
-        </div>
-      </div>
-      <div class="mobile-controls-row">
-        <span class="mob-label">Month</span>
-        <div class="mob-month-badge" id="mobDateBadge">May <span>2026</span></div>
-        <input type="range" id="mobMonthSlider" min="1" max="12" value="5">
-      </div>
-      <div class="mobile-controls-row">
-        <span class="mob-label">Region</span>
-        <div class="mob-region" id="mobRegionBtns">
-          <button class="active" data-region="all">All</button>
-          <button data-region="gulf">Gulf</button>
-          <button data-region="southasia">S.Asia</button>
-          <button data-region="seasia">SE Asia</button>
-          <button data-region="nafrica">N.Africa</button>
-          <button data-region="europe">Europe</button>
-          <button data-region="wafrica">W.Africa</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="mob-scroll-hint">
-      <div class="mob-scroll-hint-title">What the Clock Reveals</div>
-      <div class="mob-scroll-hint-sub">Scroll to explore ↓</div>
-    </div>
-  </div><!-- end mob-panel1 -->
-
-  </div><!-- end mob-panel1 -->
-
-  <!-- CENTRE: Clock — always in main, CSS order handles mobile position -->
-  <div class="centre" id="clockCentre">
-    <div class="clock-wrap">
-      <div class="clock-top" id="clockTopLabel">Global Prayer Wave · Your Local Time</div>
-      <canvas id="clockCanvas"></canvas>
-      <div class="clock-status" id="dialLabel">Drag the centre dial to separate prayers</div>
-    </div>
   </div>
 
   <!-- LEFT: Controls (desktop only) -->
@@ -575,6 +520,60 @@ footer{
         <div class="leg-item" style="color:#ce93d8;"><div class="leg-dot" style="background:#ce93d8;"></div><span class="leg-name">Europe</span></div>
         <div class="leg-item" style="color:#ff8a65;"><div class="leg-dot" style="background:#ff8a65;"></div><span class="leg-name">W. Africa</span></div>
       </div>
+    </div>
+  </div>
+
+  <!-- CENTRE: Clock -->
+  <div class="centre" id="clockCentre">
+    <div class="clock-wrap">
+      <div class="clock-top" id="clockTopLabel">Global Prayer Wave · Your Local Time</div>
+      <canvas id="clockCanvas"></canvas>
+      <div class="clock-status" id="dialLabel">Drag the centre dial to separate prayers</div>
+    </div>
+  </div>
+
+  <!-- MOBILE: Controls + scroll hint (below clock) -->
+  <div id="mobPanelBottom" class="mob-panel-bottom">
+    <!-- Controls toggle -->
+    <div class="mob-controls-toggle" id="mobControlsToggle">
+      <span class="mob-controls-toggle-label">⚙ Controls</span>
+      <span class="mob-controls-toggle-arrow">▼</span>
+    </div>
+    <!-- MOBILE CONTROLS (collapsible) -->
+    <div class="mobile-controls" id="mobileControls">
+      <div class="mobile-controls-row">
+        <span class="mob-label">Mode</span>
+        <div class="mob-seg" id="mobModeSeg">
+          <button class="active" data-mode="local">Your Time</button>
+          <button data-mode="utc">UTC</button>
+        </div>
+        <div class="mob-btns">
+          <button class="mob-btn" id="mobPlayBtn">▶ Play</button>
+          <button class="mob-btn mob-btn-now" id="mobNowBtn">◎ Now</button>
+        </div>
+      </div>
+      <div class="mobile-controls-row">
+        <span class="mob-label">Month</span>
+        <div class="mob-month-badge" id="mobDateBadge">May <span>2026</span></div>
+        <input type="range" id="mobMonthSlider" min="1" max="12" value="5">
+      </div>
+      <div class="mobile-controls-row">
+        <span class="mob-label">Region</span>
+        <div class="mob-region" id="mobRegionBtns">
+          <button class="active" data-region="all">All</button>
+          <button data-region="gulf">Gulf</button>
+          <button data-region="southasia">S.Asia</button>
+          <button data-region="seasia">SE Asia</button>
+          <button data-region="nafrica">N.Africa</button>
+          <button data-region="europe">Europe</button>
+          <button data-region="wafrica">W.Africa</button>
+        </div>
+      </div>
+    </div>
+    <!-- Scroll hint -->
+    <div class="mob-scroll-hint">
+      <div class="mob-scroll-hint-title">What the Clock Reveals</div>
+      <div class="mob-scroll-hint-sub">Scroll to explore ↓</div>
     </div>
   </div>
 

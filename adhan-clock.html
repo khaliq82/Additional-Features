@@ -1242,11 +1242,13 @@ async function init(){
 
   initStoryObserver();
 
-  // Preload all months silently in background
+  // Preload all months in parallel in background
+  const preloads=[];
   for(let m=1;m<=12;m++){
     if(m===currentMonth)continue;
-    await loadMonth(m);
+    preloads.push(loadMonth(m));
   }
+  Promise.all(preloads).catch(()=>{});
 }
 
 init();

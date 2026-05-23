@@ -249,40 +249,39 @@ footer{
 
   /* ── Base layout ── */
   html,body{height:auto;overflow-y:auto;}
-  .main{flex-direction:column;overflow:visible;height:auto;}
+  .main{flex-direction:column;overflow:visible;height:auto;flex-wrap:nowrap;}
   .left{display:none;}
-  .right{width:100%;border-left:none;max-height:none;overflow:visible;}
-  footer{flex-wrap:wrap;gap:8px;padding:12px 16px;}
+  .right{width:100%;border-left:none;max-height:none;overflow:visible;order:4;}
+  footer{flex-wrap:wrap;gap:8px;padding:12px 16px;order:5;}
   .footer-text{display:none;}
 
-  /* ── PANEL 1: Full viewport — clock + controls ── */
-  .mob-panel1{
-    min-height:100svh;
-    display:flex;flex-direction:column;
-    background:var(--bg);
-  }
+  /* mob-panel1 splits into title (order:1) and controls+hint (order:3) */
+  /* clock centre sits between them (order:2) */
+  #mobPanel1{order:1;display:flex;flex-direction:column;}
+  #clockCentre{order:2;}
 
-  /* Page title */
+  /* ── PANEL 1 structure ── */
+  .mob-panel1{
+    background:var(--bg);
+    display:flex;flex-direction:column;
+  }
   .mob-page-title{
     font-family:'Playfair Display',serif;
     font-size:17px;font-weight:700;
-    text-align:center;
-    padding:8px 16px 2px;
+    text-align:center;padding:8px 16px 4px;
     color:#fff;flex-shrink:0;
   }
   .mob-page-title em{font-style:italic;color:var(--cyan);}
 
-  /* Clock area */
+  /* Clock centre */
   .centre{
     width:100%;flex:none;
     border:none;padding:2px 12px 0;
-    position:relative;z-index:1;flex-shrink:0;
+    position:relative;z-index:1;
   }
   .clock-wrap{height:auto;padding:0;}
   canvas{
     display:block;
-    width:calc(100vw - 48px) !important;
-    height:calc(100vw - 48px) !important;
     max-width:100%;touch-action:none;margin:0 auto;
   }
   .clock-top{font-size:8px;margin-bottom:2px;text-align:center;}
@@ -423,20 +422,9 @@ footer{
 
 <div class="main">
 
-  <!-- MOBILE PANEL 1 wrapper (mobile only) -->
+  <!-- MOBILE PANEL 1 wrapper (mobile only, contains title/controls/scroll hint) -->
   <div class="mob-panel1" id="mobPanel1">
-
-    <!-- Page title (mobile only) -->
     <div class="mob-page-title">The <em>Adhan</em> Clock</div>
-
-    <!-- CENTRE: Clock -->
-    <div class="centre">
-      <div class="clock-wrap">
-        <div class="clock-top" id="clockTopLabel">Global Prayer Wave · Your Local Time</div>
-        <canvas id="clockCanvas"></canvas>
-        <div class="clock-status" id="dialLabel">Drag the centre dial to separate prayers</div>
-      </div>
-    </div>
 
     <!-- Controls toggle -->
     <div class="mob-controls-toggle" id="mobControlsToggle">
@@ -446,7 +434,6 @@ footer{
 
     <!-- MOBILE CONTROLS (collapsible) -->
     <div class="mobile-controls" id="mobileControls">
-      <!-- Row 1: Mode + Play/Now -->
       <div class="mobile-controls-row">
         <span class="mob-label">Mode</span>
         <div class="mob-seg" id="mobModeSeg">
@@ -458,13 +445,11 @@ footer{
           <button class="mob-btn mob-btn-now" id="mobNowBtn">◎ Now</button>
         </div>
       </div>
-      <!-- Row 2: Month slider -->
       <div class="mobile-controls-row">
         <span class="mob-label">Month</span>
         <div class="mob-month-badge" id="mobDateBadge">May <span>2026</span></div>
         <input type="range" id="mobMonthSlider" min="1" max="12" value="5">
       </div>
-      <!-- Row 3: Region -->
       <div class="mobile-controls-row">
         <span class="mob-label">Region</span>
         <div class="mob-region" id="mobRegionBtns">
@@ -479,13 +464,22 @@ footer{
       </div>
     </div>
 
-    <!-- Scroll hint -->
     <div class="mob-scroll-hint">
       <div class="mob-scroll-hint-title">What the Clock Reveals</div>
       <div class="mob-scroll-hint-sub">Scroll to explore ↓</div>
     </div>
+  </div><!-- end mob-panel1 -->
 
   </div><!-- end mob-panel1 -->
+
+  <!-- CENTRE: Clock — always in main, CSS order handles mobile position -->
+  <div class="centre" id="clockCentre">
+    <div class="clock-wrap">
+      <div class="clock-top" id="clockTopLabel">Global Prayer Wave · Your Local Time</div>
+      <canvas id="clockCanvas"></canvas>
+      <div class="clock-status" id="dialLabel">Drag the centre dial to separate prayers</div>
+    </div>
+  </div>
 
   <!-- LEFT: Controls (desktop only) -->
   <div class="left">
@@ -581,14 +575,6 @@ footer{
         <div class="leg-item" style="color:#ce93d8;"><div class="leg-dot" style="background:#ce93d8;"></div><span class="leg-name">Europe</span></div>
         <div class="leg-item" style="color:#ff8a65;"><div class="leg-dot" style="background:#ff8a65;"></div><span class="leg-name">W. Africa</span></div>
       </div>
-    </div>
-  </div>
-
-  <!-- CENTRE: Clock (desktop only - canvas moved here by JS) -->
-  <div class="centre" id="desktopCentre">
-    <div class="clock-wrap" id="desktopClockWrap">
-      <div class="clock-top" id="clockTopLabelDesktop">Global Prayer Wave · Your Local Time</div>
-      <div class="clock-status" id="dialLabelDesktop" style="font-size:9px;color:rgba(255,255,255,0.3);text-align:center;"></div>
     </div>
   </div>
 
@@ -908,16 +894,22 @@ const PRESETS=[0,0.25,0.5,0.75,1.0];
 
 // ── Canvas sizing ──────────────────────────────────────────────────
 function resizeClock(){
+  const dpr=window.devicePixelRatio||1;
   const c=document.querySelector('.centre');
   let sz;
   if(isMobile()){
-    sz=Math.min(c.clientWidth-24, c.clientHeight-20, window.innerWidth-48);
-    sz=Math.max(240,sz);
+    sz=Math.max(240, window.innerWidth-48);
   } else {
     sz=Math.max(240,Math.min(c.clientWidth-24,c.clientHeight-48));
   }
-  canvas.width=canvas.height=CW=sz;
-  CX=CY=sz/2;R_outer=sz*0.41;R_inner=sz*0.155;R_dial=sz*0.092;
+  CW=sz;CX=CY=sz/2;
+  R_outer=sz*0.41;R_inner=sz*0.155;R_dial=sz*0.092;
+  // Physical canvas size = logical * DPR (prevents blur on retina)
+  canvas.style.width=sz+'px';
+  canvas.style.height=sz+'px';
+  canvas.width=Math.round(sz*dpr);
+  canvas.height=Math.round(sz*dpr);
+  ctx.scale(dpr,dpr);
 }
 
 // ── Binary parsing ─────────────────────────────────────────────────
@@ -1427,30 +1419,7 @@ function applyResponsive(){
   document.getElementById('navHamburger').style.display=mob?'flex':'none';
   const mm=document.getElementById('mobileMenu');
   mm.style.display=mob&&mm.classList.contains('open')?'flex':'none';
-  document.querySelector('.left').style.display=mob?'none':'';
-  document.getElementById('desktopCentre').style.display=mob?'none':'';
-  document.getElementById('mobPanel1').style.display=mob?'flex':'none';
-
-  const canvas=document.getElementById('clockCanvas');
-  const dialLabel=document.getElementById('dialLabel');
-  const clockTop=document.getElementById('clockTopLabel');
-
-  if(mob){
-    // Move canvas into mobile clock wrap
-    const mobWrap=document.querySelector('#mobPanel1 .clock-wrap');
-    if(canvas.parentNode!==mobWrap){
-      mobWrap.insertBefore(clockTop,mobWrap.firstChild);
-      mobWrap.insertBefore(canvas,dialLabel);
-    }
-    dotSize=1.4;
-  } else {
-    // Move canvas into desktop clock wrap
-    const deskWrap=document.getElementById('desktopClockWrap');
-    if(canvas.parentNode!==deskWrap){
-      deskWrap.insertBefore(canvas, deskWrap.querySelector('.clock-status'));
-      deskWrap.insertBefore(clockTop, canvas);
-    }
-  }
+  if(mob) dotSize=1.4;
 }
 applyResponsive();
 window.addEventListener('resize',()=>{applyResponsive();resizeClock();render();});

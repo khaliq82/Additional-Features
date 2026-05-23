@@ -633,18 +633,8 @@ function initDotState(data){
 }
 
 function updateDotTargets(data){
-  if(!data||!dotAngles) return;
-  const{angles,rNorm,prayer,n}=data;
-  if(n!==dotN){initDotState(data);return;}
-  for(let i=0;i<n;i++){
-    let diff=angles[i]-sourceAngles[i];
-    while(diff>Math.PI) diff-=Math.PI*2;
-    while(diff<-Math.PI) diff+=Math.PI*2;
-    const remaining=targetAngles[i]-dotAngles[i];
-    targetAngles[i]=dotAngles[i]+remaining+diff;
-    sourceAngles[i]=angles[i];
-    targetRadii[i]=calcTargetRadius(rNorm[i]/255,prayer[i],targetSeparateT);
-  }
+  // Called for separation/mode changes on same dataset — targets already set by initDotState
+  // Nothing extra needed; separation targets are set by updateSeparationTargets via tick
 }
 
 function updateSeparationTargets(){
@@ -676,13 +666,10 @@ function tick(){
     dirty=true;
   }
 
-  // Lerp dot positions (separation only, not month changes)
+  // Lerp dot radii toward separation targets
   if(dotAngles&&dotN>0){
     for(let i=0;i<dotN;i++){
-      const da=targetAngles[i]-dotAngles[i];
       const dr=targetRadii[i]-dotRadii[i];
-      if(Math.abs(da)>0.0002){dotAngles[i]+=da*LERP_POS;dirty=true;}
-      else dotAngles[i]=targetAngles[i];
       if(Math.abs(dr)>0.0002){dotRadii[i]+=dr*LERP_POS;dirty=true;}
       else dotRadii[i]=targetRadii[i];
     }
@@ -724,9 +711,8 @@ function buildRenderData(d,mode){
 
 function applyNewData(data, isMonthChange=false){
   currentData=data;
-  // Both month changes and separation: just init/update dot state instantly
-  if(!dotAngles||dotN!==data.n) initDotState(data);
-  else updateDotTargets(data);
+  initDotState(data); // always instant for month changes
+  if(!isMonthChange) updateDotTargets(data); // only lerp for separation/mode
   startTick();
 }
 

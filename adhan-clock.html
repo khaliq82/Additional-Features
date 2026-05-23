@@ -606,7 +606,7 @@ let targetAngles=null;
 let targetRadii=null;
 let sourceAngles=null;
 let dotN=0;
-let dotAlpha=1.0; // for crossfade on month change
+let dotAlpha=1.0;
 let dotAlphaTarget=1.0;
 
 function calcTargetRadius(rCol, pi, t){
@@ -676,17 +676,8 @@ function tick(){
     dirty=true;
   }
 
-  // Crossfade alpha
-  const df=dotAlphaTarget-dotAlpha;
-  if(Math.abs(df)>0.005){
-    dotAlpha+=df*LERP_FADE;
-    dirty=true;
-  } else {
-    dotAlpha=dotAlphaTarget;
-  }
-
-  // Lerp dot positions (only when not crossfading month)
-  if(dotAlphaTarget===1&&dotAngles&&dotN>0){
+  // Lerp dot positions (separation only, not month changes)
+  if(dotAngles&&dotN>0){
     for(let i=0;i<dotN;i++){
       const da=targetAngles[i]-dotAngles[i];
       const dr=targetRadii[i]-dotRadii[i];
@@ -733,16 +724,9 @@ function buildRenderData(d,mode){
 
 function applyNewData(data, isMonthChange=false){
   currentData=data;
-  if(isMonthChange){
-    // Month change: crossfade out → swap → fade in
-    initDotState(data);
-    dotAlpha=0;
-    dotAlphaTarget=1;
-  } else {
-    // Separation/mode change: smooth per-dot lerp
-    if(!dotAngles||dotN!==data.n) initDotState(data);
-    else updateDotTargets(data);
-  }
+  // Both month changes and separation: just init/update dot state instantly
+  if(!dotAngles||dotN!==data.n) initDotState(data);
+  else updateDotTargets(data);
   startTick();
 }
 

@@ -230,13 +230,73 @@ footer{
 .loading-msg{margin-top:12px;font-size:11px;color:rgba(255,255,255,0.3);}
 
 /* ── MOBILE ── */
-@media(max-width:900px){
-  body{overflow:auto;}
+@media(max-width:768px){
+  /* Nav */
+  nav{padding:10px 16px;}
+  .nav-center{display:none;}
+  .nav-right{display:none;}
+  .nav-hamburger{display:flex;align-items:center;justify-content:center;
+    width:36px;height:36px;background:none;border:1px solid var(--border);
+    border-radius:6px;cursor:pointer;color:rgba(255,255,255,0.7);font-size:16px;}
+
+  /* Layout — single column scroll */
+  body{overflow-y:auto;}
   .main{flex-direction:column;overflow:visible;height:auto;}
-  .left{width:100%;border-right:none;border-bottom:1px solid var(--border);}
-  .centre{min-height:340px;border-bottom:1px solid var(--border);}
-  .right{width:100%;border-left:none;}
-  .nav-title{display:none;}
+
+  /* Clock — hero, full width */
+  .centre{
+    width:100%;min-height:0;border:none;
+    position:sticky;top:0;z-index:50;
+    background:var(--bg);
+    border-bottom:1px solid var(--border);
+  }
+  .clock-wrap{padding:8px 0 4px;}
+  .clock-top{font-size:9px;margin-bottom:4px;}
+
+  /* Mobile controls bar — horizontal strip below clock */
+  .mobile-controls{
+    display:flex;flex-direction:column;gap:0;
+    border-bottom:1px solid var(--border);
+    background:rgba(2,4,12,0.98);
+  }
+  .mobile-controls-row{
+    display:flex;align-items:center;gap:8px;
+    padding:8px 16px;border-bottom:1px solid rgba(255,255,255,0.05);
+  }
+  .mobile-controls-row:last-child{border-bottom:none;}
+  .mob-label{font-size:8px;letter-spacing:0.15em;font-weight:600;
+    text-transform:uppercase;color:rgba(255,255,255,0.35);white-space:nowrap;min-width:48px;}
+  .mob-month-badge{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;min-width:72px;}
+  .mob-month-badge span{color:var(--cyan);}
+  .mobile-controls input[type=range]{flex:1;height:2px;}
+  .mob-btns{display:flex;gap:6px;margin-left:auto;}
+  .mob-btn{padding:5px 12px;border-radius:4px;border:1px solid var(--border);
+    background:transparent;color:rgba(255,255,255,0.65);
+    font-family:'Inter',sans-serif;font-size:10px;font-weight:500;cursor:pointer;}
+  .mob-btn.active,.mob-btn-now{border-color:var(--cyan);color:var(--cyan);}
+  .mob-seg{display:flex;gap:3px;}
+  .mob-seg button{padding:4px 10px;border-radius:3px;border:1px solid var(--border);
+    background:transparent;color:rgba(255,255,255,0.55);
+    font-family:'Inter',sans-serif;font-size:9px;cursor:pointer;}
+  .mob-seg button.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.08);}
+  .mob-region{display:flex;flex-wrap:wrap;gap:3px;flex:1;}
+  .mob-region button{padding:3px 7px;border-radius:3px;border:1px solid var(--border);
+    background:transparent;color:rgba(255,255,255,0.5);
+    font-family:'Inter',sans-serif;font-size:9px;cursor:pointer;}
+  .mob-region button.active{border-color:var(--cyan);color:var(--cyan);}
+
+  /* Hide desktop left panel */
+  .left{display:none;}
+
+  /* Stories — full width below */
+  .right{
+    width:100%;border-left:none;
+    max-height:none;overflow:visible;
+  }
+  .story-card{padding:24px 20px;}
+
+  /* Dial label */
+  .clock-status{font-size:9px;padding:4px 0 6px;}
 }
 </style>
 </head>
@@ -263,9 +323,55 @@ footer{
     <div class="nav-date" id="navDate"></div>
     <div class="nav-time" id="navTime"></div>
   </div>
+  <button class="nav-hamburger" id="navHamburger" style="display:none;" onclick="document.getElementById('mobileMenu').classList.toggle('open')">☰</button>
 </nav>
 
+<!-- Mobile nav menu -->
+<div id="mobileMenu" style="display:none;position:fixed;inset:0;top:52px;background:rgba(2,4,12,0.98);z-index:200;padding:24px;flex-direction:column;gap:20px;border-top:1px solid var(--border);">
+  <a href="index.html#about" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;font-weight:500;">About</a>
+  <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;font-weight:500;">Live Map</a>
+  <a href="adhan-clock.html" style="color:var(--cyan);text-decoration:none;font-size:16px;font-weight:500;">Adhan Clock</a>
+  <a href="prayer-arcs.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;font-weight:500;">Arc Explorer</a>
+  <a href="ask-adhanlive.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;font-weight:500;">Ask AdhanLive</a>
+  <a href="index.html#contact" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;font-weight:500;">Contact</a>
+</div>
+
 <div class="main">
+
+  <!-- MOBILE CONTROLS (hidden on desktop) -->
+  <div class="mobile-controls" id="mobileControls" style="display:none;">
+    <!-- Row 1: Mode + Month -->
+    <div class="mobile-controls-row">
+      <span class="mob-label">Mode</span>
+      <div class="mob-seg" id="mobModeSeg">
+        <button class="active" data-mode="local">Your Time</button>
+        <button data-mode="utc">UTC</button>
+      </div>
+      <div class="mob-btns" style="margin-left:auto;">
+        <button class="mob-btn" id="mobPlayBtn">▶ Play</button>
+        <button class="mob-btn mob-btn-now" id="mobNowBtn">◎ Now</button>
+      </div>
+    </div>
+    <!-- Row 2: Month slider -->
+    <div class="mobile-controls-row">
+      <span class="mob-label">Month</span>
+      <div class="mob-month-badge" id="mobDateBadge">May <span>2026</span></div>
+      <input type="range" id="mobMonthSlider" min="1" max="12" value="5">
+    </div>
+    <!-- Row 3: Region -->
+    <div class="mobile-controls-row">
+      <span class="mob-label">Region</span>
+      <div class="mob-region" id="mobRegionBtns">
+        <button class="active" data-region="all">All</button>
+        <button data-region="gulf">Gulf</button>
+        <button data-region="southasia">S.Asia</button>
+        <button data-region="seasia">SE Asia</button>
+        <button data-region="nafrica">N.Africa</button>
+        <button data-region="europe">Europe</button>
+        <button data-region="wafrica">W.Africa</button>
+      </div>
+    </div>
+  </div>
 
   <!-- LEFT: Controls -->
   <div class="left">
@@ -1097,12 +1203,15 @@ function startPlay(){
 function stopPlay(){
   playing=false;if(playTimer)clearTimeout(playTimer);
   playBtn.textContent='▶ Play Year';playBtn.classList.remove('active');
+  const mb=document.getElementById('mobPlayBtn');
+  if(mb) mb.textContent='▶ Play';
 }
 async function animateYear(){
   if(!playing)return;
   currentMonth=currentMonth>=12?1:currentMonth+1;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
+  syncMobileControls();
   await loadMonth(currentMonth);
   if(!playing)return;
   const data=buildRenderData(monthCache[currentMonth],clockMode);
@@ -1178,6 +1287,88 @@ if(navigator.share){
     navigator.share({title:'The Adhan Clock — AdhanLive',text:shareText,url:shareUrl});
   });
 }
+
+// ── Mobile vs Desktop ─────────────────────────────────────────────
+function isMobile(){return window.innerWidth<=768;}
+
+function applyResponsive(){
+  const mob=isMobile();
+  document.getElementById('mobileControls').style.display=mob?'flex':'none';
+  document.getElementById('navHamburger').style.display=mob?'flex':'none';
+  // mobileMenu is flex when open class present
+  const mm=document.getElementById('mobileMenu');
+  mm.style.display=mob&&mm.classList.contains('open')?'flex':'none';
+}
+applyResponsive();
+window.addEventListener('resize',()=>{applyResponsive();resizeClock();render();});
+
+// Sync mobile controls with desktop state
+function syncMobileControls(){
+  document.getElementById('mobDateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
+  document.getElementById('mobMonthSlider').value=currentMonth;
+}
+
+// Mobile mode toggle
+document.querySelectorAll('#mobModeSeg button').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('#mobModeSeg button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  clockMode=btn.dataset.mode;
+  // Sync desktop
+  document.querySelectorAll('.seg-btn[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===clockMode));
+  document.getElementById('modeDesc').textContent=MODE_DESC[clockMode];
+  document.getElementById('clockTopLabel').textContent='Global Prayer Wave · '+MODE_LABEL[clockMode];
+  if(monthCache[currentMonth]){
+    const data=buildRenderData(monthCache[currentMonth],clockMode);
+    applyNewData(data,true);
+  }
+}));
+
+// Mobile month slider
+document.getElementById('mobMonthSlider').addEventListener('input',async e=>{
+  stopPlay();
+  currentMonth=+e.target.value;
+  syncMobileControls();
+  document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
+  document.getElementById('monthSlider').value=currentMonth;
+  await loadMonth(currentMonth);
+  const data=buildRenderData(monthCache[currentMonth],clockMode);
+  applyNewData(data,true);
+});
+
+// Mobile Play button
+document.getElementById('mobPlayBtn').addEventListener('click',()=>{
+  if(playing){stopPlay();document.getElementById('mobPlayBtn').textContent='▶ Play';}
+  else{startPlay();document.getElementById('mobPlayBtn').textContent='■ Stop';}
+});
+
+// Mobile Now button
+document.getElementById('mobNowBtn').addEventListener('click',async()=>{
+  stopPlay();
+  currentMonth=new Date().getMonth()+1;
+  syncMobileControls();
+  document.getElementById('monthSlider').value=currentMonth;
+  document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
+  showNowMarker=true;
+  await loadMonth(currentMonth);
+  const data=buildRenderData(monthCache[currentMonth],clockMode);
+  applyNewData(data,true);
+});
+
+// Mobile region buttons
+document.querySelectorAll('#mobRegionBtns button').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('#mobRegionBtns button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeRegion=btn.dataset.region;
+  // Sync desktop
+  document.querySelectorAll('.region-btn').forEach(b=>b.classList.toggle('active',b.dataset.region===activeRegion));
+  startTick();
+}));
+
+// Close mobile menu when link clicked
+document.querySelectorAll('#mobileMenu a').forEach(a=>a.addEventListener('click',()=>{
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('mobileMenu').style.display='none';
+}));
 
 // ── Nav clock ──────────────────────────────────────────────────────
 function updateNavClock(){

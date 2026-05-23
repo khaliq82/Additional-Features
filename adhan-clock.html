@@ -31,6 +31,9 @@ nav{
 .nav-right{text-align:right;}
 .nav-date{font-size:10px;color:var(--cyan);font-weight:500;letter-spacing:0.05em;}
 .nav-time{font-size:14px;font-weight:600;color:#fff;letter-spacing:0.03em;}
+.nav-hamburger{display:none;align-items:center;justify-content:center;
+  width:36px;height:36px;background:none;border:1px solid var(--border);
+  border-radius:6px;cursor:pointer;color:rgba(255,255,255,0.7);font-size:16px;}
 
 /* ── THREE COLUMN LAYOUT ── */
 .main{display:flex;flex:1;min-height:0;overflow:hidden;}
@@ -126,13 +129,6 @@ input[type=range]::-webkit-slider-thumb{
 .clock-top{font-size:8px;letter-spacing:0.2em;color:rgba(255,255,255,0.35);text-transform:uppercase;}
 canvas{display:block;flex:1;min-height:0;max-width:100%;touch-action:none;}
 .clock-status{font-size:9px;color:rgba(255,255,255,0.3);text-align:center;}
-.clock-reveals-label{
-  display:none;
-  font-family:'Playfair Display',serif;
-  font-size:15px;font-weight:700;
-  color:#fff;text-align:center;
-  padding:10px 0 4px;
-}
 
 /* ── RIGHT PANEL: Stories ── */
 .right{
@@ -236,150 +232,109 @@ footer{
 .loading-bar{height:100%;background:var(--cyan);width:0%;transition:width 0.3s;box-shadow:0 0 8px var(--cyan);}
 .loading-msg{margin-top:12px;font-size:11px;color:rgba(255,255,255,0.3);}
 
-/* Mobile panels hidden on desktop */
-#mobPanel1,#mobPanelTop,#mobPanelBottom{display:none;}
-
 /* ── MOBILE ── */
-@media(max-width:768px){
+/* Mobile-only elements hidden on desktop */
+#mobPanelTop,#mobPanelBottom{display:none;}
 
-  /* ── Nav ── */
+@media(max-width:768px){
+  /* Nav */
   nav{padding:10px 16px;}
   .nav-center{display:none;}
   .nav-right{display:none;}
-  .nav-hamburger{display:flex;align-items:center;justify-content:center;
-    width:36px;height:36px;background:none;border:1px solid var(--border);
-    border-radius:6px;cursor:pointer;color:rgba(255,255,255,0.7);font-size:16px;}
+  .nav-hamburger{display:flex;}
 
-  /* ── Base layout ── */
+  /* Layout */
   html,body{height:auto;overflow-y:auto;}
+  body{overflow:visible;}
   .main{flex-direction:column;overflow:visible;height:auto;}
-  .left{display:none;}
+  .left{display:none !important;}
   .right{width:100%;border-left:none;max-height:none;overflow:visible;}
   footer{flex-wrap:wrap;gap:8px;padding:12px 16px;}
   .footer-text{display:none;}
 
   /* Show mobile panels */
-  #mobPanelTop{display:flex;flex-direction:column;}
-  #mobPanelBottom{display:flex;flex-direction:column;}
+  #mobPanelTop{display:flex;flex-direction:column;background:var(--bg);}
+  #mobPanelBottom{display:flex;flex-direction:column;background:var(--bg);}
 
-  /* ── Mobile panel top (title) ── */
-  .mob-panel-top{background:var(--bg);}
+  /* Mobile page title */
   .mob-page-title{
-    font-family:'Playfair Display',serif;
-    font-size:17px;font-weight:700;
-    text-align:center;padding:8px 16px 4px;
-    color:#fff;
+    font-family:'Playfair Display',serif;font-size:17px;font-weight:700;
+    text-align:center;padding:8px 16px 2px;color:#fff;
   }
   .mob-page-title em{font-style:italic;color:var(--cyan);}
 
-  /* Clock centre */
+  /* Clock centre on mobile */
   .centre{
-    width:100%;flex:none;
-    border:none;padding:2px 12px 0;
-    position:relative;z-index:1;
+    width:100%;flex:none;border:none;
+    padding:2px 12px 0;align-items:center;justify-content:center;
   }
-  .clock-wrap{height:auto;padding:0;}
+  .clock-wrap{height:auto;}
   canvas{
-    display:block;
-    max-width:100%;touch-action:none;margin:0 auto;
+    width:calc(100vw - 48px) !important;
+    height:calc(100vw - 48px) !important;
+    flex:none !important;
   }
-  .clock-top{font-size:8px;margin-bottom:2px;text-align:center;}
-  .clock-status{
-    display:block;font-size:9px;
-    color:rgba(255,255,255,0.4);
-    text-align:center;padding:3px 0 0;
-  }
-  .clock-reveals-label{display:none;}
+  .clock-top{font-size:8px;text-align:center;}
+  .clock-status{display:block;text-align:center;padding:3px 0;}
 
-  /* Controls toggle button */
+  /* Controls toggle */
   .mob-controls-toggle{
     display:flex;align-items:center;justify-content:space-between;
-    padding:7px 16px;
+    padding:7px 16px;cursor:pointer;
     background:rgba(255,255,255,0.03);
     border-top:1px solid var(--border);
     border-bottom:1px solid rgba(255,255,255,0.05);
-    cursor:pointer;flex-shrink:0;
   }
-  .mob-controls-toggle-label{
-    font-size:9px;letter-spacing:0.15em;font-weight:600;
-    text-transform:uppercase;color:rgba(255,255,255,0.45);
-  }
-  .mob-controls-toggle-arrow{
-    font-size:10px;color:rgba(255,255,255,0.3);
-    transition:transform 0.25s;
-  }
+  .mob-controls-toggle-label{font-size:9px;letter-spacing:0.15em;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,0.45);}
+  .mob-controls-toggle-arrow{font-size:10px;color:rgba(255,255,255,0.3);transition:transform 0.25s;}
   .mob-controls-toggle.open .mob-controls-toggle-arrow{transform:rotate(180deg);}
 
-  /* Controls panel — collapsible, hidden by default */
+  /* Collapsible controls */
   .mobile-controls{
-    display:flex;flex-direction:column;gap:0;
-    background:rgba(6,10,22,0.99);
-    border-bottom:1px solid var(--border);
+    display:flex;flex-direction:column;
     overflow:hidden;max-height:0;
     transition:max-height 0.3s ease;
-    flex-shrink:0;
+    background:rgba(6,10,22,0.99);
+    border-bottom:1px solid var(--border);
   }
   .mobile-controls.open{max-height:300px;}
   .mobile-controls-row{
     display:flex;align-items:center;gap:8px;
-    padding:7px 16px;
-    border-bottom:1px solid rgba(255,255,255,0.05);
+    padding:7px 16px;border-bottom:1px solid rgba(255,255,255,0.05);
   }
   .mobile-controls-row:last-child{border-bottom:none;}
-  .mob-label{font-size:8px;letter-spacing:0.15em;font-weight:600;
-    text-transform:uppercase;color:rgba(255,255,255,0.35);white-space:nowrap;min-width:44px;}
+  .mob-label{font-size:8px;letter-spacing:0.15em;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,0.35);white-space:nowrap;min-width:44px;}
   .mob-month-badge{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;min-width:68px;}
   .mob-month-badge span{color:var(--cyan);}
   .mobile-controls input[type=range]{flex:1;height:2px;}
   .mob-btns{display:flex;gap:6px;margin-left:auto;}
-  .mob-btn{padding:5px 10px;border-radius:4px;border:1px solid var(--border);
-    background:transparent;color:rgba(255,255,255,0.65);
-    font-family:'Inter',sans-serif;font-size:10px;font-weight:500;cursor:pointer;}
+  .mob-btn{padding:5px 10px;border-radius:4px;border:1px solid var(--border);background:transparent;color:rgba(255,255,255,0.65);font-family:'Inter',sans-serif;font-size:10px;font-weight:500;cursor:pointer;}
   .mob-btn-now{border-color:var(--cyan) !important;color:var(--cyan) !important;}
   .mob-seg{display:flex;gap:3px;}
-  .mob-seg button{padding:4px 10px;border-radius:3px;border:1px solid var(--border);
-    background:transparent;color:rgba(255,255,255,0.55);
-    font-family:'Inter',sans-serif;font-size:9px;cursor:pointer;}
+  .mob-seg button{padding:4px 10px;border-radius:3px;border:1px solid var(--border);background:transparent;color:rgba(255,255,255,0.55);font-family:'Inter',sans-serif;font-size:9px;cursor:pointer;}
   .mob-seg button.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.08);}
   .mob-region{display:flex;flex-wrap:wrap;gap:3px;flex:1;}
-  .mob-region button{padding:3px 7px;border-radius:3px;border:1px solid var(--border);
-    background:transparent;color:rgba(255,255,255,0.5);
-    font-family:'Inter',sans-serif;font-size:9px;cursor:pointer;}
+  .mob-region button{padding:3px 7px;border-radius:3px;border:1px solid var(--border);background:transparent;color:rgba(255,255,255,0.5);font-family:'Inter',sans-serif;font-size:9px;cursor:pointer;}
   .mob-region button.active{border-color:var(--cyan);color:var(--cyan);}
 
-  /* Scroll hint — fills remaining space, content at bottom */
-  .mob-scroll-hint{
-    flex:1;
-    display:flex;flex-direction:column;
-    align-items:center;justify-content:flex-end;
-    padding:12px 16px 20px;
-  }
-  .mob-scroll-hint-title{
-    font-family:'Playfair Display',serif;
-    font-size:14px;font-weight:700;color:#fff;
-    margin-bottom:4px;text-align:center;
-  }
-  .mob-scroll-hint-sub{
-    font-size:9px;color:rgba(255,255,255,0.3);
-    letter-spacing:0.12em;text-transform:uppercase;
-    text-align:center;
-  }
+  /* Scroll hint */
+  .mob-scroll-hint{padding:12px 16px 16px;text-align:center;border-bottom:1px solid var(--border);}
+  .mob-scroll-hint-title{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:3px;}
+  .mob-scroll-hint-sub{font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:0.12em;text-transform:uppercase;}
 
-  /* ── PANEL 2–10: Full viewport story cards ── */
+  /* Story cards — full screen */
   .story-header{display:none;}
   .story-card{
-    min-height:100svh;
-    padding:32px 20px 24px;
+    min-height:100svh;padding:32px 20px 24px;
     display:flex;flex-direction:column;justify-content:center;
-    border-bottom:1px solid var(--border);
-    box-sizing:border-box;
+    border-bottom:1px solid var(--border);box-sizing:border-box;
   }
   .story-num{font-size:9px;margin-bottom:12px;}
   .story-prayer{font-size:10px;margin-bottom:12px;}
   .story-title{font-size:22px;line-height:1.3;margin-bottom:16px;}
   .story-body{font-size:13px;line-height:1.8;}
   .story-quote{margin-top:20px;font-size:12px;}
-  .story-footer{min-height:auto;padding:32px 20px;}
+  .story-footer{padding:24px 20px;}
 }
 </style>
 </head>
@@ -406,27 +361,27 @@ footer{
     <div class="nav-date" id="navDate"></div>
     <div class="nav-time" id="navTime"></div>
   </div>
-  <button class="nav-hamburger" id="navHamburger" style="display:none;" onclick="document.getElementById('mobileMenu').classList.toggle('open')">☰</button>
+  <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileMenu()">☰</button>
 </nav>
 
 <!-- Mobile nav menu -->
-<div id="mobileMenu" style="display:none;position:fixed;inset:0;top:52px;background:rgba(2,4,12,0.98);z-index:200;padding:24px;flex-direction:column;gap:20px;border-top:1px solid var(--border);">
-  <a href="index.html#about" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;font-weight:500;">About</a>
-  <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;font-weight:500;">Live Map</a>
-  <a href="adhan-clock.html" style="color:var(--cyan);text-decoration:none;font-size:16px;font-weight:500;">Adhan Clock</a>
-  <a href="prayer-arcs.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;font-weight:500;">Arc Explorer</a>
-  <a href="ask-adhanlive.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;font-weight:500;">Ask AdhanLive</a>
-  <a href="index.html#contact" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;font-weight:500;">Contact</a>
+<div id="mobileMenu" style="display:none;position:fixed;top:52px;left:0;right:0;bottom:0;background:rgba(2,4,12,0.98);z-index:200;padding:24px;flex-direction:column;gap:20px;border-top:1px solid var(--border);">
+  <a href="index.html#about" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;">About</a>
+  <a href="index.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;">Live Map</a>
+  <a href="adhan-clock.html" style="color:var(--cyan);text-decoration:none;font-size:16px;">Adhan Clock</a>
+  <a href="prayer-arcs.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;">Arc Explorer</a>
+  <a href="ask-adhanlive.html" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;">Ask AdhanLive</a>
+  <a href="index.html#contact" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;">Contact</a>
+</div>
+
+<!-- Mobile top panel: page title -->
+<div id="mobPanelTop">
+  <div class="mob-page-title">The <em>Adhan</em> Clock</div>
 </div>
 
 <div class="main">
 
-  <!-- MOBILE: Page title (above clock) -->
-  <div id="mobPanelTop" class="mob-panel-top">
-    <div class="mob-page-title">The <em>Adhan</em> Clock</div>
-  </div>
-
-  <!-- LEFT: Controls (desktop only) -->
+  <!-- LEFT: Controls -->
   <div class="left">
     <div>
       <div class="panel-title">The <em>Adhan</em> Clock</div>
@@ -475,15 +430,6 @@ footer{
     </div>
 
     <div class="ctrl">
-      <div class="ctrl-label">Colour By</div>
-      <div class="seg-btns">
-        <button class="seg-btn active" data-colormode="prayer">Prayer</button>
-        <button class="seg-btn" data-colormode="region">Region</button>
-      </div>
-      <div style="font-size:9px;color:rgba(255,255,255,0.3);margin-top:4px;" id="colorModeDesc">Dots coloured by prayer type</div>
-    </div>
-
-    <div class="ctrl">
       <div class="ctrl-label">Prayer Rings — Drag Dial to Separate</div>
       <div class="legend" id="legend">
         <div class="leg-item" data-pi="0" style="color:var(--fajr);">
@@ -508,72 +454,14 @@ footer{
         </div>
       </div>
     </div>
-
-    <!-- Region legend (shown when colour by region is active) -->
-    <div class="ctrl" id="regionLegendCtrl" style="display:none;">
-      <div class="ctrl-label">Region Colours</div>
-      <div class="legend" id="regionLegend" style="display:none;">
-        <div class="leg-item" style="color:#00d4ff;"><div class="leg-dot" style="background:#00d4ff;"></div><span class="leg-name">Gulf</span></div>
-        <div class="leg-item" style="color:#ff6b35;"><div class="leg-dot" style="background:#ff6b35;"></div><span class="leg-name">South Asia</span></div>
-        <div class="leg-item" style="color:#00e676;"><div class="leg-dot" style="background:#00e676;"></div><span class="leg-name">SE Asia</span></div>
-        <div class="leg-item" style="color:#ffd740;"><div class="leg-dot" style="background:#ffd740;"></div><span class="leg-name">N. Africa</span></div>
-        <div class="leg-item" style="color:#ce93d8;"><div class="leg-dot" style="background:#ce93d8;"></div><span class="leg-name">Europe</span></div>
-        <div class="leg-item" style="color:#ff8a65;"><div class="leg-dot" style="background:#ff8a65;"></div><span class="leg-name">W. Africa</span></div>
-      </div>
-    </div>
   </div>
 
   <!-- CENTRE: Clock -->
-  <div class="centre" id="clockCentre">
+  <div class="centre">
     <div class="clock-wrap">
       <div class="clock-top" id="clockTopLabel">Global Prayer Wave · Your Local Time</div>
       <canvas id="clockCanvas"></canvas>
       <div class="clock-status" id="dialLabel">Drag the centre dial to separate prayers</div>
-    </div>
-  </div>
-
-  <!-- MOBILE: Controls + scroll hint (below clock) -->
-  <div id="mobPanelBottom" class="mob-panel-bottom">
-    <!-- Controls toggle -->
-    <div class="mob-controls-toggle" id="mobControlsToggle">
-      <span class="mob-controls-toggle-label">⚙ Controls</span>
-      <span class="mob-controls-toggle-arrow">▼</span>
-    </div>
-    <!-- MOBILE CONTROLS (collapsible) -->
-    <div class="mobile-controls" id="mobileControls">
-      <div class="mobile-controls-row">
-        <span class="mob-label">Mode</span>
-        <div class="mob-seg" id="mobModeSeg">
-          <button class="active" data-mode="local">Your Time</button>
-          <button data-mode="utc">UTC</button>
-        </div>
-        <div class="mob-btns">
-          <button class="mob-btn" id="mobPlayBtn">▶ Play</button>
-          <button class="mob-btn mob-btn-now" id="mobNowBtn">◎ Now</button>
-        </div>
-      </div>
-      <div class="mobile-controls-row">
-        <span class="mob-label">Month</span>
-        <div class="mob-month-badge" id="mobDateBadge">May <span>2026</span></div>
-        <input type="range" id="mobMonthSlider" min="1" max="12" value="5">
-      </div>
-      <div class="mobile-controls-row">
-        <span class="mob-label">Region</span>
-        <div class="mob-region" id="mobRegionBtns">
-          <button class="active" data-region="all">All</button>
-          <button data-region="gulf">Gulf</button>
-          <button data-region="southasia">S.Asia</button>
-          <button data-region="seasia">SE Asia</button>
-          <button data-region="nafrica">N.Africa</button>
-          <button data-region="europe">Europe</button>
-          <button data-region="wafrica">W.Africa</button>
-        </div>
-      </div>
-    </div>
-    <!-- Scroll hint -->
-    <div class="mob-scroll-hint">
-      <div class="mob-scroll-hint-title">What the Clock Reveals</div>
-      <div class="mob-scroll-hint-sub">Scroll to explore ↓</div>
     </div>
   </div>
 
@@ -613,7 +501,7 @@ footer{
         <br><br>
         Every other ring shifts. Fajr and Isha compress and expand with the seasons. Maghrib tilts. But Dhuhr — <strong>Dhuhr barely moves.</strong>
         <br><br>
-        Because Dhuhr follows solar noon, it has no seasonal distortion, no twilight complications, no high-latitude edge cases. What remains is the purest signal in the dataset: <strong>a direct portrait of where Muslims live.</strong> Every gap is an empty longitude. Every dense arc is a populated one. No other prayer gives you this cleanly.
+        Because Dhuhr follows solar noon, it has no seasonal distortion, no twilight complications. What remains is the purest signal in the dataset: <strong>a direct portrait of where Muslims live.</strong> Every gap is an empty longitude. Every dense arc is a populated one.
       </div>
       <div class="story-quote">
         If you wanted to draw a map of the Muslim world using only prayer data, you would use Dhuhr.
@@ -708,11 +596,11 @@ footer{
       </div>
       <div class="story-title">The Gaps Are a <em>Map</em></div>
       <div class="story-body">
-        Look closely at the rings. Every prayer — Fajr, Dhuhr, Asr, Maghrib, Isha — has the same gaps, at the same positions on the clock. The gaps don't belong to any single prayer. They belong to the <strong>longitudes underneath them</strong>.
+        Look closely at the rings. Every prayer has the same gaps, at the same clock positions. The gaps don't belong to any single prayer. They belong to the <strong>longitudes underneath them</strong>.
         <br><br>
         Those silent clock positions correspond to the Americas, the Pacific Ocean, Central Africa, and Australia — regions with few or no mosques. Where there are no Muslims, there is no Adhan.
         <br><br>
-        <strong>The clock is not just a clock. It is a map of where Muslims live, expressed as time.</strong> Every gap is an empty longitude. Every dense arc is a populated one.
+        <strong>The clock is not just a clock. It is a map of where Muslims live, expressed as time.</strong>
       </div>
       <div class="story-quote">
         The clock's silences are as meaningful as its sound. Both tell you where the Muslim world is — and where it isn't.
@@ -727,18 +615,18 @@ footer{
       </div>
       <div class="story-title">Thickness is <em>Population</em></div>
       <div class="story-body">
-        Separate the prayers with the dial. Now look at the <strong>circumferential thickness</strong> of each ring — how wide the band is at different clock positions. This is not decoration. It is data.
+        Separate the prayers with the dial. Look at the <strong>circumferential thickness</strong> of each ring — how wide the band is at different clock positions. This is not decoration. It is data.
         <br><br>
-        The thickest sections of every ring fall around the same hours: <strong>UTC+5 to UTC+8</strong>. That is South Asia and Southeast Asia — Pakistan, India, Bangladesh, Indonesia, Malaysia. The most densely Muslim-populated region on Earth.
+        The thickest sections of every ring fall around <strong>UTC+5 to UTC+8</strong>. That is South Asia and Southeast Asia — Pakistan, India, Bangladesh, Indonesia, Malaysia. The most densely Muslim-populated region on Earth.
         <br><br>
-        The thinner sections — Europe, West Africa, the Gulf — are real too, and visible. The Adhan Clock is a <strong>demographic portrait of the Muslim world</strong>, drawn in the language of prayer.
+        The Adhan Clock is a <strong>demographic portrait of the Muslim world</strong>, drawn in the language of prayer.
       </div>
       <div class="story-quote">
         No census. No colour-coded map. Just 157,890 mosques, plotted by when they pray.
       </div>
     </div>
 
-    <!-- Story 9: The Handoff -->
+    <!-- Story 9: The Relay -->
     <div class="story-card" data-pi="-1" style="--story-color:var(--isha);">
       <div class="story-num">09 / 09</div>
       <div class="story-prayer" style="color:var(--isha);">
@@ -748,9 +636,9 @@ footer{
       <div class="story-body">
         Watch the NOW marker move through the clock. Notice what it crosses.
         <br><br>
-        As the marker leaves the dense S.Asia/SE Asia arc, it enters the Gulf. Then East Africa. Then West Africa and Europe. Then it returns to Asia. <strong>Each region picks up the prayer as the previous one puts it down.</strong>
+        As the marker leaves the dense S.Asia/SE Asia arc, it enters the Gulf. Then East Africa. Then West Africa and Europe. Then back to Asia. <strong>Each region picks up the prayer as the previous one puts it down.</strong>
         <br><br>
-        This is not metaphor. It is visible in the data. The density at the NOW marker never drops to zero — there is always a mosque somewhere in its path. The Adhan is a relay race around the Earth, and no baton is ever dropped.
+        The density at the NOW marker never drops to zero. There is always a mosque somewhere in its path. The Adhan is a relay race around the Earth, and no baton is ever dropped.
       </div>
       <div class="story-quote">
         "Indeed, prayer has been decreed upon the believers a decree of specified times." — Quran 4:103
@@ -763,6 +651,48 @@ footer{
     </div>
   </div>
 
+</div>
+
+<!-- Mobile bottom panel: controls + scroll hint -->
+<div id="mobPanelBottom">
+  <div class="mob-controls-toggle" id="mobControlsToggle">
+    <span class="mob-controls-toggle-label">⚙ Controls</span>
+    <span class="mob-controls-toggle-arrow">▼</span>
+  </div>
+  <div class="mobile-controls" id="mobileControls">
+    <div class="mobile-controls-row">
+      <span class="mob-label">Mode</span>
+      <div class="mob-seg" id="mobModeSeg">
+        <button class="active" data-mode="local">Your Time</button>
+        <button data-mode="utc">UTC</button>
+      </div>
+      <div class="mob-btns">
+        <button class="mob-btn" id="mobPlayBtn">▶ Play</button>
+        <button class="mob-btn mob-btn-now" id="mobNowBtn">◎ Now</button>
+      </div>
+    </div>
+    <div class="mobile-controls-row">
+      <span class="mob-label">Month</span>
+      <div class="mob-month-badge" id="mobDateBadge">May <span>2026</span></div>
+      <input type="range" id="mobMonthSlider" min="1" max="12" value="5">
+    </div>
+    <div class="mobile-controls-row">
+      <span class="mob-label">Region</span>
+      <div class="mob-region" id="mobRegionBtns">
+        <button class="active" data-region="all">All</button>
+        <button data-region="gulf">Gulf</button>
+        <button data-region="southasia">S.Asia</button>
+        <button data-region="seasia">SE Asia</button>
+        <button data-region="nafrica">N.Africa</button>
+        <button data-region="europe">Europe</button>
+        <button data-region="wafrica">W.Africa</button>
+      </div>
+    </div>
+  </div>
+  <div class="mob-scroll-hint">
+    <div class="mob-scroll-hint-title">What the Clock Reveals</div>
+    <div class="mob-scroll-hint-sub">Scroll to explore ↓</div>
+  </div>
 </div>
 
 <footer>
@@ -781,10 +711,6 @@ const PRAYER_COLORS=['#4466ff','#ffcc00','#e07a2f','#d94f3d','#9b59c4'];
 const PRAYER_COLORS_A=PRAYER_COLORS.map(c=>c+'bb');
 const PRAYER_COLORS_DIM=PRAYER_COLORS.map(c=>c+'22');
 const PRAYER_RING_POS=[0.1,0.32,0.54,0.76,0.98];
-// Region colors: 0=unknown, 1=Gulf, 2=S.Asia, 3=SE Asia, 4=N.Africa, 5=Europe, 6=W.Africa
-const REGION_COLORS=['#aaaaaa','#00d4ff','#ff6b35','#00e676','#ffd740','#ce93d8','#ff8a65'];
-const REGION_COLORS_A=REGION_COLORS.map(c=>c+'bb');
-const REGION_COLORS_DIM=REGION_COLORS.map(c=>c+'22');
 const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MODE_DESC={local:'Prayer times in your local timezone',utc:'When prayers fire globally in UTC'};
 const MODE_LABEL={local:'Your Local Time',utc:'UTC — Global Wave'};
@@ -793,121 +719,25 @@ const MODE_LABEL={local:'Your Local Time',utc:'UTC — Global Wave'};
 const canvas=document.getElementById('clockCanvas');
 const ctx=canvas.getContext('2d');
 let CW,CX,CY,R_outer,R_inner,R_dial;
-let dotSize=0.8,currentMonth=5,clockMode='local',colorMode='prayer';
-let activeRegion='all',highlightPi=-1;
-let separateT=0,targetSeparateT=0,dialAngleAccum=-Math.PI/2;
+let dotSize=0.8,currentMonth=5,clockMode='local';
+let activeRegion='all',highlightPi=-1; // -1 = show all
+let separateT=0,dialAngleAccum=-Math.PI/2;
 let isDragging=false,lastAngle=null;
-let animating=false,playing=false,playTimer=null;
+let rafPending=false,playing=false,playTimer=null;
 let showNowMarker=true;
 let userTZ=-(new Date().getTimezoneOffset()/60);
 const monthCache=new Array(13).fill(null);
 let currentData=null;
 
-// ── Per-dot animated state ─────────────────────────────────────────
-let dotAngles=null;
-let dotRadii=null;
-let targetAngles=null;
-let targetRadii=null;
-let sourceAngles=null;
-let dotN=0;
-let dotAlpha=1.0;
-let dotAlphaTarget=1.0;
-
-function calcTargetRadius(rCol, pi, t){
-  const rSep=PRAYER_RING_POS[pi];
-  if(t<0.01) return rCol;
-  const rN=rCol+(rSep-rCol)*t;
-  return rSep+(rN-rSep)*(1-t)*0.6;
-}
-
-function initDotState(data){
-  const{angles,rNorm,prayer,n}=data;
-  dotN=n;
-  dotAngles=new Float32Array(n);
-  dotRadii=new Float32Array(n);
-  targetAngles=new Float32Array(n);
-  targetRadii=new Float32Array(n);
-  sourceAngles=new Float32Array(n);
-  for(let i=0;i<n;i++){
-    dotAngles[i]=angles[i];
-    sourceAngles[i]=angles[i];
-    const r=calcTargetRadius(rNorm[i]/255,prayer[i],separateT);
-    dotRadii[i]=r;targetAngles[i]=angles[i];targetRadii[i]=r;
-  }
-}
-
-function updateDotTargets(data){
-  // Called for separation/mode changes on same dataset — targets already set by initDotState
-  // Nothing extra needed; separation targets are set by updateSeparationTargets via tick
-}
-
-function updateSeparationTargets(){
-  if(!currentData||!targetRadii) return;
-  const{rNorm,prayer,n}=currentData;
-  for(let i=0;i<n;i++){
-    targetRadii[i]=calcTargetRadius(rNorm[i]/255,prayer[i],targetSeparateT);
-  }
-}
-
-// ── Animation loop ─────────────────────────────────────────────────
-const LERP_SEPARATE=0.12;
-const LERP_POS=0.08;
-const LERP_FADE=0.14;
-
-function tick(){
-  let dirty=false;
-
-  // Lerp separateT
-  const ds=targetSeparateT-separateT;
-  if(Math.abs(ds)>0.0003){
-    separateT+=ds*LERP_SEPARATE;
-    if(Math.abs(targetSeparateT-separateT)<0.0003) separateT=targetSeparateT;
-    updateSeparationTargets();
-    const lbl=separateT<0.05?'Drag the centre dial to separate prayers':
-      separateT>0.95?'Fully separated — each prayer in its own orbit':
-      `Separating — ${Math.round(separateT*100)}%`;
-    document.getElementById('dialLabel').textContent=lbl;
-    dirty=true;
-  }
-
-  // Lerp dot radii toward separation targets
-  if(dotAngles&&dotN>0){
-    for(let i=0;i<dotN;i++){
-      const dr=targetRadii[i]-dotRadii[i];
-      if(Math.abs(dr)>0.0002){dotRadii[i]+=dr*LERP_POS;dirty=true;}
-      else dotRadii[i]=targetRadii[i];
-    }
-  }
-
-  if(dirty){render();requestAnimationFrame(tick);}
-  else animating=false;
-}
-
-function startTick(){
-  if(!animating){animating=true;requestAnimationFrame(tick);}
-}
-
-function scheduleRender(){startTick();}
-
-const PRESETS=[0,0.25,0.5,0.75,1.0];
-
 // ── Canvas sizing ──────────────────────────────────────────────────
 function resizeClock(){
   const dpr=window.devicePixelRatio||1;
   const c=document.querySelector('.centre');
-  let sz;
-  if(isMobile()){
-    sz=Math.max(240, window.innerWidth-48);
-  } else {
-    sz=Math.max(240,Math.min(c.clientWidth-24,c.clientHeight-48));
-  }
-  CW=sz;CX=CY=sz/2;
-  R_outer=sz*0.41;R_inner=sz*0.155;R_dial=sz*0.092;
-  // Physical canvas size = logical * DPR (prevents blur on retina)
-  canvas.style.width=sz+'px';
-  canvas.style.height=sz+'px';
-  canvas.width=Math.round(sz*dpr);
-  canvas.height=Math.round(sz*dpr);
+  const mob=window.innerWidth<=768;
+  const sz=mob?Math.max(240,window.innerWidth-48):Math.max(240,Math.min(c.clientWidth-24,c.clientHeight-48));
+  CW=sz;CX=CY=sz/2;R_outer=sz*0.41;R_inner=sz*0.155;R_dial=sz*0.092;
+  canvas.style.width=sz+'px';canvas.style.height=sz+'px';
+  canvas.width=Math.round(sz*dpr);canvas.height=Math.round(sz*dpr);
   ctx.scale(dpr,dpr);
 }
 
@@ -923,13 +753,6 @@ function buildRenderData(d,mode){
     for(let i=0;i<n;i++) angles[i]=(((utc[i]+tzShift+65536)%65536)/65535)*Math.PI*2-Math.PI/2;
   }
   return{angles,rNorm,prayer,region,n};
-}
-
-function applyNewData(data, isMonthChange=false){
-  currentData=data;
-  initDotState(data); // always instant for month changes
-  if(!isMonthChange) updateDotTargets(data); // only lerp for separation/mode
-  startTick();
 }
 
 // ── Drawing ────────────────────────────────────────────────────────
@@ -964,8 +787,7 @@ function drawBase(){
   ctx.save();
   for(let h=0;h<24;h++){
     const a=(h/24)*Math.PI*2-Math.PI/2;
-    const maj=h%6===0;
-    const mid=h%3===0;
+    const maj=h%6===0,mid=h%3===0;
     ctx.strokeStyle=maj?'rgba(255,255,255,0.5)':mid?'rgba(255,255,255,0.18)':'rgba(255,255,255,0.06)';
     ctx.lineWidth=maj?1.5:0.5;
     ctx.beginPath();
@@ -973,7 +795,6 @@ function drawBase(){
     ctx.lineTo(CX+Math.cos(a)*(R_outer+13),CY+Math.sin(a)*(R_outer+13));
     ctx.stroke();
     const lr=R_outer+24;
-    // All numbers white, only 00/06/12/18 bold
     ctx.fillStyle='rgba(255,255,255,0.85)';
     ctx.font=(maj?`700 ${CW*0.018}px`:`300 ${CW*0.013}px`)+' Inter,sans-serif';
     ctx.textAlign='center';ctx.textBaseline='middle';
@@ -991,205 +812,98 @@ function drawBase(){
 }
 
 function drawDots(){
-  if(!currentData||!dotAngles) return;
-  const{prayer,region,n}=currentData;
-  const range=R_outer-R_inner,ds=dotSize;
+  if(!currentData) return;
+  const{angles,rNorm,prayer,region,n}=currentData;
+  const range=R_outer-R_inner,ds=dotSize,st=separateT;
   const RCODES={all:-1,gulf:1,southasia:2,seasia:3,nafrica:4,europe:5,wafrica:6};
   const fc=RCODES[activeRegion];
-  ctx.globalAlpha=dotAlpha;
 
-  if(colorMode==='prayer'){
-    for(let pi=0;pi<5;pi++){
-      const isHL=highlightPi===-1||highlightPi===pi;
-      ctx.beginPath();
-      for(let i=0;i<n;i++){
-        if(prayer[i]!==pi) continue;
-        if(fc!==-1&&region[i]!==fc) continue;
-        const x=CX+Math.cos(dotAngles[i])*(R_inner+range*dotRadii[i]);
-        const y=CY+Math.sin(dotAngles[i])*(R_inner+range*dotRadii[i]);
-        ctx.moveTo(x+ds,y);ctx.arc(x,y,ds,0,Math.PI*2);
+  for(let pi=0;pi<5;pi++){
+    const rSep=PRAYER_RING_POS[pi];
+    const isHL=highlightPi===-1||highlightPi===pi;
+    ctx.beginPath();
+    for(let i=0;i<n;i++){
+      if(prayer[i]!==pi) continue;
+      if(fc!==-1&&region[i]!==fc) continue;
+      const rCol=rNorm[i]/255;
+      let finalR;
+      if(st<0.01) finalR=R_inner+range*rCol;
+      else {
+        const rN=rCol+(rSep-rCol)*st;
+        finalR=R_inner+range*(rSep+(rN-rSep)*(1-st)*0.6);
       }
-      ctx.fillStyle=isHL?PRAYER_COLORS_A[pi]:PRAYER_COLORS_DIM[pi];
-      ctx.fill();
+      const x=CX+Math.cos(angles[i])*finalR;
+      const y=CY+Math.sin(angles[i])*finalR;
+      ctx.moveTo(x+ds,y);ctx.arc(x,y,ds,0,Math.PI*2);
     }
-  } else {
-    // Unassigned (rc=0) — fallback prayer color
-    for(let pi=0;pi<5;pi++){
-      ctx.beginPath();
-      for(let i=0;i<n;i++){
-        if(prayer[i]!==pi||region[i]!==0) continue;
-        if(fc!==-1&&region[i]!==fc) continue;
-        const x=CX+Math.cos(dotAngles[i])*(R_inner+range*dotRadii[i]);
-        const y=CY+Math.sin(dotAngles[i])*(R_inner+range*dotRadii[i]);
-        ctx.moveTo(x+ds,y);ctx.arc(x,y,ds,0,Math.PI*2);
-      }
-      ctx.fillStyle=PRAYER_COLORS_DIM[pi];ctx.fill();
-    }
-    for(let rc=1;rc<7;rc++){
-      ctx.beginPath();
-      for(let i=0;i<n;i++){
-        if(region[i]!==rc) continue;
-        if(fc!==-1&&region[i]!==fc) continue;
-        const x=CX+Math.cos(dotAngles[i])*(R_inner+range*dotRadii[i]);
-        const y=CY+Math.sin(dotAngles[i])*(R_inner+range*dotRadii[i]);
-        ctx.moveTo(x+ds,y);ctx.arc(x,y,ds,0,Math.PI*2);
-      }
-      ctx.fillStyle=REGION_COLORS_A[rc];ctx.fill();
-    }
+    ctx.fillStyle=isHL?PRAYER_COLORS_A[pi]:PRAYER_COLORS_DIM[pi];
+    ctx.fill();
   }
-  ctx.globalAlpha=1;
 }
 
 function drawDial(){
   const da=-Math.PI/2+separateT*Math.PI*2;
   ctx.save();
-
-  // ── Slim bezel rim — just a thin ring, not a wide band ──
-  const bezelR=R_dial+CW*0.006;
-  ctx.beginPath();ctx.arc(CX,CY,bezelR,0,Math.PI*2);
-  ctx.strokeStyle='rgba(160,180,200,0.35)';ctx.lineWidth=2;ctx.stroke();
-  ctx.beginPath();ctx.arc(CX,CY,bezelR+CW*0.003,0,Math.PI*2);
-  ctx.strokeStyle='rgba(60,80,100,0.4)';ctx.lineWidth=1;ctx.stroke();
-  ctx.beginPath();ctx.arc(CX,CY,R_dial-1,0,Math.PI*2);
-  ctx.strokeStyle='rgba(30,45,65,0.6)';ctx.lineWidth=1;ctx.stroke();
-
-  // ── Dial face — dark and flat ──
   ctx.beginPath();ctx.arc(CX,CY,R_dial,0,Math.PI*2);
   const dg=ctx.createRadialGradient(CX,CY,0,CX,CY,R_dial);
-  dg.addColorStop(0,'rgba(12,18,32,0.98)');
-  dg.addColorStop(1,'rgba(6,10,20,0.99)');
+  dg.addColorStop(0,'rgba(0,212,255,0.1)');dg.addColorStop(1,'rgba(0,212,255,0.03)');
   ctx.fillStyle=dg;ctx.fill();
-
-  // Separation arc progress
+  ctx.strokeStyle='rgba(0,212,255,0.22)';ctx.lineWidth=1;ctx.stroke();
   if(separateT>0.01){
-    ctx.strokeStyle='rgba(0,212,255,0.5)';ctx.lineWidth=1.5;
-    ctx.shadowColor='rgba(0,212,255,0.35)';ctx.shadowBlur=6;
-    ctx.beginPath();ctx.arc(CX,CY,R_dial*0.78,-Math.PI/2,da);ctx.stroke();
-    ctx.shadowBlur=0;
+    ctx.strokeStyle='rgba(0,212,255,0.6)';ctx.lineWidth=2;
+    ctx.shadowColor='rgba(0,212,255,0.35)';ctx.shadowBlur=8;
+    ctx.beginPath();ctx.arc(CX,CY,R_dial,-Math.PI/2,da);ctx.stroke();
   }
-
-  // Prayer dots — small, on the dial face edge
   for(let pi=0;pi<5;pi++){
     const a=-Math.PI/2+(pi/4)*Math.PI*2;
-    const dx=CX+Math.cos(a)*(R_dial*0.88);
-    const dy=CY+Math.sin(a)*(R_dial*0.88);
-    ctx.globalAlpha=0.4+separateT*0.55;
-    ctx.beginPath();ctx.arc(dx,dy,CW*0.005,0,Math.PI*2);
+    ctx.globalAlpha=0.35+separateT*0.6;
+    ctx.beginPath();ctx.arc(CX+Math.cos(a)*R_dial,CY+Math.sin(a)*R_dial,3,0,Math.PI*2);
     ctx.fillStyle=PRAYER_COLORS[pi];ctx.fill();
     ctx.globalAlpha=1;
   }
-
-  // ── Hub — dark steel, no bright centre spot ──
-  const hubR=R_dial*0.32;
-  const hubG=ctx.createRadialGradient(CX,CY,0,CX,CY,hubR);
-  hubG.addColorStop(0,'rgba(45,58,78,1)');
-  hubG.addColorStop(0.5,'rgba(30,42,60,1)');
-  hubG.addColorStop(0.85,'rgba(55,72,95,1)');
-  hubG.addColorStop(1,'rgba(90,110,135,1)');
-  ctx.beginPath();ctx.arc(CX,CY,hubR,0,Math.PI*2);
-  ctx.fillStyle=hubG;ctx.fill();
-  // Slim rim highlight
-  ctx.strokeStyle='rgba(140,165,190,0.5)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.arc(CX,CY,hubR,0,Math.PI*2);ctx.stroke();
-
-  // ── Percentage label — clean and readable ──
-  ctx.fillStyle='rgba(255,255,255,0.75)';
-  ctx.font=`600 ${CW*0.017}px Inter,sans-serif`;
+  const hx=CX+Math.cos(da)*R_dial,hy=CY+Math.sin(da)*R_dial;
+  ctx.shadowColor='rgba(0,212,255,0.8)';ctx.shadowBlur=14;
+  ctx.beginPath();ctx.arc(hx,hy,7,0,Math.PI*2);
+  ctx.fillStyle='rgba(0,212,255,0.95)';ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,0.8)';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.shadowBlur=0;
+  ctx.fillStyle='rgba(255,255,255,0.45)';
+  ctx.font=`500 ${CW*0.016}px Inter,sans-serif`;
   ctx.textAlign='center';ctx.textBaseline='middle';
   ctx.fillText(Math.round(separateT*100)+'%',CX,CY);
-
-  // ── Drag handle on bezel ──
-  const hx=CX+Math.cos(da)*(R_dial+CW*0.003);
-  const hy=CY+Math.sin(da)*(R_dial+CW*0.003);
-  const hg=ctx.createRadialGradient(hx-1.5,hy-1.5,0,hx,hy,6);
-  hg.addColorStop(0,'rgba(180,230,255,1)');
-  hg.addColorStop(0.5,'rgba(0,212,255,0.9)');
-  hg.addColorStop(1,'rgba(0,150,210,0.6)');
-  ctx.shadowColor='rgba(0,212,255,0.8)';ctx.shadowBlur=12;
-  ctx.beginPath();ctx.arc(hx,hy,6,0,Math.PI*2);
-  ctx.fillStyle=hg;ctx.fill();
-  ctx.strokeStyle='rgba(200,240,255,0.6)';ctx.lineWidth=1;ctx.stroke();
-  ctx.shadowBlur=0;
-
   ctx.restore();
 }
 
 function drawNowMarker(){
-  // Always draw — visible at all separation levels
   const now=new Date();
   const h=clockMode==='utc'?now.getUTCHours()+now.getUTCMinutes()/60:now.getHours()+now.getMinutes()/60;
   const a=(h/24)*Math.PI*2-Math.PI/2;
-  const needleLen=R_outer+12;
-  const needleBase=R_inner-8;
   ctx.save();
-
-  // ── 3D tapered needle ──
-  const nx1=CX+Math.cos(a)*needleLen, ny1=CY+Math.sin(a)*needleLen;
-  const nx0=CX+Math.cos(a)*needleBase, ny0=CY+Math.sin(a)*needleBase;
-  const perp=a+Math.PI/2;
-  const baseW=CW*0.005, tipW=CW*0.0005;
-
-  // Shadow layer
-  ctx.globalAlpha=0.35;
-  ctx.shadowColor='rgba(0,0,0,0.8)';ctx.shadowBlur=6;
-  ctx.shadowOffsetX=2;ctx.shadowOffsetY=2;
+  ctx.strokeStyle='rgba(255,255,255,0.55)';ctx.lineWidth=1.5;
+  ctx.setLineDash([3,5]);
+  ctx.shadowColor='rgba(255,255,255,0.3)';ctx.shadowBlur=4;
   ctx.beginPath();
-  ctx.moveTo(nx0+Math.cos(perp)*baseW,ny0+Math.sin(perp)*baseW);
-  ctx.lineTo(nx1+Math.cos(perp)*tipW,ny1+Math.sin(perp)*tipW);
-  ctx.lineTo(nx1-Math.cos(perp)*tipW,ny1-Math.sin(perp)*tipW);
-  ctx.lineTo(nx0-Math.cos(perp)*baseW,ny0-Math.sin(perp)*baseW);
-  ctx.closePath();
-  ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fill();
-  ctx.globalAlpha=1;ctx.shadowBlur=0;ctx.shadowOffsetX=0;ctx.shadowOffsetY=0;
-
-  // Main needle body — dark steel
-  const ng=ctx.createLinearGradient(
-    CX+Math.cos(perp)*baseW,CY+Math.sin(perp)*baseW,
-    CX-Math.cos(perp)*baseW,CY-Math.sin(perp)*baseW
-  );
-  ng.addColorStop(0,'rgba(50,65,80,0.85)');
-  ng.addColorStop(0.35,'rgba(150,170,190,0.9)');
-  ng.addColorStop(0.5,'rgba(185,205,225,0.95)');
-  ng.addColorStop(0.65,'rgba(150,170,190,0.9)');
-  ng.addColorStop(1,'rgba(35,50,65,0.85)');
-  ctx.beginPath();
-  ctx.moveTo(nx0+Math.cos(perp)*baseW,ny0+Math.sin(perp)*baseW);
-  ctx.lineTo(nx1+Math.cos(perp)*tipW,ny1+Math.sin(perp)*tipW);
-  ctx.lineTo(nx1-Math.cos(perp)*tipW,ny1-Math.sin(perp)*tipW);
-  ctx.lineTo(nx0-Math.cos(perp)*baseW,ny0-Math.sin(perp)*baseW);
-  ctx.closePath();
-  ctx.fillStyle=ng;ctx.fill();
-
-  // Highlight streak — subtle
-  ctx.globalAlpha=0.35;
-  ctx.strokeStyle='rgba(255,255,255,0.7)';ctx.lineWidth=0.5;
-  ctx.beginPath();
-  ctx.moveTo(nx0+Math.cos(perp)*baseW*0.2,ny0+Math.sin(perp)*baseW*0.2);
-  ctx.lineTo(nx1,ny1);
+  ctx.moveTo(CX+Math.cos(a)*(R_inner-4),CY+Math.sin(a)*(R_inner-4));
+  ctx.lineTo(CX+Math.cos(a)*(R_outer+10),CY+Math.sin(a)*(R_outer+10));
   ctx.stroke();
-  ctx.globalAlpha=1;
-
-  // Tip — small, subtle
-  ctx.shadowColor='rgba(255,255,255,0.4)';ctx.shadowBlur=4;
-  ctx.beginPath();ctx.arc(nx1,ny1,CW*0.003,0,Math.PI*2);
-  ctx.fillStyle='rgba(200,220,240,0.85)';ctx.fill();
-  ctx.shadowBlur=0;
-
-  // NOW label
-  const labelR=R_outer+24;
+  ctx.setLineDash([]);
   ctx.fillStyle='rgba(255,255,255,0.55)';
-  ctx.font=`600 ${CW*0.013}px Inter,sans-serif`;
+  ctx.font=`600 ${CW*0.014}px Inter,sans-serif`;
   ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('NOW',CX+Math.cos(a)*labelR,CY+Math.sin(a)*labelR);
-
+  ctx.fillText('NOW',CX+Math.cos(a)*(R_outer+22),CY+Math.sin(a)*(R_outer+22));
   ctx.restore();
 }
 
 function render(){
-  drawBase();drawNowMarker();drawDots();drawDial();
+  drawBase();drawDots();drawNowMarker();drawDial();
+}
+function scheduleRender(){
+  if(rafPending)return;
+  rafPending=true;
+  requestAnimationFrame(()=>{rafPending=false;render();});
 }
 
-// ── Dial interaction ───────────────────────────────────────────────
+// ── Dial — fixed lag with passive:false and pointer events ────────
 function getAngle(e){
   const r=canvas.getBoundingClientRect();
   return Math.atan2((e.clientY-r.top)*CW/r.height-CY,(e.clientX-r.left)*CW/r.width-CX);
@@ -1201,66 +915,52 @@ function nearDial(e){
   return Math.sqrt(dx*dx+dy*dy)<R_dial+24;
 }
 
-let pointerMoved=false;
 canvas.addEventListener('pointerdown',e=>{
   if(nearDial(e)){
-    isDragging=true;lastAngle=getAngle(e);pointerMoved=false;
+    isDragging=true;lastAngle=getAngle(e);
     canvas.setPointerCapture(e.pointerId);
     e.preventDefault();
   }
-},{passive:false});
-
+});
 canvas.addEventListener('pointermove',e=>{
   if(!isDragging)return;
   let delta=getAngle(e)-lastAngle;
   while(delta>Math.PI)delta-=Math.PI*2;
   while(delta<-Math.PI)delta+=Math.PI*2;
-  if(Math.abs(delta)>0.005) pointerMoved=true;
   dialAngleAccum+=delta;lastAngle=getAngle(e);
-  targetSeparateT=Math.max(0,Math.min(1,(dialAngleAccum+Math.PI/2)/(Math.PI*2)));
-  updateSeparationTargets();
-  startTick();
+  separateT=Math.max(0,Math.min(1,(dialAngleAccum+Math.PI/2)/(Math.PI*2)));
+  const lbl=separateT<0.05?'Drag the centre dial to separate prayers':
+    separateT>0.95?'Fully separated — each prayer in its own orbit':
+    `Separating — ${Math.round(separateT*100)}%`;
+  document.getElementById('dialLabel').textContent=lbl;
+  scheduleRender();
 });
-
-canvas.addEventListener('pointerup',e=>{
-  if(isDragging){
-    if(!pointerMoved){
-      // Click — compute separateT from the clicked angle on the dial
-      const clickedAngle=getAngle(e);
-      let t=(clickedAngle+Math.PI/2)/(Math.PI*2);
-      while(t<0) t+=1;
-      while(t>1) t-=1;
-      // Snap to nearest preset
-      const nearest=PRESETS.reduce((a,b)=>Math.abs(b-t)<Math.abs(a-t)?b:a);
-      targetSeparateT=nearest;
-      dialAngleAccum=nearest*Math.PI*2-Math.PI/2;
-      updateSeparationTargets();
-      startTick();
-    }
-  }
-  isDragging=false;
-});
+canvas.addEventListener('pointerup',()=>{isDragging=false;});
 canvas.addEventListener('pointercancel',()=>{isDragging=false;});
 
 // ── Load month ─────────────────────────────────────────────────────
-const monthPromises=new Array(13).fill(null);
-
 async function loadMonth(month){
-  if(monthCache[month]) return;
-  if(monthPromises[month]) return monthPromises[month];
-  monthPromises[month]=(async()=>{
-    const pad=month.toString().padStart(2,'0');
-    const res=await fetch(`./m${pad}.bin`);
-    if(!res.ok) throw new Error(`m${pad}.bin not found`);
-    const buf=await res.arrayBuffer();
-    const n=Math.floor(buf.byteLength/5);
-    const utc=new Uint16Array(buf.slice(0,n*2));
-    const rNorm=new Uint8Array(buf,n*2,n);
-    const prayer=new Uint8Array(buf,n*3,n);
-    const region=new Uint8Array(buf,n*4,n);
-    monthCache[month]={utc,rNorm,prayer,region,n};
-  })();
-  return monthPromises[month];
+  if(monthCache[month]){
+    if(month===currentMonth){
+      currentData=buildRenderData(monthCache[month],clockMode);
+      scheduleRender();
+    }
+    return;
+  }
+  const pad=month.toString().padStart(2,'0');
+  const res=await fetch(`./m${pad}.bin`);
+  if(!res.ok) throw new Error(`m${pad}.bin not found`);
+  const buf=await res.arrayBuffer();
+  const n=Math.floor(buf.byteLength/5);
+  const utc=new Uint16Array(buf.slice(0,n*2));
+  const rNorm=new Uint8Array(buf,n*2,n);
+  const prayer=new Uint8Array(buf,n*3,n);
+  const region=new Uint8Array(buf,n*4,n);
+  monthCache[month]={utc,rNorm,prayer,region,n};
+  if(month===currentMonth){
+    currentData=buildRenderData(monthCache[month],clockMode);
+    scheduleRender();
+  }
 }
 
 // ── Scroll-triggered story highlights ─────────────────────────────
@@ -1273,10 +973,11 @@ function initStoryObserver(){
         entry.target.classList.add('active');
         const pi=parseInt(entry.target.dataset.pi);
         highlightPi=pi;
+        // Update legend highlights
         document.querySelectorAll('.leg-item').forEach(li=>{
           li.classList.toggle('highlighted',pi===-1||parseInt(li.dataset.pi)===pi);
         });
-        startTick();
+        scheduleRender();
       }
     });
   },{root:document.getElementById('rightPanel'),threshold:0.5});
@@ -1284,24 +985,20 @@ function initStoryObserver(){
 }
 
 // ── Controls ───────────────────────────────────────────────────────
-document.getElementById('monthSlider').addEventListener('input',async e=>{
+document.getElementById('monthSlider').addEventListener('input',e=>{
   stopPlay();
   currentMonth=+e.target.value;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
-  await loadMonth(currentMonth);
-  const data=buildRenderData(monthCache[currentMonth],clockMode);
-  applyNewData(data, true);
+  loadMonth(currentMonth);
 });
 
-document.getElementById('btnNow').addEventListener('click',async ()=>{
+document.getElementById('btnNow').addEventListener('click',()=>{
   stopPlay();
   currentMonth=new Date().getMonth()+1;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
   showNowMarker=true;
-  await loadMonth(currentMonth);
-  const data=buildRenderData(monthCache[currentMonth],clockMode);
-  applyNewData(data, true);
+  loadMonth(currentMonth);
 });
 
 const playBtn=document.getElementById('playBtn');
@@ -1315,20 +1012,17 @@ function startPlay(){
 function stopPlay(){
   playing=false;if(playTimer)clearTimeout(playTimer);
   playBtn.textContent='▶ Play Year';playBtn.classList.remove('active');
-  const mb=document.getElementById('mobPlayBtn');
-  if(mb) mb.textContent='▶ Play';
 }
-async function animateYear(){
+function animateYear(){
   if(!playing)return;
   currentMonth=currentMonth>=12?1:currentMonth+1;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
-  syncMobileControls();
-  await loadMonth(currentMonth);
-  if(!playing)return;
-  const data=buildRenderData(monthCache[currentMonth],clockMode);
-  applyNewData(data, true);
-  playTimer=setTimeout(animateYear,700);
+  if(monthCache[currentMonth]){
+    currentData=buildRenderData(monthCache[currentMonth],clockMode);
+    scheduleRender();
+  }
+  playTimer=setTimeout(animateYear,600);
 }
 
 document.querySelectorAll('.seg-btn[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{
@@ -1336,32 +1030,18 @@ document.querySelectorAll('.seg-btn[data-mode]').forEach(btn=>btn.addEventListen
   btn.classList.add('active');clockMode=btn.dataset.mode;
   document.getElementById('modeDesc').textContent=MODE_DESC[clockMode];
   document.getElementById('clockTopLabel').textContent='Global Prayer Wave · '+MODE_LABEL[clockMode];
-  if(monthCache[currentMonth]){
-    const data=buildRenderData(monthCache[currentMonth],clockMode);
-    applyNewData(data);
-  }
-}));
-
-document.querySelectorAll('.seg-btn[data-colormode]').forEach(btn=>btn.addEventListener('click',()=>{
-  document.querySelectorAll('.seg-btn[data-colormode]').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  colorMode=btn.dataset.colormode;
-  const desc=colorMode==='prayer'?'Dots coloured by prayer type':'Dots coloured by geographic region';
-  document.getElementById('colorModeDesc').textContent=desc;
-  document.getElementById('legend').style.display=colorMode==='prayer'?'flex':'none';
-  document.getElementById('regionLegend').style.display=colorMode==='region'?'flex':'none';
-  document.getElementById('regionLegendCtrl').style.display=colorMode==='region'?'block':'none';
-  startTick();
+  if(monthCache[currentMonth])currentData=buildRenderData(monthCache[currentMonth],clockMode);
+  scheduleRender();
 }));
 
 document.querySelectorAll('.seg-btn[data-size]').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.seg-btn[data-size]').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');dotSize=parseFloat(btn.dataset.size);startTick();
+  btn.classList.add('active');dotSize=parseFloat(btn.dataset.size);scheduleRender();
 }));
 
 document.querySelectorAll('.region-btn').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.region-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');activeRegion=btn.dataset.region;startTick();
+  btn.classList.add('active');activeRegion=btn.dataset.region;scheduleRender();
 }));
 
 // Legend click to highlight
@@ -1372,7 +1052,7 @@ document.getElementById('legend').addEventListener('click',e=>{
   highlightPi=highlightPi===pi?-1:pi;
   document.querySelectorAll('.leg-item').forEach(li=>
     li.classList.toggle('highlighted',highlightPi===-1||parseInt(li.dataset.pi)===highlightPi));
-  startTick();
+  scheduleRender();
 });
 
 window.addEventListener('resize',()=>{resizeClock();render();});
@@ -1400,7 +1080,28 @@ if(navigator.share){
   });
 }
 
-// Controls toggle
+// ── Nav clock ──────────────────────────────────────────────────────
+function updateNavClock(){
+  const now=new Date();
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const d=document.getElementById('navDate');
+  const t=document.getElementById('navTime');
+  if(d) d.textContent=`${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  if(t){
+    let h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();
+    const ap=h>=12?'PM':'AM';h=h%12||12;
+    t.textContent=`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} ${ap}`;
+  }
+}
+updateNavClock();setInterval(updateNavClock,1000);
+
+function toggleMobileMenu(){
+  const mm=document.getElementById('mobileMenu');
+  mm.style.display=mm.style.display==='flex'?'none':'flex';
+}
+
+// ── Mobile controls toggle ─────────────────────────────────────────
 const mobToggle=document.getElementById('mobControlsToggle');
 if(mobToggle){
   mobToggle.addEventListener('click',()=>{
@@ -1410,102 +1111,57 @@ if(mobToggle){
   });
 }
 
-// ── Mobile vs Desktop ─────────────────────────────────────────────
-function isMobile(){return window.innerWidth<=768;}
-
-function applyResponsive(){
-  const mob=isMobile();
-  document.getElementById('navHamburger').style.display=mob?'flex':'none';
-  const mm=document.getElementById('mobileMenu');
-  mm.style.display=mob&&mm.classList.contains('open')?'flex':'none';
-  if(mob) dotSize=1.4;
-}
-applyResponsive();
-window.addEventListener('resize',()=>{applyResponsive();resizeClock();render();});
-
-// Sync mobile controls with desktop state
+// ── Mobile controls wiring ─────────────────────────────────────────
 function syncMobileControls(){
-  document.getElementById('mobDateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
-  document.getElementById('mobMonthSlider').value=currentMonth;
+  const badge=document.getElementById('mobDateBadge');
+  const slider=document.getElementById('mobMonthSlider');
+  if(badge) badge.innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
+  if(slider) slider.value=currentMonth;
 }
 
-// Mobile mode toggle
 document.querySelectorAll('#mobModeSeg button').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('#mobModeSeg button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  clockMode=btn.dataset.mode;
-  // Sync desktop
+  btn.classList.add('active');clockMode=btn.dataset.mode;
   document.querySelectorAll('.seg-btn[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===clockMode));
   document.getElementById('modeDesc').textContent=MODE_DESC[clockMode];
   document.getElementById('clockTopLabel').textContent='Global Prayer Wave · '+MODE_LABEL[clockMode];
-  if(monthCache[currentMonth]){
-    const data=buildRenderData(monthCache[currentMonth],clockMode);
-    applyNewData(data,true);
-  }
+  if(monthCache[currentMonth]){currentData=buildRenderData(monthCache[currentMonth],clockMode);scheduleRender();}
 }));
 
-// Mobile month slider
-document.getElementById('mobMonthSlider').addEventListener('input',async e=>{
-  stopPlay();
+const mobSlider=document.getElementById('mobMonthSlider');
+if(mobSlider) mobSlider.addEventListener('input',e=>{
   currentMonth=+e.target.value;
-  syncMobileControls();
-  document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
   document.getElementById('monthSlider').value=currentMonth;
-  await loadMonth(currentMonth);
-  const data=buildRenderData(monthCache[currentMonth],clockMode);
-  applyNewData(data,true);
+  document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
+  document.getElementById('mobDateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
+  loadMonth(currentMonth);
 });
 
-// Mobile Play button
-document.getElementById('mobPlayBtn').addEventListener('click',()=>{
-  if(playing){stopPlay();document.getElementById('mobPlayBtn').textContent='▶ Play';}
-  else{startPlay();document.getElementById('mobPlayBtn').textContent='■ Stop';}
+const mobPlayBtn=document.getElementById('mobPlayBtn');
+if(mobPlayBtn) mobPlayBtn.addEventListener('click',()=>{
+  if(playing){stopPlay();mobPlayBtn.textContent='▶ Play';}
+  else{startPlay();mobPlayBtn.textContent='■ Stop';}
 });
 
-// Mobile Now button
-document.getElementById('mobNowBtn').addEventListener('click',async()=>{
+const mobNowBtn=document.getElementById('mobNowBtn');
+if(mobNowBtn) mobNowBtn.addEventListener('click',()=>{
   stopPlay();
   currentMonth=new Date().getMonth()+1;
   syncMobileControls();
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
-  showNowMarker=true;
-  await loadMonth(currentMonth);
-  const data=buildRenderData(monthCache[currentMonth],clockMode);
-  applyNewData(data,true);
+  showNowMarker=true;loadMonth(currentMonth);
 });
 
-// Mobile region buttons
 document.querySelectorAll('#mobRegionBtns button').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('#mobRegionBtns button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  activeRegion=btn.dataset.region;
-  // Sync desktop
+  btn.classList.add('active');activeRegion=btn.dataset.region;
   document.querySelectorAll('.region-btn').forEach(b=>b.classList.toggle('active',b.dataset.region===activeRegion));
-  startTick();
+  scheduleRender();
 }));
 
-// Close mobile menu when link clicked
-document.querySelectorAll('#mobileMenu a').forEach(a=>a.addEventListener('click',()=>{
-  document.getElementById('mobileMenu').classList.remove('open');
-  document.getElementById('mobileMenu').style.display='none';
-}));
-
-// ── Nav clock ──────────────────────────────────────────────────────
-function updateNavClock(){
-  const now=new Date();
-  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  document.getElementById('navDate').textContent=
-    `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-  let h=now.getHours(),m=now.getMinutes(),s=now.getSeconds();
-  const ampm=h>=12?'PM':'AM';
-  h=h%12||12;
-  document.getElementById('navTime').textContent=
-    `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')} ${ampm}`;
-}
-updateNavClock();
-setInterval(updateNavClock,1000);
+// Mobile dot size — always L
+if(window.innerWidth<=768) dotSize=1.4;
 
 // ── Init ───────────────────────────────────────────────────────────
 async function init(){
@@ -1517,23 +1173,18 @@ async function init(){
   bar.style.width='25%';
   await loadMonth(currentMonth);
   bar.style.width='60%';
-  resizeClock();
-  const data=buildRenderData(monthCache[currentMonth],clockMode);
-  applyNewData(data);
-  render();
+  resizeClock();render();
   await new Promise(r=>setTimeout(r,150));
   document.getElementById('loadingOverlay').classList.add('hidden');
   setTimeout(()=>document.getElementById('loadingOverlay').remove(),450);
 
   initStoryObserver();
 
-  // Preload all months in parallel in background
-  const preloads=[];
+  // Preload all months silently
   for(let m=1;m<=12;m++){
     if(m===currentMonth)continue;
-    preloads.push(loadMonth(m));
+    await loadMonth(m);
   }
-  Promise.all(preloads).catch(()=>{});
 }
 
 init();

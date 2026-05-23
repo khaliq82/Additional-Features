@@ -1057,18 +1057,24 @@ canvas.addEventListener('pointerup',e=>{
 canvas.addEventListener('pointercancel',()=>{isDragging=false;});
 
 // ── Load month ─────────────────────────────────────────────────────
+const monthPromises=new Array(13).fill(null);
+
 async function loadMonth(month){
-  if(monthCache[month]) return; // already cached, nothing to do
-  const pad=month.toString().padStart(2,'0');
-  const res=await fetch(`./m${pad}.bin`);
-  if(!res.ok) throw new Error(`m${pad}.bin not found`);
-  const buf=await res.arrayBuffer();
-  const n=Math.floor(buf.byteLength/5);
-  const utc=new Uint16Array(buf.slice(0,n*2));
-  const rNorm=new Uint8Array(buf,n*2,n);
-  const prayer=new Uint8Array(buf,n*3,n);
-  const region=new Uint8Array(buf,n*4,n);
-  monthCache[month]={utc,rNorm,prayer,region,n};
+  if(monthCache[month]) return;
+  if(monthPromises[month]) return monthPromises[month];
+  monthPromises[month]=(async()=>{
+    const pad=month.toString().padStart(2,'0');
+    const res=await fetch(`./m${pad}.bin`);
+    if(!res.ok) throw new Error(`m${pad}.bin not found`);
+    const buf=await res.arrayBuffer();
+    const n=Math.floor(buf.byteLength/5);
+    const utc=new Uint16Array(buf.slice(0,n*2));
+    const rNorm=new Uint8Array(buf,n*2,n);
+    const prayer=new Uint8Array(buf,n*3,n);
+    const region=new Uint8Array(buf,n*4,n);
+    monthCache[month]={utc,rNorm,prayer,region,n};
+  })();
+  return monthPromises[month];
 }
 
 // ── Scroll-triggered story highlights ─────────────────────────────

@@ -277,46 +277,90 @@ footer{
   .left{display:none !important;}
   .right{width:100%;border-left:none;max-height:none;overflow:visible;}
   .footer-text{display:none;}
+
+  /* Mobile panels */
   #mobPanelTop{display:flex;flex-direction:column;background:var(--bg);}
-  #mobPanelBottom{display:flex;flex-direction:column;background:var(--bg);}
-  .mob-page-title{font-family:"Playfair Display",serif;font-size:16px;font-weight:700;text-align:center;padding:6px 16px 2px;color:#fff;}
+  #mobPanelBottom{
+    display:flex;flex-direction:column;background:var(--bg);
+    min-height:calc(100svh - 52px);
+  }
+
+  /* Title */
+  .mob-page-title{
+    font-family:"Playfair Display",serif;font-size:17px;font-weight:700;
+    text-align:center;padding:10px 16px 4px;color:#fff;
+  }
   .mob-page-title em{font-style:italic;color:var(--cyan);}
-  .centre{width:100%;flex:none;border:none;padding:0 20px;}
+
+  /* Clock — nearly full width, gap from title */
+  .centre{width:100%;flex:none;border:none;padding:8px 10px 0;}
   .clock-wrap{height:auto;}
-  canvas{width:calc(100vw - 72px) !important;height:calc(100vw - 72px) !important;flex:none !important;margin:0 auto;display:block;touch-action:none;}
+  canvas{
+    width:calc(100vw - 20px) !important;
+    height:calc(100vw - 20px) !important;
+    flex:none !important;margin:0 auto;display:block;touch-action:none;
+  }
   .clock-top{font-size:7px;text-align:center;margin-bottom:1px;}
-  .clock-status{display:block;text-align:center;padding:2px 0 3px;font-size:8px;}
+  .clock-status{display:block;text-align:center;padding:3px 0 6px;font-size:9px;color:rgba(255,255,255,0.4);}
+
+  /* Controls */
   .mob-controls-toggle{display:none;}
-  .mobile-controls{display:flex !important;flex-direction:column;max-height:none !important;overflow:visible;background:transparent;border:none;padding:0;}
-  .mobile-controls-row{display:flex;align-items:center;gap:6px;padding:3px 14px;border-bottom:1px solid rgba(255,255,255,0.04);}
+  .mobile-controls{
+    display:flex !important;flex-direction:column;
+    max-height:none !important;overflow:visible;
+    background:transparent;border:none;padding:0;
+    border-top:1px solid var(--border);
+  }
+  .mobile-controls-row{
+    display:flex;align-items:center;gap:8px;
+    padding:6px 16px;
+    border-bottom:1px solid rgba(255,255,255,0.05);
+  }
   .mobile-controls-row:last-child{border-bottom:none;}
-  .mob-label{font-size:7px;letter-spacing:0.12em;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,0.35);white-space:nowrap;min-width:40px;}
-  .mob-month-badge{font-family:"Playfair Display",serif;font-size:11px;font-weight:700;min-width:56px;}
+  .mob-label{font-size:8px;letter-spacing:0.12em;font-weight:600;text-transform:uppercase;color:rgba(255,255,255,0.35);white-space:nowrap;min-width:44px;}
+  .mob-month-badge{font-family:"Playfair Display",serif;font-size:12px;font-weight:700;min-width:60px;}
   .mob-month-badge span{color:var(--cyan);}
   .mobile-controls input[type=range]{flex:1;height:2px;}
-  .mob-btns{display:flex;gap:4px;margin-left:auto;}
-  .mob-btn{padding:3px 7px;border-radius:4px;border:1px solid var(--border);background:transparent;color:rgba(255,255,255,0.65);font-family:"Inter",sans-serif;font-size:9px;font-weight:500;cursor:pointer;}
-  .mob-btn-now{border-color:var(--cyan) !important;color:var(--cyan) !important;}
-  .mob-seg{display:flex;gap:2px;}
-  .mob-seg button{padding:3px 7px;border-radius:3px;border:1px solid var(--border);background:transparent;color:rgba(255,255,255,0.55);font-family:"Inter",sans-serif;font-size:9px;cursor:pointer;}
+  .mob-seg{display:flex;gap:3px;}
+  .mob-seg button{padding:4px 14px;border-radius:3px;border:1px solid var(--border);background:transparent;color:rgba(255,255,255,0.55);font-family:"Inter",sans-serif;font-size:10px;cursor:pointer;}
   .mob-seg button.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.08);}
-  .mob-region{display:flex;flex-wrap:wrap;gap:2px;flex:1;}
-  .mob-region button{padding:2px 5px;border-radius:3px;border:1px solid var(--border);background:transparent;color:rgba(255,255,255,0.5);font-family:"Inter",sans-serif;font-size:8px;cursor:pointer;}
+  .mob-btn{padding:6px 20px;border-radius:4px;border:1px solid var(--border);background:transparent;color:rgba(255,255,255,0.65);font-family:"Inter",sans-serif;font-size:10px;font-weight:500;cursor:pointer;}
+  .mob-btn-now{border-color:var(--cyan) !important;color:var(--cyan) !important;}
+  .mob-btn-play{border-color:rgba(255,255,255,0.3);}
+  .mob-region{display:flex;flex-wrap:wrap;gap:3px;flex:1;}
+  .mob-region button{padding:3px 7px;border-radius:3px;border:1px solid var(--border);background:transparent;color:rgba(255,255,255,0.5);font-family:"Inter",sans-serif;font-size:9px;cursor:pointer;}
   .mob-region button.active{border-color:var(--cyan);color:var(--cyan);}
-  .mob-scroll-hint{padding:5px 16px 8px;text-align:center;border-top:1px solid var(--border);}
-  .mob-scroll-hint-title{font-family:"Playfair Display",serif;font-size:12px;font-weight:700;color:#fff;margin-bottom:2px;}
+
+  /* Scroll hint — pushed to bottom */
+  .mob-scroll-hint{
+    margin-top:auto;
+    padding:8px 16px 14px;text-align:center;
+    border-top:1px solid var(--border);
+  }
+  .mob-scroll-hint-title{font-family:"Playfair Display",serif;font-size:12px;font-weight:700;color:#fff;margin-bottom:3px;}
   .mob-scroll-hint-sub{display:none;}
-  .mob-scroll-arrow{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.4);font-size:11px;margin-top:3px;animation:bounceDown 1.5s infinite;}
+  .mob-scroll-arrow{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:24px;height:24px;border-radius:50%;
+    border:1px solid rgba(255,255,255,0.2);
+    color:rgba(255,255,255,0.4);font-size:12px;
+    margin-top:4px;
+    animation:bounceDown 1.5s infinite;
+  }
   @keyframes bounceDown{0%,100%{transform:translateY(0);}50%{transform:translateY(4px);}}
+
+  /* Story cards */
   .story-header{display:none;}
   .story-card{padding:28px 20px 24px;border-bottom:1px solid var(--border);min-height:auto;display:block;}
   .story-title{font-size:20px;line-height:1.3;margin-bottom:14px;}
   .story-body{font-size:13px;line-height:1.75;}
   .story-quote{margin-top:16px;font-size:12px;}
   .story-footer{padding:20px;}
+
+  /* Footer */
   footer{flex-direction:column;gap:0;padding:0;align-items:stretch;}
   .footer-left{display:flex;flex-direction:row;align-items:flex-start;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);}
-  .footer-copy{text-align:right;flex:none;font-size:8px;line-height:1.5;max-width:50%;}
+  .footer-copy{text-align:right;flex:none;font-size:8px;line-height:1.5;max-width:52%;}
   .footer-share{display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 16px;flex-wrap:wrap;margin-left:0;}
   .footer-share-label{font-size:8px;}
   .share-btn{font-size:9px;padding:5px 8px;}
@@ -452,22 +496,26 @@ footer{
   <!-- MOBILE: Controls + scroll hint (right after clock, hidden on desktop) -->
   <div id="mobPanelBottom">
     <div class="mobile-controls" id="mobileControls">
+      <!-- Row 1: Clock Mode -->
       <div class="mobile-controls-row">
         <span class="mob-label">Mode</span>
         <div class="mob-seg" id="mobModeSeg">
           <button class="active" data-mode="local">Your Time</button>
           <button data-mode="utc">UTC</button>
         </div>
-        <div class="mob-btns">
-          <button class="mob-btn" id="mobPlayBtn">▶ Play</button>
-          <button class="mob-btn mob-btn-now" id="mobNowBtn">◎ Now</button>
-        </div>
       </div>
+      <!-- Row 2: Month slider -->
       <div class="mobile-controls-row">
         <span class="mob-label">Month</span>
         <div class="mob-month-badge" id="mobDateBadge">May <span>2026</span></div>
         <input type="range" id="mobMonthSlider" min="1" max="12" value="5">
       </div>
+      <!-- Row 3: Play + Now -->
+      <div class="mobile-controls-row">
+        <button class="mob-btn mob-btn-play" id="mobPlayBtn">▶ Play Year</button>
+        <button class="mob-btn mob-btn-now" id="mobNowBtn">◎ Now</button>
+      </div>
+      <!-- Row 4: Region -->
       <div class="mobile-controls-row">
         <span class="mob-label">Region</span>
         <div class="mob-region" id="mobRegionBtns">
@@ -570,7 +618,7 @@ function resizeClock(){
   const dpr=window.devicePixelRatio||1;
   const mob=window.innerWidth<=768;
   const c=document.querySelector('.centre');
-  const sz=mob?Math.max(240,window.innerWidth-80):Math.max(240,Math.min(c.clientWidth-24,c.clientHeight-48));
+  const sz=mob?Math.max(240,window.innerWidth-20):Math.max(240,Math.min(c.clientWidth-24,c.clientHeight-48));
   CW=sz;CX=CY=sz/2;R_outer=sz*0.41;R_inner=sz*0.155;R_dial=sz*0.092;
   canvas.style.width=sz+'px';canvas.style.height=sz+'px';
   canvas.width=Math.round(sz*dpr);canvas.height=Math.round(sz*dpr);

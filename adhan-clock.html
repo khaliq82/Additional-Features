@@ -756,22 +756,30 @@ function drawDial(){
 
 function drawNowMarker(){
   const now=new Date();
-  const h=clockMode==='utc'?now.getUTCHours()+now.getUTCMinutes()/60:now.getHours()+now.getMinutes()/60;
+  const h=clockMode==='utc'
+    ?now.getUTCHours()+now.getUTCMinutes()/60+now.getUTCSeconds()/3600
+    :now.getHours()+now.getMinutes()/60+now.getSeconds()/3600;
   const a=(h/24)*Math.PI*2-Math.PI/2;
-  const tipX=CX+Math.cos(a)*R_outer;
-  const tipY=CY+Math.sin(a)*R_outer;
+  const ringR=R_outer+13; // actual visible ring
+  const tipX=CX+Math.cos(a)*ringR;
+  const tipY=CY+Math.sin(a)*ringR;
   const tailX=CX+Math.cos(a)*(R_dial*1.1);
   const tailY=CY+Math.sin(a)*(R_dial*1.1);
   const perp=a+Math.PI/2;
   const baseW=CW*0.003;
 
   ctx.save();
+  // Tapered needle body
   ctx.beginPath();
   ctx.moveTo(tailX+Math.cos(perp)*baseW, tailY+Math.sin(perp)*baseW);
   ctx.lineTo(tipX, tipY);
   ctx.lineTo(tailX-Math.cos(perp)*baseW, tailY-Math.sin(perp)*baseW);
   ctx.closePath();
-  ctx.fillStyle='rgba(255,255,255,0.35)';
+  ctx.fillStyle='rgba(255,255,255,0.4)';
+  ctx.fill();
+  // Dot on the ring
+  ctx.beginPath();ctx.arc(tipX,tipY,CW*0.006,0,Math.PI*2);
+  ctx.fillStyle='rgba(255,255,255,0.75)';
   ctx.fill();
   ctx.restore();
 }

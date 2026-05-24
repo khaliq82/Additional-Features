@@ -101,11 +101,12 @@ input[type=range]::-webkit-slider-thumb{
 .btn-play:hover:not(.active){border-color:rgba(255,255,255,0.3);color:#fff;}
 .btn-now{
   flex:1;padding:7px 0;border-radius:4px;
-  border:1px solid rgba(0,212,255,0.35);background:transparent;
-  color:var(--cyan);font-family:'Inter',sans-serif;
+  border:1px solid var(--border);background:transparent;
+  color:rgba(255,255,255,0.6);font-family:'Inter',sans-serif;
   font-size:11px;font-weight:500;cursor:pointer;transition:all 0.2s;
 }
-.btn-now:hover{background:rgba(0,212,255,0.08);border-color:var(--cyan);}
+.btn-now.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.06);}
+.btn-now:hover{background:rgba(0,212,255,0.08);border-color:var(--cyan);color:var(--cyan);}
 
 .region-btns{display:flex;flex-wrap:wrap;gap:4px;}
 .region-btn{
@@ -874,18 +875,30 @@ function initStoryObserver(){
 // ── Controls ───────────────────────────────────────────────────────
 document.getElementById('monthSlider').addEventListener('input',e=>{
   stopPlay();
+  document.getElementById('btnNow').classList.remove('active');
   currentMonth=+e.target.value;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
-  loadMonth(currentMonth);
+  if(monthCache[currentMonth]){
+    currentData=buildRenderData(monthCache[currentMonth],clockMode);
+    scheduleRender();
+  } else {
+    loadMonth(currentMonth);
+  }
 });
 
 document.getElementById('btnNow').addEventListener('click',()=>{
   stopPlay();
+  document.getElementById('btnNow').classList.add('active');
   currentMonth=new Date().getMonth()+1;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
   showNowMarker=true;
-  loadMonth(currentMonth);
+  if(monthCache[currentMonth]){
+    currentData=buildRenderData(monthCache[currentMonth],clockMode);
+    scheduleRender();
+  } else {
+    loadMonth(currentMonth);
+  }
 });
 
 const playBtn=document.getElementById('playBtn');
@@ -894,7 +907,7 @@ playBtn.addEventListener('click',()=>playing?stopPlay():startPlay());
 function startPlay(){
   playing=true;showNowMarker=false;
   playBtn.textContent='■ Stop';playBtn.classList.add('active');
-  // Clear Now button on mobile
+  document.getElementById('btnNow').classList.remove('active');
   const mn=document.getElementById('mobNowBtn');
   if(mn) mn.classList.remove('active');
   animateYear();

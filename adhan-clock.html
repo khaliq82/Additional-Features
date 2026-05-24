@@ -981,6 +981,8 @@ function syncMobileControls(){
   const slider=document.getElementById('mobMonthSlider');
   if(badge) badge.innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
   if(slider) slider.value=currentMonth;
+  // Clear now button when month changes via play
+  if(mobNowBtn&&playing) mobNowBtn.classList.remove('active');
 }
 
 document.querySelectorAll('#mobModeSeg button').forEach(btn=>btn.addEventListener('click',()=>{
@@ -994,11 +996,19 @@ document.querySelectorAll('#mobModeSeg button').forEach(btn=>btn.addEventListene
 
 const mobSlider=document.getElementById('mobMonthSlider');
 if(mobSlider) mobSlider.addEventListener('input',e=>{
+  stopPlay();
+  if(mobPlayBtn){mobPlayBtn.textContent='▶ Play';mobPlayBtn.classList.remove('active');}
+  if(mobNowBtn) mobNowBtn.classList.remove('active');
   currentMonth=+e.target.value;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
   document.getElementById('mobDateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
-  loadMonth(currentMonth);
+  if(monthCache[currentMonth]){
+    currentData=buildRenderData(monthCache[currentMonth],clockMode);
+    scheduleRender();
+  } else {
+    loadMonth(currentMonth);
+  }
 });
 
 const mobPlayBtn=document.getElementById('mobPlayBtn');
@@ -1018,8 +1028,7 @@ const mobNowBtn=document.getElementById('mobNowBtn');
 if(mobNowBtn) mobNowBtn.addEventListener('click',async()=>{
   stopPlay();
   if(mobPlayBtn){mobPlayBtn.textContent='▶ Play';mobPlayBtn.classList.remove('active');}
-  mobNowBtn.classList.add('active');
-  setTimeout(()=>mobNowBtn.classList.remove('active'),800);
+  mobNowBtn.classList.add('active'); // stays cyan
   currentMonth=new Date().getMonth()+1;
   syncMobileControls();
   document.getElementById('monthSlider').value=currentMonth;

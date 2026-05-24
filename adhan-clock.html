@@ -839,24 +839,24 @@ canvas.addEventListener('pointerup',()=>{isDragging=false;});
 canvas.addEventListener('pointercancel',()=>{isDragging=false;});
 
 // ── Load month ─────────────────────────────────────────────────────
+const monthPromises=new Array(13).fill(null);
 async function loadMonth(month){
-  if(monthCache[month]){
-    if(month===currentMonth){
-      currentData=buildRenderData(monthCache[month],clockMode);
-      scheduleRender();
-    }
-    return;
+  if(monthCache[month]) return;
+  if(!monthPromises[month]){
+    monthPromises[month]=(async()=>{
+      const pad=month.toString().padStart(2,'0');
+      const res=await fetch(`./m${pad}.bin`);
+      if(!res.ok) throw new Error(`m${pad}.bin not found`);
+      const buf=await res.arrayBuffer();
+      const n=Math.floor(buf.byteLength/5);
+      const utc=new Uint16Array(buf.slice(0,n*2));
+      const rNorm=new Uint8Array(buf,n*2,n);
+      const prayer=new Uint8Array(buf,n*3,n);
+      const region=new Uint8Array(buf,n*4,n);
+      monthCache[month]={utc,rNorm,prayer,region,n};
+    })();
   }
-  const pad=month.toString().padStart(2,'0');
-  const res=await fetch(`./m${pad}.bin`);
-  if(!res.ok) throw new Error(`m${pad}.bin not found`);
-  const buf=await res.arrayBuffer();
-  const n=Math.floor(buf.byteLength/5);
-  const utc=new Uint16Array(buf.slice(0,n*2));
-  const rNorm=new Uint8Array(buf,n*2,n);
-  const prayer=new Uint8Array(buf,n*3,n);
-  const region=new Uint8Array(buf,n*4,n);
-  monthCache[month]={utc,rNorm,prayer,region,n};
+  await monthPromises[month];
   if(month===currentMonth){
     currentData=buildRenderData(monthCache[month],clockMode);
     scheduleRender();
@@ -1080,11 +1080,13 @@ async function init(){
 
   initStoryObserver();
 
-  // Preload all months silently
+  // Preload all months in parallel
+  const preloads=[];
   for(let m=1;m<=12;m++){
     if(m===currentMonth)continue;
-    await loadMonth(m);
+    preloads.push(loadMonth(m));
   }
+  Promise.all(preloads).catch(()=>{});
 }
 
 init();

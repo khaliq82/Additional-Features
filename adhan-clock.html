@@ -642,8 +642,9 @@ function drawBase(){
   ctx.fillStyle=bg;ctx.fillRect(0,0,CW,CW);
 
   ctx.save();
-  ctx.strokeStyle='rgba(255,255,255,0.06)';ctx.lineWidth=1;
+  ctx.strokeStyle='rgba(255,255,255,0.18)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(CX,CY,R_outer+13,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(CX,CY,R_inner-5,0,Math.PI*2);ctx.stroke();
   for(let i=1;i<=4;i++){
     ctx.strokeStyle='rgba(255,255,255,0.02)';ctx.lineWidth=0.5;
@@ -765,7 +766,6 @@ function drawNowMarker(){
   const baseW=CW*0.003;
 
   ctx.save();
-  // Tapered needle — wide at tail, sharp at tip
   ctx.beginPath();
   ctx.moveTo(tailX+Math.cos(perp)*baseW, tailY+Math.sin(perp)*baseW);
   ctx.lineTo(tipX, tipY);
@@ -773,12 +773,6 @@ function drawNowMarker(){
   ctx.closePath();
   ctx.fillStyle='rgba(255,255,255,0.35)';
   ctx.fill();
-
-  // NOW label just beyond outer ring
-  ctx.fillStyle='rgba(255,255,255,0.35)';
-  ctx.font=`500 ${CW*0.012}px Inter,sans-serif`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('NOW',CX+Math.cos(a)*(R_outer+20),CY+Math.sin(a)*(R_outer+20));
   ctx.restore();
 }
 
@@ -790,6 +784,20 @@ function scheduleRender(){
   rafPending=true;
   requestAnimationFrame(()=>{rafPending=false;render();});
 }
+
+// ── Continuous clock tick — redraws every second for smooth needle ──
+let lastNeedleAngle=-999;
+function clockTick(){
+  const now=new Date();
+  const h=clockMode==='utc'?now.getUTCHours()+now.getUTCMinutes()/60+now.getUTCSeconds()/3600:now.getHours()+now.getMinutes()/60+now.getSeconds()/3600;
+  const angle=(h/24)*Math.PI*2;
+  if(Math.abs(angle-lastNeedleAngle)>0.00001){
+    lastNeedleAngle=angle;
+    render();
+  }
+  requestAnimationFrame(clockTick);
+}
+requestAnimationFrame(clockTick);
 
 // ── Dial — fixed lag with passive:false and pointer events ────────
 function getAngle(e){

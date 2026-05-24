@@ -278,18 +278,15 @@ footer{
   .right{width:100%;border-left:none;max-height:none;overflow:visible;}
   .footer-text{display:none;}
 
-  /* Mobile panels */
   #mobPanelTop{display:flex;flex-direction:column;background:var(--bg);}
   #mobPanelBottom{display:flex;flex-direction:column;background:var(--bg);}
 
-  /* Title */
   .mob-page-title{
     font-family:"Playfair Display",serif;font-size:17px;font-weight:700;
     text-align:center;padding:10px 16px 4px;color:#fff;
   }
   .mob-page-title em{font-style:italic;color:var(--cyan);}
 
-  /* Clock */
   .centre{width:100%;flex:none;border:none;padding:6px 10px 0;}
   .clock-wrap{height:auto;}
   canvas{
@@ -300,7 +297,6 @@ footer{
   .clock-top{font-size:7px;text-align:center;margin-bottom:1px;}
   .clock-status{display:block;text-align:center;padding:3px 0 0;font-size:9px;color:rgba(255,255,255,0.4);}
 
-  /* Controls */
   .mob-controls-toggle{display:none;}
   .mobile-controls{
     display:flex !important;flex-direction:column;
@@ -311,7 +307,7 @@ footer{
   }
   .mobile-controls-row{
     display:flex;align-items:center;gap:8px;
-    padding:7px 16px;
+    padding:10px 16px;
     border-bottom:1px solid rgba(255,255,255,0.05);
   }
   .mobile-controls-row:last-child{border-bottom:none;}
@@ -320,29 +316,25 @@ footer{
   .mob-month-badge span{color:var(--cyan);}
   .mobile-controls input[type=range]{flex:1;height:2px;}
 
-  /* Pills — mode + action buttons all same style */
+  /* All pills — same style */
+  .mob-seg button,.mob-action-btn,.mob-region-all{
+    padding:5px 12px;border-radius:20px;
+    border:1px solid var(--border);background:transparent;
+    color:rgba(255,255,255,0.55);font-family:"Inter",sans-serif;font-size:10px;cursor:pointer;
+    white-space:nowrap;transition:all 0.15s;
+  }
+  .mob-seg button.active,
+  .mob-action-btn.active,
+  .mob-region-all.active{
+    border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.08);
+  }
   .mob-seg{display:flex;gap:3px;}
-  .mob-seg button,.mob-action-btn{
-    padding:5px 12px;border-radius:20px;
-    border:1px solid var(--border);background:transparent;
-    color:rgba(255,255,255,0.55);font-family:"Inter",sans-serif;font-size:10px;cursor:pointer;
-    white-space:nowrap;
-  }
-  .mob-seg button.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.08);}
   .mob-action-btns{margin-left:auto;display:flex;gap:3px;}
-  /* Now button — neutral by default, no persistent active state */
-  #mobNowBtn{color:rgba(255,255,255,0.55);border-color:var(--border);}
-  #mobPlayBtn.playing{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.08);}
 
-  /* Region row — label | ALL | 2x3 grid */
-  .mob-region-row{align-items:flex-start;padding:8px 16px;}
-  .mob-region-all{
-    padding:5px 12px;border-radius:20px;
-    border:1px solid var(--border);background:transparent;
-    color:rgba(255,255,255,0.55);font-family:"Inter",sans-serif;font-size:10px;cursor:pointer;
-    align-self:center;white-space:nowrap;flex-shrink:0;
-  }
-  .mob-region-all.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.08);}
+  /* Region row */
+  .mob-region-row{align-items:center;padding:10px 16px;}
+  .mob-region-row .mob-label{align-self:center;}
+  .mob-region-all{align-self:center;flex-shrink:0;}
   .mob-region-grid{
     display:grid;grid-template-columns:repeat(3,1fr);
     gap:3px;flex:1;
@@ -351,27 +343,11 @@ footer{
     padding:4px 6px;border-radius:20px;text-align:center;
     border:1px solid var(--border);background:transparent;
     color:rgba(255,255,255,0.5);font-family:"Inter",sans-serif;font-size:9px;cursor:pointer;
+    transition:all 0.15s;
   }
   .mob-region-grid button.active{border-color:var(--cyan);color:var(--cyan);background:rgba(0,212,255,0.06);}
 
-  /* Scroll hint */
-  .mob-scroll-hint{
-    padding:8px 16px 12px;text-align:center;
-    border-top:1px solid var(--border);
-    margin-top:6px;
-  }
-  .mob-scroll-hint-title{font-family:"Playfair Display",serif;font-size:12px;font-weight:700;color:#fff;margin-bottom:3px;}
-  .mob-scroll-hint-sub{display:none;}
-  .mob-scroll-arrow{
-    display:inline-flex;align-items:center;justify-content:center;
-    width:24px;height:24px;border-radius:50%;
-    border:1px solid rgba(255,255,255,0.2);
-    color:rgba(255,255,255,0.4);font-size:12px;margin-top:3px;
-    animation:bounceDown 1.5s infinite;
-  }
-  @keyframes bounceDown{0%,100%{transform:translateY(0);}50%{transform:translateY(4px);}}
-
-  /* Story — continuous flow, no gap */
+  /* Story */
   .story-header{display:none;}
   .story-card{padding:24px 18px;border-bottom:1px solid var(--border);min-height:auto;display:block;}
   .story-title{font-size:20px;line-height:1.3;margin-bottom:12px;}
@@ -379,17 +355,13 @@ footer{
   .story-quote{margin-top:14px;font-size:12px;}
   .story-footer{padding:16px 18px;}
 
-  /* Footer — 3 rows */
+  /* Footer */
   footer{flex-direction:column;gap:0;padding:0;align-items:stretch;border-top:1px solid var(--border);}
   .footer-row1{display:flex;align-items:center;gap:8px;padding:10px 16px 4px;}
   .footer-row1 .footer-logo{font-size:14px;}
   .footer-row1 .footer-tagline{font-size:9px;color:rgba(255,255,255,0.3);font-style:italic;}
   .footer-row2{font-size:8px;color:rgba(255,255,255,0.2);padding:0 16px 8px;text-align:left;flex:none;}
-  .footer-row3{
-    display:flex;align-items:center;gap:6px;
-    padding:8px 16px 12px;flex-wrap:wrap;margin-left:0;
-    border-top:1px solid var(--border);
-  }
+  .footer-row3{display:flex;align-items:center;gap:6px;padding:8px 16px 12px;flex-wrap:wrap;margin-left:0;border-top:1px solid var(--border);}
   .footer-share-label{font-size:8px;color:rgba(255,255,255,0.3);letter-spacing:0.1em;text-transform:uppercase;}
   .share-btn{font-size:9px;padding:5px 8px;}
 }</style>
@@ -554,10 +526,6 @@ footer{
           <button data-region="wafrica">W.Africa</button>
         </div>
       </div>
-    </div>
-    <div class="mob-scroll-hint">
-      <div class="mob-scroll-hint-title">Scroll to Explore</div>
-      <div class="mob-scroll-arrow">↓</div>
     </div>
   </div>
 
@@ -1035,14 +1003,23 @@ if(mobSlider) mobSlider.addEventListener('input',e=>{
 
 const mobPlayBtn=document.getElementById('mobPlayBtn');
 if(mobPlayBtn) mobPlayBtn.addEventListener('click',()=>{
-  if(playing){stopPlay();mobPlayBtn.textContent='▶ Play';}
-  else{startPlay();mobPlayBtn.textContent='■ Stop';}
+  if(playing){
+    stopPlay();
+    mobPlayBtn.textContent='▶ Play';
+    mobPlayBtn.classList.remove('active');
+  } else {
+    startPlay();
+    mobPlayBtn.textContent='■ Stop';
+    mobPlayBtn.classList.add('active');
+  }
 });
 
 const mobNowBtn=document.getElementById('mobNowBtn');
 if(mobNowBtn) mobNowBtn.addEventListener('click',async()=>{
   stopPlay();
-  document.getElementById('mobPlayBtn').textContent='▶ Play';
+  if(mobPlayBtn){mobPlayBtn.textContent='▶ Play';mobPlayBtn.classList.remove('active');}
+  mobNowBtn.classList.add('active');
+  setTimeout(()=>mobNowBtn.classList.remove('active'),800);
   currentMonth=new Date().getMonth()+1;
   syncMobileControls();
   document.getElementById('monthSlider').value=currentMonth;

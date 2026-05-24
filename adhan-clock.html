@@ -212,12 +212,37 @@ canvas{display:block;flex:1;min-height:0;max-width:100%;touch-action:none;}
 
 /* ── FOOTER ── */
 footer{
-  border-top:1px solid var(--border);padding:10px 28px;
-  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+  display:flex;flex-direction:column;
+  overflow:hidden;
 }
-.footer-logo{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;}
-.footer-logo span{color:var(--cyan);}
-.footer-text{font-size:10px;color:rgba(255,255,255,0.25);}
+.ticker-wrap{
+  overflow:hidden;
+  border-bottom:1px solid var(--border);
+  padding:7px 0;
+  position:relative;
+}
+.ticker-wrap::before,.ticker-wrap::after{
+  content:'';position:absolute;top:0;bottom:0;width:40px;z-index:2;
+}
+.ticker-wrap::before{left:0;background:linear-gradient(to right,var(--bg),transparent);}
+.ticker-wrap::after{right:0;background:linear-gradient(to left,var(--bg),transparent);}
+.ticker-track{
+  display:inline-flex;align-items:center;gap:16px;
+  white-space:nowrap;
+  animation:ticker 30s linear infinite;
+}
+.ticker-item{font-size:10px;color:rgba(255,255,255,0.35);font-style:italic;}
+.ticker-sep{font-size:10px;color:rgba(0,212,255,0.4);font-weight:700;}
+@keyframes ticker{
+  0%{transform:translateX(0);}
+  100%{transform:translateX(-50%);}
+}
+.footer-share{
+  display:flex;align-items:center;justify-content:flex-end;
+  gap:6px;padding:6px 16px;
+}
 
 /* ── LOADING ── */
 .loading-overlay{
@@ -520,189 +545,45 @@ footer{
 
     <!-- Story 1: The full clock -->
     <div class="story-card" data-pi="-1" style="--story-color:var(--cyan);">
-      <div class="story-num">01 / 09</div>
-      <div class="story-prayer" style="color:var(--cyan);">
-        <div class="story-dot" style="background:var(--cyan);"></div>All Five Prayers
-      </div>
       <div class="story-title">The 24-Hour Clock is <em>Never Empty</em></div>
       <div class="story-body">
-        Look at the clock. Every hour — from midnight to midnight — is occupied by prayer. There is no gap, no silence, no hour when the Adhan is not sounding somewhere on Earth.
+        Look at the clock. Every hour, from midnight to midnight, is occupied by prayer. There is no gap, no silence, no hour when the Adhan is not sounding somewhere on Earth.
         <br><br>
-        <strong>157,890 mosques. Five prayers. 24 hours.</strong> The rings fill the entire clock face because the world's Muslims are distributed across every timezone — when it is Fajr in Indonesia, it is Isha in Morocco. The global community of worship never sleeps.
+        <strong>157,890 mosques. Five prayers. 24 hours.</strong> The rings fill the entire clock face because the world's Muslims are distributed across every timezone. When it is Fajr in Indonesia, it is Isha in Morocco. The global community of worship never sleeps.
+        <br><br>
+        Drag the centre dial to separate the five prayers into individual rings. Each ring tells its own story.
       </div>
       <div class="story-quote">
         "Indeed, prayer has been decreed upon the believers a decree of specified times." — Quran 4:103
       </div>
     </div>
 
-    <!-- Story 2: Dhuhr -->
-    <div class="story-card" data-pi="1" style="--story-color:var(--dhuhr);">
-      <div class="story-num">02 / 09</div>
-      <div class="story-prayer" style="color:var(--dhuhr);">
-        <div class="story-dot" style="background:var(--dhuhr);"></div>Dhuhr · Solar Noon
-      </div>
-      <div class="story-title">The <em>Clearest</em> Census</div>
-      <div class="story-body">
-        Separate the prayers and isolate the gold Dhuhr ring. Now drag the month slider from January to December. Watch carefully.
-        <br><br>
-        Every other ring shifts. Fajr and Isha compress and expand with the seasons. Maghrib tilts. But Dhuhr — <strong>Dhuhr barely moves.</strong>
-        <br><br>
-        Because Dhuhr follows solar noon, it has no seasonal distortion, no twilight complications. What remains is the purest signal in the dataset: <strong>a direct portrait of where Muslims live.</strong> Every gap is an empty longitude. Every dense arc is a populated one.
-      </div>
-      <div class="story-quote">
-        If you wanted to draw a map of the Muslim world using only prayer data, you would use Dhuhr.
-      </div>
-    </div>
-
-    <!-- Story 3: Fajr -->
-    <div class="story-card" data-pi="0" style="--story-color:var(--fajr);">
-      <div class="story-num">03 / 09</div>
-      <div class="story-prayer" style="color:var(--fajr);">
-        <div class="story-dot" style="background:var(--fajr);"></div>Fajr · Dawn
-      </div>
-      <div class="story-title">The Circle That <em>Breathes</em></div>
-      <div class="story-body">
-        Separate the prayers and look at the blue Fajr ring. Now change the month slider from June to December. Watch the ring change.
-        <br><br>
-        In summer, <strong>Fajr disappears at high latitudes</strong> — above ~49°N, the sun never dips 18° below the horizon. The ring shows a gap where no Fajr exists astronomically. In winter, the gap closes. The ring breathes with the seasons — expanding and contracting with Earth's axial tilt.
-        <br><br>
-        No prayer table, no app has ever made this visible before. Here it is: the seasonal fragility of Fajr, drawn in light.
-      </div>
-      <div class="story-quote">
-        Switch to June and separate the prayers — watch for the gap in the blue ring above the 18-hour mark.
-      </div>
-    </div>
-
-    <!-- Story 4: Maghrib -->
-    <div class="story-card" data-pi="3" style="--story-color:var(--mag);">
-      <div class="story-num">04 / 09</div>
-      <div class="story-prayer" style="color:var(--mag);">
-        <div class="story-dot" style="background:var(--mag);"></div>Maghrib · Sunset
-      </div>
-      <div class="story-title">Scholarly Consensus as <em>Geometric Precision</em></div>
-      <div class="story-body">
-        When the prayers are separated, Maghrib's red ring is visibly the <strong>sharpest and densest</strong> of all five. Its edges are crisp. Its band is thin.
-        <br><br>
-        This is not a coincidence. Maghrib is the only prayer on which all four madhabs — Hanafi, Maliki, Shafi'i, Hanbali — agree completely. The trigger is actual sunset: when the upper limb of the sun disappears below the horizon. No interpretation. No angle. Just the sun.
-        <br><br>
-        The sharpest ring reflects the least disagreement. <strong>Unity produces precision.</strong>
-      </div>
-      <div class="story-quote">
-        The red ring's sharpness is a visual proof of 1,400 years of scholarly consensus.
-      </div>
-    </div>
-
-    <!-- Story 5: Isha vs Fajr -->
-    <div class="story-card" data-pi="4" style="--story-color:var(--isha);">
-      <div class="story-num">05 / 09</div>
-      <div class="story-prayer" style="color:var(--isha);">
-        <div class="story-dot" style="background:var(--isha);"></div>Isha · Night
-      </div>
-      <div class="story-title">One Degree of Difference, <em>Made Visible</em></div>
-      <div class="story-body">
-        Separate the prayers and compare the two outermost rings: Fajr (blue, innermost) and Isha (purple, outermost).
-        <br><br>
-        Both are twilight prayers. Both have gaps at high latitudes in summer. But look carefully — <strong>Isha's gap is slightly smaller than Fajr's.</strong>
-        <br><br>
-        The reason: Fajr uses 18° below the horizon. Isha uses 17°. That single degree means Isha remains calculable at slightly higher latitudes before it too disappears. <strong>One degree of solar angle, visible as arc length.</strong>
-        <br><br>
-        This difference — invisible in any prayer time table, invisible in any app — is only visible here.
-      </div>
-      <div class="story-quote">
-        This is why the clock exists: to reveal what numbers alone cannot show.
-      </div>
-    </div>
-
-    <!-- Story 6: The dial -->
-    <div class="story-card" data-pi="-1" style="--story-color:var(--cyan);">
-      <div class="story-num">06 / 09</div>
-      <div class="story-prayer" style="color:var(--cyan);">
-        <div class="story-dot" style="background:var(--cyan);"></div>The Separation
-      </div>
-      <div class="story-title">From Chaos to <em>Structure</em></div>
-      <div class="story-body">
-        Drag the centre dial from 0% to 100%. Watch what happens.
-        <br><br>
-        At 0%: all five prayers overlap into one dense, beautiful ring. This is the reality of global worship — inseparable, continuous, constant. The chaos is not disorder. It is the sound of the world praying.
-        <br><br>
-        At 100%: five distinct orbits emerge. Each prayer finds its own place. The structure of Islamic time becomes legible — <strong>five waves, each with its own character, its own story, its own geometry.</strong>
-        <br><br>
-        The transition between them is the moment of revelation.
-      </div>
-      <div class="story-quote">
-        "And establish prayer. Indeed, prayer restrains from immorality and wrongdoing." — Quran 29:45
-      </div>
-    </div>
-
-    <!-- Story 7: The Gaps -->
-    <div class="story-card" data-pi="-1" style="--story-color:var(--cyan);">
-      <div class="story-num">07 / 09</div>
-      <div class="story-prayer" style="color:var(--cyan);">
-        <div class="story-dot" style="background:var(--cyan);"></div>All Five Prayers
-      </div>
-      <div class="story-title">The Gaps Are a <em>Map</em></div>
-      <div class="story-body">
-        Look closely at the rings. Every prayer has the same gaps, at the same clock positions. The gaps don't belong to any single prayer. They belong to the <strong>longitudes underneath them</strong>.
-        <br><br>
-        Those silent clock positions correspond to the Americas, the Pacific Ocean, Central Africa, and Australia — regions with few or no mosques. Where there are no Muslims, there is no Adhan.
-        <br><br>
-        <strong>The clock is not just a clock. It is a map of where Muslims live, expressed as time.</strong>
-      </div>
-      <div class="story-quote">
-        The clock's silences are as meaningful as its sound. Both tell you where the Muslim world is — and where it isn't.
-      </div>
-    </div>
-
-    <!-- Story 8: Band Thickness -->
-    <div class="story-card" data-pi="-1" style="--story-color:#ffcc00;">
-      <div class="story-num">08 / 09</div>
-      <div class="story-prayer" style="color:#ffcc00;">
-        <div class="story-dot" style="background:#ffcc00;"></div>Muslim World · Demographics
-      </div>
-      <div class="story-title">Thickness is <em>Population</em></div>
-      <div class="story-body">
-        Separate the prayers with the dial. Look at the <strong>circumferential thickness</strong> of each ring — how wide the band is at different clock positions. This is not decoration. It is data.
-        <br><br>
-        The thickest sections of every ring fall around <strong>UTC+5 to UTC+8</strong>. That is South Asia and Southeast Asia — Pakistan, India, Bangladesh, Indonesia, Malaysia. The most densely Muslim-populated region on Earth.
-        <br><br>
-        The Adhan Clock is a <strong>demographic portrait of the Muslim world</strong>, drawn in the language of prayer.
-      </div>
-      <div class="story-quote">
-        No census. No colour-coded map. Just 157,890 mosques, plotted by when they pray.
-      </div>
-    </div>
-
-    <!-- Story 9: The Relay -->
-    <div class="story-card" data-pi="-1" style="--story-color:var(--isha);">
-      <div class="story-num">09 / 09</div>
-      <div class="story-prayer" style="color:var(--isha);">
-        <div class="story-dot" style="background:var(--isha);"></div>The Relay
-      </div>
-      <div class="story-title">A Prayer <em>Never Ends</em></div>
-      <div class="story-body">
-        Watch the NOW marker move through the clock. Notice what it crosses.
-        <br><br>
-        As the marker leaves the dense S.Asia/SE Asia arc, it enters the Gulf. Then East Africa. Then West Africa and Europe. Then back to Asia. <strong>Each region picks up the prayer as the previous one puts it down.</strong>
-        <br><br>
-        The density at the NOW marker never drops to zero. There is always a mosque somewhere in its path. The Adhan is a relay race around the Earth, and no baton is ever dropped.
-      </div>
-      <div class="story-quote">
-        "Indeed, prayer has been decreed upon the believers a decree of specified times." — Quran 4:103
-      </div>
-    </div>
-
-    <div class="story-footer">
-      The Adhan Clock is part of AdhanLive — a live global visualization of Islamic prayer.<br>
-      Every dot represents a real mosque. Every ring tells a real story.
-    </div>
   </div>
 
 </div>
 
 <footer>
-  <div class="footer-logo">Adhan<span>Live</span></div>
-  <div class="footer-text">157,890 Mosques · 5 Daily Prayers · 24 Hours · Global Islamic Prayer Visualization</div>
-  <div style="display:flex;gap:6px;align-items:center;">
+  <div class="ticker-wrap">
+    <div class="ticker-track" id="tickerTrack">
+      <span class="ticker-item">The Adhan Clock is part of AdhanLive, a live global visualization of Islamic prayer.</span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">Every dot represents a real mosque.</span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">Every ring tells a real story.</span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">157,890 mosques. Five daily prayers. 24 hours.</span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">The Adhan Clock is part of AdhanLive, a live global visualization of Islamic prayer.</span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">Every dot represents a real mosque.</span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">Every ring tells a real story.</span>
+      <span class="ticker-sep">·</span>
+      <span class="ticker-item">157,890 mosques. Five daily prayers. 24 hours.</span>
+      <span class="ticker-sep">·</span>
+    </div>
+  </div>
+  <div class="footer-share">
     <a id="shareX" href="#" target="_blank" class="nav-link" style="font-size:10px;padding:5px 10px;" title="Share on X">𝕏 Share</a>
     <button id="copyLink" class="nav-link" style="font-size:10px;padding:5px 10px;cursor:pointer;border:none;background:transparent;" title="Copy link">🔗 Copy</button>
     <button id="shareBtn" class="nav-link" style="font-size:10px;padding:5px 10px;cursor:pointer;border:none;background:transparent;display:none;" title="Share">↑ Share</button>

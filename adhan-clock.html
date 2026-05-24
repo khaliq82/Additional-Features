@@ -1066,12 +1066,19 @@ if(window.innerWidth<=768) dotSize=1.4;
 // ── Init ───────────────────────────────────────────────────────────
 async function init(){
   const bar=document.getElementById('loadingBar');
+  const msg=document.getElementById('loadingMsg');
   currentMonth=new Date().getMonth()+1;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
 
   bar.style.width='25%';
-  await loadMonth(currentMonth);
+  try{
+    await loadMonth(currentMonth);
+  } catch(e){
+    if(msg) msg.textContent='Error loading data: '+e.message;
+    console.error('loadMonth failed:',e);
+    return;
+  }
   bar.style.width='60%';
   resizeClock();render();
   await new Promise(r=>setTimeout(r,150));
@@ -1080,7 +1087,6 @@ async function init(){
 
   initStoryObserver();
 
-  // Preload all months in parallel
   const preloads=[];
   for(let m=1;m<=12;m++){
     if(m===currentMonth)continue;

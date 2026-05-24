@@ -894,17 +894,27 @@ playBtn.addEventListener('click',()=>playing?stopPlay():startPlay());
 function startPlay(){
   playing=true;showNowMarker=false;
   playBtn.textContent='■ Stop';playBtn.classList.add('active');
+  // Clear Now button on mobile
+  const mn=document.getElementById('mobNowBtn');
+  if(mn) mn.classList.remove('active');
   animateYear();
 }
 function stopPlay(){
   playing=false;if(playTimer)clearTimeout(playTimer);
   playBtn.textContent='▶ Play Year';playBtn.classList.remove('active');
+  const mb=document.getElementById('mobPlayBtn');
+  if(mb){mb.textContent='▶ Play';mb.classList.remove('active');}
 }
 function animateYear(){
   if(!playing)return;
   currentMonth=currentMonth>=12?1:currentMonth+1;
   document.getElementById('monthSlider').value=currentMonth;
   document.getElementById('dateBadge').innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
+  // Sync mobile slider and badge
+  const ms=document.getElementById('mobMonthSlider');
+  const mb=document.getElementById('mobDateBadge');
+  if(ms) ms.value=currentMonth;
+  if(mb) mb.innerHTML=MONTH_NAMES[currentMonth-1]+' <span>2026</span>';
   if(monthCache[currentMonth]){
     currentData=buildRenderData(monthCache[currentMonth],clockMode);
     scheduleRender();

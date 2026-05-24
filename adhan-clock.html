@@ -957,29 +957,6 @@ document.getElementById('legend').addEventListener('click',e=>{
 
 window.addEventListener('resize',()=>{resizeClock();render();});
 
-// ── Sharing ────────────────────────────────────────────────────────
-const shareText='The 24-hour clock is never empty. 157,890 mosques. 5 prayers. Every hour occupied. #AdhanLive #Islam';
-const shareUrl=window.location.href;
-
-document.getElementById('shareX').href=
-  `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
-
-document.getElementById('copyLink').addEventListener('click',()=>{
-  navigator.clipboard.writeText(shareUrl).then(()=>{
-    const btn=document.getElementById('copyLink');
-    btn.textContent='✓ Copied!';
-    setTimeout(()=>btn.textContent='🔗 Copy',2000);
-  });
-});
-
-if(navigator.share){
-  const shareBtn=document.getElementById('shareBtn');
-  shareBtn.style.display='block';
-  shareBtn.addEventListener('click',()=>{
-    navigator.share({title:'The Adhan Clock — AdhanLive',text:shareText,url:shareUrl});
-  });
-}
-
 // ── Nav clock ──────────────────────────────────────────────────────
 function updateNavClock(){
   const now=new Date();

@@ -964,6 +964,7 @@ async function loadWorldMap() {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
+      console.log('Map image loaded:', img.width, 'x', img.height);
       const offscreen = document.createElement('canvas');
       offscreen.width = img.width;
       offscreen.height = img.height;
@@ -971,6 +972,8 @@ async function loadWorldMap() {
       octx.drawImage(img, 0, 0);
 
       const imageData = octx.getImageData(0, 0, offscreen.width, offscreen.height);
+      const data = imageData.data;
+      console.log('Sample pixel at center:', data[0], data[1], data[2], data[3]);
       const data = imageData.data;
 
       for (let i = 0; i < data.length; i += 4) {

@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Adhan Clock — AdhanLive</title>
-<meta name="description" content="157,890 mosques. Five prayers. One clock. The live global visualization of Islamic prayer.">
+<meta name="description" content="280,621 mosques. Five prayers. One clock. The live global visualization of Islamic prayer.">
 <meta property="og:title" content="The Adhan Clock — AdhanLive">
-<meta property="og:description" content="157,890 mosques. Five prayers. One clock. Watch the Adhan travel around the Earth in real time.">
+<meta property="og:description" content="280,621 mosques. Five prayers. One clock. Watch the Adhan travel around the Earth in real time.">
 <meta property="og:image" content="https://www.adhanlive.com/adhan-clock-og.png">
 <meta property="og:url" content="https://www.adhanlive.com/adhan-clock.html">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="The Adhan Clock — AdhanLive">
-<meta name="twitter:description" content="157,890 mosques. Five prayers. One clock. Watch the Adhan travel around the Earth in real time.">
+<meta name="twitter:description" content="280,621 mosques. Five prayers. One clock. Watch the Adhan travel around the Earth in real time.">
 <meta name="twitter:image" content="https://www.adhanlive.com/adhan-clock-og.png">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -371,7 +371,7 @@ footer{
 
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-title">The Adhan Clock</div>
-  <div class="loading-sub">157,890 mosques · All five prayers · Every month of the year</div>
+  <div class="loading-sub">280,621 mosques · All five prayers · Every month of the year</div>
   <div class="loading-bar-wrap"><div class="loading-bar" id="loadingBar"></div></div>
   <div class="loading-msg" id="loadingMsg">Loading…</div>
 </div>
@@ -488,7 +488,7 @@ footer{
   <!-- CENTRE: Clock -->
   <div class="centre">
     <div class="clock-wrap">
-      <div class="clock-top" id="clockTopLabel">157,890 Mosques · 5 Prayers · One Clock</div>
+      <div class="clock-top" id="clockTopLabel">280,621 Mosques · 5 Prayers · One Clock</div>
       <canvas id="clockCanvas"></canvas>
       <div class="clock-status" id="dialLabel">Drag the centre dial to separate prayers</div>
     </div>
@@ -543,7 +543,7 @@ footer{
       <div class="story-body">
         Every dot is a mosque. Every ring is a prayer. Together, they reveal something extraordinary: Not a single hour of the day passes in the world without the Adhan. The global community of worship never sleeps.
         <br><br>
-        157,890 mosques across every timezone keep the call to prayer alive around the clock. When Fajr begins in Southeast Asia, Isha is still echoing in West Africa. One unbroken wave, circling the globe.
+        280,621 mosques across every timezone keep the call to prayer alive around the clock. When Fajr begins in Southeast Asia, Isha is still echoing in West Africa. One unbroken wave, circling the globe.
         <br><br>
         Drag the centre dial to separate the five prayers into individual rings and see each one tell its own story.
       </div>
@@ -592,7 +592,7 @@ const PRAYER_RING_POS=[0.1,0.32,0.54,0.76,0.98];
 const MONTH_NAMES=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const MODE_DESC={local:'Prayer times in your local timezone',utc:'When prayers fire globally in UTC'};
 const MODE_LABEL={local:'Your Local Time',utc:'UTC — Global Wave'};
-const CLOCK_CAPTION='157,890 Mosques · 5 Prayers · One Clock';
+const CLOCK_CAPTION='280,621 Mosques · 5 Prayers · One Clock';
 
 // ── State ──────────────────────────────────────────────────────────
 const canvas=document.getElementById('clockCanvas');
@@ -1127,7 +1127,7 @@ init();
 
 // ── Sharing ────────────────────────────────────────────────────────
 const shareUrl='https://www.adhanlive.com/adhan-clock.html';
-const shareText='157,890 mosques. Five prayers. One clock. Watch the Adhan travel around the Earth in real time.';
+const shareText='280,621 mosques. Five prayers. One clock. Watch the Adhan travel around the Earth in real time.';
 const waBtn=document.getElementById('shareWhatsApp');
 if(waBtn) waBtn.href=`https://wa.me/?text=${encodeURIComponent(shareText+' '+shareUrl)}`;
 const xBtn=document.getElementById('shareX');

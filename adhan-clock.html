@@ -634,23 +634,66 @@ function buildRenderData(d,mode){
   return{angles,rNorm,prayer,region,n};
 }
 
+// ── Offscreen canvas for static base (hour markers, rings) ────────
+let offscreen=null,offCtx=null,offDirty=true;
+
+function buildOffscreen(){
+  if(!offscreen){
+    offscreen=document.createElement('canvas');
+    offCtx=offscreen.getContext('2d');
+  }
+  const dpr=window.devicePixelRatio||1;
+  offscreen.width=canvas.width;offscreen.height=canvas.height;
+  offCtx.scale(dpr,dpr);
+  // Draw static elements onto offscreen
+  offCtx.clearRect(0,0,CW,CW);
+  const bg=offCtx.createRadialGradient(CX,CY,0,CX,CY,CW/2);
+  bg.addColorStop(0,'#080c1a');bg.addColorStop(1,'#02040c');
+  offCtx.fillStyle=bg;offCtx.fillRect(0,0,CW,CW);
+  offCtx.save();
+  offCtx.strokeStyle='rgba(255,255,255,0.18)';offCtx.lineWidth=1;
+  offCtx.beginPath();offCtx.arc(CX,CY,R_outer+13,0,Math.PI*2);offCtx.stroke();
+  offCtx.strokeStyle='rgba(255,255,255,0.08)';offCtx.lineWidth=1;
+  offCtx.beginPath();offCtx.arc(CX,CY,R_inner-5,0,Math.PI*2);offCtx.stroke();
+  for(let i=1;i<=4;i++){
+    offCtx.strokeStyle='rgba(255,255,255,0.02)';offCtx.lineWidth=0.5;
+    offCtx.beginPath();offCtx.arc(CX,CY,R_inner+(R_outer-R_inner)*i/5,0,Math.PI*2);offCtx.stroke();
+  }
+  offCtx.restore();
+  offCtx.save();
+  for(let h=0;h<24;h++){
+    const a=(h/24)*Math.PI*2-Math.PI/2;
+    const maj=h%6===0,mid=h%3===0;
+    offCtx.strokeStyle=maj?'rgba(255,255,255,0.5)':mid?'rgba(255,255,255,0.18)':'rgba(255,255,255,0.06)';
+    offCtx.lineWidth=maj?1.5:0.5;
+    offCtx.beginPath();
+    offCtx.moveTo(CX+Math.cos(a)*(R_outer+(maj?5:mid?3:1.5)),CY+Math.sin(a)*(R_outer+(maj?5:mid?3:1.5)));
+    offCtx.lineTo(CX+Math.cos(a)*(R_outer+13),CY+Math.sin(a)*(R_outer+13));
+    offCtx.stroke();
+    offCtx.fillStyle='rgba(255,255,255,0.85)';
+    offCtx.font=(maj?`700 ${CW*0.018}px`:`300 ${CW*0.013}px`)+' Inter,sans-serif';
+    offCtx.textAlign='center';offCtx.textBaseline='middle';
+    offCtx.fillText(h.toString().padStart(2,'0'),CX+Math.cos(a)*(R_outer+24),CY+Math.sin(a)*(R_outer+24));
+  }
+  offCtx.restore();
+  offCtx.save();
+  offCtx.fillStyle='rgba(255,255,255,0.07)';
+  offCtx.font=`600 ${CW*0.022}px Inter,sans-serif`;
+  offCtx.textAlign='center';offCtx.textBaseline='middle';
+  offCtx.fillText('ADHAN',CX,CY-CW*0.022);
+  offCtx.fillText('CLOCK',CX,CY+CW*0.022);
+  offCtx.restore();
+  offDirty=false;
+}
+
 // ── Drawing ────────────────────────────────────────────────────────
 function drawBase(){
-  ctx.clearRect(0,0,CW,CW);
-  const bg=ctx.createRadialGradient(CX,CY,0,CX,CY,CW/2);
-  bg.addColorStop(0,'#080c1a');bg.addColorStop(1,'#02040c');
-  ctx.fillStyle=bg;ctx.fillRect(0,0,CW,CW);
-
-  ctx.save();
-  ctx.strokeStyle='rgba(255,255,255,0.18)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.arc(CX,CY,R_outer+13,0,Math.PI*2);ctx.stroke();
-  ctx.strokeStyle='rgba(255,255,255,0.08)';ctx.lineWidth=1;
-  ctx.beginPath();ctx.arc(CX,CY,R_inner-5,0,Math.PI*2);ctx.stroke();
-  for(let i=1;i<=4;i++){
-    ctx.strokeStyle='rgba(255,255,255,0.02)';ctx.lineWidth=0.5;
-    ctx.beginPath();ctx.arc(CX,CY,R_inner+(R_outer-R_inner)*i/5,0,Math.PI*2);ctx.stroke();
-  }
+  if(offDirty) buildOffscreen();
+  // Blit static base — single drawImage call instead of 30+ draw ops
+  ctx.drawImage(offscreen,0,0,CW,CW);
+  // Separation guide rings — dynamic, drawn on top
   if(separateT>0.02){
+    ctx.save();
     const range=R_outer-R_inner;
     for(let pi=0;pi<5;pi++){
       const r=R_inner+range*PRAYER_RING_POS[pi];
@@ -661,40 +704,15 @@ function drawBase(){
       ctx.beginPath();ctx.arc(CX,CY,r,0,Math.PI*2);ctx.stroke();
       ctx.globalAlpha=1;
     }
+    ctx.restore();
   }
-  ctx.restore();
-
-  ctx.save();
-  for(let h=0;h<24;h++){
-    const a=(h/24)*Math.PI*2-Math.PI/2;
-    const maj=h%6===0,mid=h%3===0;
-    ctx.strokeStyle=maj?'rgba(255,255,255,0.5)':mid?'rgba(255,255,255,0.18)':'rgba(255,255,255,0.06)';
-    ctx.lineWidth=maj?1.5:0.5;
-    ctx.beginPath();
-    ctx.moveTo(CX+Math.cos(a)*(R_outer+(maj?5:mid?3:1.5)),CY+Math.sin(a)*(R_outer+(maj?5:mid?3:1.5)));
-    ctx.lineTo(CX+Math.cos(a)*(R_outer+13),CY+Math.sin(a)*(R_outer+13));
-    ctx.stroke();
-    const lr=R_outer+24;
-    ctx.fillStyle='rgba(255,255,255,0.85)';
-    ctx.font=(maj?`700 ${CW*0.018}px`:`300 ${CW*0.013}px`)+' Inter,sans-serif';
-    ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(h.toString().padStart(2,'0'),CX+Math.cos(a)*lr,CY+Math.sin(a)*lr);
-  }
-  ctx.restore();
-
-  ctx.save();
-  ctx.fillStyle='rgba(255,255,255,0.07)';
-  ctx.font=`600 ${CW*0.022}px Inter,sans-serif`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('ADHAN',CX,CY-CW*0.022);
-  ctx.fillText('CLOCK',CX,CY+CW*0.022);
-  ctx.restore();
 }
 
 function drawDots(){
   if(!currentData) return;
   const{angles,rNorm,prayer,region,n}=currentData;
-  const range=R_outer-R_inner,ds=dotSize,st=separateT;
+  const range=R_outer-R_inner,st=separateT;
+  const ds=isDragging?Math.max(0.4,dotSize*0.55):dotSize;
   const RCODES={all:-1,gulf:1,southasia:2,seasia:3,nafrica:4,europe:5,wafrica:6};
   const fc=RCODES[activeRegion];
 
@@ -826,6 +844,7 @@ canvas.addEventListener('pointerdown',e=>{
     e.preventDefault();
   }
 });
+let dragFrameCount=0;
 canvas.addEventListener('pointermove',e=>{
   if(!isDragging)return;
   let delta=getAngle(e)-lastAngle;
@@ -837,7 +856,9 @@ canvas.addEventListener('pointermove',e=>{
     separateT>0.95?'Fully separated — each prayer in its own orbit':
     `Separating — ${Math.round(separateT*100)}%`;
   document.getElementById('dialLabel').textContent=lbl;
-  scheduleRender();
+  // Throttle: only render every 2nd frame during drag
+  dragFrameCount++;
+  if(dragFrameCount%2===0) scheduleRender();
 });
 canvas.addEventListener('pointerup',()=>{isDragging=false;});
 canvas.addEventListener('pointercancel',()=>{isDragging=false;});
@@ -962,7 +983,7 @@ document.querySelectorAll('.seg-btn[data-mode]').forEach(btn=>btn.addEventListen
 
 document.querySelectorAll('.seg-btn[data-size]').forEach(btn=>btn.addEventListener('click',()=>{
   document.querySelectorAll('.seg-btn[data-size]').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');dotSize=parseFloat(btn.dataset.size);scheduleRender();
+  btn.classList.add('active');dotSize=parseFloat(btn.dataset.size);offDirty=true;scheduleRender();
 }));
 
 document.querySelectorAll('.region-btn').forEach(btn=>btn.addEventListener('click',()=>{
@@ -981,7 +1002,7 @@ document.getElementById('legend').addEventListener('click',e=>{
   scheduleRender();
 });
 
-window.addEventListener('resize',()=>{resizeClock();render();});
+window.addEventListener('resize',()=>{offDirty=true;resizeClock();render();});
 
 // ── Nav clock ──────────────────────────────────────────────────────
 function updateNavClock(){

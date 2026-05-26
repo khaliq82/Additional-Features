@@ -998,11 +998,6 @@ function drawGeoPath(context, feature, w, h) {
 function drawContinents() {
   if(!worldLand) return;
   ctx.save();
-  const yTop = lonLatToXY(0, 90)[1];
-  const yBot = lonLatToXY(0, -90)[1];
-  ctx.beginPath();
-  ctx.rect(0, yTop, canvas.width, yBot - yTop);
-  ctx.clip();
 
   ctx.fillStyle = 'rgba(30,45,80,0.95)';
   ctx.strokeStyle = 'rgba(255,255,255,0.055)';
@@ -1013,14 +1008,6 @@ function drawContinents() {
   }
   ctx.fill();
   ctx.stroke();
-
-  // Fill polar caps where data ends (~83°N and ~83°S)
-  // Use land color — Arctic and Antarctic are land/ice anyway
-  const yPolarN = lonLatToXY(0, 83)[1];
-  const yPolarS = lonLatToXY(0, -83)[1];
-  ctx.fillStyle = 'rgba(30,45,80,0.95)';
-  ctx.fillRect(0, 0, canvas.width, yPolarN);
-  ctx.fillRect(0, yPolarS, canvas.width, canvas.height);
 
   ctx.restore();
 }
@@ -1044,7 +1031,11 @@ let W = canvas.width, H = canvas.height;
 
 function lonLatToXY(lon, lat, w, h) {
   w = w || canvas.width; h = h || canvas.height;
-  return [(lon+180)/360*w, (90-lat)/180*h];
+  // Crop to ±75° to hide missing polar data
+  const maxLat = 75, minLat = -75;
+  const x = (lon + 180) / 360 * w;
+  const y = (maxLat - lat) / (maxLat - minLat) * h;
+  return [x, y];
 }
 
 function drawGraticule() {

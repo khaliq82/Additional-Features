@@ -998,7 +998,6 @@ function drawGeoPath(context, feature, w, h) {
 function drawContinents() {
   if(!worldLand) return;
   ctx.save();
-  // Clip to full latitude range
   const yTop = lonLatToXY(0, 90)[1];
   const yBot = lonLatToXY(0, -90)[1];
   ctx.beginPath();
@@ -1014,6 +1013,14 @@ function drawContinents() {
   }
   ctx.fill();
   ctx.stroke();
+
+  // Fill polar caps where data ends (~83°N and ~83°S)
+  // Use land color — Arctic and Antarctic are land/ice anyway
+  const yPolarN = lonLatToXY(0, 83)[1];
+  const yPolarS = lonLatToXY(0, -83)[1];
+  ctx.fillStyle = 'rgba(30,45,80,0.95)';
+  ctx.fillRect(0, 0, canvas.width, yPolarN);
+  ctx.fillRect(0, yPolarS, canvas.width, canvas.height);
 
   ctx.restore();
 }

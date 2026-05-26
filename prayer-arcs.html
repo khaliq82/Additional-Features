@@ -955,26 +955,70 @@ function doyToDate(doy) {
 }
 
 // ── Continent outlines (Natural Earth 110m simplified) ────────────────
-// ── World map (Natural Earth 110m with full polar coverage) ────────────────
+// ── World map (image-based, full polar coverage) ────────────────────
 let worldLand = null;
+let worldMapImage = null;
+let worldMapCanvas = null;
 
 async function loadWorldMap() {
-  const urls = [
-    'https://unpkg.com/world-atlas@2/countries-110m.json',
-    'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json',
-  ];
-  for (const url of urls) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      // Create offscreen canvas to process the image
+      const offscreen = document.createElement('canvas');
+      offscreen.width = img.width;
+      offscreen.height = img.height;
+      const octx = offscreen.getContext('2d');
+      octx.drawImage(img, 0, 0);
+
+      // Get pixel data and recolor
+      const imageData = octx.getImageData(0, 0, offscreen.width, offscreen.height);
+      const data = imageData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i], g = data[i+1], b = data[i+2];
+        const brightness = (r + g + b) / 3;
+
+        if (brightness > 200) {
+          // White/light = ocean = transparent
+          data[i+3] = 0;
+        } else {
+          // Grey/dark = land = dark blue-slate
+          data[i]   = 30;  // R
+          data[i+1] = 45;  // G
+          data[i+2] = 80;  // B
+          data[i+3] = 220; // Alpha
+        }
+      }
+
+      octx.putImageData(imageData, 0, 0);
+      worldMapCanvas = offscreen;
+      resolve();
+    };
+    img.onerror = () => {
+      console.warn('Map image failed to load, falling back to TopoJSON');
+      loadWorldMapFallback().then(resolve);
+    };
+    img.src = 'GreyMap.jpg';
+  });
+}
+
+async function loadWorldMapFallback() {
+  try {
+    const res = await fetch('https://unpkg.com/world-atlas@2/countries-110m.json');
+    if (!res.ok) throw new Error('unpkg failed');
+    const world = await res.json();
+    worldLand = topojson.feature(world, world.objects.land);
+  } catch(e) {
     try {
-      const res = await fetch(url);
-      if (!res.ok) continue;
+      const res = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
       const world = await res.json();
       worldLand = topojson.feature(world, world.objects.land);
-      return;
-    } catch(e) {
-      console.warn('Map CDN failed:', url, e);
+    } catch(e2) {
+      console.warn('All map sources failed');
     }
   }
-  console.warn('All map CDNs failed');
 }
 
 function drawGeoPath(context, feature, w, h) {
@@ -996,26 +1040,26 @@ function drawGeoPath(context, feature, w, h) {
 }
 
 function drawContinents() {
-  if(!worldLand) return;
-  ctx.save();
-  // Clip to full latitude range
-  const yTop = lonLatToXY(0, 90)[1];
-  const yBot = lonLatToXY(0, -90)[1];
-  ctx.beginPath();
-  ctx.rect(0, yTop, canvas.width, yBot - yTop);
-  ctx.clip();
-
-  ctx.fillStyle = 'rgba(30,45,80,0.95)';
-  ctx.strokeStyle = 'rgba(255,255,255,0.055)';
-  ctx.lineWidth = 0.5;
-  ctx.beginPath();
-  for(const feature of worldLand.features) {
-    drawGeoPath(ctx, feature, canvas.width, canvas.height);
+  if (worldMapCanvas) {
+    ctx.drawImage(worldMapCanvas, 0, 0, canvas.width, canvas.height);
+  } else if (worldLand) {
+    ctx.save();
+    const yTop = lonLatToXY(0, 90)[1];
+    const yBot = lonLatToXY(0, -90)[1];
+    ctx.beginPath();
+    ctx.rect(0, yTop, canvas.width, yBot - yTop);
+    ctx.clip();
+    ctx.fillStyle = 'rgba(30,45,80,0.95)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.055)';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    for(const feature of worldLand.features) {
+      drawGeoPath(ctx, feature, canvas.width, canvas.height);
+    }
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
   }
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.restore();
 }
 
 

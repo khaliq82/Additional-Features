@@ -976,19 +976,12 @@ async function loadWorldMap() {
       console.log('Sample pixel at center:', data[0], data[1], data[2], data[3]);
 
       for (let i = 0; i < data.length; i += 4) {
-        const r = data[i], g = data[i+1], b = data[i+2];
-        const brightness = (r + g + b) / 3;
-        if (brightness > 220) {
-          // Very light = ocean/background = transparent
+        const a = data[i+3];
+        if (a < 128) {
+          // Transparent = ocean = keep transparent
           data[i+3] = 0;
-        } else if (brightness > 150) {
-          // Medium grey = land
-          data[i]   = 30;
-          data[i+1] = 45;
-          data[i+2] = 80;
-          data[i+3] = 220;
         } else {
-          // Dark = also land (borders etc)
+          // Any opaque pixel = land = dark blue-slate
           data[i]   = 30;
           data[i+1] = 45;
           data[i+2] = 80;

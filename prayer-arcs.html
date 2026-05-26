@@ -955,26 +955,59 @@ function doyToDate(doy) {
 }
 
 // ── Continent outlines (Natural Earth 110m simplified) ────────────────
-// ── World map (Natural Earth 110m with full polar coverage) ────────────────
+// ── World map (Wikipedia equirectangular PNG — exact 2:1 ratio) ──────
 let worldLand = null;
+let worldMapCanvas = null;
 
 async function loadWorldMap() {
-  const urls = [
-    'https://unpkg.com/world-atlas@2/land-110m.json',
-    'https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json',
-  ];
-  for (const url of urls) {
-    try {
-      const res = await fetch(url);
-      if (!res.ok) continue;
-      const world = await res.json();
-      worldLand = topojson.feature(world, world.objects.land);
-      return;
-    } catch(e) {
-      console.warn('Map CDN failed:', url, e);
-    }
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      const offscreen = document.createElement('canvas');
+      offscreen.width = img.width;
+      offscreen.height = img.height;
+      const octx = offscreen.getContext('2d');
+      octx.drawImage(img, 0, 0);
+
+      const imageData = octx.getImageData(0, 0, offscreen.width, offscreen.height);
+      const data = imageData.data;
+
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i], g = data[i+1], b = data[i+2];
+        const brightness = (r + g + b) / 3;
+        if (brightness > 180) {
+          // Light = ocean/background = transparent
+          data[i+3] = 0;
+        } else {
+          // Dark = land = dark blue-slate
+          data[i]   = 30;
+          data[i+1] = 45;
+          data[i+2] = 80;
+          data[i+3] = 220;
+        }
+      }
+
+      octx.putImageData(imageData, 0, 0);
+      worldMapCanvas = offscreen;
+      resolve();
+    };
+    img.onerror = () => {
+      console.warn('Wikipedia map failed, falling back to TopoJSON');
+      loadTopoJSON().then(resolve);
+    };
+    img.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/BlankMap-Equirectangular.svg/2560px-BlankMap-Equirectangular.svg.png';
+  });
+}
+
+async function loadTopoJSON() {
+  try {
+    const res = await fetch('https://unpkg.com/world-atlas@2/land-110m.json');
+    const world = await res.json();
+    worldLand = topojson.feature(world, world.objects.land);
+  } catch(e) {
+    console.warn('TopoJSON fallback also failed');
   }
-  console.warn('All map CDNs failed');
 }
 
 function drawGeoPath(context, feature, w, h) {
@@ -996,20 +1029,21 @@ function drawGeoPath(context, feature, w, h) {
 }
 
 function drawContinents() {
-  if(!worldLand) return;
-  ctx.save();
-
-  ctx.fillStyle = 'rgba(30,45,80,0.95)';
-  ctx.strokeStyle = 'rgba(255,255,255,0.055)';
-  ctx.lineWidth = 0.5;
-  ctx.beginPath();
-  for(const feature of worldLand.features) {
-    drawGeoPath(ctx, feature, canvas.width, canvas.height);
+  if (worldMapCanvas) {
+    ctx.drawImage(worldMapCanvas, 0, 0, canvas.width, canvas.height);
+  } else if (worldLand) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(30,45,80,0.95)';
+    ctx.strokeStyle = 'rgba(255,255,255,0.055)';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    for(const feature of worldLand.features) {
+      drawGeoPath(ctx, feature, canvas.width, canvas.height);
+    }
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
   }
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.restore();
 }
 
 
@@ -1031,11 +1065,7 @@ let W = canvas.width, H = canvas.height;
 
 function lonLatToXY(lon, lat, w, h) {
   w = w || canvas.width; h = h || canvas.height;
-  // Crop to ±75° to hide missing polar data
-  const maxLat = 75, minLat = -75;
-  const x = (lon + 180) / 360 * w;
-  const y = (maxLat - lat) / (maxLat - minLat) * h;
-  return [x, y];
+  return [(lon+180)/360*w, (90-lat)/180*h];
 }
 
 function drawGraticule() {

@@ -289,10 +289,38 @@
   .nav-clock { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; flex-shrink: 0; min-width: 120px; }
   .nav-date { font-size: 11px; color: #00d4ff; font-weight: 400; letter-spacing: 0.04em; white-space: nowrap; }
   .nav-time { font-size: 14px; color: #fff; font-weight: 500; letter-spacing: 0.08em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .new-chat-btn {
+    display:flex;align-items:center;gap:5px;
+    padding:5px 12px;border-radius:4px;
+    border:1px solid rgba(255,255,255,0.15);background:transparent;
+    color:rgba(255,255,255,0.55);font-family:'Inter',sans-serif;
+    font-size:10px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;
+    cursor:pointer;transition:all 0.2s;white-space:nowrap;
+  }
+  .new-chat-btn:hover{border-color:rgba(0,212,255,0.4);color:#00d4ff;}
+
+  .nav-hamburger{
+    display:none;align-items:center;justify-content:center;
+    width:36px;height:36px;background:none;
+    border:1px solid rgba(255,255,255,0.15);border-radius:6px;
+    cursor:pointer;color:rgba(255,255,255,0.7);font-size:16px;
+  }
+  .mobile-menu{
+    display:none;position:fixed;top:52px;left:0;right:0;bottom:0;
+    background:rgba(2,4,12,0.98);z-index:200;
+    padding:24px;flex-direction:column;gap:20px;
+    border-top:1px solid rgba(255,255,255,0.08);
+  }
+  .mobile-menu a{color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;font-weight:500;}
+  .mobile-menu a.active{color:#00d4ff;}
+
   @media (max-width: 768px) {
-    nav { padding: 12px 16px; }
+    nav { padding: 10px 16px; }
     .nav-center { display: none; }
-    .nav-clock { display: flex; min-width: auto; }
+    .nav-clock { display: none; }
+    .nav-hamburger { display: flex; }
+    .new-chat-btn { font-size: 9px; padding: 4px 10px; }
   }
 </style>
 </head>
@@ -302,18 +330,32 @@
   <nav>
     <div class="nav-logo">Adhan<span>Live</span></div>
     <div class="nav-center">
-      <a href="about.html" class="nav-link">About</a>
+      <a href="index.html#about" class="nav-link">About</a>
       <a href="index.html" class="nav-link">Live Map</a>
       <a href="adhan-clock.html" class="nav-link">Adhan Clock</a>
       <a href="prayer-arcs.html" class="nav-link">Arc Explorer</a>
       <a href="ask-adhanlive.html" class="nav-link active">Ask AdhanLive</a>
-      <a href="contact.html" class="nav-link">Contact</a>
+      <a href="index.html#contact" class="nav-link">Contact</a>
     </div>
-    <div class="nav-clock">
-      <div class="nav-date" id="navDate"></div>
-      <div class="nav-time" id="navTime"></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="new-chat-btn" id="newChatBtn" onclick="newChat()" style="display:none;">↩ New Chat</button>
+      <div class="nav-clock">
+        <div class="nav-date" id="navDate"></div>
+        <div class="nav-time" id="navTime"></div>
+      </div>
+      <button class="nav-hamburger" id="navHamburger" onclick="toggleMobileMenu()">☰</button>
     </div>
   </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html#about">About</a>
+    <a href="index.html">Live Map</a>
+    <a href="adhan-clock.html">Adhan Clock</a>
+    <a href="prayer-arcs.html">Arc Explorer</a>
+    <a href="ask-adhanlive.html" class="active">Ask AdhanLive</a>
+    <a href="index.html#contact">Contact</a>
+  </div>
 
   <!-- Welcome screen (shown until first message) -->
   <div class="welcome-screen" id="welcomeScreen">
@@ -448,7 +490,39 @@ function switchToChatMode() {
   welcomeScreen.style.display = 'none';
   chatArea.classList.add('active');
   inputAreaEl.classList.add('active');
+  document.getElementById('newChatBtn').style.display = 'flex';
   setTimeout(() => inputElChat.focus(), 50);
+}
+
+function newChat() {
+  // Reset all state
+  history = [];
+  messageCount = 0;
+  chatStarted = false;
+  loading = false;
+  // Clear messages
+  msgsEl.innerHTML = '';
+  // Reset inputs
+  inputEl.value = '';
+  inputElChat.value = '';
+  inputEl.style.height = 'auto';
+  inputElChat.style.height = 'auto';
+  sendBtn.disabled = true;
+  sendBtnChat.disabled = true;
+  // Hide chat, show welcome
+  chatArea.classList.remove('active');
+  inputAreaEl.classList.remove('active');
+  welcomeScreen.style.display = 'flex';
+  document.getElementById('newChatBtn').style.display = 'none';
+  // Remove limit notice if shown
+  const limit = document.getElementById('limitNotice');
+  if(limit) limit.remove();
+  setTimeout(() => inputEl.focus(), 50);
+}
+
+function toggleMobileMenu() {
+  const mm = document.getElementById('mobileMenu');
+  mm.style.display = mm.style.display === 'flex' ? 'none' : 'flex';
 }
 
 function renderMarkdown(text) {

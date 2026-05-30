@@ -10,11 +10,11 @@
 <meta name="keywords" content="Adhan arc, Islamic prayer times, prayer visualization, Fajr, Dhuhr, Asr, Maghrib, Isha, solar angle, world map, Islamic astronomy, prayer wave, AdhanLive">
 <meta name="author" content="AdhanLive">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://www.adhanlive.com/arcs">
+<link rel="canonical" href="https://www.adhanlive.com/prayer-arcs.html">
 
 <!-- Open Graph (WhatsApp, Facebook, LinkedIn) -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://www.adhanlive.com/arcs">
+<meta property="og:url" content="https://www.adhanlive.com/prayer-arcs.html">
 <meta property="og:title" content="Adhan Arc Explorer: Visualizing the Adhan Wave Across Earth">
 <meta property="og:description" content="Watch the Adhan's arc bend, shift and travel across every longitude on Earth. See how its shape and position transform through the hours of the day and across every day of the year.">
 <meta property="og:image" content="https://www.adhanlive.com/arc-explorer-og.jpg">
@@ -25,7 +25,7 @@
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="https://www.adhanlive.com/arcs">
+<meta name="twitter:url" content="https://www.adhanlive.com/prayer-arcs.html">
 <meta name="twitter:title" content="Adhan Arc Explorer: Visualizing the Adhan Wave Across Earth">
 <meta name="twitter:description" content="Watch the Adhan's arc bend, shift and travel across every longitude on Earth. See how its shape and position transform through the hours of the day and across every day of the year.">
 <meta name="twitter:image" content="https://www.adhanlive.com/arc-explorer-og.jpg">
@@ -147,31 +147,47 @@ body {
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.2); border-radius: 2px; }
 
-/* ── V6 NAV ── */
-nav{position:sticky;top:0;z-index:500;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(0,0,0,0.85);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.08);}
-.logo{font-family:'Geist',sans-serif;font-weight:800;font-size:18px;letter-spacing:-0.02em;display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;color:#fff;}
-.logo-dot{width:9px;height:9px;border-radius:50%;background:#00d4ff;box-shadow:0 0 12px #00d4ff;position:relative;flex-shrink:0;}
-.logo-dot::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(0,212,255,0.4);animation:logoPulse 2.4s ease-out infinite;}
-@keyframes logoPulse{0%{transform:scale(1);opacity:1}100%{transform:scale(2.8);opacity:0}}
-.nav-right{display:flex;align-items:center;gap:12px;}
-.nav-links{display:flex;gap:32px;align-items:center;}
-.nav-links a{font-size:11px;letter-spacing:0.12em;color:rgba(255,255,255,0.7);font-weight:600;text-decoration:none;cursor:pointer;transition:color 0.2s;text-transform:uppercase;position:relative;display:inline-block;}
-.nav-links a:hover{color:#ffffff;}
-.nav-links a.active{color:#00d4ff;}
-.nav-dot-badge{position:absolute;top:-5px;right:-10px;width:6px;height:6px;border-radius:50%;background:#00d4ff;box-shadow:0 0 8px #00d4ff;display:inline-block;z-index:10;}
-.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:32px;height:32px;background:none;border:none;cursor:pointer;padding:4px;position:relative;}
-.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:transform 0.3s,opacity 0.3s;}
-.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-.hamburger.open span:nth-child(2){opacity:0;}
-.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-#mobile-menu-overlay{display:none;position:fixed;inset:0;z-index:498;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);}
-#mobile-menu-overlay.visible{display:block;}
-.nav-utc{display:flex;align-items:stretch;padding:0;border:1px solid rgba(255,255,255,0.1);border-radius:6px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;}
-.nav-utc-dates{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:5px 12px;}
-.nav-utc-hijri{font-size:9px;letter-spacing:0.04em;color:#00d4ff;font-weight:600;}
-.nav-utc-greg{font-size:9px;letter-spacing:0.03em;color:rgba(255,255,255,0.5);}
-.nav-utc-divider{width:1px;background:rgba(255,255,255,0.1);align-self:stretch;}
-.nav-utc-time{display:flex;align-items:center;justify-content:center;padding:5px 12px;font-size:13px;font-weight:600;letter-spacing:0.04em;color:#ffffff;}
+/* ── NAV ── */
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 40px;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(3,5,14,0.94);
+  backdrop-filter: blur(16px);
+}
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.nav-logo span { color: var(--cyan); }
+.nav-center {
+  display: flex; align-items: center; gap: 4px;
+}
+.nav-link {
+  font-size: 11px; letter-spacing: 0.1em;
+  color: var(--text4); text-decoration: none;
+  padding: 6px 12px; border-radius: 4px;
+  transition: all 0.2s;
+  text-transform: uppercase;
+}
+.nav-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+.nav-link.active { color: var(--cyan); }
+.nav-ask {
+  font-size: 10px; letter-spacing: 0.12em;
+  color: var(--cyan); text-decoration: none;
+  padding: 7px 16px;
+  border: 1px solid rgba(0,212,255,0.3);
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-ask:hover {
+  background: rgba(0,212,255,0.08);
+  border-color: rgba(0,212,255,0.6);
+}
+.nav-ask::after { content: '→'; }
 
 /* ── SECTION DIVIDER ── */
 .section-divider {
@@ -498,19 +514,32 @@ canvas#polarCanvas {
   font-weight: 500; letter-spacing: 0.08em;
   font-variant-numeric: tabular-nums;
 }
-/* ── V6 MAP FOOTER ── */
-#map-footer{display:flex;position:fixed;bottom:0;left:0;right:0;height:44px;background:rgba(0,0,0,0.92);border-top:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(12px);z-index:300;align-items:center;justify-content:space-between;padding:0 24px;}
-.map-footer-left{display:flex;align-items:center;gap:8px;}
-.map-footer-logo{font-family:'Geist',sans-serif;font-weight:800;font-size:15px;color:#fff;letter-spacing:-0.02em;display:flex;align-items:center;gap:8px;}
-.map-footer-tagline{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.04em;border-left:1px solid rgba(255,255,255,0.1);padding-left:8px;}
-.map-footer-center{font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:0.05em;text-align:center;}
-.map-footer-right{display:flex;align-items:center;gap:6px;}
-.map-footer-share-label{font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:0.08em;text-transform:uppercase;margin-right:4px;}
-.mf-share-btn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:none;cursor:pointer;font-size:10px;font-weight:600;letter-spacing:0.04em;transition:opacity 0.2s;}
-.mf-share-btn:hover{opacity:0.85;}
-.mf-share-btn.whatsapp{background:#25D366;color:#fff;}
-.mf-share-btn.twitter{background:#000;color:#fff;border:1px solid rgba(255,255,255,0.15);}
-.mf-share-btn.copy{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.12);}
+footer {
+  border-top: 1px solid var(--border);
+  padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 10px;
+  flex-shrink: 0;
+}
+.footer-line1 { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.footer-logo { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 600; flex-shrink: 0; }
+.footer-logo span { color: var(--cyan); }
+.footer-tagline { font-size: 11px; color: var(--text4); border-left: 1px solid var(--border); padding-left: 10px; }
+.mobile-only { display: none; }
+.desktop-only { display: block; }
+.footer-line2 { font-size: 10px; color: var(--text4); letter-spacing: 0.03em; }
+.footer-line3 { display: flex; align-items: center; gap: 6px; }
+.footer-share-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 6px 10px; border-radius: 6px;
+  font-size: 11px; font-weight: 500;
+  text-decoration: none; cursor: pointer;
+  transition: opacity 0.2s; white-space: nowrap;
+  flex: 1; justify-content: center;
+}
+.footer-share-btn:hover { opacity: 0.85; }
+.footer-share-btn.whatsapp { background: #25D366; color: #fff; }
+.footer-share-btn.x-post { background: #000; color: #fff; border: 1px solid var(--border2); }
+.footer-share-btn.copy-link { background: var(--bg2); color: var(--text2); border: 1px solid var(--border2); }
 
 /* ── RIGHT PANEL — MAP ONLY ── */
 .right-panel {
@@ -574,19 +603,14 @@ canvas#mapCanvas {
 }
 @media (max-width: 768px) {
   .left-panel { width: 300px; }
-  /* V6 nav mobile */
-  nav{padding:0 20px;}
-  .nav-links{display:none;position:fixed;top:56px;left:0;right:0;z-index:499;background:rgba(0,0,0,0.97);backdrop-filter:blur(24px);flex-direction:column;gap:0;border-bottom:1px solid rgba(255,255,255,0.08);}
-  .nav-links.mobile-open{display:flex;}
-  .nav-links a{padding:16px 24px;font-size:14px;letter-spacing:0.06em;border-bottom:1px solid rgba(255,255,255,0.06);width:100%;}
-  .hamburger{display:flex;}
-  .nav-utc{display:none !important;}
-  /* V6 footer mobile */
-  #map-footer{position:static;height:auto;flex-direction:column;align-items:flex-start;gap:12px;padding:18px 20px;}
-  .map-footer-left{flex-direction:column;align-items:flex-start;gap:6px;}
-  .map-footer-tagline{border-left:none;padding-left:0;}
-  .map-footer-center{text-align:left;}
-  .map-footer-right{flex-wrap:wrap;}
+  .nav-center { display: none; }
+  .footer-logo { font-size: 11px; flex-shrink: 0; }
+  .footer-tagline { font-size: 7.5px; border-left: none; padding-left: 6px; white-space: nowrap; }
+  .footer-line1 { flex-wrap: nowrap; align-items: center; }
+  .footer-line2 { font-size: 8px; }
+  .footer-share-btn { font-size: 10px; padding: 5px 8px; }
+  .mobile-only { display: block; }
+  .desktop-only { display: none; }
 }
 @media (max-width: 768px) and (orientation: landscape) {
   nav { display: none; }
@@ -599,37 +623,66 @@ canvas#mapCanvas {
   .ptoggle-dot { width: 6px; height: 6px; }
 }
 
-/* mobile nav handled by V6 nav above */
+/* Mobile menu button — only visible on mobile landscape when nav is hidden */
+.mobile-menu-btn {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text4);
+  font-size: 16px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.mobile-menu-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+
+.mobile-nav {
+  display: none;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 10px;
+  padding: 8px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav-link {
+  font-size: 12px; color: var(--text4);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+.mobile-nav-link:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+.mobile-nav-link.active { color: var(--cyan); }
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .mobile-menu-btn { display: block; }
+}
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav>
-  <a class="logo" href="/home"><div class="logo-dot"></div><span style="display:inline">Adhan<span style="color:#00d4ff">Live</span></span></a>
-  <div class="nav-links" id="nav-links">
-    <a href="/home" onclick="closeMobileMenu()">Home</a>
-    <a href="/livemap" onclick="closeMobileMenu()">Live Map</a>
-    <a href="/adhanclock" onclick="closeMobileMenu();markVisited('clock')" id="nav-clock-link">Adhan Clock<span class="nav-dot-badge" id="dot-clock"></span></a>
-    <a href="/arcs" class="active" onclick="closeMobileMenu();markVisited('arc')" id="nav-arc">Arc Explorer<span class="nav-dot-badge" id="dot-arc"></span></a>
-    <a href="/ask" onclick="closeMobileMenu();markVisited('ask')" id="nav-ask">Ask AdhanLive<span class="nav-dot-badge" id="dot-ask"></span></a>
-    <a href="/contact" onclick="closeMobileMenu()">Contact</a>
+  <div class="nav-logo">Adhan<span>Live</span></div>
+  <div class="nav-center">
+    <a href="about.html" class="nav-link">About</a>
+    <a href="index.html" class="nav-link">Live Map</a>
+    <a href="adhan-clock.html" class="nav-link">Adhan Clock</a>
+    <a href="prayer-arcs.html" class="nav-link active">Arc Explorer</a>
+    <a href="ask-adhanlive.html" class="nav-link">Ask AdhanLive</a>
+    <a href="contact.html" class="nav-link">Contact</a>
   </div>
-  <div class="nav-right">
-    <div class="nav-utc" id="utc-clock">
-      <div class="nav-utc-dates">
-        <div class="nav-utc-greg" id="utc-greg">Sat, 30 May 2026</div>
-        <div class="nav-utc-hijri" id="utc-hijri">2 Dhul Hijjah 1447</div>
-      </div>
-      <div class="nav-utc-divider"></div>
-      <div class="nav-utc-time" id="utc-time">12:00:00 PM</div>
-    </div>
-    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
-      <span></span><span></span><span></span>
-    </button>
+  <div class="nav-clock">
+    <div class="nav-date" id="navDate"></div>
+    <div class="nav-time" id="navTime"></div>
   </div>
 </nav>
-<div id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
 
 <!-- MAIN TWO-COLUMN LAYOUT -->
 <div class="main-layout">
@@ -639,7 +692,17 @@ canvas#mapCanvas {
 
     <!-- Header -->
     <div class="panel-header">
-      <div class="panel-title">The Adhan <em>Arc</em> Explorer</div>
+      <div style="display:flex; align-items:center; justify-content:space-between;">
+        <div class="panel-title">The Adhan <em>Arc</em> Explorer</div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()">☰</button>
+      </div>
+      <!-- Mobile nav dropdown -->
+      <div class="mobile-nav" id="mobileNav">
+        <a href="index.html" class="mobile-nav-link">🌍 Globe</a>
+        <a href="adhan-clock.html" class="mobile-nav-link">🕐 Clock</a>
+        <a href="prayer-arcs.html" class="mobile-nav-link active">◉ Arc Explorer</a>
+        <a href="ask-adhanlive.html" class="mobile-nav-link">💬 Ask AdhanLive</a>
+      </div>
       <div class="panel-what">
         <div class="panel-what-label">What is the Adhan Arc?</div>
         Every day, each of the 5 Islamic prayers begins at a different solar angle. Since the sun is always rising or setting somewhere on Earth, each prayer sweeps across the globe as a continuous curved wave, an <em>arc</em>. Its shape changes with the seasons as the sun's path shifts north and south. This is that arc, mapped live.
@@ -834,7 +897,29 @@ canvas#mapCanvas {
 
     </div>
 
-    <!-- Footer moved to fixed V6 map-footer below -->
+    <!-- HIGH LATITUDE SECTION -->
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-line1">
+        <div class="footer-logo">Adhan<span>Live</span></div>
+        <div class="footer-tagline">The live global visualization of Islamic prayer</div>
+      </div>
+      <div class="footer-line2">© 2026 AdhanLive · Mosque data © OpenStreetMap contributors</div>
+      <div class="footer-line3">
+        <a class="footer-share-btn whatsapp" id="shareWhatsApp" href="#" onclick="shareWhatsApp(); return false;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </a>
+        <a class="footer-share-btn x-post" id="shareX" href="#" onclick="shareX(); return false;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          Post
+        </a>
+        <a class="footer-share-btn copy-link" id="copyLink" href="#" onclick="copyLink(); return false;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+          Copy Link
+        </a>
+      </div>
+    </footer>
 
   </div><!-- end left-panel -->
 
@@ -956,7 +1041,7 @@ async function loadWorldMap() {
       console.warn('Wikipedia map failed, falling back to TopoJSON');
       loadTopoJSON().then(resolve);
     };
-    img.src = '/assets/world-map.png';
+    img.src = 'world-map.png';
   });
 }
 
@@ -1487,37 +1572,31 @@ window.addEventListener('resize', () => {
   render(dayOfYear, utcHour);
 });
 
-// ── V6 Nav JS ──
-function toggleMobileMenu(){
-  document.getElementById('nav-links').classList.toggle('mobile-open');
-  document.getElementById('hamburger').classList.toggle('open');
-  document.getElementById('mobile-menu-overlay').classList.toggle('visible');
+// Mobile menu toggle
+function toggleMobileMenu() {
+  const nav = document.getElementById('mobileNav');
+  const btn = document.getElementById('mobileMenuBtn');
+  nav.classList.toggle('open');
+  btn.textContent = nav.classList.contains('open') ? '✕' : '☰';
 }
-function closeMobileMenu(){
-  document.getElementById('nav-links').classList.remove('mobile-open');
-  document.getElementById('hamburger').classList.remove('open');
-  document.getElementById('mobile-menu-overlay').classList.remove('visible');
+
+// Share functions
+function shareWhatsApp() {
+  const url = encodeURIComponent(window.location.href);
+  const text = encodeURIComponent('Watch the 5 Islamic prayers sweep across Earth in real time — The Adhan Arc Explorer');
+  window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
 }
-function markVisited(key){ localStorage.setItem('visited_'+key,'1'); }
-function initNavDots(){
-  ['clock','arc','ask'].forEach(key=>{
-    const dot=document.getElementById('dot-'+key);
-    if(dot && localStorage.getItem('visited_'+key)) dot.style.display='none';
+function shareX() {
+  const url = encodeURIComponent(window.location.href);
+  const text = encodeURIComponent('Watch the 5 Islamic prayers sweep across Earth in real time — The Adhan Arc Explorer');
+  window.open(`https://x.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+}
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.getElementById('copyLink');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => { btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg> Copy Link'; }, 2000);
   });
-}
-document.addEventListener('DOMContentLoaded', initNavDots);
-function shareMapMoment(platform){
-  const url='https://www.adhanlive.com/arcs';
-  const text='Watch the Adhan arc bend and travel across Earth — The Adhan Arc Explorer on AdhanLive.';
-  if(platform==='whatsapp'){window.open('https://wa.me/?text='+encodeURIComponent(text+' '+url),'_blank');}
-  else if(platform==='twitter'){window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),'_blank');}
-  else if(platform==='copy'){
-    navigator.clipboard.writeText(url).then(()=>{
-      const btn=document.getElementById('mf-copy-btn');
-      btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
-      setTimeout(()=>{btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy Link';},2000);
-    });
-  }
 }
 
 // Toggle prayer card read more
@@ -1529,61 +1608,24 @@ function toggleCard(btn) {
   btn.textContent = isOpen ? 'Read more ↓' : 'Read less ↑';
 }
 
-// ── V6 Nav Clock (Hijri + Gregorian) ──
-function toHijri(date){
-  const jd=Math.floor((date.getTime()/86400000)+2440587.5);
-  let l=jd-1948440+10632;
-  const n=Math.floor((l-1)/10631);
-  l=l-10631*n+354;
-  const j=Math.floor((10985-l)/5316)*Math.floor((50*l)/17719)+Math.floor(l/5670)*Math.floor((43*l)/15238);
-  l=l-Math.floor((30-j)/15)*Math.floor((17719*j)/50)-Math.floor(j/16)*Math.floor((15238*j)/43)+29;
-  const month=Math.floor((24*l)/709);
-  const day=l-Math.floor((709*month)/24);
-  const year=30*n+j-30;
-  const hm=['Muharram','Safar','Rabi ul-Awwal','Rabi ul-Thani','Jumadal Awwal','Jumadal Thani','Rajab',"Sha'ban",'Ramadan','Shawwal',"Dhul Qa'dah",'Dhul Hijjah'];
-  return `${day} ${hm[month-1]} ${year}`;
+// Nav clock
+function updateNavClock() {
+  const now = new Date();
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  const h = now.getHours();
+  const m = now.getMinutes().toString().padStart(2,'0');
+  const s = now.getSeconds().toString().padStart(2,'0');
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const h12 = (h % 12 || 12).toString().padStart(2,'0');
+  document.getElementById('navDate').textContent = dateStr;
+  document.getElementById('navTime').textContent = `${h12}:${m}:${s} ${ampm}`;
 }
-function tickClock(){
-  const n=new Date();
-  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const lh=n.getHours(),lm=n.getMinutes(),ls=n.getSeconds();
-  const ap=lh<12?'AM':'PM',hh=lh%12||12;
-  const ge=document.getElementById('utc-greg');
-  const hi=document.getElementById('utc-hijri');
-  const te=document.getElementById('utc-time');
-  if(ge) ge.textContent=`${days[n.getDay()]}, ${n.getDate()} ${months[n.getMonth()]} ${n.getFullYear()}`;
-  if(hi) hi.textContent=toHijri(n);
-  if(te) te.textContent=`${String(hh).padStart(2,'0')}:${String(lm).padStart(2,'0')}:${String(ls).padStart(2,'0')} ${ap}`;
-}
-tickClock();
-setInterval(tickClock,1000);
+updateNavClock();
+setInterval(updateNavClock, 1000);
 
 init();
 </script>
-<!-- V6 Live Map Footer -->
-<div id="map-footer">
-  <div class="map-footer-left">
-    <div class="map-footer-logo"><div class="logo-dot" style="width:7px;height:7px;flex-shrink:0"></div><span style="color:#fff">Adhan<span style="color:#00d4ff">Live</span></span></div>
-    <div class="map-footer-tagline">The live global visualization of Islamic prayer</div>
-  </div>
-  <div class="map-footer-center">© 2026 AdhanLive · Mosque data © OpenStreetMap contributors</div>
-  <div class="map-footer-right">
-    <span class="map-footer-share-label">Share</span>
-    <button class="mf-share-btn whatsapp" onclick="shareMapMoment('whatsapp')">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      WhatsApp
-    </button>
-    <button class="mf-share-btn twitter" onclick="shareMapMoment('twitter')">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      Post
-    </button>
-    <button class="mf-share-btn copy" onclick="shareMapMoment('copy')" id="mf-copy-btn">
-      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-      Copy Link
-    </button>
-  </div>
-</div>
-
 </body>
 </html>

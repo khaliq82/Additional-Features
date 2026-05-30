@@ -147,47 +147,39 @@ body {
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.2); border-radius: 2px; }
 
-/* ── NAV ── */
-nav {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 16px 40px;
-  border-bottom: 1px solid var(--border);
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(3,5,14,0.94);
-  backdrop-filter: blur(16px);
+/* ── V6 NAV ── */
+nav{position:sticky;top:0;z-index:500;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(0,0,0,0.85);backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,0.08);}
+.logo{font-family:'Geist',sans-serif;font-weight:800;font-size:18px;letter-spacing:-0.02em;display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;color:#fff;}
+.logo-dot{width:9px;height:9px;border-radius:50%;background:#00d4ff;box-shadow:0 0 12px #00d4ff;position:relative;flex-shrink:0;}
+.logo-dot::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(0,212,255,0.4);animation:logoPulse 2.4s ease-out infinite;}
+@keyframes logoPulse{0%{transform:scale(1);opacity:1}100%{transform:scale(2.8);opacity:0}}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-links{display:flex;gap:32px;align-items:center;}
+.nav-links a{font-size:11px;letter-spacing:0.12em;color:rgba(255,255,255,0.7);font-weight:600;text-decoration:none;cursor:pointer;transition:color 0.2s;text-transform:uppercase;position:relative;display:inline-block;}
+.nav-links a:hover{color:#ffffff;}
+.nav-links a.active{color:#00d4ff;}
+.nav-dot-badge{position:absolute;top:-5px;right:-10px;width:6px;height:6px;border-radius:50%;background:#00d4ff;box-shadow:0 0 8px #00d4ff;display:inline-block;z-index:10;}
+.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:32px;height:32px;background:none;border:none;cursor:pointer;padding:4px;position:relative;}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:transform 0.3s,opacity 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+#mobile-menu-overlay{display:none;position:fixed;inset:0;z-index:498;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);}
+#mobile-menu-overlay.visible{display:block;}
+.nav-utc{display:flex;align-items:stretch;padding:0;border:1px solid rgba(255,255,255,0.1);border-radius:6px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;}
+.nav-utc-dates{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:5px 12px;}
+.nav-utc-hijri{font-size:9px;letter-spacing:0.04em;color:#00d4ff;font-weight:600;}
+.nav-utc-greg{font-size:9px;letter-spacing:0.03em;color:rgba(255,255,255,0.5);}
+.nav-utc-divider{width:1px;background:rgba(255,255,255,0.1);align-self:stretch;}
+.nav-utc-time{display:flex;align-items:center;justify-content:center;padding:5px 12px;font-size:13px;font-weight:600;letter-spacing:0.04em;color:#ffffff;}
+@media(max-width:768px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;position:fixed;top:56px;left:0;right:0;z-index:499;background:rgba(0,0,0,0.97);backdrop-filter:blur(24px);flex-direction:column;gap:0;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .nav-links.mobile-open{display:flex;}
+  .nav-links a{padding:16px 24px;font-size:14px;letter-spacing:0.06em;border-bottom:1px solid rgba(255,255,255,0.06);width:100%;}
+  .hamburger{display:flex;}
+  .nav-utc{display:none !important;}
 }
-.nav-logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 18px; font-weight: 600;
-  letter-spacing: 0.02em;
-}
-.nav-logo span { color: var(--cyan); }
-.nav-center {
-  display: flex; align-items: center; gap: 4px;
-}
-.nav-link {
-  font-size: 11px; letter-spacing: 0.1em;
-  color: var(--text4); text-decoration: none;
-  padding: 6px 12px; border-radius: 4px;
-  transition: all 0.2s;
-  text-transform: uppercase;
-}
-.nav-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
-.nav-link.active { color: var(--cyan); }
-.nav-ask {
-  font-size: 10px; letter-spacing: 0.12em;
-  color: var(--cyan); text-decoration: none;
-  padding: 7px 16px;
-  border: 1px solid rgba(0,212,255,0.3);
-  border-radius: 4px;
-  transition: all 0.2s;
-  display: flex; align-items: center; gap: 6px;
-}
-.nav-ask:hover {
-  background: rgba(0,212,255,0.08);
-  border-color: rgba(0,212,255,0.6);
-}
-.nav-ask::after { content: '→'; }
 
 /* ── SECTION DIVIDER ── */
 .section-divider {
@@ -669,20 +661,30 @@ canvas#mapCanvas {
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">Adhan<span>Live</span></div>
-  <div class="nav-center">
-    <a href="about.html" class="nav-link">About</a>
-    <a href="index.html" class="nav-link">Live Map</a>
-    <a href="adhan-clock.html" class="nav-link">Adhan Clock</a>
-    <a href="prayer-arcs.html" class="nav-link active">Arc Explorer</a>
-    <a href="ask-adhanlive.html" class="nav-link">Ask AdhanLive</a>
-    <a href="contact.html" class="nav-link">Contact</a>
+  <a class="logo" href="/home"><div class="logo-dot"></div><span style="display:inline">Adhan<span style="color:#00d4ff">Live</span></span></a>
+  <div class="nav-links" id="nav-links">
+    <a href="/home" onclick="closeMobileMenu()">Home</a>
+    <a href="/livemap" onclick="closeMobileMenu()">Live Map</a>
+    <a href="/adhanclock" onclick="closeMobileMenu();markVisited('clock')" id="nav-clock-link">Adhan Clock<span class="nav-dot-badge" id="dot-clock"></span></a>
+    <a href="/arcs" class="active" onclick="closeMobileMenu();markVisited('arc')" id="nav-arc">Arc Explorer<span class="nav-dot-badge" id="dot-arc"></span></a>
+    <a href="/ask" onclick="closeMobileMenu();markVisited('ask')" id="nav-ask">Ask AdhanLive<span class="nav-dot-badge" id="dot-ask"></span></a>
+    <a href="/contact" onclick="closeMobileMenu()">Contact</a>
   </div>
-  <div class="nav-clock">
-    <div class="nav-date" id="navDate"></div>
-    <div class="nav-time" id="navTime"></div>
+  <div class="nav-right">
+    <div class="nav-utc" id="utc-clock">
+      <div class="nav-utc-dates">
+        <div class="nav-utc-greg" id="utc-greg">Sat, 30 May 2026</div>
+        <div class="nav-utc-hijri" id="utc-hijri">2 Dhul Hijjah 1447</div>
+      </div>
+      <div class="nav-utc-divider"></div>
+      <div class="nav-utc-time" id="utc-time">12:00:00 PM</div>
+    </div>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+<div id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
 
 <!-- MAIN TWO-COLUMN LAYOUT -->
 <div class="main-layout">
@@ -1573,12 +1575,25 @@ window.addEventListener('resize', () => {
 });
 
 // Mobile menu toggle
-function toggleMobileMenu() {
-  const nav = document.getElementById('mobileNav');
-  const btn = document.getElementById('mobileMenuBtn');
-  nav.classList.toggle('open');
-  btn.textContent = nav.classList.contains('open') ? '✕' : '☰';
+// ── V6 Nav JS ──
+function toggleMobileMenu(){
+  document.getElementById('nav-links').classList.toggle('mobile-open');
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobile-menu-overlay').classList.toggle('visible');
 }
+function closeMobileMenu(){
+  document.getElementById('nav-links').classList.remove('mobile-open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu-overlay').classList.remove('visible');
+}
+function markVisited(key){ localStorage.setItem('visited_'+key,'1'); }
+function initNavDots(){
+  ['clock','arc','ask'].forEach(key=>{
+    const dot=document.getElementById('dot-'+key);
+    if(dot && localStorage.getItem('visited_'+key)) dot.style.display='none';
+  });
+}
+document.addEventListener('DOMContentLoaded', initNavDots);
 
 // Share functions
 function shareWhatsApp() {
@@ -1608,22 +1623,35 @@ function toggleCard(btn) {
   btn.textContent = isOpen ? 'Read more ↓' : 'Read less ↑';
 }
 
-// Nav clock
-function updateNavClock() {
-  const now = new Date();
-  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const dateStr = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-  const h = now.getHours();
-  const m = now.getMinutes().toString().padStart(2,'0');
-  const s = now.getSeconds().toString().padStart(2,'0');
-  const ampm = h >= 12 ? 'PM' : 'AM';
-  const h12 = (h % 12 || 12).toString().padStart(2,'0');
-  document.getElementById('navDate').textContent = dateStr;
-  document.getElementById('navTime').textContent = `${h12}:${m}:${s} ${ampm}`;
+// ── V6 Nav Clock ──
+function toHijri(date){
+  const jd=Math.floor((date.getTime()/86400000)+2440587.5);
+  let l=jd-1948440+10632;
+  const n=Math.floor((l-1)/10631);
+  l=l-10631*n+354;
+  const j=Math.floor((10985-l)/5316)*Math.floor((50*l)/17719)+Math.floor(l/5670)*Math.floor((43*l)/15238);
+  l=l-Math.floor((30-j)/15)*Math.floor((17719*j)/50)-Math.floor(j/16)*Math.floor((15238*j)/43)+29;
+  const month=Math.floor((24*l)/709);
+  const day=l-Math.floor((709*month)/24);
+  const year=30*n+j-30;
+  const hm=['Muharram','Safar','Rabi ul-Awwal','Rabi ul-Thani','Jumadal Awwal','Jumadal Thani','Rajab',"Sha'ban",'Ramadan','Shawwal',"Dhul Qa'dah",'Dhul Hijjah'];
+  return `${day} ${hm[month-1]} ${year}`;
 }
-updateNavClock();
-setInterval(updateNavClock, 1000);
+function tickClock(){
+  const n=new Date();
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const lh=n.getHours(),lm=n.getMinutes(),ls=n.getSeconds();
+  const ap=lh<12?'AM':'PM',hh=lh%12||12;
+  const ge=document.getElementById('utc-greg');
+  const hi=document.getElementById('utc-hijri');
+  const te=document.getElementById('utc-time');
+  if(ge) ge.textContent=`${days[n.getDay()]}, ${n.getDate()} ${months[n.getMonth()]} ${n.getFullYear()}`;
+  if(hi) hi.textContent=toHijri(n);
+  if(te) te.textContent=`${String(hh).padStart(2,'0')}:${String(lm).padStart(2,'0')}:${String(ls).padStart(2,'0')} ${ap}`;
+}
+tickClock();
+setInterval(tickClock,1000);
 
 init();
 </script>

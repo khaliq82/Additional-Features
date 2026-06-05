@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon-180x180.png">
+  <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Adhan Clock: 24 Hours of Prayer Across the Muslim World</title>
 <meta name="description" content="See every Adhan called across 280,000 mosques visualized on a 24-hour clock. Explore how prayer times ripple across time zones throughout the year.">
 <meta property="og:title" content="Adhan Clock: 24 Hours of Prayer Across the Muslim World">
 <meta property="og:description" content="See every Adhan called across 280,000 mosques visualized on a 24-hour clock. Explore how prayer times ripple across time zones throughout the year.">
-<meta property="og:image" content="https://www.adhanlive.com/adhan-clock-og.jpg">
-<meta property="og:url" content="https://www.adhanlive.com/adhan-clock.html">
+<meta property="og:image" content="https://www.adhanlive.com/assets/adhan-clock-og.jpg">
+<meta property="og:url" content="https://www.adhanlive.com/adhanclock">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Adhan Clock: 24 Hours of Prayer Across the Muslim World">
 <meta name="twitter:description" content="See every Adhan called across 280,000 mosques visualized on a 24-hour clock. Explore how prayer times ripple across time zones throughout the year.">
-<meta name="twitter:image" content="https://www.adhanlive.com/adhan-clock-og.jpg">
+<meta name="twitter:image" content="https://www.adhanlive.com/assets/adhan-clock-og.jpg">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -412,6 +414,7 @@ footer{
     <a href="/adhanclock" class="active" onclick="closeMobileMenu();markVisited('clock')" id="nav-clock-link">Adhan Clock<span class="nav-dot-badge" id="dot-clock"></span></a>
     <a href="/arcs" onclick="closeMobileMenu();markVisited('arc')" id="nav-arc">Arc Explorer<span class="nav-dot-badge" id="dot-arc"></span></a>
     <a href="/ask" onclick="closeMobileMenu();markVisited('ask')" id="nav-ask">Ask AdhanLive<span class="nav-dot-badge" id="dot-ask"></span></a>
+    <a href="/about" onclick="closeMobileMenu()">About</a>
     <a href="/contact" onclick="closeMobileMenu()">Contact</a>
   </div>
   <div class="nav-right">
@@ -431,13 +434,14 @@ footer{
 <div id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
 
 <!-- Mobile nav menu -->
-<div id="mobileMenu" style="display:none;position:fixed;top:56px;left:0;right:0;bottom:0;background:rgba(2,4,12,0.98);z-index:9999;padding:24px;flex-direction:column;gap:20px;border-top:1px solid var(--border);">
-  <a href="/home" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;">🏠 Home</a>
-  <a href="/livemap" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;">🌍 Live Map</a>
-  <a href="/adhanclock" style="color:#00d4ff;text-decoration:none;font-size:16px;">🕐 Adhan Clock</a>
-  <a href="/arcs" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;">◉ Arc Explorer</a>
-  <a href="/ask" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;">💬 Ask AdhanLive</a>
-  <a href="/contact" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:16px;">📧 Contact</a>
+<div id="mobileMenu" style="display:none;position:fixed;top:56px;left:0;right:0;bottom:0;background:rgba(0,0,0,0.97);z-index:9999;flex-direction:column;gap:0;border-top:1px solid rgba(255,255,255,0.08);">
+  <a href="/home" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,0.06);">Home</a>
+  <a href="/livemap" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,0.06);">Live Map</a>
+  <a href="/adhanclock" style="color:#00d4ff;text-decoration:none;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,0.06);">Adhan Clock</a>
+  <a href="/arcs" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,0.06);">Arc Explorer</a>
+  <a href="/ask" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,0.06);">Ask AdhanLive</a>
+  <a href="/about" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,0.06);">About</a>
+  <a href="/contact" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;padding:16px 24px;border-bottom:1px solid rgba(255,255,255,0.06);">Contact</a>
 </div>
 
 <!-- Mobile top panel: page title -->
@@ -479,10 +483,10 @@ footer{
         <button class="region-btn active" data-region="all">🌍 All</button>
         <button class="region-btn" data-region="gulf">Gulf</button>
         <button class="region-btn" data-region="southasia">S. Asia</button>
-        <button class="region-btn" data-region="seasia">SE Asia</button>
-        <button class="region-btn" data-region="nafrica">N. Africa</button>
-        <button class="region-btn" data-region="europe">Europe</button>
-        <button class="region-btn" data-region="wafrica">W. Africa</button>
+        <button class="region-btn" data-region="seasia">Asia Pacific</button>
+        <button class="region-btn" data-region="nafrica">Africa</button>
+        <button class="region-btn" data-region="europe">Europe & Eurasia</button>
+        <button class="region-btn" data-region="wafrica">Americas</button>
       </div>
     </div>
 
@@ -558,10 +562,10 @@ footer{
         <div class="mob-region-grid" id="mobRegionBtns">
           <button data-region="gulf">Gulf</button>
           <button data-region="southasia">S.Asia</button>
-          <button data-region="seasia">SE Asia</button>
-          <button data-region="nafrica">N.Africa</button>
+          <button data-region="seasia">Asia Pac.</button>
+          <button data-region="nafrica">Africa</button>
           <button data-region="europe">Europe</button>
-          <button data-region="wafrica">W.Africa</button>
+          <button data-region="wafrica">Americas</button>
         </div>
       </div>
     </div>

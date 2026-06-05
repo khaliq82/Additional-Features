@@ -761,10 +761,14 @@ function drawDots(){
       if(prayer[i]!==pi) continue;
       if(fc!==-1&&region[i]!==fc) continue;
       const rCol=rNorm[i]/255;
+      // Deterministic jitter per mosque for organic scatter effect
+      const jSeed=Math.sin(i*127.1+pi*311.7)*43758.5453;
+      const jitter=(jSeed-Math.floor(jSeed)-0.5)*0.18;
+      const rColJ=Math.max(0,Math.min(1,rCol+jitter));
       let finalR;
-      if(st<0.01) finalR=R_inner+range*rCol;
+      if(st<0.01) finalR=R_inner+range*rColJ;
       else {
-        const rN=rCol+(rSep-rCol)*st;
+        const rN=rColJ+(rSep-rColJ)*st;
         finalR=R_inner+range*(rSep+(rN-rSep)*(1-st)*0.6);
       }
       const x=CX+Math.cos(angles[i])*finalR;

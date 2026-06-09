@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AdhanLive — Day/Night Globe Test</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #000; overflow: hidden; font-family: Inter, sans-serif; }
+  #canvas-container { width: 100vw; height: 100vh; }
+  #info {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    text-align: center;
+    pointer-events: none;
+  }
+  #sun-info {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    font-family: monospace;
+    line-height: 1.8;
+  }
+  #time-display {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    color: rgba(255,255,255,0.5);
+    font-size: 12px;
+    font-family: monospace;
+    text-align: right;
+    line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+<div id="canvas-container"></div>
+<div id="info">AdhanLive — Day/Night Terminator Test</div>
+<div id="sun-info">
+  Sun Lat: <span id="sun-lat">--</span>°<br>
+  Sun Lon: <span id="sun-lon">--</span>°<br>
+  Terminator: <span id="term-width">18°</span> twilight zone
+</div>
+<div id="time-display">
+  UTC: <span id="utc-time">--</span><br>
+  <span id="date-display">--</span>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// ─── Scene Setup ───────────────────────────────────────────────────────────
+const container = document.getElementById('canvas-container');
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+container.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 2.5;
+
+// Stars background
+const starGeometry = new THREE.BufferGeometry();
+const starCount = 3000;
+const starPositions = new Float32Array(starCount * 3);
+for (let i = 0; i < starCount * 3; i++) {
+  starPositions[i] = (Math.random() - 0.5) * 200;
+}
+starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.6 });
+scene.add(new THREE.Points(starGeometry, starMaterial));
+
+// ─── Sun Position Calculation ──────────────────────────────────────────────
+function getSunPosition(date) {
+  // Julian date
+  const JD = date.getTime() / 86400000 + 2440587.5;
+  const n = JD - 2451545.0;
+
+  // Mean longitude and mean anomaly
+  const L = (280.460 + 0.9856474 * n) % 360;
+  const g = ((357.528 + 0.9856003 * n) % 360) * Math.PI / 180;
+
+  // Ecliptic longitude
+  const lambda = (L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) * Math.PI / 180;
+
+  // Obliquity of ecliptic
+  const epsilon = (23.439 - 0.0000004 * n) * Math.PI / 180;
+
+  // Sun declination (latitude)
+  const sinDec = Math.sin(epsilon) * Math.sin(lambda);
+  const dec = Math.asin(sinDec); // radians
+
+  // Right ascension
+  const ra = Math.atan2(Math.cos(epsilon) * Math.sin(lambda), Math.cos(lambda));
+
+  // Greenwich Mean Sidereal Time
+  const GMST = (6.697375 + 0.0657098242 * n + (date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600) * 1.00273791) % 24;
+
+  // Sun hour angle at Greenwich → subsolar longitude
+  const sunLon = ((ra * 180 / Math.PI) - GMST * 15 + 360) % 360;
+  // Convert to -180 to 180
+  const sunLonAdj = sunLon > 180 ? sunLon - 360 : sunLon;
+
+  return {
+    lat: dec * 180 / Math.PI,   // degrees
+    lon: sunLonAdj              // degrees
+  };
+}
+
+// ─── Globe with Day/Night Shader ──────────────────────────────────────────
+const textureLoader = new THREE.TextureLoader();
+
+// Load earth texture — uses same path as production
+const earthTexture = textureLoader.load(
+  'https://raw.githubusercontent.com/mrdoob/three.js/r128/examples/textures/planets/earth_atmos_2048.jpg',
+  () => console.log('Earth texture loaded'),
+  undefined,
+  () => {
+    // Fallback: try a solid color globe if texture fails
+    console.warn('Texture load failed, using fallback');
+  }
+);
+
+const vertexShader = `
+  varying vec3 vNormal;
+  varying vec2 vUv;
+  void main() {
+    vNormal = normalize(normalMatrix * normal);
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const fragmentShader = `
+  uniform sampler2D earthTexture;
+  uniform vec3 sunDirection;   // normalized sun direction in world space
+  uniform float twilightAngle; // radians — soft terminator width
+
+  varying vec3 vNormal;
+  varying vec2 vUv;
+
+  void main() {
+    vec4 texColor = texture2D(earthTexture, vUv);
+
+    // Dot product: +1 = full day, -1 = full night
+    float cosAngle = dot(normalize(vNormal), sunDirection);
+
+    // Map twilight zone: from -sin(twilight) to +sin(twilight)
+    float twilightZone = sin(twilightAngle);
+    
+    // Smooth step across twilight zone
+    float dayFactor = smoothstep(-twilightZone, twilightZone, cosAngle);
+
+    // Night: darken to ~15% brightness so globe shape still visible
+    float nightBrightness = 0.12;
+    float brightness = mix(nightBrightness, 1.0, dayFactor);
+
+    gl_FragColor = vec4(texColor.rgb * brightness, texColor.a);
+  }
+`;
+
+const globeGeometry = new THREE.SphereGeometry(1, 64, 64);
+const globeMaterial = new THREE.ShaderMaterial({
+  vertexShader,
+  fragmentShader,
+  uniforms: {
+    earthTexture: { value: earthTexture },
+    sunDirection: { value: new THREE.Vector3(1, 0, 0) },
+    twilightAngle: { value: 18 * Math.PI / 180 } // 18° twilight zone
+  }
+});
+
+const globe = new THREE.Mesh(globeGeometry, globeMaterial);
+scene.add(globe);
+
+// Atmosphere glow
+const atmosphereGeometry = new THREE.SphereGeometry(1.02, 64, 64);
+const atmosphereMaterial = new THREE.ShaderMaterial({
+  vertexShader: `
+    varying vec3 vNormal;
+    void main() {
+      vNormal = normalize(normalMatrix * normal);
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vNormal;
+    void main() {
+      float intensity = pow(0.7 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.0);
+      gl_FragColor = vec4(0.15, 0.5, 0.8, 1.0) * intensity;
+    }
+  `,
+  blending: THREE.AdditiveBlending,
+  side: THREE.BackSide,
+  transparent: true
+});
+scene.add(new THREE.Mesh(atmosphereGeometry, atmosphereMaterial));
+
+// ─── Mouse Drag Rotation ───────────────────────────────────────────────────
+let isDragging = false;
+let previousMousePosition = { x: 0, y: 0 };
+let rotationVelocity = { x: 0, y: 0 };
+let targetRotation = { x: 0, y: 0 };
+
+renderer.domElement.addEventListener('mousedown', e => {
+  isDragging = true;
+  previousMousePosition = { x: e.clientX, y: e.clientY };
+  rotationVelocity = { x: 0, y: 0 };
+});
+
+renderer.domElement.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  const delta = {
+    x: e.clientX - previousMousePosition.x,
+    y: e.clientY - previousMousePosition.y
+  };
+  rotationVelocity.x = delta.y * 0.005;
+  rotationVelocity.y = delta.x * 0.005;
+  globe.rotation.x += rotationVelocity.x;
+  globe.rotation.y += rotationVelocity.y;
+  previousMousePosition = { x: e.clientX, y: e.clientY };
+});
+
+renderer.domElement.addEventListener('mouseup', () => { isDragging = false; });
+renderer.domElement.addEventListener('mouseleave', () => { isDragging = false; });
+
+// Touch support
+renderer.domElement.addEventListener('touchstart', e => {
+  isDragging = true;
+  previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+});
+renderer.domElement.addEventListener('touchmove', e => {
+  if (!isDragging) return;
+  const delta = {
+    x: e.touches[0].clientX - previousMousePosition.x,
+    y: e.touches[0].clientY - previousMousePosition.y
+  };
+  globe.rotation.x += delta.y * 0.005;
+  globe.rotation.y += delta.x * 0.005;
+  previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+});
+renderer.domElement.addEventListener('touchend', () => { isDragging = false; });
+
+// ─── Convert Sun Lat/Lon to 3D Direction Vector ────────────────────────────
+function sunLatLonToDirection(lat, lon) {
+  const latRad = lat * Math.PI / 180;
+  const lonRad = lon * Math.PI / 180;
+  return new THREE.Vector3(
+    Math.cos(latRad) * Math.cos(lonRad),
+    Math.sin(latRad),
+    Math.cos(latRad) * Math.sin(lonRad)  // Note: Three.js Z is depth
+  ).normalize();
+}
+
+// ─── Update UI ─────────────────────────────────────────────────────────────
+function updateUI(sunPos, now) {
+  document.getElementById('sun-lat').textContent = sunPos.lat.toFixed(2);
+  document.getElementById('sun-lon').textContent = sunPos.lon.toFixed(2);
+  
+  const h = String(now.getUTCHours()).padStart(2, '0');
+  const m = String(now.getUTCMinutes()).padStart(2, '0');
+  const s = String(now.getUTCSeconds()).padStart(2, '0');
+  document.getElementById('utc-time').textContent = `${h}:${m}:${s}`;
+  
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('date-display').textContent = 
+    `${now.getUTCDate()} ${months[now.getUTCMonth()]} ${now.getUTCFullYear()}`;
+}
+
+// ─── Animation Loop ────────────────────────────────────────────────────────
+let lastUIUpdate = 0;
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  const now = new Date();
+  const sunPos = getSunPosition(now);
+
+  // Convert sun position to direction vector in globe's local space
+  // The globe's Y axis is geographic north
+  // We need to account for the globe's current rotation
+  const sunDir = sunLatLonToDirection(sunPos.lat, sunPos.lon);
+  
+  // Transform sun direction into globe's local space
+  const globeMatrixInverse = new THREE.Matrix3().setFromMatrix4(
+    new THREE.Matrix4().copy(globe.matrixWorld).invert()
+  );
+  const localSunDir = sunDir.clone().applyMatrix3(globeMatrixInverse).normalize();
+  
+  globeMaterial.uniforms.sunDirection.value.copy(localSunDir);
+
+  // Auto slow rotation when not dragging
+  if (!isDragging) {
+    globe.rotation.y += 0.0005;
+    rotationVelocity.x *= 0.95;
+    rotationVelocity.y *= 0.95;
+  }
+
+  // Update UI every second
+  if (now.getTime() - lastUIUpdate > 1000) {
+    updateUI(sunPos, now);
+    lastUIUpdate = now.getTime();
+  }
+
+  renderer.render(scene, camera);
+}
+
+// ─── Resize Handler ────────────────────────────────────────────────────────
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+animate();
+</script>
+</body>
+</html>

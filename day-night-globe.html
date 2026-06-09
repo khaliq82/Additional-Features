@@ -64,32 +64,17 @@ container.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 2.5;
 
-// Camera orbit state — we move the camera, not the globe
-let camTheta = 0;      // horizontal angle (longitude view)
-let camPhi = Math.PI / 2; // vertical angle (latitude view), starts at equator
-const camRadius = 2.5;
-
-function updateCamera() {
-  camera.position.x = camRadius * Math.sin(camPhi) * Math.sin(camTheta);
-  camera.position.y = camRadius * Math.cos(camPhi);
-  camera.position.z = camRadius * Math.sin(camPhi) * Math.cos(camTheta);
-  camera.lookAt(0, 0, 0);
-}
-updateCamera();
-
-// Stars background
+// Stars
 const starGeometry = new THREE.BufferGeometry();
 const starCount = 3000;
 const starPositions = new Float32Array(starCount * 3);
-for (let i = 0; i < starCount * 3; i++) {
-  starPositions[i] = (Math.random() - 0.5) * 200;
-}
+for (let i = 0; i < starCount * 3; i++) starPositions[i] = (Math.random() - 0.5) * 200;
 starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-const starMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.6 });
-scene.add(new THREE.Points(starGeometry, starMaterial));
+scene.add(new THREE.Points(starGeometry, new THREE.PointsMaterial({ color: 0xffffff, size: 0.12, transparent: true, opacity: 0.6 })));
 
-// ─── Sun Position Calculation ──────────────────────────────────────────────
+// ─── Sun Position ──────────────────────────────────────────────────────────
 function getSunPosition(date) {
   const JD = date.getTime() / 86400000 + 2440587.5;
   const n = JD - 2451545.0;
@@ -97,43 +82,22 @@ function getSunPosition(date) {
   const g = ((357.528 + 0.9856003 * n) % 360) * Math.PI / 180;
   const lambda = (L + 1.915 * Math.sin(g) + 0.020 * Math.sin(2 * g)) * Math.PI / 180;
   const epsilon = (23.439 - 0.0000004 * n) * Math.PI / 180;
-  const sinDec = Math.sin(epsilon) * Math.sin(lambda);
-  const dec = Math.asin(sinDec);
+  const dec = Math.asin(Math.sin(epsilon) * Math.sin(lambda));
   const ra = Math.atan2(Math.cos(epsilon) * Math.sin(lambda), Math.cos(lambda));
   const GMST = (6.697375 + 0.0657098242 * n + (date.getUTCHours() + date.getUTCMinutes() / 60 + date.getUTCSeconds() / 3600) * 1.00273791) % 24;
   const sunLon = ((ra * 180 / Math.PI) - GMST * 15 + 360) % 360;
   const sunLonAdj = sunLon > 180 ? sunLon - 360 : sunLon;
-  return {
-    lat: dec * 180 / Math.PI,
-    lon: sunLonAdj
-  };
+  return { lat: dec * 180 / Math.PI, lon: sunLonAdj };
 }
 
-// ─── Convert Sun Lat/Lon to 3D world direction ─────────────────────────────
-// Globe is FIXED. Longitude 0 faces +Z, longitude 90E faces +X, north is +Y.
-function sunLatLonToDirection(lat, lon) {
-  const latRad = lat * Math.PI / 180;
-  const lonRad = lon * Math.PI / 180;
-  // Standard spherical to cartesian, matching Three.js SphereGeometry UV mapping
-  return new THREE.Vector3(
-    Math.cos(latRad) * Math.sin(lonRad),  // X = East
-    Math.sin(latRad),                      // Y = North
-    Math.cos(latRad) * Math.cos(lonRad)   // Z = towards lon 0
-  ).normalize();
-}
-
-// ─── Globe Shader ──────────────────────────────────────────────────────────
-const textureLoader = new THREE.TextureLoader();
-const earthTexture = textureLoader.load(
-  'https://raw.githubusercontent.com/mrdoob/three.js/r128/examples/textures/planets/earth_atmos_2048.jpg'
-);
+// ─── The key: shader uses UV coordinates to determine day/night ────────────
+// This approach calculates the angle directly from UV (lat/lon on texture)
+// rather than relying on vertex normals, so it works correctly regardless
+// of globe rotation.
 
 const vertexShader = `
-  varying vec3 vNormal;
   varying vec2 vUv;
   void main() {
-    // Pass world-space normal (globe never rotates so world = local)
-    vNormal = normalize(normalMatrix * normal);
     vUv = uv;
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
@@ -141,22 +105,50 @@ const vertexShader = `
 
 const fragmentShader = `
   uniform sampler2D earthTexture;
-  uniform vec3 sunDirection;
-  uniform float twilightAngle;
+  uniform float sunLat;   // degrees
+  uniform float sunLon;   // degrees
+  uniform float twilightAngle; // degrees
 
-  varying vec3 vNormal;
   varying vec2 vUv;
+
+  #define PI 3.14159265358979
 
   void main() {
     vec4 texColor = texture2D(earthTexture, vUv);
-    float cosAngle = dot(normalize(vNormal), normalize(sunDirection));
-    float twilightZone = sin(twilightAngle);
-    float dayFactor = smoothstep(-twilightZone, twilightZone, cosAngle);
+
+    // Convert UV to lat/lon
+    // UV: u=0..1 maps to lon -180..180, v=0..1 maps to lat 90..-90
+    float lon = (vUv.x - 0.5) * 360.0;  // -180 to 180
+    float lat = (0.5 - vUv.y) * 180.0;  // 90 to -90
+
+    // Convert to radians
+    float latRad = lat * PI / 180.0;
+    float lonRad = lon * PI / 180.0;
+    float sunLatRad = sunLat * PI / 180.0;
+    float sunLonRad = sunLon * PI / 180.0;
+
+    // Spherical dot product between surface point and sub-solar point
+    // This gives cos(angle) between them
+    float cosAngle = sin(latRad) * sin(sunLatRad) +
+                     cos(latRad) * cos(sunLatRad) * cos(lonRad - sunLonRad);
+
+    // Twilight zone width in cos space
+    float twilightCos = cos((90.0 - twilightAngle) * PI / 180.0);
+
+    // smoothstep across twilight zone
+    float dayFactor = smoothstep(-twilightCos, twilightCos, cosAngle);
+
     float nightBrightness = 0.15;
     float brightness = mix(nightBrightness, 1.0, dayFactor);
+
     gl_FragColor = vec4(texColor.rgb * brightness, texColor.a);
   }
 `;
+
+const textureLoader = new THREE.TextureLoader();
+const earthTexture = textureLoader.load(
+  'https://raw.githubusercontent.com/mrdoob/three.js/r128/examples/textures/planets/earth_atmos_2048.jpg'
+);
 
 const globeGeometry = new THREE.SphereGeometry(1, 64, 64);
 const globeMaterial = new THREE.ShaderMaterial({
@@ -164,86 +156,68 @@ const globeMaterial = new THREE.ShaderMaterial({
   fragmentShader,
   uniforms: {
     earthTexture: { value: earthTexture },
-    sunDirection: { value: new THREE.Vector3(1, 0, 0) },
-    twilightAngle: { value: 18 * Math.PI / 180 }
+    sunLat: { value: 0.0 },
+    sunLon: { value: 0.0 },
+    twilightAngle: { value: 18.0 }
   }
 });
 
 const globe = new THREE.Mesh(globeGeometry, globeMaterial);
-// Globe NEVER rotates — it stays fixed in world space
 scene.add(globe);
 
-// Atmosphere glow
-const atmosphereGeometry = new THREE.SphereGeometry(1.02, 64, 64);
+// Atmosphere
 const atmosphereMaterial = new THREE.ShaderMaterial({
-  vertexShader: `
-    varying vec3 vNormal;
-    void main() {
-      vNormal = normalize(normalMatrix * normal);
-      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-    }
-  `,
-  fragmentShader: `
-    varying vec3 vNormal;
-    uniform vec3 cameraDir;
-    void main() {
-      float intensity = pow(0.7 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 3.0);
-      gl_FragColor = vec4(0.15, 0.5, 0.8, 1.0) * intensity * 0.8;
-    }
-  `,
+  vertexShader: `varying vec3 vNormal; void main() { vNormal = normalize(normalMatrix * normal); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }`,
+  fragmentShader: `varying vec3 vNormal; void main() { float i = pow(0.7 - dot(vNormal, vec3(0,0,1)), 3.0); gl_FragColor = vec4(0.15, 0.5, 0.8, 1.0) * i; }`,
   blending: THREE.AdditiveBlending,
   side: THREE.BackSide,
   transparent: true
 });
-scene.add(new THREE.Mesh(atmosphereGeometry, atmosphereMaterial));
+scene.add(new THREE.Mesh(new THREE.SphereGeometry(1.02, 64, 64), atmosphereMaterial));
 
-// ─── Camera Drag (orbit around fixed globe) ────────────────────────────────
+// ─── Drag: rotate globe mesh (texture stays with globe, shader uses UV) ────
 let isDragging = false;
 let previousMousePosition = { x: 0, y: 0 };
+let autoRotate = true;
 
 renderer.domElement.addEventListener('mousedown', e => {
   isDragging = true;
+  autoRotate = false;
   previousMousePosition = { x: e.clientX, y: e.clientY };
 });
-
 renderer.domElement.addEventListener('mousemove', e => {
   if (!isDragging) return;
   const dx = e.clientX - previousMousePosition.x;
   const dy = e.clientY - previousMousePosition.y;
-  camTheta -= dx * 0.005;
-  camPhi = Math.max(0.1, Math.min(Math.PI - 0.1, camPhi + dy * 0.005));
-  updateCamera();
+  globe.rotation.y += dx * 0.005;
+  globe.rotation.x += dy * 0.005;
   previousMousePosition = { x: e.clientX, y: e.clientY };
 });
-
 renderer.domElement.addEventListener('mouseup', () => { isDragging = false; });
 renderer.domElement.addEventListener('mouseleave', () => { isDragging = false; });
 
-// Touch support
 renderer.domElement.addEventListener('touchstart', e => {
-  isDragging = true;
+  isDragging = true; autoRotate = false;
   previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   e.preventDefault();
 }, { passive: false });
-
 renderer.domElement.addEventListener('touchmove', e => {
   if (!isDragging) return;
   const dx = e.touches[0].clientX - previousMousePosition.x;
   const dy = e.touches[0].clientY - previousMousePosition.y;
-  camTheta -= dx * 0.005;
-  camPhi = Math.max(0.1, Math.min(Math.PI - 0.1, camPhi + dy * 0.005));
-  updateCamera();
+  globe.rotation.y += dx * 0.005;
+  globe.rotation.x += dy * 0.005;
   previousMousePosition = { x: e.touches[0].clientX, y: e.touches[0].clientY };
   e.preventDefault();
 }, { passive: false });
-
 renderer.domElement.addEventListener('touchend', () => { isDragging = false; });
 
-// ─── Auto slow rotation (camera orbits, globe stays fixed) ─────────────────
-let autoRotate = true;
-renderer.domElement.addEventListener('mousedown', () => { autoRotate = false; });
+// ─── The sun lon offset accounts for Three.js SphereGeometry UV mapping ───
+// SphereGeometry starts texture at lon=180 (back of sphere when facing +Z)
+// We need to offset sun longitude by 90 degrees to align with texture
+const LON_OFFSET = 90;
 
-// ─── Update UI ─────────────────────────────────────────────────────────────
+// ─── UI Update ─────────────────────────────────────────────────────────────
 function updateUI(sunPos, now) {
   document.getElementById('sun-lat').textContent = sunPos.lat.toFixed(2);
   document.getElementById('sun-lon').textContent = sunPos.lon.toFixed(2);
@@ -256,29 +230,20 @@ function updateUI(sunPos, now) {
     `${now.getUTCDate()} ${months[now.getUTCMonth()]} ${now.getUTCFullYear()}`;
 }
 
-// ─── Set initial camera to face Makkah region (lon ~40E) ──────────────────
-camTheta = -40 * Math.PI / 180;
-camPhi = Math.PI / 2;
-updateCamera();
-
-// ─── Animation Loop ────────────────────────────────────────────────────────
+// ─── Animation ─────────────────────────────────────────────────────────────
 let lastUIUpdate = 0;
 
 function animate() {
   requestAnimationFrame(animate);
-
   const now = new Date();
   const sunPos = getSunPosition(now);
 
-  // Sun direction in world space — globe never moves so this is always correct
-  const sunDir = sunLatLonToDirection(sunPos.lat, sunPos.lon);
-  globeMaterial.uniforms.sunDirection.value.copy(sunDir);
+  // The UV-based shader takes raw lat/lon — no transformation needed
+  // Just account for the texture longitudinal offset
+  globeMaterial.uniforms.sunLat.value = sunPos.lat;
+  globeMaterial.uniforms.sunLon.value = sunPos.lon + LON_OFFSET;
 
-  // Auto slow camera orbit
-  if (autoRotate) {
-    camTheta -= 0.0005;
-    updateCamera();
-  }
+  if (autoRotate) globe.rotation.y += 0.0005;
 
   if (now.getTime() - lastUIUpdate > 1000) {
     updateUI(sunPos, now);
@@ -288,7 +253,6 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-// ─── Resize ────────────────────────────────────────────────────────────────
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();

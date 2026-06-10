@@ -221,84 +221,105 @@ nav{position:sticky;top:0;z-index:500;height:56px;display:flex;align-items:cente
 </nav>
 <div id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
 <div class="page">
-  <div class="hero">
-    <div class="hero-bg-glow"></div>
-    <div class="hero-inner">
-      <div class="hero-left">
-        <div class="hero-breadcrumb">
-          <a href="/">AdhanLive</a><span>›</span>
-          <a href="/prayer-times/makkah">Prayer Times</a><span>›</span>
-          <span style="color:rgba(255,255,255,0.5)">Makkah</span>
-        </div>
-        <div class="hero-city">Makkah</div>
-        <div class="hero-meta">
-          <span class="hero-badge">SAUDI ARABIA</span>
-          <span class="hero-meta-dot"></span>
-          <span class="hero-meta-text">AST · UTC+3</span>
-          <span class="hero-meta-dot"></span>
-          <span class="hero-meta-text">21.42°N, 39.83°E</span>
-        </div>
-        <div class="hero-date" id="hero-date">—</div>
-        <div class="next-prayer-block">
-          <div>
-            <div class="next-label">NEXT PRAYER</div>
-            <div class="next-name" id="next-name" style="color:var(--cyan)">—</div>
-          </div>
-          <div class="next-divider"></div>
-          <div>
-            <div class="next-countdown" id="next-countdown">--:--:--</div>
-            <div class="next-countdown-label">TIME REMAINING</div>
-          </div>
-        </div>
+
+  <!-- LEFT: City identity + vertical prayer cards -->
+  <div class="left-panel">
+    <div class="city-name-block">
+      <div class="hero-city">Makkah</div>
+      <div class="hero-city-arabic">مكة المكرمة</div>
+      <div class="hero-meta">
+        <span class="hero-badge">SAUDI ARABIA</span>
+        <span class="hero-meta-dot"></span>
+        <span class="hero-meta-text">AST · UTC+3</span>
+        <span class="hero-meta-dot"></span>
+        <span class="hero-meta-text">21.42°N, 39.83°E</span>
       </div>
-      <!-- PRAYER ARC -->
-      <div class="arc-wrap">
-        <div class="arc-canvas-wrap">
-          <canvas id="prayer-arc" width="680" height="680"></canvas>
-          <div class="kaaba-pivot" style="display:none;">
-            <div class="kaaba-wrap"><div class="kaaba-scene"><div class="kaaba">
-              <div class="kf kf-front"></div><div class="kf kf-back"></div>
-              <div class="kf kf-left"></div><div class="kf kf-right"></div>
-              <div class="kf kf-top"></div><div class="kf kf-bottom"></div>
-            </div><div class="kaaba-ground"></div></div></div>
-          </div>
-        </div>
-        <div class="arc-caption">24-HOUR PRAYER ARC · MAKKAH</div>
+      <div class="hero-date" id="hero-date">Wednesday, 10 June 2026 · <span id="hijri-inline">24 Dhul Hijjah 1447 AH</span></div>
+    </div>
+    <div class="prayer-stack" id="prayer-stack"></div>
+  </div>
+
+  <!-- CENTRE: Clock -->
+  <div class="centre-panel">
+    <div class="arc-canvas-wrap">
+      <canvas id="prayer-arc" width="680" height="680"></canvas>
+      <div class="kaaba-pivot" style="display:none;">
+        <div class="kaaba-wrap"><div class="kaaba-scene"><div class="kaaba">
+          <div class="kf kf-front"></div><div class="kf kf-back"></div>
+          <div class="kf kf-left"></div><div class="kf kf-right"></div>
+          <div class="kf kf-top"></div><div class="kf kf-bottom"></div>
+        </div><div class="kaaba-ground"></div></div></div>
       </div>
     </div>
   </div>
 
-  <div class="prayers-section">
-    <div class="section-label">TODAY'S PRAYER TIMES &middot; MAKKAH AL-MUKARRAMAH</div>
-    <div class="prayers-grid" id="prayers-grid"></div>
-    <div class="info-strip">
-      <div class="info-card">
-        <div class="info-card-label">CALCULATION METHOD</div>
-        <div class="info-card-value">Umm al-Qura</div>
-        <div class="info-card-sub">Official method of Saudi Arabia</div>
+  <!-- RIGHT: Live stats panel -->
+  <div class="right-panel">
+    <div class="np-block" id="np-block">
+      <div class="np-tag">Next Prayer</div>
+      <div class="np-name" id="next-name">—</div>
+      <div class="np-timer" id="next-countdown">--:--:--</div>
+      <div class="np-timer-label">TIME REMAINING</div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-label">Local Time · Makkah</div>
+        <div class="stat-value cyan" id="local-time">—</div>
+        <div class="stat-sub">Arabia Standard Time</div>
       </div>
-      <div class="info-card">
-        <div class="info-card-label">MOSQUES IN MAKKAH</div>
-        <div class="info-card-value">1,494</div>
-        <div class="info-card-sub">Mapped on AdhanLive globe</div>
+      <div class="stat-card">
+        <div class="stat-label">Sunrise · End of Fajr</div>
+        <div class="stat-value" id="sunrise-time">—</div>
+        <div class="stat-sub">Fajr window closes at sunrise</div>
       </div>
-      <div class="info-card">
-        <div class="info-card-label">CURRENT LOCAL TIME</div>
-        <div class="info-card-value" id="local-time">—</div>
-        <div class="info-card-sub">Arabia Standard Time (AST)</div>
+      <div class="stat-card">
+        <div class="stat-label">Calculation Method</div>
+        <div class="stat-value" style="font-size:14px;">Umm al-Qura</div>
+        <div class="stat-sub">Official method · Saudi Arabia</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Mosques in Makkah</div>
+        <div class="stat-value">1,494</div>
+        <div class="stat-sub">Mapped on AdhanLive globe</div>
       </div>
     </div>
-    <div class="method-note">
-      <div class="method-note-icon">🕌</div>
-      <div class="method-note-text">Prayer times are calculated using the <strong>Umm al-Qura method</strong>, the official Islamic prayer calculation method of Saudi Arabia, published by Umm al-Qura University in Makkah itself. Fajr begins when the sun reaches 18.5° below the horizon. Isha is fixed at 90 minutes after Maghrib. Makkah al-Mukarramah is the holiest city in Islam, home to Al Masjid Al Haram and the Kaaba, the qibla toward which 1.8 billion Muslims turn in prayer.</div>
-    </div>
-    <div class="cta-block">
-      <div class="cta-text">
-        <h3>Watch the Adhan sweep the Earth live</h3>
-        <p>Watch Makkah light up at each prayer time on the live globe, 280,621 mapped mosques, every prayer, in real time.</p>
+    <a href="/livemap" class="globe-cta">
+      <div class="globe-cta-dot"></div>
+      <div>
+        <div class="globe-cta-text">Watch on Live Globe</div>
+        <div class="globe-cta-sub">See Makkah light up at every prayer</div>
       </div>
-      <a href="/" class="cta-btn"><div class="cta-btn-dot"></div>Open Live Globe</a>
+    </a>
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div class="bottom-bar">
+    <div class="bb-left">
+      <a href="/home" class="bb-logo"><div class="bb-dot"></div><span>Adhan<span style="color:#00d4ff">Live</span></span></a>
+      <div class="bb-tagline">The Adhan Never Stops</div>
     </div>
+    <div class="bb-center">&copy; 2026 AdhanLive &middot; Mosque data &copy; OpenStreetMap contributors</div>
+    <div class="bb-right">
+      <span class="bb-share-label">Share</span>
+      <button class="mf-share-btn whatsapp" onclick="shareMapMoment('whatsapp')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </button>
+      <button class="mf-share-btn twitter" onclick="shareMapMoment('twitter')">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Post
+      </button>
+      <button class="mf-share-btn copy" onclick="shareMapMoment('copy')" id="mf-copy-btn">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copy Link
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- SEO content below fold -->
+<div class="seo-section">
     <section class="content-section">
       <h2>How these times are calculated</h2>
       <p>Prayer times in Makkah follow the <strong>Umm al-Qura method</strong>, the official Islamic prayer calculation method of Saudi Arabia, published by Umm al-Qura University in Makkah itself. It is the method used by Al Masjid Al Haram and every mosque across the Kingdom, and the same method applied to all Saudi mosques on the <a href="/">AdhanLive globe</a>.</p>
@@ -345,30 +366,8 @@ nav{position:sticky;top:0;z-index:500;height:56px;display:flex;align-items:cente
 <a href="/prayer-times/madinah" class="city-link">Madinah <span class="city-link-arrow">→</span></a></div>
     </div>
   </div>
-
-  <div id="map-footer">
-    <div class="map-footer-left">
-      <div class="map-footer-logo"><div class="logo-dot" style="width:7px;height:7px;flex-shrink:0"></div><span style="color:#fff">Adhan<span style="color:#00d4ff">Live</span></span></div>
-      <div class="map-footer-tagline">The live global visualization of Islamic prayer</div>
-    </div>
-    <div class="map-footer-center">&copy; 2026 AdhanLive &middot; Mosque data &copy; OpenStreetMap contributors</div>
-    <div class="map-footer-right">
-      <span class="map-footer-share-label">Share</span>
-      <button class="mf-share-btn whatsapp" onclick="shareMapMoment('whatsapp')">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-        WhatsApp
-      </button>
-      <button class="mf-share-btn twitter" onclick="shareMapMoment('twitter')">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        Post
-      </button>
-      <button class="mf-share-btn copy" onclick="shareMapMoment('copy')" id="mf-copy-btn">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-        Copy Link
-      </button>
-    </div>
-  </div>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/adhan@4.4.3/lib/bundles/adhan.umd.min.js"></script>
 <script>
@@ -438,40 +437,48 @@ let cachedTimes=null;
 
 function renderPrayers(){
   const now=new Date();
-  const utcDate=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()));
-  cachedTimes=calcPrayers(CITY.lat,CITY.lon,CITY.tz,utcDate,CITY.method);
-  const lh=localH(),active=currentPrayer(cachedTimes,lh);
-  document.getElementById('prayers-grid').innerHTML=ORDER.map(p=>{
-    const m=PMETA[p],t=h2t(cachedTimes[p]),isA=p===active;
-    return `<div class="prayer-card fade-up ${isA?'active':''}" style="--prayer-color:${m.color};--prayer-bg:${m.bg};">
-      <div class="prayer-active-badge">NOW</div>
-      <div class="prayer-icon">${m.icon}</div>
-      <div class="prayer-name-en">${m.en.toUpperCase()}</div>
-      <div class="prayer-time">${t.h12}:${t.mm}</div>
-      <div class="prayer-ampm">${t.ampm}</div>
-    </div>`;
-  }).join('');
+  cachedTimes=calcPrayers(CITY.lat,CITY.lon,CITY.tz,now,CITY.method);
+  const lh=localH();
+  const ORDER=['fajr','dhuhr','asr','maghrib','isha'];
+  const stack=document.getElementById('prayer-stack');
+  if(!stack) return;
+  stack.innerHTML='';
+  ORDER.forEach(key=>{
+    const m=PMETA[key],t=cachedTimes[key];
+    function fmtT(fh){
+      const h=Math.floor(((fh%24)+24)%24),mn=Math.floor((fh-Math.floor(fh))*60);
+      const ap=h<12?'AM':'PM',hh=h%12||12;
+      return `${String(hh).padStart(2,'0')}:${String(mn).padStart(2,'0')} ${ap}`;
+    }
+    const div=document.createElement('div');
+    div.className='pcard fade-up';
+    div.style.setProperty('--pc',m.color);
+    div.innerHTML=`<div class="pcard-dot"></div><div class="pcard-name">${m.en}</div><div class="pcard-time">${isNaN(t)?'—':fmtT(t)}</div><div class="pcard-now">NOW</div>`;
+    stack.appendChild(div);
+  });
+  // Sunrise for right panel
+  const srEl=document.getElementById('sunrise-time');
+  if(srEl && cachedTimes.sunrise){
+    const sh=Math.floor(((cachedTimes.sunrise%24)+24)%24),sm=Math.floor((cachedTimes.sunrise-Math.floor(cachedTimes.sunrise))*60);
+    const sap=sh<12?'AM':'PM',shh=sh%12||12;
+    srEl.textContent=`${String(shh).padStart(2,'0')}:${String(sm).padStart(2,'0')} ${sap}`;
+  }
+  updateActiveCard();
 }
-
-function updateCountdown(){
-  if(!cachedTimes)return;
-  const lh=localH(),next=nextPrayer(cachedTimes,lh);
-  const diff=(next.time-lh+48)%24,ts=Math.floor(diff*3600);
-  const h=Math.floor(ts/3600),m=Math.floor((ts%3600)/60),s=ts%60;
-  const meta=PMETA[next.name];
-  document.getElementById('next-name').textContent=meta.en;
-  document.getElementById('next-name').style.color=meta.color;
-  document.getElementById('next-countdown').textContent=
-    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+function updateActiveCard(){
+  const t=cachedTimes;
+  const lh=localH();
+  let active=null;
+  if(lh>=t.fajr&&lh<t.sunrise)active='fajr';
+  else if(lh>=t.dhuhr&&lh<t.asr)active='dhuhr';
+  else if(lh>=t.asr&&lh<t.maghrib)active='asr';
+  else if(lh>=t.maghrib&&lh<t.isha)active='maghrib';
+  else if(lh>=t.isha||lh<t.fajr)active='isha';
+  const keys=['fajr','dhuhr','asr','maghrib','isha'];
+  document.querySelectorAll('.pcard').forEach((c,i)=>{
+    c.classList.toggle('active',keys[i]===active);
+  });
 }
-
-function updateLocalTime(){
-  const d=cityNow(),h=d.getHours(),m=d.getMinutes(),s=d.getSeconds();
-  const ampm=h>=12?'PM':'AM',h12=h%12||12;
-  document.getElementById('local-time').textContent=
-    `${String(h12).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ampm}`;
-}
-
 function updateDate(){
   const d=cityNow();
   const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -483,7 +490,9 @@ function updateDate(){
     }).format(new Date());
     dateStr+=` \u00b7 ${hijri}`;
   }catch(e){}
-  document.getElementById('hero-date').textContent=dateStr;
+  document.getElementById('hero-date').innerHTML=dateStr.split(' · ')[0];
+  const hijri=document.getElementById('hijri-inline');
+  if(hijri) hijri.textContent=dateStr.split(' · ')[1]||'';
 }
 
 function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
@@ -1301,6 +1310,7 @@ function drawKaabaCanvas(){
 function tick(){
   updateLocalTime();
   updateCountdown();
+  updateActiveCard();
   drawArc();
 }
 
@@ -1314,6 +1324,7 @@ const msToMid=(86400-(now.getHours()*3600+now.getMinutes()*60+now.getSeconds()))
 setTimeout(()=>{renderPrayers();setInterval(renderPrayers,86400000);},msToMid);
 // Refresh card active states every minute so NOW follows real prayer windows
 setInterval(renderPrayers,60000);
+setInterval(updateActiveCard,15000);
 let _resizeTimer;
 window.addEventListener('resize',()=>{
   clearTimeout(_resizeTimer);

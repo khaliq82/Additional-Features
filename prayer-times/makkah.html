@@ -3,694 +3,1231 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Makkah Prayer Times Today — Live Adhan Times | AdhanLive</title>
-<meta name="description" content="Accurate prayer times for Makkah today, calculated using the official Umm al-Qura method. Live Fajr, Dhuhr, Asr, Maghrib and Isha times for the holy city, with Hijri date and live Adhan tracking.">
-<meta name="keywords" content="Makkah prayer times, Mecca prayer times, Makkah adhan times, Umm al-Qura prayer times, Fajr time Makkah, salah times Makkah">
+<title>Prayer Times Makkah Today: Fajr, Dhuhr, Asr, Maghrib, Isha | AdhanLive</title>
+<meta name="description" content="Accurate prayer times for Makkah (Mecca) today. Fajr, Dhuhr, Asr, Maghrib and Isha times calculated using the Umm al-Qura method. Live countdown to next prayer.">
+<meta name="keywords" content="prayer times makkah, mecca prayer times today, makkah salah times, fajr makkah, isha makkah, umm al-qura prayer times">
+<meta name="author" content="AdhanLive">
+<meta name="robots" content="index, follow">
 <link rel="canonical" href="https://www.adhanlive.com/prayer-times/makkah">
-
-<!-- Open Graph -->
-<meta property="og:title" content="Makkah Prayer Times Today — Live Adhan Times">
-<meta property="og:description" content="Accurate prayer times for the holy city of Makkah, calculated with the official Umm al-Qura method. Part of AdhanLive, the live map of the Adhan around the world.">
-<meta property="og:url" content="https://www.adhanlive.com/prayer-times/makkah">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://www.adhanlive.com/prayer-times/makkah">
+<meta property="og:title" content="Prayer Times Makkah Today | AdhanLive">
+<meta property="og:description" content="Live prayer times for Makkah: Fajr, Dhuhr, Asr, Maghrib and Isha with countdown. Calculated with Umm al-Qura method.">
+<meta property="og:image" content="https://www.adhanlive.com/preview.jpg">
 <meta property="og:site_name" content="AdhanLive">
-
-<!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Makkah Prayer Times Today — Live Adhan Times">
-<meta name="twitter:description" content="Accurate prayer times for the holy city of Makkah, calculated with the official Umm al-Qura method.">
-
-<!-- Schema.org -->
+<meta name="twitter:title" content="Prayer Times Makkah Today | AdhanLive">
+<meta name="twitter:description" content="Live prayer times for Makkah: Fajr, Dhuhr, Asr, Maghrib and Isha with countdown. Calculated with Umm al-Qura method.">
+<meta name="twitter:image" content="https://www.adhanlive.com/preview.jpg">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "name": "Makkah Prayer Times Today",
-  "description": "Accurate daily prayer times for Makkah, Saudi Arabia, calculated using the official Umm al-Qura method.",
+  "name": "Prayer Times Makkah Today | AdhanLive",
+  "description": "Accurate prayer times for Makkah (Mecca) today. Fajr, Dhuhr, Asr, Maghrib and Isha times calculated using the Umm al-Qura method. Live countdown to next prayer.",
   "url": "https://www.adhanlive.com/prayer-times/makkah",
-  "isPartOf": {
-    "@type": "WebSite",
-    "name": "AdhanLive",
-    "url": "https://www.adhanlive.com"
-  },
-  "about": {
-    "@type": "Place",
-    "name": "Makkah",
-    "address": {
-      "@type": "PostalAddress",
-      "addressLocality": "Makkah",
-      "addressCountry": "SA"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 21.4225,
-      "longitude": 39.8262
-    }
-  }
+  "isPartOf": { "@type": "WebSite", "name": "AdhanLive", "url": "https://www.adhanlive.com" }
 }
 </script>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #060a10;
-  --bg-card: #0c1219;
-  --bg-card-hover: #101824;
-  --border: rgba(255, 255, 255, 0.07);
-  --text: #e8edf2;
-  --text-dim: #8b96a3;
-  --text-faint: #5a6472;
-  --cyan: #00d4ff;
-  --fajr: #4466ff;
-  --dhuhr: #ffcc00;
-  --asr: #e07a2f;
-  --maghrib: #d94f3d;
-  --isha: #9b59c4;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#000000;--border:rgba(255,255,255,0.1);
+  --text:#ffffff;--text2:rgba(255,255,255,0.6);--text3:rgba(255,255,255,0.25);
+  --cyan:#00d4ff;
+  --fajr:#4466ff;--dhuhr:#ffcc00;--asr:#e07a2f;--maghrib:#d94f3d;--isha:#9b59c4;
+  --fajr-bg:rgba(68,102,255,0.12);--dhuhr-bg:rgba(255,204,0,0.12);
+  --asr-bg:rgba(224,122,47,0.12);--maghrib-bg:rgba(217,79,61,0.12);--isha-bg:rgba(155,89,196,0.12);
 }
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;min-height:100vh;}
+body::before{
+  content:'';position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0.35;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
 }
-
-a { color: var(--cyan); text-decoration: none; }
-a:hover { text-decoration: underline; }
-
-.container {
-  max-width: 980px;
-  margin: 0 auto;
-  padding: 0 24px;
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(0,0,0,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.logo{font-family:'Inter',sans-serif;font-weight:800;font-size:18px;letter-spacing:-0.02em;display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;color:#fff;}
+.logo-dot{width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan);position:relative;flex-shrink:0;}
+.logo-dot::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(0,212,255,0.4);animation:pulse 2.4s ease-out infinite;}
+@keyframes pulse{0%{transform:scale(1);opacity:1}100%{transform:scale(2.8);opacity:0}}
+.nav-right{display:flex;align-items:center;gap:20px;}
+.nav-right a{font-size:11px;letter-spacing:0.08em;color:rgba(255,255,255,0.7);font-weight:600;text-decoration:none;transition:color 0.2s;}
+.nav-right a:hover{color:#fff;}
+.nav-live-btn{font-size:11px;font-weight:700;letter-spacing:0.08em;padding:6px 16px;border-radius:6px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--cyan);text-decoration:none;transition:all 0.2s;white-space:nowrap;}
+.nav-live-btn:hover{background:rgba(0,212,255,0.2);}
+/* PAGE */
+.page{padding-top:56px;min-height:100vh;}
+/* HERO */
+.hero{position:relative;padding:52px 32px 44px;background:linear-gradient(180deg,rgba(0,212,255,0.03) 0%,transparent 100%);border-bottom:1px solid var(--border);overflow:hidden;}
+.hero-bg-glow{position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:700px;height:500px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,212,255,0.05) 0%,transparent 70%);pointer-events:none;}
+.hero-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 400px;gap:56px;align-items:center;}
+.hero-breadcrumb{font-size:11px;letter-spacing:0.1em;color:var(--text3);font-weight:500;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.hero-breadcrumb a{color:var(--text3);text-decoration:none;transition:color 0.2s;}
+.hero-breadcrumb a:hover{color:var(--cyan);}
+.hero-city{font-family:'Playfair Display',serif;font-size:clamp(52px,7vw,84px);font-weight:300;letter-spacing:-0.02em;line-height:0.9;color:#fff;margin-bottom:20px;}
+.hero-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:28px;}
+.hero-badge{font-size:10px;font-weight:700;letter-spacing:0.1em;padding:4px 12px;border-radius:20px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);color:var(--cyan);}
+.hero-meta-text{font-size:12px;color:var(--text2);letter-spacing:0.04em;}
+.hero-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--text3);}
+.hero-date{font-size:13px;color:var(--text2);margin-bottom:28px;}
+/* NEXT PRAYER */
+.next-prayer-block{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:16px;padding:20px 24px;display:inline-flex;align-items:center;gap:20px;}
+.next-label{font-size:10px;font-weight:700;letter-spacing:0.12em;color:var(--text3);margin-bottom:4px;}
+.next-name{font-size:16px;font-weight:700;}
+.next-divider{width:1px;height:40px;background:var(--border);}
+.next-countdown{font-size:32px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-0.03em;}
+.next-countdown-label{font-size:10px;color:var(--text3);letter-spacing:0.08em;margin-top:2px;}
+/* PRAYER ARC */
+.arc-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;}
+.arc-canvas-wrap{position:relative;width:min(680px,92vw);height:min(680px,92vw);flex-shrink:0;}
+#prayer-arc{display:block;width:100%;height:100%;}
+.arc-caption{font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:0.12em;text-align:center;}
+/* PRAYER GRID */
+.prayers-section{max-width:1100px;margin:0 auto;padding:48px 32px;}
+.section-label{font-size:10px;font-weight:700;letter-spacing:0.15em;color:var(--text3);margin-bottom:24px;}
+.prayers-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:40px;}
+.prayer-card{border-radius:16px;padding:24px 20px;border:1px solid var(--border);background:rgba(255,255,255,0.02);position:relative;overflow:hidden;transition:border-color 0.3s,background 0.3s;}
+.prayer-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--prayer-color);opacity:0.5;transition:opacity 0.3s;}
+.prayer-card.active{border-color:var(--prayer-color);background:var(--prayer-bg);}
+.prayer-card.active::before{opacity:1;}
+.prayer-active-badge{position:absolute;top:12px;right:12px;font-size:8px;font-weight:800;letter-spacing:0.1em;padding:3px 8px;border-radius:10px;background:var(--prayer-color);color:#000;display:none;}
+.prayer-card.active .prayer-active-badge{display:block;}
+.prayer-icon{font-size:18px;margin-bottom:12px;}
+.prayer-name-en{font-size:11px;font-weight:700;letter-spacing:0.1em;color:var(--text2);margin-bottom:14px;}
+.prayer-time{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-0.03em;color:#fff;line-height:1;margin-bottom:4px;}
+.prayer-card.active .prayer-time{color:var(--prayer-color);}
+.prayer-ampm{font-size:11px;color:var(--text3);font-weight:500;}
+/* INFO STRIP */
+.info-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:40px;}
+.info-card{border-radius:12px;padding:20px 24px;border:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.info-card-label{font-size:10px;font-weight:700;letter-spacing:0.12em;color:var(--text3);margin-bottom:8px;}
+.info-card-value{font-size:18px;font-weight:700;color:#fff;margin-bottom:2px;}
+.info-card-sub{font-size:11px;color:var(--text2);}
+/* METHOD NOTE */
+.method-note{border-radius:12px;padding:20px 24px;margin-bottom:40px;border:1px solid var(--border);background:rgba(0,212,255,0.02);display:flex;align-items:flex-start;gap:16px;}
+.method-note-icon{font-size:18px;flex-shrink:0;margin-top:2px;}
+.method-note-text{font-size:13px;color:var(--text2);line-height:1.7;}
+.method-note-text strong{color:#fff;font-weight:600;}
+/* CTA */
+.cta-block{border-radius:20px;padding:40px;margin-bottom:48px;background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.15);display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+.cta-text h3{font-size:20px;font-weight:700;margin-bottom:8px;letter-spacing:-0.02em;}
+.cta-text p{font-size:14px;color:var(--text2);line-height:1.6;max-width:500px;}
+.cta-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:10px;background:var(--cyan);color:#000;font-size:13px;font-weight:800;letter-spacing:0.06em;text-decoration:none;white-space:nowrap;transition:all 0.2s;flex-shrink:0;}
+.cta-btn:hover{background:#fff;transform:translateY(-1px);}
+.cta-btn-dot{width:8px;height:8px;border-radius:50%;background:#000;animation:pd 1.5s infinite;}
+@keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
+/* CITIES */
+.cities-section{border-top:1px solid var(--border);padding-top:40px;margin-bottom:48px;}
+.cities-label{font-size:10px;font-weight:700;letter-spacing:0.15em;color:var(--text3);margin-bottom:20px;}
+.cities-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;}
+.city-link{padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,0.02);text-decoration:none;color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:space-between;transition:all 0.2s;}
+.city-link:hover{border-color:rgba(0,212,255,0.3);background:rgba(0,212,255,0.05);color:var(--cyan);}
+.city-link-arrow{color:var(--text3);font-size:11px;transition:transform 0.2s;}
+.city-link:hover .city-link-arrow{transform:translateX(3px);color:var(--cyan);}
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.footer-brand{font-size:13px;color:var(--text3);}
+.footer-brand a{color:var(--cyan);text-decoration:none;}
+.footer-links{display:flex;gap:24px;}
+.footer-links a{font-size:11px;color:var(--text3);text-decoration:none;letter-spacing:0.06em;transition:color 0.2s;}
+.footer-links a:hover{color:#fff;}
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero-inner{grid-template-columns:1fr;gap:32px;}
+  .arc-wrap{order:-1;}
+  .arc-canvas-wrap{width:min(420px,92vw);height:min(420px,92vw);}
+  .prayers-grid{grid-template-columns:repeat(3,1fr);}
+  .info-strip{grid-template-columns:1fr 1fr;}
+  nav{padding:0 16px;}
+  .prayers-section,.hero{padding-left:16px;padding-right:16px;}
 }
-
-/* ── Nav ─────────────────────────────────────── */
-nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+@media(max-width:600px){
+  .prayers-grid{grid-template-columns:1fr 1fr;}
+  .info-strip{grid-template-columns:1fr;}
+  .cta-block{flex-direction:column;}
+  footer{flex-direction:column;text-align:center;}
+  .footer-links{justify-content:center;}
+  .nav-right .nav-pt-link{display:none;}
 }
-
-.nav-logo {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text);
-  letter-spacing: 0.02em;
-}
-
-.nav-logo span { color: var(--cyan); }
-.nav-logo:hover { text-decoration: none; }
-
-.nav-links {
-  display: flex;
-  gap: 28px;
-  font-size: 0.85rem;
-}
-
-.nav-links a { color: var(--text-dim); }
-.nav-links a:hover { color: var(--text); text-decoration: none; }
-
-/* ── Hero ────────────────────────────────────── */
-.hero {
-  text-align: center;
-  padding: 56px 0 40px;
-}
-
-.eyebrow {
-  font-size: 0.75rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--cyan);
-  margin-bottom: 16px;
-}
-
-.city-name {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(3rem, 9vw, 5.5rem);
-  font-weight: 600;
-  line-height: 1.05;
-  margin-bottom: 8px;
-}
-
-.city-arabic {
-  font-size: clamp(1.3rem, 3.5vw, 1.8rem);
-  color: var(--text-dim);
-  font-weight: 300;
-  margin-bottom: 28px;
-}
-
-.date-row {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-  flex-wrap: wrap;
-  font-size: 0.9rem;
-  color: var(--text-dim);
-  margin-bottom: 6px;
-}
-
-.date-row .sep { color: var(--text-faint); }
-
-.local-time {
-  font-size: 0.85rem;
-  color: var(--text-faint);
-  font-variant-numeric: tabular-nums;
-}
-
-/* ── Next Prayer Banner ──────────────────────── */
-.next-prayer {
-  margin: 36px auto 0;
-  max-width: 560px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 28px 32px;
-  background: var(--bg-card);
-  position: relative;
-  overflow: hidden;
-}
-
-.next-prayer::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: var(--prayer-color, var(--cyan));
-  opacity: 0.9;
-}
-
-.next-label {
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  margin-bottom: 10px;
-}
-
-.next-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 2.2rem;
-  font-weight: 600;
-  color: var(--prayer-color, var(--text));
-  margin-bottom: 4px;
-}
-
-.next-time {
-  font-size: 1.1rem;
-  color: var(--text-dim);
-  margin-bottom: 14px;
-  font-variant-numeric: tabular-nums;
-}
-
-.countdown {
-  font-size: 1rem;
-  color: var(--text);
-  font-variant-numeric: tabular-nums;
-}
-
-.countdown strong { color: var(--prayer-color, var(--cyan)); font-weight: 600; }
-
-/* ── Prayer Times Grid ───────────────────────── */
-.times-section { padding: 48px 0 12px; }
-
-.times-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 14px;
-}
-
-.prayer-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 22px 16px 20px;
-  text-align: center;
-  transition: background 0.25s ease, border-color 0.25s ease;
-  position: relative;
-}
-
-.prayer-card .dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  margin: 0 auto 12px;
-}
-
-.prayer-card .p-name {
-  font-size: 0.85rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
-  margin-bottom: 6px;
-  color: var(--text-dim);
-}
-
-.prayer-card .p-time {
-  font-size: 1.25rem;
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-
-.prayer-card.active {
-  border-color: var(--p-color);
-  background: var(--bg-card-hover);
-}
-
-.prayer-card.active .p-name { color: var(--text); }
-
-.prayer-card.active::after {
-  content: 'NOW';
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  color: var(--p-color);
-  font-weight: 600;
-}
-
-.sunrise-note {
-  text-align: center;
-  margin-top: 18px;
-  font-size: 0.85rem;
-  color: var(--text-faint);
-}
-
-.sunrise-note span { color: var(--text-dim); font-variant-numeric: tabular-nums; }
-
-/* ── Live Strip ──────────────────────────────── */
-.live-strip {
-  margin: 44px 0;
-  text-align: center;
-  padding: 26px 24px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(0, 212, 255, 0.045), transparent);
-}
-
-.live-strip .pulse {
-  display: inline-block;
-  width: 8px; height: 8px;
-  background: var(--cyan);
-  border-radius: 50%;
-  margin-right: 10px;
-  animation: pulse 2s infinite;
-  vertical-align: middle;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4); }
-  50% { opacity: 0.6; box-shadow: 0 0 0 7px rgba(0, 212, 255, 0); }
-}
-
-.live-strip p {
-  display: inline;
-  font-size: 0.95rem;
-  color: var(--text-dim);
-}
-
-.live-strip a {
-  display: inline-block;
-  margin-top: 14px;
-  font-size: 0.9rem;
-}
-
-/* ── Content Sections ────────────────────────── */
-.content-section {
-  padding: 36px 0;
-  border-top: 1px solid var(--border);
-}
-
-.content-section h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.6rem;
-  font-weight: 600;
-  margin-bottom: 18px;
-}
-
-.content-section p {
-  color: var(--text-dim);
-  margin-bottom: 14px;
-  max-width: 720px;
-}
-
-.content-section strong { color: var(--text); font-weight: 500; }
-
-.method-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
-  margin-top: 24px;
-}
-
-.method-item {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 18px;
-}
-
-.method-item .m-prayer {
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.method-item .m-rule {
-  font-size: 0.82rem;
-  color: var(--text-dim);
-  line-height: 1.5;
-}
-
-/* ── Footer ──────────────────────────────────── */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 36px 24px 44px;
-  text-align: center;
-  margin-top: 48px;
-}
-
-footer .tagline {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.05rem;
-  color: var(--text-dim);
-  margin-bottom: 16px;
-}
-
-footer .links {
-  display: flex;
-  justify-content: center;
-  gap: 22px;
-  flex-wrap: wrap;
-  font-size: 0.85rem;
-}
-
-footer .links a { color: var(--text-faint); }
-footer .links a:hover { color: var(--cyan); text-decoration: none; }
-
-/* ── Mobile ──────────────────────────────────── */
-@media (max-width: 720px) {
-  .times-grid { grid-template-columns: repeat(2, 1fr); }
-  .times-grid .prayer-card:last-child { grid-column: 1 / -1; }
-  .nav-links { gap: 16px; font-size: 0.8rem; }
-  .next-prayer { padding: 22px 20px; }
-  .hero { padding: 36px 0 28px; }
-}
+.content-section{border-top:1px solid var(--border);padding:40px 0;}
+.content-section h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;margin-bottom:16px;color:#fff;}
+.content-section p{font-size:14px;line-height:1.75;color:var(--text2);max-width:760px;margin-bottom:14px;}
+.content-section p strong{color:#fff;font-weight:600;}
+.content-section a{color:var(--cyan);text-decoration:none;}
+.content-section a:hover{text-decoration:underline;}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:22px;}
+.rule-item{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.rule-item .r-name{font-size:12px;font-weight:700;letter-spacing:0.06em;margin-bottom:8px;}
+.rule-item .r-text{font-size:12.5px;color:var(--text2);line-height:1.6;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{opacity:0;animation:fadeUp 0.6s ease forwards;}
+.fade-up:nth-child(1){animation-delay:0.05s}.fade-up:nth-child(2){animation-delay:0.1s}
+.fade-up:nth-child(3){animation-delay:0.15s}.fade-up:nth-child(4){animation-delay:0.2s}
+.fade-up:nth-child(5){animation-delay:0.25s}
 </style>
 </head>
 <body>
-
 <nav>
-  <a href="/" class="nav-logo">Adhan<span>Live</span></a>
-  <div class="nav-links">
-    <a href="/">Live Map</a>
-    <a href="/adhan-clock">Adhan Clock</a>
-    <a href="/prayer-arcs">Arc Explorer</a>
-    <a href="/about">About</a>
+  <a href="/" class="logo"><div class="logo-dot"></div>AdhanLive</a>
+  <div class="nav-right">
+    <a href="/prayer-times/makkah" class="nav-pt-link" style="color:var(--cyan);">Prayer Times</a>
+    <a href="/" class="nav-live-btn">⬤ Watch Live Globe</a>
   </div>
 </nav>
-
-<header class="hero container">
-  <div class="eyebrow">Prayer Times</div>
-  <h1 class="city-name">Makkah</h1>
-  <div class="city-arabic">مكة المكرمة</div>
-  <div class="date-row">
-    <span id="greg-date">—</span>
-    <span class="sep">·</span>
-    <span id="hijri-date">—</span>
-  </div>
-  <div class="local-time">Makkah time now: <span id="local-clock">—</span></div>
-
-  <div class="next-prayer" id="next-prayer-box">
-    <div class="next-label" id="next-label">Next Prayer</div>
-    <div class="next-name" id="next-name">—</div>
-    <div class="next-time" id="next-time">—</div>
-    <div class="countdown" id="countdown">—</div>
-  </div>
-</header>
-
-<main class="container">
-
-  <section class="times-section">
-    <div class="times-grid" id="times-grid">
-      <div class="prayer-card" data-prayer="fajr" style="--p-color: var(--fajr)">
-        <div class="dot" style="background: var(--fajr)"></div>
-        <div class="p-name">Fajr</div>
-        <div class="p-time" id="time-fajr">—</div>
+<div class="page">
+  <div class="hero">
+    <div class="hero-bg-glow"></div>
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div class="hero-breadcrumb">
+          <a href="/">AdhanLive</a><span>›</span>
+          <a href="/prayer-times/makkah">Prayer Times</a><span>›</span>
+          <span style="color:rgba(255,255,255,0.5)">Makkah</span>
+        </div>
+        <div class="hero-city">Makkah</div>
+        <div class="hero-meta">
+          <span class="hero-badge">SAUDI ARABIA</span>
+          <span class="hero-meta-dot"></span>
+          <span class="hero-meta-text">AST · UTC+3</span>
+          <span class="hero-meta-dot"></span>
+          <span class="hero-meta-text">21.42°N, 39.83°E</span>
+        </div>
+        <div class="hero-date" id="hero-date">—</div>
+        <div class="next-prayer-block">
+          <div>
+            <div class="next-label">NEXT PRAYER</div>
+            <div class="next-name" id="next-name" style="color:var(--cyan)">—</div>
+          </div>
+          <div class="next-divider"></div>
+          <div>
+            <div class="next-countdown" id="next-countdown">--:--:--</div>
+            <div class="next-countdown-label">TIME REMAINING</div>
+          </div>
+        </div>
       </div>
-      <div class="prayer-card" data-prayer="dhuhr" style="--p-color: var(--dhuhr)">
-        <div class="dot" style="background: var(--dhuhr)"></div>
-        <div class="p-name">Dhuhr</div>
-        <div class="p-time" id="time-dhuhr">—</div>
-      </div>
-      <div class="prayer-card" data-prayer="asr" style="--p-color: var(--asr)">
-        <div class="dot" style="background: var(--asr)"></div>
-        <div class="p-name">Asr</div>
-        <div class="p-time" id="time-asr">—</div>
-      </div>
-      <div class="prayer-card" data-prayer="maghrib" style="--p-color: var(--maghrib)">
-        <div class="dot" style="background: var(--maghrib)"></div>
-        <div class="p-name">Maghrib</div>
-        <div class="p-time" id="time-maghrib">—</div>
-      </div>
-      <div class="prayer-card" data-prayer="isha" style="--p-color: var(--isha)">
-        <div class="dot" style="background: var(--isha)"></div>
-        <div class="p-name">Isha</div>
-        <div class="p-time" id="time-isha">—</div>
+      <!-- PRAYER ARC -->
+      <div class="arc-wrap">
+        <div class="arc-canvas-wrap">
+          <canvas id="prayer-arc" width="680" height="680"></canvas>
+          <div class="kaaba-pivot" style="display:none;">
+            <div class="kaaba-wrap"><div class="kaaba-scene"><div class="kaaba">
+              <div class="kf kf-front"></div><div class="kf kf-back"></div>
+              <div class="kf kf-left"></div><div class="kf kf-right"></div>
+              <div class="kf kf-top"></div><div class="kf kf-bottom"></div>
+            </div><div class="kaaba-ground"></div></div></div>
+          </div>
+        </div>
+        <div class="arc-caption">24-HOUR PRAYER ARC · MAKKAH</div>
       </div>
     </div>
-    <div class="sunrise-note">Sunrise (end of Fajr): <span id="time-sunrise">—</span></div>
-  </section>
-
-  <div class="live-strip">
-    <span class="pulse"></span>
-    <p>Right now, somewhere on Earth, the Adhan is being called. Watch it sweep across the planet in real time.</p>
-    <br>
-    <a href="/">Open the Live Map →</a>
   </div>
 
-  <section class="content-section">
-    <h2>How these times are calculated</h2>
-    <p>Prayer times in Makkah follow the <strong>Umm al-Qura method</strong>, the official Islamic prayer calculation method of Saudi Arabia, published by Umm al-Qura University in Makkah itself. It is the method used by the Grand Mosque, Al Masjid Al Haram, and every mosque across the Kingdom.</p>
-    <p>Each of the five prayers is anchored to a precise position of the sun, observed from the coordinates of the holy city:</p>
-
-    <div class="method-grid">
-      <div class="method-item">
-        <div class="m-prayer" style="color: var(--fajr)">Fajr</div>
-        <div class="m-rule">Begins when the sun reaches 18.5 degrees below the eastern horizon, the first light of true dawn.</div>
+  <div class="prayers-section">
+    <div class="section-label">TODAY'S PRAYER TIMES &middot; MAKKAH AL-MUKARRAMAH</div>
+    <div class="prayers-grid" id="prayers-grid"></div>
+    <div class="info-strip">
+      <div class="info-card">
+        <div class="info-card-label">CALCULATION METHOD</div>
+        <div class="info-card-value">Umm al-Qura</div>
+        <div class="info-card-sub">Official method of Saudi Arabia</div>
       </div>
-      <div class="method-item">
-        <div class="m-prayer" style="color: var(--dhuhr)">Dhuhr</div>
-        <div class="m-rule">Begins at Zawaal, the moment the sun passes its highest point and begins its descent westward.</div>
+      <div class="info-card">
+        <div class="info-card-label">MOSQUES IN MAKKAH</div>
+        <div class="info-card-value">1,494</div>
+        <div class="info-card-sub">Mapped on AdhanLive globe</div>
       </div>
-      <div class="method-item">
-        <div class="m-prayer" style="color: var(--asr)">Asr</div>
-        <div class="m-rule">Begins when the shadow of an object equals its own length, plus its shadow at noon.</div>
-      </div>
-      <div class="method-item">
-        <div class="m-prayer" style="color: var(--maghrib)">Maghrib</div>
-        <div class="m-rule">Begins the moment the sun fully sets below the western horizon.</div>
-      </div>
-      <div class="method-item">
-        <div class="m-prayer" style="color: var(--isha)">Isha</div>
-        <div class="m-rule">Begins 90 minutes after Maghrib, the fixed interval defined by the Umm al-Qura method.</div>
+      <div class="info-card">
+        <div class="info-card-label">CURRENT LOCAL TIME</div>
+        <div class="info-card-value" id="local-time">—</div>
+        <div class="info-card-sub">Arabia Standard Time (AST)</div>
       </div>
     </div>
-  </section>
-
-  <section class="content-section">
-    <h2>The holy city</h2>
-    <p>Makkah is the birthplace of the Prophet Muhammad ﷺ and home to the Kaaba, the qibla toward which every Muslim on Earth turns in prayer. Five times a day, the Adhan rises from the minarets of Al Masjid Al Haram and from mosques across the city, calling millions to prayer in the holiest place in Islam.</p>
-    <p>On AdhanLive, Makkah is one of the brightest points on the globe. When prayer time arrives here, you can watch its mosques light up together on the <a href="/">live map</a>, part of a wave that never stops moving around the Earth.</p>
-  </section>
-
-</main>
-
-<footer>
-  <div class="tagline">The Adhan Never Stops</div>
-  <div class="links">
-    <a href="/">Live Map</a>
-    <a href="/adhan-clock">Adhan Clock</a>
-    <a href="/prayer-arcs">Arc Explorer</a>
-    <a href="/ask-adhanlive">Ask AdhanLive</a>
-    <a href="/about">About</a>
-    <a href="/contact">Contact</a>
+    <div class="method-note">
+      <div class="method-note-icon">🕌</div>
+      <div class="method-note-text">Prayer times are calculated using the <strong>Umm al-Qura method</strong>, the official Islamic prayer calculation method of Saudi Arabia, published by Umm al-Qura University in Makkah itself. Fajr begins when the sun reaches 18.5° below the horizon. Isha is fixed at 90 minutes after Maghrib. Makkah al-Mukarramah is the holiest city in Islam, home to Al Masjid Al Haram and the Kaaba, the qibla toward which 1.8 billion Muslims turn in prayer.</div>
+    </div>
+    <div class="cta-block">
+      <div class="cta-text">
+        <h3>Watch the Adhan sweep the Earth live</h3>
+        <p>Watch Makkah light up at each prayer time on the live globe, 280,621 mapped mosques, every prayer, in real time.</p>
+      </div>
+      <a href="/" class="cta-btn"><div class="cta-btn-dot"></div>Open Live Globe</a>
+    </div>
+    <section class="content-section">
+      <h2>How these times are calculated</h2>
+      <p>Prayer times in Makkah follow the <strong>Umm al-Qura method</strong>, the official Islamic prayer calculation method of Saudi Arabia, published by Umm al-Qura University in Makkah itself. It is the method used by Al Masjid Al Haram and every mosque across the Kingdom, and the same method applied to all Saudi mosques on the <a href="/">AdhanLive globe</a>.</p>
+      <p>Each of the five prayers is anchored to a precise position of the sun, observed from the coordinates of the holy city:</p>
+      <div class="rules-grid">
+        <div class="rule-item">
+          <div class="r-name" style="color:var(--fajr)">FAJR</div>
+          <div class="r-text">Begins when the sun reaches 18.5 degrees below the eastern horizon, the first light of true dawn. The Fajr window ends at sunrise.</div>
+        </div>
+        <div class="rule-item">
+          <div class="r-name" style="color:var(--dhuhr)">DHUHR</div>
+          <div class="r-text">Begins at Zawaal, the moment the sun passes its highest point in the sky and begins its descent westward.</div>
+        </div>
+        <div class="rule-item">
+          <div class="r-name" style="color:var(--asr)">ASR</div>
+          <div class="r-text">Begins when the shadow of an object equals its own length, plus the length of its shadow at noon.</div>
+        </div>
+        <div class="rule-item">
+          <div class="r-name" style="color:var(--maghrib)">MAGHRIB</div>
+          <div class="r-text">Begins the moment the sun fully sets below the western horizon.</div>
+        </div>
+        <div class="rule-item">
+          <div class="r-name" style="color:var(--isha)">ISHA</div>
+          <div class="r-text">Begins 90 minutes after Maghrib, the fixed interval defined by the Umm al-Qura method.</div>
+        </div>
+      </div>
+    </section>
+    <section class="content-section">
+      <h2>The holy city</h2>
+      <p>Makkah is the birthplace of the Prophet Muhammad ﷺ and home to the Kaaba, the qibla toward which every Muslim on Earth turns in prayer. Five times a day, the Adhan rises from the minarets of Al Masjid Al Haram and from mosques across the city, calling millions to prayer in the holiest place in Islam.</p>
+      <p>On AdhanLive, Makkah is one of the brightest points on the globe. When prayer time arrives here, you can watch its mosques light up together on the <a href="/">live map</a>, part of a wave that never stops moving around the Earth.</p>
+    </section>
+    <div class="cities-section">
+      <div class="cities-label">PRAYER TIMES IN OTHER CITIES</div>
+      <div class="cities-grid"><a href="/prayer-times/jakarta" class="city-link">Jakarta <span class="city-link-arrow">→</span></a>
+<a href="/prayer-times/kuala-lumpur" class="city-link">Kuala Lumpur <span class="city-link-arrow">→</span></a>
+<a href="/prayer-times/cairo" class="city-link">Cairo <span class="city-link-arrow">→</span></a>
+<a href="/prayer-times/istanbul" class="city-link">Istanbul <span class="city-link-arrow">→</span></a>
+<a href="/prayer-times/london" class="city-link">London <span class="city-link-arrow">→</span></a>
+<a href="/prayer-times/dubai" class="city-link">Dubai <span class="city-link-arrow">→</span></a>
+<a href="/prayer-times/karachi" class="city-link">Karachi <span class="city-link-arrow">→</span></a>
+<a href="/prayer-times/dhaka" class="city-link">Dhaka <span class="city-link-arrow">→</span></a>
+<a href="/prayer-times/riyadh" class="city-link">Riyadh <span class="city-link-arrow">→</span></a>
+<a href="/prayer-times/madinah" class="city-link">Madinah <span class="city-link-arrow">→</span></a></div>
+    </div>
   </div>
-</footer>
+
+  <footer>
+    <div class="footer-brand">© 2026 <a href="/">AdhanLive</a> &middot; The Adhan Never Stops</div>
+    <div class="footer-links">
+      <a href="/">Home</a><a href="/#about">About</a><a href="/#contact">Contact</a>
+    </div>
+  </footer>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/adhan@4.4.3/lib/bundles/adhan.umd.min.js"></script>
 <script>
-(function () {
-  // ── Makkah constants ──────────────────────────────
-  var COORDS = new adhan.Coordinates(21.4225, 39.8262);
-  var TIMEZONE = 'Asia/Riyadh';
-  var PRAYER_COLORS = {
-    fajr: '#4466ff',
-    dhuhr: '#ffcc00',
-    asr: '#e07a2f',
-    maghrib: '#d94f3d',
-    isha: '#9b59c4'
+// ── CITY CONFIG ──────────────────────────────────────────────
+const CITY = {
+  name:'Makkah', lat:21.4225, lon:39.8262, tz:3, method:'Makkah'
+};
+
+// ── PRAYER ENGINE ────────────────────────────────────────────
+// adhan.js is the verified engine, same as the AdhanLive globe.
+// This adapter converts adhan.js UTC instants into fractional hours
+// in city local time, preserving the interface the arc renderer expects.
+function calcPrayers(lat,lon,tz,date,method){
+  var pt=new adhan.PrayerTimes(
+    new adhan.Coordinates(lat,lon),
+    date,
+    adhan.CalculationMethod.UmmAlQura()
+  );
+  function fh(d){
+    var shifted=new Date(d.getTime()+tz*3600000);
+    return shifted.getUTCHours()+shifted.getUTCMinutes()/60+shifted.getUTCSeconds()/3600;
+  }
+  return{
+    fajr:fh(pt.fajr),
+    sunrise:fh(pt.sunrise),
+    dhuhr:fh(pt.dhuhr),
+    asr:fh(pt.asr),
+    maghrib:fh(pt.maghrib),
+    isha:fh(pt.isha)
   };
-  var PRAYER_NAMES = {
-    fajr: 'Fajr',
-    dhuhr: 'Dhuhr',
-    asr: 'Asr',
-    maghrib: 'Maghrib',
-    isha: 'Isha'
+}
+
+const PMETA={
+  fajr:   {en:'Fajr',   icon:'🌙',color:'#4466ff',bg:'rgba(68,102,255,0.12)'},
+  dhuhr:  {en:'Dhuhr',  icon:'☀️', color:'#ffcc00',bg:'rgba(255,204,0,0.12)'},
+  asr:    {en:'Asr',    icon:'🌤️',color:'#e07a2f',bg:'rgba(224,122,47,0.12)'},
+  maghrib:{en:'Maghrib',icon:'🌅',color:'#d94f3d',bg:'rgba(217,79,61,0.12)'},
+  isha:   {en:'Isha',   icon:'🌃',color:'#9b59c4',bg:'rgba(155,89,196,0.12)'},
+};
+const ORDER=['fajr','dhuhr','asr','maghrib','isha'];
+
+function h2t(h){
+  const tot=((h%24)+24)%24,hh=Math.floor(tot),mm=Math.floor((tot-hh)*60);
+  return{h12:hh%12||12,mm:String(mm).padStart(2,'0'),ampm:hh>=12?'PM':'AM'};
+}
+function cityNow(){
+  const now=new Date(),utc=now.getTime()+now.getTimezoneOffset()*60000;
+  return new Date(utc+CITY.tz*3600000);
+}
+function localH(){const d=cityNow();return d.getHours()+d.getMinutes()/60+d.getSeconds()/3600;}
+function currentPrayer(times,lh){
+  // Real prayer windows: Fajr ends at sunrise; between sunrise and Dhuhr
+  // no prayer window is open and this returns null.
+  if(lh>=times.fajr&&lh<times.sunrise)return 'fajr';
+  if(lh>=times.dhuhr&&lh<times.asr)return 'dhuhr';
+  if(lh>=times.asr&&lh<times.maghrib)return 'asr';
+  if(lh>=times.maghrib&&lh<times.isha)return 'maghrib';
+  if(lh>=times.isha||lh<times.fajr)return 'isha';
+  return null;
+}
+function nextPrayer(times,lh){
+  for(const p of ORDER){if(isNaN(times[p]))continue;const t=((times[p]%24)+24)%24;if(t>lh)return{name:p,time:t};}
+  return{name:'fajr',time:((times.fajr%24)+24)%24+24};
+}
+
+let cachedTimes=null;
+
+function renderPrayers(){
+  const now=new Date();
+  const utcDate=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate()));
+  cachedTimes=calcPrayers(CITY.lat,CITY.lon,CITY.tz,utcDate,CITY.method);
+  const lh=localH(),active=currentPrayer(cachedTimes,lh);
+  document.getElementById('prayers-grid').innerHTML=ORDER.map(p=>{
+    const m=PMETA[p],t=h2t(cachedTimes[p]),isA=p===active;
+    return `<div class="prayer-card fade-up ${isA?'active':''}" style="--prayer-color:${m.color};--prayer-bg:${m.bg};">
+      <div class="prayer-active-badge">NOW</div>
+      <div class="prayer-icon">${m.icon}</div>
+      <div class="prayer-name-en">${m.en.toUpperCase()}</div>
+      <div class="prayer-time">${t.h12}:${t.mm}</div>
+      <div class="prayer-ampm">${t.ampm}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateCountdown(){
+  if(!cachedTimes)return;
+  const lh=localH(),next=nextPrayer(cachedTimes,lh);
+  const diff=(next.time-lh+48)%24,ts=Math.floor(diff*3600);
+  const h=Math.floor(ts/3600),m=Math.floor((ts%3600)/60),s=ts%60;
+  const meta=PMETA[next.name];
+  document.getElementById('next-name').textContent=meta.en;
+  document.getElementById('next-name').style.color=meta.color;
+  document.getElementById('next-countdown').textContent=
+    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function updateLocalTime(){
+  const d=cityNow(),h=d.getHours(),m=d.getMinutes(),s=d.getSeconds();
+  const ampm=h>=12?'PM':'AM',h12=h%12||12;
+  document.getElementById('local-time').textContent=
+    `${String(h12).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ampm}`;
+}
+
+function updateDate(){
+  const d=cityNow();
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  let dateStr=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  try{
+    const hijri=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{
+      day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Riyadh'
+    }).format(new Date());
+    dateStr+=` \u00b7 ${hijri}`;
+  }catch(e){}
+  document.getElementById('hero-date').textContent=dateStr;
+}
+
+function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
+  const cos=Math.cos(ang), sin=Math.sin(ang);
+  // px/py = perpendicular (left side of needle when pointing outward)
+  const px=-sin, py=cos;
+  const tipX=cx+cos*length, tipY=cy+sin*length;
+  const tailLen=14, tailX=cx-cos*tailLen, tailY=cy-sin*tailLen;
+  const bodyW=16;
+  const bs=length*0.12, be=length*0.80, tipNeckD=length*0.86;
+
+  // Light source: upper-left (approx -0.7, -0.7 direction)
+  // lit side = top-left edge of needle, shadow side = bottom-right edge
+  const LX=-0.7, LY=-0.7; // light direction
+  // How much is this needle's left edge facing the light?
+  const litFace=Math.max(0, -(px*LX + py*LY)); // dot product of perpendicular vs light
+  const litAlpha=0.15+litFace*0.55; // 0.15 to 0.70
+
+  ctx.save();
+  ctx.globalAlpha=isActive?0.95:0.45;
+
+  // ── 1. Base fill with depth gradient (dark on shadow side, bright on lit side) ──
+  const bevelG=ctx.createLinearGradient(
+    cx-px*bodyW+cos*bs, cy-py*bodyW+sin*bs,  // left edge (lit side)
+    cx+px*bodyW+cos*bs, cy+py*bodyW+sin*bs   // right edge (shadow side)
+  );
+  // Lit side: slightly brighter than col, shadow side: much darker
+  bevelG.addColorStop(0, col);
+  bevelG.addColorStop(0.15, col);
+  bevelG.addColorStop(0.55, shadeCol(col, 0.55));
+  bevelG.addColorStop(1,   shadeCol(col, 0.25));
+  ctx.fillStyle=bevelG;
+  if(isActive){ctx.shadowColor=col; ctx.shadowBlur=10;}
+  ctx.beginPath();
+  ctx.moveTo(tailX,tailY);
+  ctx.lineTo(cx-px*1.2-cos*(bs*0.3),cy-py*1.2-sin*(bs*0.3));
+  ctx.lineTo(cx-px*bodyW+cos*bs,cy-py*bodyW+sin*bs);
+  ctx.lineTo(cx-px*bodyW+cos*be,cy-py*bodyW+sin*be);
+  ctx.bezierCurveTo(cx-px*bodyW+cos*(be+(tipNeckD-be)*0.4),cy-py*bodyW+sin*(be+(tipNeckD-be)*0.4),cx-px*1.5+cos*tipNeckD,cy-py*1.5+sin*tipNeckD,tipX,tipY);
+  ctx.bezierCurveTo(cx+px*1.5+cos*tipNeckD,cy+py*1.5+sin*tipNeckD,cx+px*bodyW+cos*(be+(tipNeckD-be)*0.4),cy+py*bodyW+sin*(be+(tipNeckD-be)*0.4),cx+px*bodyW+cos*be,cy+py*bodyW+sin*be);
+  ctx.lineTo(cx+px*bodyW+cos*bs,cy+py*bodyW+sin*bs);
+  ctx.lineTo(cx+px*1.2-cos*(bs*0.3),cy+py*1.2-sin*(bs*0.3));
+  ctx.closePath();
+  ctx.fill();
+  ctx.shadowBlur=0;
+
+  // ── 2. Top-edge specular highlight (lit edge rim) ──
+  ctx.globalAlpha=isActive ? litAlpha*0.9 : litAlpha*0.35;
+  ctx.strokeStyle='rgba(255,255,255,0.9)';
+  ctx.lineWidth=0.8;
+  ctx.lineCap='round';
+  ctx.beginPath();
+  ctx.moveTo(cx-px*bodyW+cos*bs, cy-py*bodyW+sin*bs);
+  ctx.lineTo(cx-px*bodyW+cos*be, cy-py*bodyW+sin*be);
+  ctx.bezierCurveTo(
+    cx-px*bodyW+cos*(be+(tipNeckD-be)*0.4), cy-py*bodyW+sin*(be+(tipNeckD-be)*0.4),
+    cx-px*1.5+cos*tipNeckD, cy-py*1.5+sin*tipNeckD,
+    tipX, tipY
+  );
+  ctx.stroke();
+
+  // ── 3. Bottom-edge shadow rim ──
+  ctx.globalAlpha=isActive?0.35:0.15;
+  ctx.strokeStyle='rgba(0,0,0,0.8)';
+  ctx.lineWidth=1.2;
+  ctx.beginPath();
+  ctx.moveTo(cx+px*bodyW+cos*bs, cy+py*bodyW+sin*bs);
+  ctx.lineTo(cx+px*bodyW+cos*be, cy+py*bodyW+sin*be);
+  ctx.bezierCurveTo(
+    cx+px*bodyW+cos*(be+(tipNeckD-be)*0.4), cy+py*bodyW+sin*(be+(tipNeckD-be)*0.4),
+    cx+px*1.5+cos*tipNeckD, cy+py*1.5+sin*tipNeckD,
+    tipX, tipY
+  );
+  ctx.stroke();
+  ctx.lineCap='butt';
+
+  // ── 4. Central ridge highlight (simulates raised center spine) ──
+  ctx.globalAlpha=isActive?0.18:0.07;
+  const ridgeG=ctx.createLinearGradient(cx+cos*bs,cy+sin*bs,tipX,tipY);
+  ridgeG.addColorStop(0,'rgba(255,255,255,0)');
+  ridgeG.addColorStop(0.2,'rgba(255,255,255,0.9)');
+  ridgeG.addColorStop(0.85,'rgba(255,255,255,0.3)');
+  ridgeG.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.strokeStyle=ridgeG;
+  ctx.lineWidth=1.5;
+  ctx.beginPath();
+  ctx.moveTo(cx+cos*bs,cy+sin*bs);
+  ctx.lineTo(tipX,tipY);
+  ctx.stroke();
+
+  ctx.globalAlpha=1;
+  ctx.restore();
+
+  // ── Time text — engraved into needle surface ──
+  const textD=length*0.62;
+  const flip=Math.cos(ang)<0;
+  ctx.save();
+  ctx.translate(cx+cos*textD, cy+sin*textD);
+  ctx.rotate(flip?ang+Math.PI:ang);
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font=`700 ${isActive?12:10}px 'Inter',sans-serif`;
+
+  // Layer 1: deep groove shadow — offset down-right, dark
+  ctx.fillStyle='rgba(0,0,0,0.75)';
+  ctx.shadowColor='rgba(0,0,0,0)'; ctx.shadowBlur=0;
+  ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
+  ctx.save();
+  ctx.translate(0.8, 1.2);
+  ctx.fillText(timeStr,0,0);
+  ctx.restore();
+
+  // Layer 2: groove shadow left side (inner shadow illusion)
+  ctx.fillStyle='rgba(0,0,0,0.45)';
+  ctx.save();
+  ctx.translate(-0.4, 0.6);
+  ctx.fillText(timeStr,0,0);
+  ctx.restore();
+
+  // Layer 3: top highlight — light catching the upper edge of the groove
+  ctx.fillStyle='rgba(255,255,255,0.22)';
+  ctx.save();
+  ctx.translate(-0.5, -0.8);
+  ctx.fillText(timeStr,0,0);
+  ctx.restore();
+
+  // Layer 4: main engraved text — dimmer than surface, slightly desaturated
+  // Use needle color darkened, not cyan, so it looks carved INTO the material
+  ctx.fillStyle=isActive?'rgba(220,245,255,0.95)':'rgba(200,235,255,0.72)';
+  ctx.fillText(timeStr,0,0);
+
+  ctx.restore();
+}
+
+// Helper: darken a hex color by factor (0=black, 1=original)
+function shadeCol(hex, factor){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `rgb(${Math.round(r*factor)},${Math.round(g*factor)},${Math.round(b*factor)})`;
+}
+
+// Kaaba rotation angle — advances each frame
+let _kaabaAngle = 0;
+
+function drawKaaba(ctx, cx, cy) {
+  const S = 13;       // half-size of cube face
+  const H = 15;       // total height of cube
+  const BH = H * 0.38; // gold band height (top 38%)
+  const a = _kaabaAngle;
+  _kaabaAngle += 0.008; // slow rotation speed
+
+  // ── Isometric 3D cube projection ──
+  // We show 2 faces: front-left and front-right, plus top
+  // Rotation: spin around Y axis
+  const cosA = Math.cos(a), sinA = Math.sin(a);
+
+  // 8 corners of unit cube [-1..1, -1..1, -1..1]
+  // Project with simple perspective: rotate Y, then isometric-ish
+  const project = (x, y, z) => {
+    // Rotate around Y axis
+    const rx = x * cosA + z * sinA;
+    const rz = -x * sinA + z * cosA;
+    // Perspective projection (slight)
+    const scale = S / (2.2 + rz * 0.18);
+    return [cx + rx * scale, cy + y * (H/2) / 2.2 + rz * 0.06 * S];
   };
 
-  function getParams() {
-    var params = adhan.CalculationMethod.UmmAlQura();
-    return params;
+  // Cube corners: [x, y, z] in [-1,1] space
+  // y: -1=top, +1=bottom
+  const TLF = project(-1,-1,-1); // top-left-front
+  const TRF = project( 1,-1,-1); // top-right-front
+  const TLB = project(-1,-1, 1); // top-left-back
+  const TRB = project( 1,-1, 1); // top-right-back
+  const BLF = project(-1, 1,-1); // bottom-left-front
+  const BRF = project( 1, 1,-1); // bottom-right-front
+  const BLB = project(-1, 1, 1); // bottom-left-back
+  const BRB = project( 1, 1, 1); // bottom-right-back
+
+  // Band split points (38% down from top)
+  const f = BH / H; // fraction
+  const lerp = (a,b,t) => [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t];
+  const BTLF = lerp(TLF,BLF,f), BTRF = lerp(TRF,BRF,f);
+  const BTLB = lerp(TLB,BLB,f), BTRB = lerp(TRB,BRB,f);
+
+  // Determine which faces are visible (front-facing)
+  const leftVis  = Math.cos(a + Math.PI/4) > 0;
+  const rightVis = Math.cos(a - Math.PI/4) > 0;
+
+  const drawFace = (pts, fillColor, strokeColor) => {
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], pts[0][1]);
+    for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0], pts[i][1]);
+    ctx.closePath();
+    ctx.fillStyle = fillColor; ctx.fill();
+    ctx.strokeStyle = strokeColor; ctx.lineWidth = 0.7; ctx.stroke();
+  };
+
+  ctx.save();
+  // Drop shadow under Kaaba
+  ctx.shadowColor = 'rgba(0,0,0,0.7)';
+  ctx.shadowBlur = 8; ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 2;
+
+  // ── Left face ──
+  if(leftVis){
+    // Lower black section
+    drawFace([BTLF,BTLB,BLB,BLF], 'rgba(12,10,8,0.97)', 'rgba(180,150,60,0.6)');
+    // Upper gold band
+    drawFace([TLF,TLB,BTLB,BTLF], 'rgba(160,120,30,0.95)', 'rgba(200,170,60,0.8)');
+  }
+  // ── Right face ──
+  if(rightVis){
+    // Lower black section
+    drawFace([BTRF,BTLF,BLF,BRF], 'rgba(18,15,10,0.97)', 'rgba(180,150,60,0.6)');
+    // Upper gold band
+    drawFace([TRF,TLF,BTLF,BTRF], 'rgba(190,145,35,0.95)', 'rgba(220,185,65,0.85)');
+  }
+  ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+
+  // ── Top face ──
+  drawFace([TLF,TRF,TRB,TLB], 'rgba(25,20,12,0.98)', 'rgba(190,155,50,0.7)');
+
+  // ── Gold edge highlights ──
+  ctx.strokeStyle = 'rgba(230,185,60,0.85)'; ctx.lineWidth = 1;
+  // Vertical front-left edge
+  ctx.beginPath(); ctx.moveTo(TLF[0],TLF[1]); ctx.lineTo(BLF[0],BLF[1]); ctx.stroke();
+  // Vertical front-right edge
+  ctx.beginPath(); ctx.moveTo(TRF[0],TRF[1]); ctx.lineTo(BRF[0],BRF[1]); ctx.stroke();
+  // Top front edge
+  ctx.strokeStyle = 'rgba(245,205,70,0.9)'; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(TLF[0],TLF[1]); ctx.lineTo(TRF[0],TRF[1]); ctx.stroke();
+
+  // ── Gold band horizontal lines ──
+  ctx.strokeStyle = 'rgba(220,178,50,0.7)'; ctx.lineWidth = 0.5;
+  if(leftVis){
+    ctx.beginPath(); ctx.moveTo(BTLF[0],BTLF[1]); ctx.lineTo(BTLB[0],BTLB[1]); ctx.stroke();
+  }
+  if(rightVis){
+    ctx.beginPath(); ctx.moveTo(BTRF[0],BTRF[1]); ctx.lineTo(BTLF[0],BTLF[1]); ctx.stroke();
   }
 
-  function fmtTime(date) {
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      timeZone: TIMEZONE
-    });
+  // ── Door (small gold rectangle on front face) ──
+  if(rightVis && Math.abs(sinA) < 0.7){
+    const doorT = lerp(TRF, TLF, 0.35);
+    const doorB = lerp(BRF, BLF, 0.18);
+    const doorL = lerp(doorT, TLF, 0.1);
+    const doorR = lerp(doorT, TRF, 0.1);
+    const doorBL = lerp(doorB, BLF, 0.1);
+    const doorBR = lerp(doorB, BRF, 0.1);
+    ctx.beginPath();
+    ctx.moveTo(doorL[0], lerp(TRF,BRF,0.25)[1]);
+    ctx.lineTo(doorR[0], lerp(TRF,BRF,0.25)[1]);
+    ctx.lineTo(doorR[0], lerp(TRF,BRF,0.52)[1]);
+    ctx.lineTo(doorL[0], lerp(TRF,BRF,0.52)[1]);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(190,148,35,0.85)'; ctx.fill();
+    ctx.strokeStyle = 'rgba(240,200,60,0.9)'; ctx.lineWidth = 0.6; ctx.stroke();
   }
 
-  function getPrayerTimes(date) {
-    return new adhan.PrayerTimes(COORDS, date, getParams());
+  // ── Soft cyan glow ring underneath (connects to clock aesthetic) ──
+  const glowR = ctx.createRadialGradient(cx,cy,8,cx,cy,18);
+  glowR.addColorStop(0,'rgba(0,212,255,0.08)');
+  glowR.addColorStop(1,'rgba(0,212,255,0)');
+  ctx.fillStyle = glowR;
+  ctx.beginPath(); ctx.arc(cx, cy, 18, 0, Math.PI*2); ctx.fill();
+
+  ctx.restore();
+}
+
+function drawArc(){
+  const canvas=document.getElementById('prayer-arc');
+  const dpr=window.devicePixelRatio||1;
+  const wrap=canvas.parentElement;
+  const size=wrap.offsetWidth||680;
+  if(canvas._lastSize!==size){
+    canvas.width=size*dpr;canvas.height=size*dpr;
+    canvas.style.width=size+'px';canvas.style.height=size+'px';
+    canvas._lastSize=size;
+  }
+  const ctx=canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,size,size);
+  if(!cachedTimes)return;
+  const cx=size/2,cy=size/2;
+  const R=size*0.27;
+  const RI=R+size*0.015;   // very tight band
+  const RO=R+size*0.048;   // very tight band
+  const bandMid=(RI+RO)/2;
+  const lh=localH();
+  function hexRgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
+  function angle(h){return(h/24)*Math.PI*2-Math.PI/2;}
+
+  // Background
+  const base=ctx.createRadialGradient(cx,cy*0.8,0,cx,cy,size*0.5);
+  base.addColorStop(0,'rgba(16,20,32,1)');base.addColorStop(0.5,'rgba(10,12,20,1)');base.addColorStop(1,'rgba(4,5,10,1)');
+  ctx.fillStyle=base;ctx.fillRect(0,0,size,size);
+
+  // Islamic pattern
+  ctx.save();ctx.translate(cx,cy);
+  ctx.beginPath();ctx.arc(0,0,R+2,0,Math.PI*2);ctx.clip();
+  function drawStar(radius,points,innerRatio,color,lineW){
+    ctx.strokeStyle=color;ctx.lineWidth=lineW;ctx.beginPath();
+    for(let i=0;i<points*2;i++){const r=i%2===0?radius:radius*innerRatio,a=(i/points)*Math.PI-Math.PI/2;i===0?ctx.moveTo(r*Math.cos(a),r*Math.sin(a)):ctx.lineTo(r*Math.cos(a),r*Math.sin(a));}
+    ctx.closePath();ctx.stroke();
+  }
+  drawStar(R*0.95,8,0.72,'rgba(212,170,80,0.28)',0.9);drawStar(R*0.95,8,0.72,'rgba(212,170,80,0.10)',3.0);
+  drawStar(R*0.70,8,0.76,'rgba(212,170,80,0.22)',0.8);drawStar(R*0.48,8,0.74,'rgba(212,170,80,0.18)',0.7);
+  drawStar(R*0.26,8,0.70,'rgba(212,170,80,0.16)',0.6);
+  for(let i=0;i<24;i++){const a=(i/24)*Math.PI*2,iM=i%3===0;ctx.strokeStyle=iM?'rgba(212,170,80,0.12)':'rgba(212,170,80,0.05)';ctx.lineWidth=iM?0.5:0.25;ctx.beginPath();ctx.moveTo(R*0.06*Math.cos(a),R*0.06*Math.sin(a));ctx.lineTo(R*0.98*Math.cos(a),R*0.98*Math.sin(a));ctx.stroke();}
+  [0.22,0.40,0.58,0.76,0.92].forEach((r,i)=>{ctx.strokeStyle=i%2===0?'rgba(212,170,80,0.12)':'rgba(180,140,60,0.05)';ctx.lineWidth=i%2===0?0.5:0.3;ctx.beginPath();ctx.arc(0,0,R*r,0,Math.PI*2);ctx.stroke();});
+  const iF=ctx.createRadialGradient(0,0,R*0.3,0,0,R);iF.addColorStop(0,'rgba(0,0,0,0)');iF.addColorStop(0.7,'rgba(0,0,0,0.15)');iF.addColorStop(1,'rgba(0,0,0,0.5)');
+  ctx.fillStyle=iF;ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+
+  // Inner bezel
+  ctx.strokeStyle='rgba(0,0,0,0.8)';ctx.lineWidth=6;ctx.beginPath();ctx.arc(cx,cy,R-2,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,0.07)';ctx.lineWidth=5;ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,0.14)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,R-4,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,0.10)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,R+4,0,Math.PI*2);ctx.stroke();
+
+  // Outer text band — narrow
+  ctx.save();ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.arc(cx,cy,RI,0,Math.PI*2,true);ctx.fillStyle='rgba(6,8,18,0.80)';ctx.fill();ctx.restore();
+  ctx.strokeStyle='rgba(255,255,255,0.14)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,RI,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,0.22)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle='rgba(0,212,255,0.08)';ctx.lineWidth=2;ctx.beginPath();ctx.arc(cx,cy,RO-1,0,Math.PI*2);ctx.stroke();
+
+  // Night/day
+  const mH=((cachedTimes.maghrib%24)+24)%24,fH=((cachedTimes.fajr%24)+24)%24;
+  ctx.strokeStyle='rgba(60,40,140,0.2)';ctx.lineWidth=4;ctx.beginPath();ctx.arc(cx,cy,R,angle(mH),angle(fH+24));ctx.stroke();
+  ctx.strokeStyle='rgba(200,150,40,0.08)';ctx.lineWidth=4;ctx.beginPath();ctx.arc(cx,cy,R,angle(fH),angle(mH));ctx.stroke();
+
+  // Active segment — only drawn while a prayer window is actually open.
+  // Fajr's segment ends at sunrise, its true window end.
+  const active=currentPrayer(cachedTimes,lh);
+  if(active){
+    const segEnd=active==='fajr'?'sunrise':ORDER[(ORDER.indexOf(active)+1)%ORDER.length];
+    let aH=((cachedTimes[active]%24)+24)%24,nH=((cachedTimes[segEnd]%24)+24)%24;
+    if(nH<=aH)nH+=24;
+    const activeCol=PMETA[active].color;
+    ctx.strokeStyle=activeCol;ctx.lineWidth=16;ctx.globalAlpha=0.05;ctx.beginPath();ctx.arc(cx,cy,R,angle(aH),angle(nH));ctx.stroke();
+    ctx.lineWidth=5;ctx.globalAlpha=0.18;ctx.beginPath();ctx.arc(cx,cy,R,angle(aH),angle(nH));ctx.stroke();
+    ctx.lineWidth=2;ctx.globalAlpha=0.85;ctx.beginPath();ctx.arc(cx,cy,R,angle(aH),angle(nH));ctx.stroke();ctx.globalAlpha=1;
   }
 
-  // ── Render today's times ──────────────────────────
-  function renderTimes() {
-    var now = new Date();
-    var pt = getPrayerTimes(now);
+  // 24-hour numbers with tick lines — close to ring
+  ctx.save();
+  for(let h=0;h<24;h++){
+    const a=angle(h);
+    const isMaj=h%6===0, isHalf=h%3===0;
+    const tickOuter=R-3;
+    const tickLen=isMaj?10:isHalf?7:5;
+    const tickInner=tickOuter-tickLen;
 
-    document.getElementById('time-fajr').textContent = fmtTime(pt.fajr);
-    document.getElementById('time-sunrise').textContent = fmtTime(pt.sunrise);
-    document.getElementById('time-dhuhr').textContent = fmtTime(pt.dhuhr);
-    document.getElementById('time-asr').textContent = fmtTime(pt.asr);
-    document.getElementById('time-maghrib').textContent = fmtTime(pt.maghrib);
-    document.getElementById('time-isha').textContent = fmtTime(pt.isha);
+    // Tick line on ring
+    ctx.strokeStyle=isMaj?'rgba(255,255,255,0.30)':isHalf?'rgba(255,255,255,0.15)':'rgba(255,255,255,0.08)';
+    ctx.lineWidth=isMaj?1.5:1;
+    ctx.beginPath();
+    ctx.moveTo(cx+tickOuter*Math.cos(a),cy+tickOuter*Math.sin(a));
+    ctx.lineTo(cx+tickInner*Math.cos(a),cy+tickInner*Math.sin(a));
+    ctx.stroke();
 
-    return pt;
+    // Number just inside tick
+    const nr=tickInner-9;
+    const nx=cx+nr*Math.cos(a),ny=cy+nr*Math.sin(a);
+    ctx.save();ctx.translate(nx,ny);
+    ctx.rotate(Math.sin(a)>0?a-Math.PI/2:a+Math.PI/2);
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.font=`${isMaj?'500':'400'} ${isMaj?8.5:7}px 'Inter',sans-serif`;
+    ctx.fillStyle=isMaj?'rgba(0,212,255,0.45)':'rgba(0,212,255,0.20)';
+    ctx.fillText(String(h).padStart(2,'0'),0,0);
+    ctx.restore();
+  }
+  ctx.restore();
+
+  // Hour ticks
+  for(let h=0;h<24;h++){
+    const a=angle(h),isQ=h%6===0,isH=h%3===0;if(!isH&&!isQ)continue;
+    const len=isQ?12:7,r1=R-len/2,r2=R+len/2;
+    ctx.strokeStyle='rgba(0,0,0,0.7)';ctx.lineWidth=isQ?2:1.5;ctx.beginPath();ctx.moveTo(cx+(r1+0.6)*Math.cos(a),cy+(r1+0.6)*Math.sin(a));ctx.lineTo(cx+(r2+0.6)*Math.cos(a),cy+(r2+0.6)*Math.sin(a));ctx.stroke();
+    ctx.strokeStyle=isQ?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.12)';ctx.lineWidth=isQ?1.5:1;ctx.beginPath();ctx.moveTo(cx+r1*Math.cos(a),cy+r1*Math.sin(a));ctx.lineTo(cx+r2*Math.cos(a),cy+r2*Math.sin(a));ctx.stroke();
   }
 
-  // ── Dates ─────────────────────────────────────────
-  function renderDates() {
-    var now = new Date();
-    document.getElementById('greg-date').textContent = now.toLocaleDateString('en-US', {
-      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
-      timeZone: TIMEZONE
-    });
-    try {
-      document.getElementById('hijri-date').textContent = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', {
-        day: 'numeric', month: 'long', year: 'numeric',
-        timeZone: TIMEZONE
-      }).format(now).replace(' AH', ' AH');
-    } catch (e) {
-      document.getElementById('hijri-date').textContent = '';
+  // City name + next prayer countdown — top center of dial
+  {
+    ctx.save();
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    // City name — moved up slightly to make room for countdown
+    ctx.font=`700 ${Math.round(R*0.115)}px 'Playfair Display',serif`;
+    ctx.fillStyle='rgba(180,220,255,0.82)';
+    ctx.shadowColor='rgba(130,190,255,0.35)';
+    ctx.shadowBlur=8;
+    ctx.fillText('Makkah', cx, cy - R*0.68);
+    ctx.shadowBlur=0;
+    // Next prayer countdown
+    const _lh2=localH();
+    const _next2=nextPrayer(cachedTimes,_lh2);
+    if(_next2){
+      const _diff=(_next2.time-_lh2+24)%24;
+      const _ts=Math.floor(_diff*3600);
+      const _hh=Math.floor(_ts/3600),_mm=Math.floor((_ts%3600)/60),_ss2=_ts%60;
+      const _countdown=`${String(_hh).padStart(2,'0')}:${String(_mm).padStart(2,'0')}:${String(_ss2).padStart(2,'0')}`;
+      const _col=PMETA[_next2.name].color;
+      const _label=PMETA[_next2.name].en;
+      const _y=cy-R*0.55;
+      // Prayer name in its color
+      ctx.font=`600 ${Math.round(R*0.075)}px 'Inter',sans-serif`;
+      ctx.fillStyle=_col;
+      ctx.shadowColor=_col;
+      ctx.shadowBlur=6;
+      const _nameW=ctx.measureText(_label).width;
+      // "in" in dim white
+      ctx.fillStyle='rgba(255,255,255,0.35)';
+      ctx.shadowBlur=0;
+      const _inW=ctx.measureText(' in ').width;
+      // countdown in cyan
+      ctx.font=`700 ${Math.round(R*0.072)}px 'Inter',sans-serif`;
+      const _cdW=ctx.measureText(_countdown).width;
+      const _totalW=_nameW+_inW+_cdW;
+      let _x=cx-_totalW/2;
+      // Draw prayer name
+      ctx.font=`600 ${Math.round(R*0.075)}px 'Inter',sans-serif`;
+      ctx.fillStyle=_col;
+      ctx.shadowColor=_col; ctx.shadowBlur=5;
+      ctx.textAlign='left';
+      ctx.fillText(_label, _x, _y);
+      _x+=_nameW;
+      ctx.shadowBlur=0;
+      // Draw " in "
+      ctx.fillStyle='rgba(255,255,255,0.35)';
+      ctx.fillText(' in ', _x, _y);
+      _x+=_inW;
+      // Draw countdown
+      ctx.font=`700 ${Math.round(R*0.072)}px 'Inter',sans-serif`;
+      ctx.fillStyle='rgba(0,212,255,0.9)';
+      ctx.shadowColor='rgba(0,212,255,0.3)'; ctx.shadowBlur=4;
+      ctx.fillText(_countdown, _x, _y);
+      ctx.shadowBlur=0;
+      ctx.textAlign='center';
     }
+    ctx.restore();
   }
 
-  // ── Next prayer + countdown ───────────────────────
-  function findNextPrayer() {
-    var now = new Date();
-    var pt = getPrayerTimes(now);
-    var order = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+  // Needles — fixed z-order (bottom to top): Isha, Maghrib, Asr, Dhuhr, Fajr, current time
+  // Each needle casts a subtle shadow onto the one below it (3D stack effect)
+  const ZORDER=['isha','maghrib','asr','dhuhr','fajr'];
+  // Shadow offsets per layer — deeper layers cast softer shadows
+  const SHADOWS=[
+    {blur:8,ox:2,oy:3,alpha:0.35},  // isha (bottom)
+    {blur:7,ox:2,oy:3,alpha:0.32},  // maghrib
+    {blur:7,ox:2,oy:2,alpha:0.30},  // asr
+    {blur:6,ox:1,oy:2,alpha:0.28},  // dhuhr
+    {blur:6,ox:1,oy:2,alpha:0.26},  // fajr
+  ];
+  for(let zi=0;zi<ZORDER.length;zi++){
+    const p=ZORDER[zi];
+    if(isNaN(cachedTimes[p]))continue;
+    const ph=((cachedTimes[p]%24)+24)%24,a=angle(ph),col=PMETA[p].color,isA=p===active;
+    const dotX=cx+R*Math.cos(a),dotY=cy+R*Math.sin(a);
+    const tv=h2t(cachedTimes[p]);
+    const sh=SHADOWS[zi];
+    // Draw shadow pass first (dark silhouette offset)
+    ctx.save();
+    ctx.globalAlpha=sh.alpha;
+    ctx.filter=`blur(${sh.blur}px)`;
+    ctx.fillStyle='rgba(0,0,0,0.7)';
+    const cos2=Math.cos(a),sin2=Math.sin(a),py2=cos2,px2=-sin2;
+    const bW=R*0.11,bs=R*0.04,be=R*0.72,te=R-5,tN=te-R*0.09;
+    ctx.beginPath();
+    ctx.moveTo(cx-px2*bs+cos2*(-sh.ox)+sh.ox+sin2*sh.oy,cy-py2*bs+sin2*(-sh.oy)+sh.oy-cos2*sh.oy);
+    // simplified shadow: just offset the whole needle path
+    ctx.save();
+    ctx.translate(sh.ox,sh.oy);
+    ctx.beginPath();
+    ctx.moveTo(cx-px2*bs,cy-py2*bs);
+    ctx.lineTo(cx-px2*bW+cos2*bs,cy-py2*bW+sin2*bs);
+    ctx.bezierCurveTo(cx-px2*bW+cos2*be,cy-py2*bW+sin2*be,cx-px2*2+cos2*tN,cy-py2*2+sin2*tN,cx+cos2*te,cy+sin2*te);
+    ctx.lineTo(cx+px2*2+cos2*tN,cy+py2*2+sin2*tN);
+    ctx.bezierCurveTo(cx+px2*bW+cos2*be,cy+py2*bW+sin2*be,cx+px2*bW+cos2*bs,cy+py2*bW+sin2*bs,cx+px2*bs,cy+py2*bs);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+    ctx.restore();
+    // Draw actual needle
+    ctx.save();
+    ctx.shadowColor='rgba(0,0,0,0.55)';
+    ctx.shadowBlur=sh.blur;
+    ctx.shadowOffsetX=sh.ox;
+    ctx.shadowOffsetY=sh.oy;
+    drawPrayerNeedle(ctx,cx,cy,a,R-5,col,isA,`${tv.h12}:${tv.mm} ${tv.ampm}`);
+    ctx.restore();
+    // Dot
+    ctx.fillStyle='rgba(0,0,0,0.4)';ctx.beginPath();ctx.arc(dotX+0.5,dotY+0.5,isA?8:5,0,Math.PI*2);ctx.fill();
+    const dg=ctx.createRadialGradient(dotX,dotY,0,dotX,dotY,isA?22:13);dg.addColorStop(0,hexRgba(col,isA?0.5:0.2));dg.addColorStop(1,hexRgba(col,0));
+    ctx.fillStyle=dg;ctx.beginPath();ctx.arc(dotX,dotY,isA?22:13,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=col;ctx.shadowColor=col;ctx.shadowBlur=isA?28:6;ctx.beginPath();ctx.arc(dotX,dotY,isA?8:4.5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+    const spec=ctx.createRadialGradient(dotX-1.5,dotY-1.5,0,dotX,dotY,isA?8:4.5);spec.addColorStop(0,'rgba(255,255,255,0.7)');spec.addColorStop(0.4,'rgba(255,255,255,0.15)');spec.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=spec;ctx.beginPath();ctx.arc(dotX,dotY,isA?8:4.5,0,Math.PI*2);ctx.fill();
+    if(isA){[14,22,32].forEach((r,i)=>{ctx.strokeStyle=col;ctx.lineWidth=i===0?1.5:1;ctx.globalAlpha=[0.5,0.25,0.08][i];ctx.beginPath();ctx.arc(dotX,dotY,r,0,Math.PI*2);ctx.stroke();});ctx.globalAlpha=1;
+      const halo=ctx.createRadialGradient(dotX,dotY,0,dotX,dotY,36);halo.addColorStop(0,hexRgba(col,0.3));halo.addColorStop(0.4,hexRgba(col,0.12));halo.addColorStop(1,hexRgba(col,0));ctx.fillStyle=halo;ctx.beginPath();ctx.arc(dotX,dotY,36,0,Math.PI*2);ctx.fill();}
+  }
 
-    for (var i = 0; i < order.length; i++) {
-      if (now < pt[order[i]]) {
-        return { key: order[i], time: pt[order[i]], current: i === 0 ? 'isha' : order[i - 1] };
+  // Current time needle — topmost layer with strongest shadow
+  const ca=angle(lh),cc=Math.cos(ca),cs=Math.sin(ca);
+  const tipX=cx+cc*(R+3),tipY=cy+cs*(R+3),ctTX=cx-cc*18,ctTY=cy-cs*18,ctp=[-cs,cc];
+  ctx.strokeStyle='#00d4ff';ctx.lineWidth=14;ctx.globalAlpha=0.06;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(ctTX,ctTY);ctx.lineTo(tipX,tipY);ctx.stroke();
+  ctx.lineWidth=5;ctx.globalAlpha=0.18;ctx.beginPath();ctx.moveTo(ctTX,ctTY);ctx.lineTo(tipX,tipY);ctx.stroke();ctx.lineCap='butt';ctx.globalAlpha=1;
+  ctx.save();ctx.fillStyle='rgba(255,255,255,0.97)';ctx.shadowColor='#00d4ff';ctx.shadowBlur=12;
+  ctx.beginPath();ctx.moveTo(ctTX,ctTY);ctx.lineTo(cx-ctp[0]*1.5-cc*4,cy-ctp[1]*1.5-cs*4);ctx.lineTo(cx-ctp[0]*3.5+cc*(R*0.08),cy-ctp[1]*3.5+cs*(R*0.08));ctx.lineTo(tipX,tipY);ctx.lineTo(cx+ctp[0]*3.5+cc*(R*0.08),cy+ctp[1]*3.5+cs*(R*0.08));ctx.lineTo(cx+ctp[0]*1.5-cc*4,cy+ctp[1]*1.5-cs*4);ctx.closePath();ctx.fill();ctx.shadowBlur=0;ctx.restore();
+  const tnHL=ctx.createLinearGradient(ctTX,ctTY,tipX,tipY);tnHL.addColorStop(0,'rgba(0,212,255,0)');tnHL.addColorStop(0.3,'rgba(255,255,255,0.6)');tnHL.addColorStop(0.9,'rgba(255,255,255,0.1)');tnHL.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.strokeStyle=tnHL;ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(ctTX,ctTY);ctx.lineTo(tipX,tipY);ctx.stroke();
+  ctx.fillStyle='#00d4ff';ctx.shadowColor='#00d4ff';ctx.shadowBlur=14;ctx.beginPath();ctx.arc(tipX,tipY,2.5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+  ctx.restore(); // end current time needle shadow
+
+  // ── Premium screw pivot — Rolex-style crown ──
+  const pr=13; // outer radius
+  ctx.save();
+
+  // Outer drop shadow
+  ctx.shadowColor='rgba(0,0,0,0.8)';
+  ctx.shadowBlur=12; ctx.shadowOffsetX=2; ctx.shadowOffsetY=3;
+  ctx.fillStyle='#0a0c12';
+  ctx.beginPath(); ctx.arc(cx,cy,pr,0,Math.PI*2); ctx.fill();
+  ctx.shadowBlur=0; ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
+
+  // Outer bezel — brushed metal ring
+  const bezelG=ctx.createLinearGradient(cx-pr,cy-pr,cx+pr,cy+pr);
+  bezelG.addColorStop(0,'#e8ecf2');
+  bezelG.addColorStop(0.2,'#b0b8c4');
+  bezelG.addColorStop(0.5,'#606878');
+  bezelG.addColorStop(0.75,'#3a4050');
+  bezelG.addColorStop(1,'#1e2230');
+  ctx.fillStyle=bezelG;
+  ctx.beginPath(); ctx.arc(cx,cy,pr,0,Math.PI*2); ctx.fill();
+
+  // Bezel specular arc — top-left highlight
+  ctx.strokeStyle='rgba(255,255,255,0.55)';
+  ctx.lineWidth=1.2;
+  ctx.beginPath();
+  ctx.arc(cx,cy,pr-0.8,-Math.PI*0.9,-Math.PI*0.1);
+  ctx.stroke();
+
+  // Inner recessed disc
+  const innerG=ctx.createRadialGradient(cx-2,cy-2,0,cx,cy,pr-3);
+  innerG.addColorStop(0,'#2a2e3a');
+  innerG.addColorStop(0.4,'#1a1e28');
+  innerG.addColorStop(0.8,'#12151e');
+  innerG.addColorStop(1,'#0a0c14');
+  ctx.fillStyle=innerG;
+  ctx.beginPath(); ctx.arc(cx,cy,pr-3,0,Math.PI*2); ctx.fill();
+
+  // Knurling lines around bezel edge (8 marks)
+  for(let i=0;i<16;i++){
+    const ka=i*Math.PI/8;
+    const r1=pr-1.5, r2=pr-0.3;
+    ctx.strokeStyle=i%2===0?'rgba(255,255,255,0.3)':'rgba(0,0,0,0.4)';
+    ctx.lineWidth=0.8;
+    ctx.beginPath();
+    ctx.moveTo(cx+Math.cos(ka)*r1,cy+Math.sin(ka)*r1);
+    ctx.lineTo(cx+Math.cos(ka)*r2,cy+Math.sin(ka)*r2);
+    ctx.stroke();
+  }
+
+  // Central jewel — deep ruby/sapphire style
+  const jewR=4.5;
+  const jewG=ctx.createRadialGradient(cx-1.5,cy-1.5,0,cx,cy,jewR);
+  jewG.addColorStop(0,'rgba(0,212,255,0.9)');
+  jewG.addColorStop(0.3,'rgba(0,140,200,0.7)');
+  jewG.addColorStop(0.7,'rgba(0,60,120,0.9)');
+  jewG.addColorStop(1,'rgba(0,20,50,1)');
+  ctx.fillStyle=jewG;
+  ctx.shadowColor='rgba(0,212,255,0.6)'; ctx.shadowBlur=8;
+  ctx.beginPath(); ctx.arc(cx,cy,jewR,0,Math.PI*2); ctx.fill();
+  ctx.shadowBlur=0;
+
+  // Jewel specular highlight
+  const specG=ctx.createRadialGradient(cx-1.8,cy-1.8,0,cx,cy,jewR);
+  specG.addColorStop(0,'rgba(255,255,255,0.7)');
+  specG.addColorStop(0.4,'rgba(255,255,255,0.1)');
+  specG.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=specG;
+  ctx.beginPath(); ctx.arc(cx,cy,jewR,0,Math.PI*2); ctx.fill();
+
+  ctx.restore();
+
+  // ── Prayer names on outer band — simple radial text, no char-by-char
+  for(const p of ORDER){
+    if(isNaN(cachedTimes[p]))continue;
+    const ph=((cachedTimes[p]%24)+24)%24,a=angle(ph),col=PMETA[p].color,isA=p===active;
+    const lx=cx+bandMid*Math.cos(a),ly=cy+bandMid*Math.sin(a);
+    ctx.save();
+    ctx.translate(lx,ly);
+    // Rotate tangent to circle, always facing outward
+    const textAng=Math.sin(a)>0.08?a+Math.PI/2-Math.PI:a+Math.PI/2;
+    ctx.rotate(textAng);
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.font=`700 ${isA?13:11}px 'Inter',sans-serif`;
+    ctx.fillStyle=isA?col:'rgba(255,255,255,0.5)';
+    ctx.fillText(PMETA[p].en,0,0);
+    ctx.restore();
+  }
+
+  // Current time — arc-shaped pill hugging the outer ring, pearl white
+  {
+    const ct=h2t(lh);
+    const nowD=cityNow();
+    const ss=String(nowD.getSeconds()).padStart(2,'0');
+    const timeFullStr=`${ct.h12}:${ct.mm}:${ss} ${ct.ampm}`;
+    ctx.save();
+    // Pill constants
+    const pillH=16, pillR=RO+pillH/2+2;
+    // Thin connector line from needle tip to pill inner edge
+    const connR1=R+4, connR2=pillR-pillH/2-1;
+    ctx.save();
+    ctx.strokeStyle='rgba(0,212,255,0.35)';
+    ctx.lineWidth=0.8;
+    ctx.setLineDash([2,3]);
+    ctx.beginPath();
+    ctx.moveTo(cx+Math.cos(ca)*connR1, cy+Math.sin(ca)*connR1);
+    ctx.lineTo(cx+Math.cos(ca)*connR2, cy+Math.sin(ca)*connR2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+    // Measure content first to size pill snugly
+    ctx.font=`700 12px 'Inter',sans-serif`;
+    const timeStr=`${ct.h12}:${ct.mm}:${ss}`;
+    const ampmStr=ct.ampm;
+    let tW=0; const tcws=[];
+    for(let i=0;i<timeStr.length;i++){const w=ctx.measureText(timeStr[i]).width;tcws.push(w);tW+=w;}
+    ctx.font=`600 9px 'Inter',sans-serif`;
+    let aW=0; const acws=[];
+    for(let i=0;i<ampmStr.length;i++){const w=ctx.measureText(ampmStr[i]).width;acws.push(w);aW+=w;}
+    const gap=4;
+    const totalW=tW+gap+aW;
+    // Pill span snugly fits content + small padding
+    const fixedSpan=Math.max(0.28,(totalW+14)/pillR);
+    const a0fix=ca-fixedSpan/2, a1fix=ca+fixedSpan/2;
+    // Draw pill
+    ctx.beginPath(); ctx.arc(cx,cy,pillR,a0fix,a1fix);
+    ctx.strokeStyle='rgba(3,6,14,0.85)'; ctx.lineWidth=pillH+4; ctx.lineCap='round'; ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx,cy,pillR,a0fix,a1fix);
+    ctx.strokeStyle='rgba(0,212,255,0.75)'; ctx.lineWidth=pillH+6; ctx.lineCap='round';
+    ctx.globalAlpha=0.4; ctx.stroke(); ctx.globalAlpha=1;
+    ctx.beginPath(); ctx.arc(cx,cy,pillR,a0fix,a1fix);
+    ctx.strokeStyle='rgba(3,6,14,0.92)'; ctx.lineWidth=pillH; ctx.lineCap='round'; ctx.stroke();
+    ctx.lineCap='butt';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.shadowColor='rgba(0,212,255,0.35)'; ctx.shadowBlur=3;
+    const onBottom=Math.sin(ca)>0;
+    const sc=1; // no scaling needed — pill sized to content
+    // Layout: [time LEFT][gap][ampm RIGHT] centered on ca
+    // On bottom half: chars reversed, so swap block start positions too
+    const timeBlockW=tW*sc, ampmBlockW=aW*sc;
+    const leftStart=-totalW*sc/2;
+    const tStart=onBottom?(leftStart+ampmBlockW+gap*sc):leftStart;
+    const aStart=onBottom?leftStart:(leftStart+timeBlockW+gap*sc);
+    // Render helper
+    const renderBlock=(str,cws2,startPx,fnt,col)=>{
+      ctx.font=fnt; ctx.fillStyle=col;
+      const ord=onBottom
+        ?Array.from({length:str.length},(_,i)=>str.length-1-i)
+        :Array.from({length:str.length},(_,i)=>i);
+      let cp=startPx;
+      for(let i=0;i<str.length;i++){
+        const idx=ord[i];
+        const chW=cws2[idx]*sc;
+        const cA=ca+(cp+chW/2)/pillR;
+        ctx.save();
+        ctx.translate(cx+Math.cos(cA)*pillR,cy+Math.sin(cA)*pillR);
+        ctx.rotate(onBottom?cA-Math.PI/2:cA+Math.PI/2);
+        ctx.fillText(str[idx],0,0);
+        ctx.restore();
+        cp+=chW;
       }
-    }
-    // After Isha: next is tomorrow's Fajr
-    var tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    var ptTomorrow = getPrayerTimes(tomorrow);
-    return { key: 'fajr', time: ptTomorrow.fajr, current: 'isha' };
+    };
+    renderBlock(timeStr,tcws,tStart,`700 12px 'Inter',sans-serif`,'rgba(0,212,255,0.95)');
+    renderBlock(ampmStr,acws,aStart,`600 9px 'Inter',sans-serif`,'rgba(0,212,255,0.72)');
+    ctx.shadowBlur=0;
+    ctx.restore();
+  }
+}
+
+// ── TICK ────────────────────────────────────────────────────
+function drawKaabaCanvas(){
+  const kc=document.getElementById('kaaba-canvas');
+  if(!kc)return;
+  const wrap=kc.parentElement;
+  const size=wrap.offsetWidth||680;
+  const dpr=window.devicePixelRatio||1;
+  if(kc._lastSize!==size){
+    kc.width=size*dpr; kc.height=size*dpr;
+    kc._lastSize=size;
+  }
+  const kctx=kc.getContext('2d');
+  kctx.setTransform(dpr,0,0,dpr,0,0);
+  kctx.clearRect(0,0,size,size);
+  const cx=size/2, cy=size/2;
+  _kaabaAngle+=0.008;
+  const a=_kaabaAngle;
+
+  // Match CSS Kaaba exactly: 16x16x16 cube with rotateX(-20deg) tilt
+  const W=14; // half-width
+  const H=14; // half-height
+  const D=14; // half-depth
+  const tiltX=Math.cos(-0.35); // rotateX(-20deg)
+  const tiltY=Math.sin(-0.35);
+  const cosA=Math.cos(a), sinA=Math.sin(a);
+
+  // Project 3D point to 2D with Y-rotation + X-tilt
+  const proj=(x,y,z)=>{
+    const rx=x*cosA+z*sinA;
+    const rz=-x*sinA+z*cosA;
+    const ry=y*tiltX-rz*tiltY;
+    const rz2=y*tiltY+rz*tiltX;
+    const sc=1/(1+rz2*0.008);
+    return[cx+rx*sc,cy+ry*sc];
+  };
+
+  const TLF=proj(-W,-H,-D),TRF=proj(W,-H,-D);
+  const TLB=proj(-W,-H,D), TRB=proj(W,-H,D);
+  const BLF=proj(-W,H,-D), BRF=proj(W,H,-D);
+  const BLB=proj(-W,H,D),  BRB=proj(W,H,D);
+
+  // Gold band: top 38% of cube height
+  const bh=0.38;
+  const lerp=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];
+  const BTLF=lerp(TLF,BLF,bh),BTRF=lerp(TRF,BRF,bh);
+  const BTLB=lerp(TLB,BLB,bh),BTRB=lerp(TRB,BRB,bh);
+
+  const face=(pts,fill,stroke,lw=0.7)=>{
+    kctx.beginPath();
+    kctx.moveTo(pts[0][0],pts[0][1]);
+    for(let i=1;i<pts.length;i++)kctx.lineTo(pts[i][0],pts[i][1]);
+    kctx.closePath();
+    kctx.fillStyle=fill; kctx.fill();
+    if(stroke){kctx.strokeStyle=stroke;kctx.lineWidth=lw;kctx.stroke();}
+  };
+
+  kctx.save();
+  kctx.shadowColor='rgba(0,0,0,0.7)';
+  kctx.shadowBlur=8; kctx.shadowOffsetX=1; kctx.shadowOffsetY=2;
+
+  const leftVis=Math.cos(a+Math.PI/4)>0;
+  const rightVis=Math.cos(a-Math.PI/4)>0;
+
+  // Left face
+  if(leftVis){
+    face([BTLF,BTLB,BLB,BLF],'#0a0805','rgba(196,162,74,0.35)');
+    face([TLF,TLB,BTLB,BTLF],'rgba(140,105,22,0.97)','rgba(196,162,74,0.6)');
+  }
+  // Right face (front)
+  if(rightVis){
+    face([BTRF,BTLF,BLF,BRF],'#0d0a06','rgba(196,162,74,0.35)');
+    face([TRF,TLF,BTLF,BTRF],'rgba(175,132,28,0.97)','rgba(196,162,74,0.7)');
   }
 
-  function renderNextPrayer() {
-    var next = findNextPrayer();
-    var now = new Date();
-    var diff = next.time - now;
+  kctx.shadowBlur=0; kctx.shadowOffsetX=0; kctx.shadowOffsetY=0;
 
-    var hours = Math.floor(diff / 3600000);
-    var mins = Math.floor((diff % 3600000) / 60000);
-    var secs = Math.floor((diff % 60000) / 1000);
+  // Top face
+  face([TLF,TRF,TRB,TLB],'#111008','rgba(196,162,74,0.4)');
 
-    var color = PRAYER_COLORS[next.key];
-    var box = document.getElementById('next-prayer-box');
-    box.style.setProperty('--prayer-color', color);
+  // Gold edge lines
+  kctx.strokeStyle='rgba(196,162,74,0.8)'; kctx.lineWidth=1;
+  [[TLF,BLF],[TRF,BRF],[TLF,TRF]].forEach(([a,b])=>{
+    kctx.beginPath();kctx.moveTo(a[0],a[1]);kctx.lineTo(b[0],b[1]);kctx.stroke();
+  });
 
-    // Within 5 minutes after a prayer began, show "calling now" state
-    var pt = getPrayerTimes(now);
-    var calling = null;
-    ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'].forEach(function (k) {
-      var elapsed = now - pt[k];
-      if (elapsed >= 0 && elapsed < 5 * 60000) calling = k;
-    });
+  // Gold band horizontal line (Kiswah border)
+  kctx.strokeStyle='rgba(196,162,74,0.7)'; kctx.lineWidth=0.5;
+  if(leftVis){kctx.beginPath();kctx.moveTo(BTLF[0],BTLF[1]);kctx.lineTo(BTLB[0],BTLB[1]);kctx.stroke();}
+  if(rightVis){kctx.beginPath();kctx.moveTo(BTRF[0],BTRF[1]);kctx.lineTo(BTLF[0],BTLF[1]);kctx.stroke();}
 
-    if (calling) {
-      box.style.setProperty('--prayer-color', PRAYER_COLORS[calling]);
-      document.getElementById('next-label').textContent = 'The Adhan is calling';
-      document.getElementById('next-name').textContent = PRAYER_NAMES[calling];
-      document.getElementById('next-time').textContent = 'Now in Makkah';
-      document.getElementById('countdown').innerHTML = 'Next: <strong>' +
-        PRAYER_NAMES[next.key] + '</strong> at ' + fmtTime(next.time);
-    } else {
-      document.getElementById('next-label').textContent = 'Next Prayer';
-      document.getElementById('next-name').textContent = PRAYER_NAMES[next.key];
-      document.getElementById('next-time').textContent = fmtTime(next.time) + ' Makkah time';
-      document.getElementById('countdown').innerHTML = 'in <strong>' +
-        (hours > 0 ? hours + 'h ' : '') + mins + 'm ' + secs + 's</strong>';
-    }
+  // Cyan glow underneath
+  const gr=kctx.createRadialGradient(cx,cy,4,cx,cy,20);
+  gr.addColorStop(0,'rgba(0,212,255,0.1)');
+  gr.addColorStop(1,'rgba(0,212,255,0)');
+  kctx.fillStyle=gr;
+  kctx.beginPath();kctx.arc(cx,cy,20,0,Math.PI*2);kctx.fill();
 
-    // Highlight current prayer card — only within its valid window
-    // Fajr window ends at sunrise; between sunrise and Dhuhr no prayer is active
-    document.querySelectorAll('.prayer-card').forEach(function (card) {
-      card.classList.remove('active');
-    });
-    var activeKey = null;
-    if (now >= pt.fajr && now < pt.sunrise) activeKey = 'fajr';
-    else if (now >= pt.dhuhr && now < pt.asr) activeKey = 'dhuhr';
-    else if (now >= pt.asr && now < pt.maghrib) activeKey = 'asr';
-    else if (now >= pt.maghrib && now < pt.isha) activeKey = 'maghrib';
-    else if (now >= pt.isha || now < pt.fajr) activeKey = 'isha';
-    if (activeKey) {
-      var activeCard = document.querySelector('.prayer-card[data-prayer="' + activeKey + '"]');
-      if (activeCard) activeCard.classList.add('active');
-    }
-  }
+  kctx.restore();
+}
 
-  // ── Live clock ────────────────────────────────────
-  function renderClock() {
-    var now = new Date();
-    document.getElementById('local-clock').textContent = now.toLocaleTimeString('en-US', {
-      hour: 'numeric', minute: '2-digit', second: '2-digit',
-      timeZone: TIMEZONE
-    });
-  }
+function tick(){
+  updateLocalTime();
+  updateCountdown();
+  drawArc();
+}
 
-  // ── Init ──────────────────────────────────────────
-  renderDates();
-  renderTimes();
-  renderNextPrayer();
-  renderClock();
-
-  setInterval(function () {
-    renderClock();
-    renderNextPrayer();
-  }, 1000);
-
-  // Refresh full times at midnight Makkah time (check every minute)
-  setInterval(renderTimes, 60000);
-})();
+// ── INIT ────────────────────────────────────────────────────
+renderPrayers();
+updateDate();
+tick();
+setInterval(tick,1000);
+const now=new Date();
+const msToMid=(86400-(now.getHours()*3600+now.getMinutes()*60+now.getSeconds()))*1000;
+setTimeout(()=>{renderPrayers();setInterval(renderPrayers,86400000);},msToMid);
+// Refresh card active states every minute so NOW follows real prayer windows
+setInterval(renderPrayers,60000);
+let _resizeTimer;
+window.addEventListener('resize',()=>{
+  clearTimeout(_resizeTimer);
+  _resizeTimer=setTimeout(()=>{
+    const canvas=document.getElementById('prayer-arc');
+    canvas._lastSize=null; // force redraw at new size
+    drawArc();
+  },150);
+});
 </script>
-
 </body>
 </html>

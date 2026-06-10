@@ -30,7 +30,7 @@
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Geist:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -42,24 +42,38 @@
   --asr-bg:rgba(224,122,47,0.12);--maghrib-bg:rgba(217,79,61,0.12);--isha-bg:rgba(155,89,196,0.12);
 }
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;min-height:100vh;}
+body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;overflow-x:hidden;min-height:100vh;}
 body::before{
   content:'';position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0.35;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
 }
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:500;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(0,0,0,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
-.logo{font-family:'Inter',sans-serif;font-weight:800;font-size:18px;letter-spacing:-0.02em;display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;color:#fff;}
-.logo-dot{width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan);position:relative;flex-shrink:0;}
-.logo-dot::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(0,212,255,0.4);animation:pulse 2.4s ease-out infinite;}
-@keyframes pulse{0%{transform:scale(1);opacity:1}100%{transform:scale(2.8);opacity:0}}
-.nav-right{display:flex;align-items:center;gap:20px;}
-.nav-right a{font-size:11px;letter-spacing:0.08em;color:rgba(255,255,255,0.7);font-weight:600;text-decoration:none;transition:color 0.2s;}
-.nav-right a:hover{color:#fff;}
-.nav-live-btn{font-size:11px;font-weight:700;letter-spacing:0.08em;padding:6px 16px;border-radius:6px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--cyan);text-decoration:none;transition:all 0.2s;white-space:nowrap;}
-.nav-live-btn:hover{background:rgba(0,212,255,0.2);}
+nav{position:sticky;top:0;z-index:500;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(0,0,0,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);flex-shrink:0;}
+.logo{font-family:'Geist',sans-serif;font-weight:800;font-size:18px;letter-spacing:-0.02em;display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;color:#fff;}
+.logo-dot{width:9px;height:9px;border-radius:50%;background:#00d4ff;box-shadow:0 0 12px #00d4ff;position:relative;flex-shrink:0;}
+.logo-dot::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(0,212,255,0.4);animation:logoPulse 2.4s ease-out infinite;}
+@keyframes logoPulse{0%{transform:scale(1);opacity:1}100%{transform:scale(2.8);opacity:0}}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-links{display:flex;gap:32px;align-items:center;}
+.nav-links a{font-size:11px;letter-spacing:0.12em;color:rgba(255,255,255,0.7);font-weight:600;text-decoration:none;cursor:pointer;transition:color 0.2s;text-transform:uppercase;position:relative;display:inline-block;}
+.nav-links a:hover{color:#ffffff;}
+.nav-links a.active{color:#00d4ff;}
+.nav-dot-badge{position:absolute;top:-5px;right:-10px;width:6px;height:6px;border-radius:50%;background:#00d4ff;box-shadow:0 0 8px #00d4ff;display:inline-block;z-index:10;}
+.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:32px;height:32px;background:none;border:none;cursor:pointer;padding:4px;position:relative;}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:transform 0.3s,opacity 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+#mobile-menu-overlay{display:none;position:fixed;inset:0;z-index:498;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);}
+#mobile-menu-overlay.visible{display:block;}
+.nav-utc{display:flex;align-items:stretch;padding:0;border:1px solid rgba(255,255,255,0.1);border-radius:6px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;}
+.nav-utc-dates{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:5px 12px;}
+.nav-utc-hijri{font-size:9px;letter-spacing:0.04em;color:#00d4ff;font-weight:600;}
+.nav-utc-greg{font-size:9px;letter-spacing:0.03em;color:rgba(255,255,255,0.5);}
+.nav-utc-divider{width:1px;background:rgba(255,255,255,0.1);align-self:stretch;}
+.nav-utc-time{display:flex;align-items:center;justify-content:center;padding:5px 12px;font-size:13px;font-weight:600;letter-spacing:0.04em;color:#ffffff;}
 /* PAGE */
-.page{padding-top:56px;min-height:100vh;}
+.page{padding-top:0;min-height:100vh;}
 /* HERO */
 .hero{position:relative;padding:52px 32px 44px;background:linear-gradient(180deg,rgba(0,212,255,0.03) 0%,transparent 100%);border-bottom:1px solid var(--border);overflow:hidden;}
 .hero-bg-glow{position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:700px;height:500px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,212,255,0.05) 0%,transparent 70%);pointer-events:none;}
@@ -128,12 +142,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;height:56px;display:flex;ali
 .city-link-arrow{color:var(--text3);font-size:11px;transition:transform 0.2s;}
 .city-link:hover .city-link-arrow{transform:translateX(3px);color:var(--cyan);}
 /* FOOTER */
-footer{border-top:1px solid var(--border);padding:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
-.footer-brand{font-size:13px;color:var(--text3);}
-.footer-brand a{color:var(--cyan);text-decoration:none;}
-.footer-links{display:flex;gap:24px;}
-.footer-links a{font-size:11px;color:var(--text3);text-decoration:none;letter-spacing:0.06em;transition:color 0.2s;}
-.footer-links a:hover{color:#fff;}
+#map-footer{display:flex;position:static;background:rgba(0,0,0,0.92);border-top:1px solid rgba(255,255,255,0.08);align-items:center;justify-content:space-between;padding:14px 24px;}
+.map-footer-left{display:flex;align-items:center;gap:8px;}
+.map-footer-logo{font-family:'Geist',sans-serif;font-weight:800;font-size:15px;color:#fff;letter-spacing:-0.02em;display:flex;align-items:center;gap:8px;}
+.map-footer-tagline{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.04em;border-left:1px solid rgba(255,255,255,0.1);padding-left:8px;}
+.map-footer-center{font-size:9px;color:rgba(255,255,255,0.2);letter-spacing:0.05em;text-align:center;}
+.map-footer-right{display:flex;align-items:center;gap:6px;}
+.map-footer-share-label{font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:0.08em;text-transform:uppercase;margin-right:4px;}
+.mf-share-btn{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;border:none;cursor:pointer;font-size:10px;font-weight:600;letter-spacing:0.04em;transition:opacity 0.2s;}
+.mf-share-btn:hover{opacity:0.85;}
+.mf-share-btn.whatsapp{background:#25D366;color:#fff;}
+.mf-share-btn.twitter{background:#000;color:#fff;border:1px solid rgba(255,255,255,0.15);}
+.mf-share-btn.copy{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.12);}
 /* RESPONSIVE */
 @media(max-width:900px){
   .hero-inner{grid-template-columns:1fr;gap:32px;}
@@ -150,7 +170,11 @@ footer{border-top:1px solid var(--border);padding:32px;display:flex;align-items:
   .cta-block{flex-direction:column;}
   footer{flex-direction:column;text-align:center;}
   .footer-links{justify-content:center;}
-  .nav-right .nav-pt-link{display:none;}
+  .nav-links{display:none;position:fixed;top:56px;left:0;right:0;z-index:9999;background:rgba(0,0,0,0.97);backdrop-filter:blur(24px);flex-direction:column;gap:0;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .nav-links.mobile-open{display:flex;}
+  .nav-links a{padding:16px 24px;font-size:14px;letter-spacing:0.06em;border-bottom:1px solid rgba(255,255,255,0.06);width:100%;}
+  .hamburger{display:flex;}
+  .nav-utc{display:none !important;}
 }
 .content-section{border-top:1px solid var(--border);padding:40px 0;}
 .content-section h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;margin-bottom:16px;color:#fff;}
@@ -171,12 +195,31 @@ footer{border-top:1px solid var(--border);padding:32px;display:flex;align-items:
 </head>
 <body>
 <nav>
-  <a href="/" class="logo"><div class="logo-dot"></div>AdhanLive</a>
+  <a class="logo" href="/home"><div class="logo-dot"></div><span style="display:inline">Adhan<span style="color:#00d4ff">Live</span></span></a>
+  <div class="nav-links" id="nav-links">
+    <a href="/home" onclick="closeMobileMenu()">Home</a>
+    <a href="/livemap" onclick="closeMobileMenu()">Live Map</a>
+    <a href="/adhanclock" onclick="closeMobileMenu();markVisited('clock')" id="nav-clock-link">Adhan Clock<span class="nav-dot-badge" id="dot-clock"></span></a>
+    <a href="/arcs" onclick="closeMobileMenu();markVisited('arc')" id="nav-arc">Arc Explorer<span class="nav-dot-badge" id="dot-arc"></span></a>
+    <a href="/ask" onclick="closeMobileMenu();markVisited('ask')" id="nav-ask">Ask AdhanLive<span class="nav-dot-badge" id="dot-ask"></span></a>
+    <a href="/about" onclick="closeMobileMenu()">About</a>
+    <a href="/contact" onclick="closeMobileMenu()">Contact</a>
+  </div>
   <div class="nav-right">
-    <a href="/prayer-times/makkah" class="nav-pt-link" style="color:var(--cyan);">Prayer Times</a>
-    <a href="/" class="nav-live-btn">⬤ Watch Live Globe</a>
+    <div class="nav-utc" id="utc-clock">
+      <div class="nav-utc-dates">
+        <div class="nav-utc-greg" id="utc-greg">Wed, 10 Jun 2026</div>
+        <div class="nav-utc-hijri" id="utc-hijri">24 Dhul Hijjah 1447</div>
+      </div>
+      <div class="nav-utc-divider"></div>
+      <div class="nav-utc-time" id="utc-time">12:00:00 PM</div>
+    </div>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+<div id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
 <div class="page">
   <div class="hero">
     <div class="hero-bg-glow"></div>
@@ -303,12 +346,28 @@ footer{border-top:1px solid var(--border);padding:32px;display:flex;align-items:
     </div>
   </div>
 
-  <footer>
-    <div class="footer-brand">© 2026 <a href="/">AdhanLive</a> &middot; The Adhan Never Stops</div>
-    <div class="footer-links">
-      <a href="/">Home</a><a href="/#about">About</a><a href="/#contact">Contact</a>
+  <div id="map-footer">
+    <div class="map-footer-left">
+      <div class="map-footer-logo"><div class="logo-dot" style="width:7px;height:7px;flex-shrink:0"></div><span style="color:#fff">Adhan<span style="color:#00d4ff">Live</span></span></div>
+      <div class="map-footer-tagline">The live global visualization of Islamic prayer</div>
     </div>
-  </footer>
+    <div class="map-footer-center">&copy; 2026 AdhanLive &middot; Mosque data &copy; OpenStreetMap contributors</div>
+    <div class="map-footer-right">
+      <span class="map-footer-share-label">Share</span>
+      <button class="mf-share-btn whatsapp" onclick="shareMapMoment('whatsapp')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </button>
+      <button class="mf-share-btn twitter" onclick="shareMapMoment('twitter')">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        Post
+      </button>
+      <button class="mf-share-btn copy" onclick="shareMapMoment('copy')" id="mf-copy-btn">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copy Link
+      </button>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/adhan@4.4.3/lib/bundles/adhan.umd.min.js"></script>
@@ -525,7 +584,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.translate(cx+cos*textD, cy+sin*textD);
   ctx.rotate(flip?ang+Math.PI:ang);
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.font=`700 ${isActive?12:10}px 'Inter',sans-serif`;
+  ctx.font=`700 ${isActive?12:10}px 'Geist',sans-serif`;
 
   // Layer 1: deep groove shadow — offset down-right, dark
   ctx.fillStyle='rgba(0,0,0,0.75)';
@@ -789,7 +848,7 @@ function drawArc(){
     ctx.save();ctx.translate(nx,ny);
     ctx.rotate(Math.sin(a)>0?a-Math.PI/2:a+Math.PI/2);
     ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.font=`${isMaj?'500':'400'} ${isMaj?8.5:7}px 'Inter',sans-serif`;
+    ctx.font=`${isMaj?'500':'400'} ${isMaj?8.5:7}px 'Geist',sans-serif`;
     ctx.fillStyle=isMaj?'rgba(0,212,255,0.45)':'rgba(0,212,255,0.20)';
     ctx.fillText(String(h).padStart(2,'0'),0,0);
     ctx.restore();
@@ -827,7 +886,7 @@ function drawArc(){
       const _label=PMETA[_next2.name].en;
       const _y=cy-R*0.55;
       // Prayer name in its color
-      ctx.font=`600 ${Math.round(R*0.075)}px 'Inter',sans-serif`;
+      ctx.font=`600 ${Math.round(R*0.075)}px 'Geist',sans-serif`;
       ctx.fillStyle=_col;
       ctx.shadowColor=_col;
       ctx.shadowBlur=6;
@@ -837,12 +896,12 @@ function drawArc(){
       ctx.shadowBlur=0;
       const _inW=ctx.measureText(' in ').width;
       // countdown in cyan
-      ctx.font=`700 ${Math.round(R*0.072)}px 'Inter',sans-serif`;
+      ctx.font=`700 ${Math.round(R*0.072)}px 'Geist',sans-serif`;
       const _cdW=ctx.measureText(_countdown).width;
       const _totalW=_nameW+_inW+_cdW;
       let _x=cx-_totalW/2;
       // Draw prayer name
-      ctx.font=`600 ${Math.round(R*0.075)}px 'Inter',sans-serif`;
+      ctx.font=`600 ${Math.round(R*0.075)}px 'Geist',sans-serif`;
       ctx.fillStyle=_col;
       ctx.shadowColor=_col; ctx.shadowBlur=5;
       ctx.textAlign='left';
@@ -854,7 +913,7 @@ function drawArc(){
       ctx.fillText(' in ', _x, _y);
       _x+=_inW;
       // Draw countdown
-      ctx.font=`700 ${Math.round(R*0.072)}px 'Inter',sans-serif`;
+      ctx.font=`700 ${Math.round(R*0.072)}px 'Geist',sans-serif`;
       ctx.fillStyle='rgba(0,212,255,0.9)';
       ctx.shadowColor='rgba(0,212,255,0.3)'; ctx.shadowBlur=4;
       ctx.fillText(_countdown, _x, _y);
@@ -1051,7 +1110,7 @@ function drawArc(){
     const textAng=Math.sin(a)>0.08?a+Math.PI/2-Math.PI:a+Math.PI/2;
     ctx.rotate(textAng);
     ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.font=`700 ${isA?13:11}px 'Inter',sans-serif`;
+    ctx.font=`700 ${isA?13:11}px 'Geist',sans-serif`;
     ctx.fillStyle=isA?col:'rgba(255,255,255,0.5)';
     ctx.fillText(PMETA[p].en,0,0);
     ctx.restore();
@@ -1079,12 +1138,12 @@ function drawArc(){
     ctx.setLineDash([]);
     ctx.restore();
     // Measure content first to size pill snugly
-    ctx.font=`700 12px 'Inter',sans-serif`;
+    ctx.font=`700 12px 'Geist',sans-serif`;
     const timeStr=`${ct.h12}:${ct.mm}:${ss}`;
     const ampmStr=ct.ampm;
     let tW=0; const tcws=[];
     for(let i=0;i<timeStr.length;i++){const w=ctx.measureText(timeStr[i]).width;tcws.push(w);tW+=w;}
-    ctx.font=`600 9px 'Inter',sans-serif`;
+    ctx.font=`600 9px 'Geist',sans-serif`;
     let aW=0; const acws=[];
     for(let i=0;i<ampmStr.length;i++){const w=ctx.measureText(ampmStr[i]).width;acws.push(w);aW+=w;}
     const gap=4;
@@ -1130,8 +1189,8 @@ function drawArc(){
         cp+=chW;
       }
     };
-    renderBlock(timeStr,tcws,tStart,`700 12px 'Inter',sans-serif`,'rgba(0,212,255,0.95)');
-    renderBlock(ampmStr,acws,aStart,`600 9px 'Inter',sans-serif`,'rgba(0,212,255,0.72)');
+    renderBlock(timeStr,tcws,tStart,`700 12px 'Geist',sans-serif`,'rgba(0,212,255,0.95)');
+    renderBlock(ampmStr,acws,aStart,`600 9px 'Geist',sans-serif`,'rgba(0,212,255,0.72)');
     ctx.shadowBlur=0;
     ctx.restore();
   }
@@ -1262,6 +1321,67 @@ window.addEventListener('resize',()=>{
     drawArc();
   },150);
 });
+
+// ── Production nav, clock and share (matches site-wide pattern) ──
+function toggleMobileMenu(){
+  document.getElementById('nav-links').classList.toggle('mobile-open');
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobile-menu-overlay').classList.toggle('visible');
+}
+function closeMobileMenu(){
+  document.getElementById('nav-links').classList.remove('mobile-open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu-overlay').classList.remove('visible');
+}
+function markVisited(key){ localStorage.setItem('visited_'+key,'1'); }
+function initNavDots(){
+  ['clock','arc','ask'].forEach(key=>{
+    const dot=document.getElementById('dot-'+key);
+    if(dot && localStorage.getItem('visited_'+key)) dot.style.display='none';
+  });
+}
+document.addEventListener('DOMContentLoaded', initNavDots);
+function toHijri(date){
+  const jd=Math.floor((date.getTime()/86400000)+2440587.5);
+  let l=jd-1948440+10632;
+  const n=Math.floor((l-1)/10631);
+  l=l-10631*n+354;
+  const j=Math.floor((10985-l)/5316)*Math.floor((50*l)/17719)+Math.floor(l/5670)*Math.floor((43*l)/15238);
+  l=l-Math.floor((30-j)/15)*Math.floor((17719*j)/50)-Math.floor(j/16)*Math.floor((15238*j)/43)+29;
+  const month=Math.floor((24*l)/709);
+  const day=l-Math.floor((709*month)/24);
+  const year=30*n+j-30;
+  const hm=['Muharram','Safar','Rabi ul-Awwal','Rabi ul-Thani','Jumadal Awwal','Jumadal Thani','Rajab',"Sha'ban",'Ramadan','Shawwal',"Dhul Qa'dah",'Dhul Hijjah'];
+  return `${day} ${hm[month-1]} ${year}`;
+}
+function tickNavClock(){
+  const n=new Date();
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const lh=n.getHours(),lm=n.getMinutes(),ls=n.getSeconds();
+  const ap=lh<12?'AM':'PM',hh=lh%12||12;
+  const ge=document.getElementById('utc-greg');
+  const hi=document.getElementById('utc-hijri');
+  const te=document.getElementById('utc-time');
+  if(ge) ge.textContent=`${days[n.getDay()]}, ${n.getDate()} ${months[n.getMonth()]} ${n.getFullYear()}`;
+  if(hi) hi.textContent=toHijri(n);
+  if(te) te.textContent=`${String(hh).padStart(2,'0')}:${String(lm).padStart(2,'0')}:${String(ls).padStart(2,'0')} ${ap}`;
+}
+tickNavClock();
+setInterval(tickNavClock,1000);
+function shareMapMoment(platform){
+  const url='https://www.adhanlive.com/prayer-times/makkah';
+  const text='Live prayer times for Makkah, the holiest city in Islam. Watch the Adhan sweep the Earth on AdhanLive.';
+  if(platform==='whatsapp'){window.open('https://wa.me/?text='+encodeURIComponent(text+' '+url),'_blank');}
+  else if(platform==='twitter'){window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),'_blank');}
+  else if(platform==='copy'){
+    navigator.clipboard.writeText(url).then(()=>{
+      const btn=document.getElementById('mf-copy-btn');
+      btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+      setTimeout(()=>{btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Copy Link';},2000);
+    });
+  }
+}
 </script>
 </body>
 </html>

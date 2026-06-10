@@ -1,0 +1,21 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/makkah.html",
+      "destination": "/prayer-times/makkah",
+      "permanent": true
+    },
+    {
+      "source": "/jakarta.html",
+      "destination": "/prayer-times",
+      "permanent": true
+    },
+    {
+      "source": "/kuala-lumpur.html",
+      "destination": "/prayer-times",
+      "permanent": true
+    }
+  ]
+}

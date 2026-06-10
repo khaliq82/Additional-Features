@@ -650,13 +650,21 @@ footer .links a:hover { color: var(--cyan); text-decoration: none; }
         (hours > 0 ? hours + 'h ' : '') + mins + 'm ' + secs + 's</strong>';
     }
 
-    // Highlight current prayer card
+    // Highlight current prayer card — only within its valid window
+    // Fajr window ends at sunrise; between sunrise and Dhuhr no prayer is active
     document.querySelectorAll('.prayer-card').forEach(function (card) {
       card.classList.remove('active');
     });
-    var activeKey = calling || next.current;
-    var activeCard = document.querySelector('.prayer-card[data-prayer="' + activeKey + '"]');
-    if (activeCard) activeCard.classList.add('active');
+    var activeKey = null;
+    if (now >= pt.fajr && now < pt.sunrise) activeKey = 'fajr';
+    else if (now >= pt.dhuhr && now < pt.asr) activeKey = 'dhuhr';
+    else if (now >= pt.asr && now < pt.maghrib) activeKey = 'asr';
+    else if (now >= pt.maghrib && now < pt.isha) activeKey = 'maghrib';
+    else if (now >= pt.isha || now < pt.fajr) activeKey = 'isha';
+    if (activeKey) {
+      var activeCard = document.querySelector('.prayer-card[data-prayer="' + activeKey + '"]');
+      if (activeCard) activeCard.classList.add('active');
+    }
   }
 
   // ── Live clock ────────────────────────────────────

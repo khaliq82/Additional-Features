@@ -1302,6 +1302,31 @@ function drawKaabaCanvas(){
   kctx.restore();
 }
 
+function updateLocalTime(){
+  const el=document.getElementById('local-time');
+  if(!el)return;
+  const d=cityNow();
+  let h=d.getHours();const m=d.getMinutes(),s=d.getSeconds();
+  const ap=h<12?'AM':'PM';h=h%12||12;
+  el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ap}`;
+}
+function updateCountdown(){
+  if(!cachedTimes)return;
+  const lh=localH();
+  const np=nextPrayer(cachedTimes,lh);
+  const nextKey=np.name;
+  const nameEl=document.getElementById('next-name');
+  const npBlock=document.getElementById('np-block');
+  if(npBlock) npBlock.style.setProperty('--np-color',PMETA[nextKey]?.color||'#00d4ff');
+  if(nameEl){nameEl.textContent=PMETA[nextKey]?.en||'—';nameEl.style.color=PMETA[nextKey]?.color||'#00d4ff';}
+  // time remaining
+  let diff=np.time-lh; // hours
+  if(diff<0)diff+=24;
+  const totalSec=Math.floor(diff*3600);
+  const hh=Math.floor(totalSec/3600),mm=Math.floor((totalSec%3600)/60),ss=totalSec%60;
+  const cdEl=document.getElementById('next-countdown');
+  if(cdEl)cdEl.textContent=`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+}
 function tick(){
   updateLocalTime();
   updateCountdown();

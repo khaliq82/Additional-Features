@@ -1,1 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Makkah Prayer Times Today — Live Adhan Times | AdhanLive</title>
+<meta name="description" content="Accurate prayer times for Makkah today, calculated using the official Umm al-Qura method. Live Fajr, Dhuhr, Asr, Maghrib and Isha times for the holy city, with Hijri date and live Adhan tracking.">
+<meta name="keywords" content="Makkah prayer times, Mecca prayer times, Makkah adhan times, Umm al-Qura prayer times, Fajr time Makkah, salah times Makkah">
+<link rel="canonical" href="https://www.adhanlive.com/prayer-times/makkah">
 
+<!-- Open Graph -->
+<meta property="og:title" content="Makkah Prayer Times Today — Live Adhan Times">
+<meta property="og:description" content="Accurate prayer times for the holy city of Makkah, calculated with the official Umm al-Qura method. Part of AdhanLive, the live map of the Adhan around the world.">
+<meta property="og:url" content="https://www.adhanlive.com/prayer-times/makkah">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="AdhanLive">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Makkah Prayer Times Today — Live Adhan Times">
+<meta name="twitter:description" content="Accurate prayer times for the holy city of Makkah, calculated with the official Umm al-Qura method.">
+
+<!-- Schema.org -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Makkah Prayer Times Today",
+  "description": "Accurate daily prayer times for Makkah, Saudi Arabia, calculated using the official Umm al-Qura method.",
+  "url": "https://www.adhanlive.com/prayer-times/makkah",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "AdhanLive",
+    "url": "https://www.adhanlive.com"
+  },
+  "about": {
+    "@type": "Place",
+    "name": "Makkah",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Makkah",
+      "addressCountry": "SA"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 21.4225,
+      "longitude": 39.8262
+    }
+  }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #060a10;
+  --bg-card: #0c1219;
+  --bg-card-hover: #101824;
+  --border: rgba(255, 255, 255, 0.07);
+  --text: #e8edf2;
+  --text-dim: #8b96a3;
+  --text-faint: #5a6472;
+  --cyan: #00d4ff;
+  --fajr: #4466ff;
+  --dhuhr: #ffcc00;
+  --asr: #e07a2f;
+  --maghrib: #d94f3d;
+  --isha: #9b59c4;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--cyan); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.container {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Nav ─────────────────────────────────────── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.nav-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.nav-logo span { color: var(--cyan); }
+.nav-logo:hover { text-decoration: none; }
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  font-size: 0.85rem;
+}
+
+.nav-links a { color: var(--text-dim); }
+.nav-links a:hover { color: var(--text); text-decoration: none; }
+
+/* ── Hero ────────────────────────────────────── */
+.hero {
+  text-align: center;
+  padding: 56px 0 40px;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 16px;
+}
+
+.city-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3rem, 9vw, 5.5rem);
+  font-weight: 600;
+  line-height: 1.05;
+  margin-bottom: 8px;
+}
+
+.city-arabic {
+  font-size: clamp(1.3rem, 3.5vw, 1.8rem);
+  color: var(--text-dim);
+  font-weight: 300;
+  margin-bottom: 28px;
+}
+
+.date-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+
+.date-row .sep { color: var(--text-faint); }
+
+.local-time {
+  font-size: 0.85rem;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Next Prayer Banner ──────────────────────── */
+.next-prayer {
+  margin: 36px auto 0;
+  max-width: 560px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 32px;
+  background: var(--bg-card);
+  position: relative;
+  overflow: hidden;
+}
+
+.next-prayer::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--prayer-color, var(--cyan));
+  opacity: 0.9;
+}
+
+.next-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 10px;
+}
+
+.next-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--prayer-color, var(--text));
+  margin-bottom: 4px;
+}
+
+.next-time {
+  font-size: 1.1rem;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown {
+  font-size: 1rem;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.countdown strong { color: var(--prayer-color, var(--cyan)); font-weight: 600; }
+
+/* ── Prayer Times Grid ───────────────────────── */
+.times-section { padding: 48px 0 12px; }
+
+.times-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.prayer-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px 16px 20px;
+  text-align: center;
+  transition: background 0.25s ease, border-color 0.25s ease;
+  position: relative;
+}
+
+.prayer-card .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin: 0 auto 12px;
+}
+
+.prayer-card .p-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+  color: var(--text-dim);
+}
+
+.prayer-card .p-time {
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.prayer-card.active {
+  border-color: var(--p-color);
+  background: var(--bg-card-hover);
+}
+
+.prayer-card.active .p-name { color: var(--text); }
+
+.prayer-card.active::after {
+  content: 'NOW';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: var(--p-color);
+  font-weight: 600;
+}
+
+.sunrise-note {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 0.85rem;
+  color: var(--text-faint);
+}
+
+.sunrise-note span { color: var(--text-dim); font-variant-numeric: tabular-nums; }
+
+/* ── Live Strip ──────────────────────────────── */
+.live-strip {
+  margin: 44px 0;
+  text-align: center;
+  padding: 26px 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(0, 212, 255, 0.045), transparent);
+}
+
+.live-strip .pulse {
+  display: inline-block;
+  width: 8px; height: 8px;
+  background: var(--cyan);
+  border-radius: 50%;
+  margin-right: 10px;
+  animation: pulse 2s infinite;
+  vertical-align: middle;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4); }
+  50% { opacity: 0.6; box-shadow: 0 0 0 7px rgba(0, 212, 255, 0); }
+}
+
+.live-strip p {
+  display: inline;
+  font-size: 0.95rem;
+  color: var(--text-dim);
+}
+
+.live-strip a {
+  display: inline-block;
+  margin-top: 14px;
+  font-size: 0.9rem;
+}
+
+/* ── Content Sections ────────────────────────── */
+.content-section {
+  padding: 36px 0;
+  border-top: 1px solid var(--border);
+}
+
+.content-section h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.content-section p {
+  color: var(--text-dim);
+  margin-bottom: 14px;
+  max-width: 720px;
+}
+
+.content-section strong { color: var(--text); font-weight: 500; }
+
+.method-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.method-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.method-item .m-prayer {
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.method-item .m-rule {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+/* ── Footer ──────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 36px 24px 44px;
+  text-align: center;
+  margin-top: 48px;
+}
+
+footer .tagline {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.05rem;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+footer .links {
+  display: flex;
+  justify-content: center;
+  gap: 22px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+}
+
+footer .links a { color: var(--text-faint); }
+footer .links a:hover { color: var(--cyan); text-decoration: none; }
+
+/* ── Mobile ──────────────────────────────────── */
+@media (max-width: 720px) {
+  .times-grid { grid-template-columns: repeat(2, 1fr); }
+  .times-grid .prayer-card:last-child { grid-column: 1 / -1; }
+  .nav-links { gap: 16px; font-size: 0.8rem; }
+  .next-prayer { padding: 22px 20px; }
+  .hero { padding: 36px 0 28px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">Adhan<span>Live</span></a>
+  <div class="nav-links">
+    <a href="/">Live Map</a>
+    <a href="/adhan-clock">Adhan Clock</a>
+    <a href="/prayer-arcs">Arc Explorer</a>
+    <a href="/about">About</a>
+  </div>
+</nav>
+
+<header class="hero container">
+  <div class="eyebrow">Prayer Times</div>
+  <h1 class="city-name">Makkah</h1>
+  <div class="city-arabic">مكة المكرمة</div>
+  <div class="date-row">
+    <span id="greg-date">—</span>
+    <span class="sep">·</span>
+    <span id="hijri-date">—</span>
+  </div>
+  <div class="local-time">Makkah time now: <span id="local-clock">—</span></div>
+
+  <div class="next-prayer" id="next-prayer-box">
+    <div class="next-label" id="next-label">Next Prayer</div>
+    <div class="next-name" id="next-name">—</div>
+    <div class="next-time" id="next-time">—</div>
+    <div class="countdown" id="countdown">—</div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="times-section">
+    <div class="times-grid" id="times-grid">
+      <div class="prayer-card" data-prayer="fajr" style="--p-color: var(--fajr)">
+        <div class="dot" style="background: var(--fajr)"></div>
+        <div class="p-name">Fajr</div>
+        <div class="p-time" id="time-fajr">—</div>
+      </div>
+      <div class="prayer-card" data-prayer="dhuhr" style="--p-color: var(--dhuhr)">
+        <div class="dot" style="background: var(--dhuhr)"></div>
+        <div class="p-name">Dhuhr</div>
+        <div class="p-time" id="time-dhuhr">—</div>
+      </div>
+      <div class="prayer-card" data-prayer="asr" style="--p-color: var(--asr)">
+        <div class="dot" style="background: var(--asr)"></div>
+        <div class="p-name">Asr</div>
+        <div class="p-time" id="time-asr">—</div>
+      </div>
+      <div class="prayer-card" data-prayer="maghrib" style="--p-color: var(--maghrib)">
+        <div class="dot" style="background: var(--maghrib)"></div>
+        <div class="p-name">Maghrib</div>
+        <div class="p-time" id="time-maghrib">—</div>
+      </div>
+      <div class="prayer-card" data-prayer="isha" style="--p-color: var(--isha)">
+        <div class="dot" style="background: var(--isha)"></div>
+        <div class="p-name">Isha</div>
+        <div class="p-time" id="time-isha">—</div>
+      </div>
+    </div>
+    <div class="sunrise-note">Sunrise (end of Fajr): <span id="time-sunrise">—</span></div>
+  </section>
+
+  <div class="live-strip">
+    <span class="pulse"></span>
+    <p>Right now, somewhere on Earth, the Adhan is being called. Watch it sweep across the planet in real time.</p>
+    <br>
+    <a href="/">Open the Live Map →</a>
+  </div>
+
+  <section class="content-section">
+    <h2>How these times are calculated</h2>
+    <p>Prayer times in Makkah follow the <strong>Umm al-Qura method</strong>, the official Islamic prayer calculation method of Saudi Arabia, published by Umm al-Qura University in Makkah itself. It is the method used by the Grand Mosque, Al Masjid Al Haram, and every mosque across the Kingdom.</p>
+    <p>Each of the five prayers is anchored to a precise position of the sun, observed from the coordinates of the holy city:</p>
+
+    <div class="method-grid">
+      <div class="method-item">
+        <div class="m-prayer" style="color: var(--fajr)">Fajr</div>
+        <div class="m-rule">Begins when the sun reaches 18.5 degrees below the eastern horizon, the first light of true dawn.</div>
+      </div>
+      <div class="method-item">
+        <div class="m-prayer" style="color: var(--dhuhr)">Dhuhr</div>
+        <div class="m-rule">Begins at Zawaal, the moment the sun passes its highest point and begins its descent westward.</div>
+      </div>
+      <div class="method-item">
+        <div class="m-prayer" style="color: var(--asr)">Asr</div>
+        <div class="m-rule">Begins when the shadow of an object equals its own length, plus its shadow at noon.</div>
+      </div>
+      <div class="method-item">
+        <div class="m-prayer" style="color: var(--maghrib)">Maghrib</div>
+        <div class="m-rule">Begins the moment the sun fully sets below the western horizon.</div>
+      </div>
+      <div class="method-item">
+        <div class="m-prayer" style="color: var(--isha)">Isha</div>
+        <div class="m-rule">Begins 90 minutes after Maghrib, the fixed interval defined by the Umm al-Qura method.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content-section">
+    <h2>The holy city</h2>
+    <p>Makkah is the birthplace of the Prophet Muhammad ﷺ and home to the Kaaba, the qibla toward which every Muslim on Earth turns in prayer. Five times a day, the Adhan rises from the minarets of Al Masjid Al Haram and from mosques across the city, calling millions to prayer in the holiest place in Islam.</p>
+    <p>On AdhanLive, Makkah is one of the brightest points on the globe. When prayer time arrives here, you can watch its mosques light up together on the <a href="/">live map</a>, part of a wave that never stops moving around the Earth.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="tagline">The Adhan Never Stops</div>
+  <div class="links">
+    <a href="/">Live Map</a>
+    <a href="/adhan-clock">Adhan Clock</a>
+    <a href="/prayer-arcs">Arc Explorer</a>
+    <a href="/ask-adhanlive">Ask AdhanLive</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/adhan@4.4.3/lib/bundles/adhan.umd.min.js"></script>
+<script>
+(function () {
+  // ── Makkah constants ──────────────────────────────
+  var COORDS = new adhan.Coordinates(21.4225, 39.8262);
+  var TIMEZONE = 'Asia/Riyadh';
+  var PRAYER_COLORS = {
+    fajr: '#4466ff',
+    dhuhr: '#ffcc00',
+    asr: '#e07a2f',
+    maghrib: '#d94f3d',
+    isha: '#9b59c4'
+  };
+  var PRAYER_NAMES = {
+    fajr: 'Fajr',
+    dhuhr: 'Dhuhr',
+    asr: 'Asr',
+    maghrib: 'Maghrib',
+    isha: 'Isha'
+  };
+
+  function getParams() {
+    var params = adhan.CalculationMethod.UmmAlQura();
+    return params;
+  }
+
+  function fmtTime(date) {
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZone: TIMEZONE
+    });
+  }
+
+  function getPrayerTimes(date) {
+    return new adhan.PrayerTimes(COORDS, date, getParams());
+  }
+
+  // ── Render today's times ──────────────────────────
+  function renderTimes() {
+    var now = new Date();
+    var pt = getPrayerTimes(now);
+
+    document.getElementById('time-fajr').textContent = fmtTime(pt.fajr);
+    document.getElementById('time-sunrise').textContent = fmtTime(pt.sunrise);
+    document.getElementById('time-dhuhr').textContent = fmtTime(pt.dhuhr);
+    document.getElementById('time-asr').textContent = fmtTime(pt.asr);
+    document.getElementById('time-maghrib').textContent = fmtTime(pt.maghrib);
+    document.getElementById('time-isha').textContent = fmtTime(pt.isha);
+
+    return pt;
+  }
+
+  // ── Dates ─────────────────────────────────────────
+  function renderDates() {
+    var now = new Date();
+    document.getElementById('greg-date').textContent = now.toLocaleDateString('en-US', {
+      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+      timeZone: TIMEZONE
+    });
+    try {
+      document.getElementById('hijri-date').textContent = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', {
+        day: 'numeric', month: 'long', year: 'numeric',
+        timeZone: TIMEZONE
+      }).format(now).replace(' AH', ' AH');
+    } catch (e) {
+      document.getElementById('hijri-date').textContent = '';
+    }
+  }
+
+  // ── Next prayer + countdown ───────────────────────
+  function findNextPrayer() {
+    var now = new Date();
+    var pt = getPrayerTimes(now);
+    var order = ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'];
+
+    for (var i = 0; i < order.length; i++) {
+      if (now < pt[order[i]]) {
+        return { key: order[i], time: pt[order[i]], current: i === 0 ? 'isha' : order[i - 1] };
+      }
+    }
+    // After Isha: next is tomorrow's Fajr
+    var tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    var ptTomorrow = getPrayerTimes(tomorrow);
+    return { key: 'fajr', time: ptTomorrow.fajr, current: 'isha' };
+  }
+
+  function renderNextPrayer() {
+    var next = findNextPrayer();
+    var now = new Date();
+    var diff = next.time - now;
+
+    var hours = Math.floor(diff / 3600000);
+    var mins = Math.floor((diff % 3600000) / 60000);
+    var secs = Math.floor((diff % 60000) / 1000);
+
+    var color = PRAYER_COLORS[next.key];
+    var box = document.getElementById('next-prayer-box');
+    box.style.setProperty('--prayer-color', color);
+
+    // Within 5 minutes after a prayer began, show "calling now" state
+    var pt = getPrayerTimes(now);
+    var calling = null;
+    ['fajr', 'dhuhr', 'asr', 'maghrib', 'isha'].forEach(function (k) {
+      var elapsed = now - pt[k];
+      if (elapsed >= 0 && elapsed < 5 * 60000) calling = k;
+    });
+
+    if (calling) {
+      box.style.setProperty('--prayer-color', PRAYER_COLORS[calling]);
+      document.getElementById('next-label').textContent = 'The Adhan is calling';
+      document.getElementById('next-name').textContent = PRAYER_NAMES[calling];
+      document.getElementById('next-time').textContent = 'Now in Makkah';
+      document.getElementById('countdown').innerHTML = 'Next: <strong>' +
+        PRAYER_NAMES[next.key] + '</strong> at ' + fmtTime(next.time);
+    } else {
+      document.getElementById('next-label').textContent = 'Next Prayer';
+      document.getElementById('next-name').textContent = PRAYER_NAMES[next.key];
+      document.getElementById('next-time').textContent = fmtTime(next.time) + ' Makkah time';
+      document.getElementById('countdown').innerHTML = 'in <strong>' +
+        (hours > 0 ? hours + 'h ' : '') + mins + 'm ' + secs + 's</strong>';
+    }
+
+    // Highlight current prayer card
+    document.querySelectorAll('.prayer-card').forEach(function (card) {
+      card.classList.remove('active');
+    });
+    var activeKey = calling || next.current;
+    var activeCard = document.querySelector('.prayer-card[data-prayer="' + activeKey + '"]');
+    if (activeCard) activeCard.classList.add('active');
+  }
+
+  // ── Live clock ────────────────────────────────────
+  function renderClock() {
+    var now = new Date();
+    document.getElementById('local-clock').textContent = now.toLocaleTimeString('en-US', {
+      hour: 'numeric', minute: '2-digit', second: '2-digit',
+      timeZone: TIMEZONE
+    });
+  }
+
+  // ── Init ──────────────────────────────────────────
+  renderDates();
+  renderTimes();
+  renderNextPrayer();
+  renderClock();
+
+  setInterval(function () {
+    renderClock();
+    renderNextPrayer();
+  }, 1000);
+
+  // Refresh full times at midnight Makkah time (check every minute)
+  setInterval(renderTimes, 60000);
+})();
+</script>
+
+</body>
+</html>

@@ -1,6 +1,38 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/home",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/livemap",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/adhanclock",
+      "destination": "/pages/adhan-clock.html"
+    },
+    {
+      "source": "/arcs",
+      "destination": "/pages/prayer-arcs.html"
+    },
+    {
+      "source": "/ask",
+      "destination": "/pages/ask-adhanlive.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/about.html"
+    },
+    {
+      "source": "/contact",
+      "destination": "/contact.html"
+    },
+    {
+      "source": "/prayer-times/makkah",
+      "destination": "/prayer-times/makkah.html"
+    }
+  ],
   "redirects": [
     {
       "source": "/makkah.html",
@@ -9,13 +41,13 @@
     },
     {
       "source": "/jakarta.html",
-      "destination": "/prayer-times",
-      "permanent": true
+      "destination": "/home",
+      "permanent": false
     },
     {
       "source": "/kuala-lumpur.html",
-      "destination": "/prayer-times",
-      "permanent": true
+      "destination": "/home",
+      "permanent": false
     }
   ]
 }

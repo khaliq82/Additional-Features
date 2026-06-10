@@ -42,7 +42,6 @@
   --asr-bg:rgba(224,122,47,0.12);--maghrib-bg:rgba(217,79,61,0.12);--isha-bg:rgba(155,89,196,0.12);
 }
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;overflow-x:hidden;min-height:100vh;}
 body::before{
   content:'';position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0.35;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
@@ -73,9 +72,9 @@ nav{position:sticky;top:0;z-index:500;height:56px;display:flex;align-items:cente
 .nav-utc-divider{width:1px;background:rgba(255,255,255,0.1);align-self:stretch;}
 .nav-utc-time{display:flex;align-items:center;justify-content:center;padding:5px 12px;font-size:13px;font-weight:600;letter-spacing:0.04em;color:#ffffff;}
 /* THREE-COLUMN DASHBOARD LAYOUT */
-html,body{height:100%;overflow:hidden;}
-body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column;}
-.page{flex:1;display:grid;grid-template-columns:320px 1fr 300px;grid-template-rows:1fr auto;min-height:0;overflow:hidden;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+.page{height:calc(100vh - 56px);display:grid;grid-template-columns:320px 1fr 300px;grid-template-rows:1fr auto;overflow:hidden;}
 
 /* LEFT PANEL */
 .left-panel{display:flex;flex-direction:column;justify-content:center;padding:28px 24px;border-right:1px solid var(--border);min-height:0;overflow:hidden;gap:0;}
@@ -165,10 +164,10 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 /* MOBILE */
 @media(max-width:1024px){
   html,body{overflow:auto;}
-  .page{grid-template-columns:1fr;grid-template-rows:auto;overflow:visible;}
+  .page{grid-template-columns:1fr;grid-template-rows:auto;overflow:visible;height:auto;}
   .left-panel,.right-panel{border:none;padding:24px 20px;}
   .centre-panel{padding:16px;}
-  .arc-canvas-wrap{width:min(480px,90vw);height:min(480px,90vw);}
+  .arc-canvas-wrap{width:min(480px,90vw);height:min(480px,90vw);aspect-ratio:auto;}
   .prayer-stack{flex-direction:row;flex-wrap:wrap;gap:8px;}
   .pcard{flex:1;min-width:calc(50% - 4px);}
   nav{padding:0 20px;}

@@ -161,20 +161,95 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 /* MOBILE */
 @media(max-width:1024px){
   html,body{overflow:auto;}
-  .page{grid-template-columns:1fr;grid-template-rows:auto;overflow:visible;height:auto;}
-  .left-panel,.right-panel{border:none;padding:24px 20px;}
-  .centre-panel{padding:16px;}
-  .arc-canvas-wrap{width:min(480px,90vw);height:min(480px,90vw);aspect-ratio:auto;}
-  .prayer-stack{flex-direction:row;flex-wrap:wrap;gap:8px;}
-  .pcard{flex:1;min-width:calc(50% - 4px);}
+
+  /* Single column, panels stack in visual order:
+     1. nav (sticky)
+     2. centre (clock) — full width hero
+     3. left-panel city info (compact)
+     4. prayer cards (full width stack)
+     5. right-panel stats
+     6. bottom-bar
+  */
+  .page{
+    grid-template-columns:1fr;
+    grid-template-rows:auto;
+    overflow:visible;
+    height:auto;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* Clock first — full width, square, fills screen width */
+  .centre-panel{
+    order:1;
+    padding:0;
+    width:100%;
+    height:100vw;
+    max-height:100vw;
+    background:radial-gradient(circle at 50% 50%,rgba(64,86,132,0.55) 0%,rgba(48,66,108,0.38) 30%,rgba(30,44,76,0.20) 55%,rgba(16,24,44,0.08) 76%,#05070d 100%);
+  }
+  .arc-canvas-wrap{
+    width:100vw;
+    height:100vw;
+    max-width:100vw;
+    aspect-ratio:auto;
+    border-radius:0;
+  }
+
+  /* City info second — compact, no border */
+  .left-panel{
+    order:2;
+    border:none;
+    padding:20px 20px 0;
+    justify-content:flex-start;
+  }
+  .city-name-block{margin-bottom:16px;}
+  .hero-city{font-size:clamp(32px,8vw,48px);}
+
+  /* Prayer cards — full width single column */
+  .prayer-stack{
+    flex-direction:column;
+    gap:6px;
+    padding:0 20px 20px;
+  }
+  .pcard{
+    flex:none;
+    width:100%;
+    min-width:unset;
+  }
+  .pcard-time{font-size:17px;}
+
+  /* Right panel — compact, no border */
+  .right-panel{
+    order:3;
+    border:none;
+    padding:0 20px 20px;
+    gap:8px;
+  }
+
+  /* Bottom bar — stacked */
+  .bottom-bar{
+    order:4;
+    height:auto;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+    padding:14px 20px;
+  }
+  .bb-center{display:none;}
+
+  /* Nav */
   nav{padding:0 20px;}
   .nav-links{display:none;position:fixed;top:56px;left:0;right:0;z-index:9999;background:rgba(0,0,0,0.97);backdrop-filter:blur(24px);flex-direction:column;gap:0;border-bottom:1px solid rgba(255,255,255,0.08);}
   .nav-links.mobile-open{display:flex;}
   .nav-links a{padding:16px 24px;font-size:14px;letter-spacing:0.06em;border-bottom:1px solid rgba(255,255,255,0.06);width:100%;}
   .hamburger{display:flex;}
   .nav-utc{display:none !important;}
-  .bottom-bar{height:auto;flex-direction:column;align-items:flex-start;gap:10px;padding:14px 20px;}
-  .bb-center{display:none;}
+
+  /* Next prayer block — slightly more compact */
+  .np-timer{font-size:24px;}
+  .np-block{padding:14px;}
+  .stat-card{padding:10px 12px;}
 }
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .fade-up{opacity:0;animation:fadeUp 0.6s ease forwards;}

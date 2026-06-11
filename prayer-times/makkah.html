@@ -504,7 +504,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   const litAlpha=0.15+litFace*0.55; // 0.15 to 0.70
 
   ctx.save();
-  ctx.globalAlpha=isActive?0.95:0.45;
+  ctx.globalAlpha=0.45;
 
   // ── 1. Base fill with depth gradient (dark on shadow side, bright on lit side) ──
   const bevelG=ctx.createLinearGradient(
@@ -517,7 +517,6 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   bevelG.addColorStop(0.55, shadeCol(col, 0.55));
   bevelG.addColorStop(1,   shadeCol(col, 0.25));
   ctx.fillStyle=bevelG;
-  if(isActive){ctx.shadowColor=col; ctx.shadowBlur=10;}
   ctx.beginPath();
   ctx.moveTo(tailX,tailY);
   ctx.lineTo(cx-px*1.2-cos*(bs*0.3),cy-py*1.2-sin*(bs*0.3));
@@ -529,10 +528,22 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.lineTo(cx+px*1.2-cos*(bs*0.3),cy+py*1.2-sin*(bs*0.3));
   ctx.closePath();
   ctx.fill();
-  ctx.shadowBlur=0;
+
+  // ── Active needle: subtle cyan edge tracing the outline ──
+  if(isActive){
+    ctx.globalAlpha=0.85;
+    ctx.strokeStyle='rgba(0,212,255,0.55)';
+    ctx.lineWidth=1.2;
+    ctx.lineJoin='round';
+    ctx.shadowColor='rgba(0,212,255,0.5)';
+    ctx.shadowBlur=4;
+    ctx.stroke();
+    ctx.shadowBlur=0;
+    ctx.globalAlpha=0.45;
+  }
 
   // ── 2. Top-edge specular highlight (lit edge rim) ──
-  ctx.globalAlpha=isActive ? litAlpha*0.9 : litAlpha*0.35;
+  ctx.globalAlpha=litAlpha*0.35;
   ctx.strokeStyle='rgba(255,255,255,0.9)';
   ctx.lineWidth=0.8;
   ctx.lineCap='round';
@@ -547,7 +558,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.stroke();
 
   // ── 3. Bottom-edge shadow rim ──
-  ctx.globalAlpha=isActive?0.35:0.15;
+  ctx.globalAlpha=0.15;
   ctx.strokeStyle='rgba(0,0,0,0.8)';
   ctx.lineWidth=1.2;
   ctx.beginPath();
@@ -562,7 +573,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.lineCap='butt';
 
   // ── 4. Central ridge highlight (simulates raised center spine) ──
-  ctx.globalAlpha=isActive?0.18:0.07;
+  ctx.globalAlpha=0.07;
   const ridgeG=ctx.createLinearGradient(cx+cos*bs,cy+sin*bs,tipX,tipY);
   ridgeG.addColorStop(0,'rgba(255,255,255,0)');
   ridgeG.addColorStop(0.2,'rgba(255,255,255,0.9)');
@@ -585,7 +596,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.translate(cx+cos*textD, cy+sin*textD);
   ctx.rotate(flip?ang+Math.PI:ang);
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.font=`700 ${isActive?12:10}px 'Geist',sans-serif`;
+  ctx.font=`700 10px 'Geist',sans-serif`;
 
   // Layer 1: deep groove shadow — offset down-right, dark
   ctx.fillStyle='rgba(0,0,0,0.75)';
@@ -612,7 +623,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
 
   // Layer 4: main engraved text — dimmer than surface, slightly desaturated
   // Use needle color darkened, not cyan, so it looks carved INTO the material
-  ctx.fillStyle=isActive?'rgba(220,245,255,0.95)':'rgba(200,235,255,0.72)';
+  ctx.fillStyle='rgba(200,235,255,0.72)';
   ctx.fillText(timeStr,0,0);
 
   ctx.restore();
@@ -816,18 +827,8 @@ function drawArc(){
   ctx.strokeStyle='rgba(60,40,140,0.2)';ctx.lineWidth=4;ctx.beginPath();ctx.arc(cx,cy,R,angle(mH),angle(fH+24));ctx.stroke();
   ctx.strokeStyle='rgba(200,150,40,0.08)';ctx.lineWidth=4;ctx.beginPath();ctx.arc(cx,cy,R,angle(fH),angle(mH));ctx.stroke();
 
-  // Active segment — only drawn while a prayer window is actually open.
-  // Fajr's segment ends at sunrise, its true window end.
+  // Active prayer (used for needle edge highlight, no rim arc drawn)
   const active=currentPrayer(cachedTimes,lh);
-  if(active){
-    const segEnd=active==='fajr'?'sunrise':ORDER[(ORDER.indexOf(active)+1)%ORDER.length];
-    let aH=((cachedTimes[active]%24)+24)%24,nH=((cachedTimes[segEnd]%24)+24)%24;
-    if(nH<=aH)nH+=24;
-    const activeCol=PMETA[active].color;
-    ctx.strokeStyle=activeCol;ctx.lineWidth=16;ctx.globalAlpha=0.05;ctx.beginPath();ctx.arc(cx,cy,R,angle(aH),angle(nH));ctx.stroke();
-    ctx.lineWidth=5;ctx.globalAlpha=0.18;ctx.beginPath();ctx.arc(cx,cy,R,angle(aH),angle(nH));ctx.stroke();
-    ctx.lineWidth=2;ctx.globalAlpha=0.85;ctx.beginPath();ctx.arc(cx,cy,R,angle(aH),angle(nH));ctx.stroke();ctx.globalAlpha=1;
-  }
 
   // 24-hour numbers with tick lines — close to ring
   ctx.save();
@@ -976,14 +977,12 @@ function drawArc(){
     drawPrayerNeedle(ctx,cx,cy,a,R-5,col,isA,`${tv.h12}:${tv.mm} ${tv.ampm}`);
     ctx.restore();
     // Dot
-    ctx.fillStyle='rgba(0,0,0,0.4)';ctx.beginPath();ctx.arc(dotX+0.5,dotY+0.5,isA?8:5,0,Math.PI*2);ctx.fill();
-    const dg=ctx.createRadialGradient(dotX,dotY,0,dotX,dotY,isA?22:13);dg.addColorStop(0,hexRgba(col,isA?0.5:0.2));dg.addColorStop(1,hexRgba(col,0));
-    ctx.fillStyle=dg;ctx.beginPath();ctx.arc(dotX,dotY,isA?22:13,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle=col;ctx.shadowColor=col;ctx.shadowBlur=isA?28:6;ctx.beginPath();ctx.arc(dotX,dotY,isA?8:4.5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
-    const spec=ctx.createRadialGradient(dotX-1.5,dotY-1.5,0,dotX,dotY,isA?8:4.5);spec.addColorStop(0,'rgba(255,255,255,0.7)');spec.addColorStop(0.4,'rgba(255,255,255,0.15)');spec.addColorStop(1,'rgba(255,255,255,0)');
-    ctx.fillStyle=spec;ctx.beginPath();ctx.arc(dotX,dotY,isA?8:4.5,0,Math.PI*2);ctx.fill();
-    if(isA){[14,22,32].forEach((r,i)=>{ctx.strokeStyle=col;ctx.lineWidth=i===0?1.5:1;ctx.globalAlpha=[0.5,0.25,0.08][i];ctx.beginPath();ctx.arc(dotX,dotY,r,0,Math.PI*2);ctx.stroke();});ctx.globalAlpha=1;
-      const halo=ctx.createRadialGradient(dotX,dotY,0,dotX,dotY,36);halo.addColorStop(0,hexRgba(col,0.3));halo.addColorStop(0.4,hexRgba(col,0.12));halo.addColorStop(1,hexRgba(col,0));ctx.fillStyle=halo;ctx.beginPath();ctx.arc(dotX,dotY,36,0,Math.PI*2);ctx.fill();}
+    ctx.fillStyle='rgba(0,0,0,0.4)';ctx.beginPath();ctx.arc(dotX+0.5,dotY+0.5,5,0,Math.PI*2);ctx.fill();
+    const dg=ctx.createRadialGradient(dotX,dotY,0,dotX,dotY,13);dg.addColorStop(0,hexRgba(col,0.2));dg.addColorStop(1,hexRgba(col,0));
+    ctx.fillStyle=dg;ctx.beginPath();ctx.arc(dotX,dotY,13,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle=col;ctx.shadowColor=col;ctx.shadowBlur=6;ctx.beginPath();ctx.arc(dotX,dotY,4.5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+    const spec=ctx.createRadialGradient(dotX-1.5,dotY-1.5,0,dotX,dotY,4.5);spec.addColorStop(0,'rgba(255,255,255,0.7)');spec.addColorStop(0.4,'rgba(255,255,255,0.15)');spec.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.fillStyle=spec;ctx.beginPath();ctx.arc(dotX,dotY,4.5,0,Math.PI*2);ctx.fill();
   }
 
   // Current time needle — topmost layer with strongest shadow

@@ -74,10 +74,10 @@ nav{position:sticky;top:0;z-index:500;height:56px;display:flex;align-items:cente
 /* THREE-COLUMN DASHBOARD LAYOUT */
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
-.page{height:calc(100vh - 56px);display:grid;grid-template-columns:320px 1fr 300px;grid-template-rows:1fr auto;overflow:hidden;}
+.page{height:calc(100vh - 56px);display:grid;grid-template-columns:320px 1fr 300px;grid-template-rows:auto 1fr auto;overflow:hidden;}
 
 /* LEFT PANEL */
-.left-panel{display:flex;flex-direction:column;justify-content:center;padding:28px 24px;border-right:1px solid var(--border);min-height:0;overflow:hidden;gap:0;}
+.city-block{display:flex;flex-direction:column;justify-content:flex-end;padding:28px 24px 12px;border-right:1px solid var(--border);overflow:hidden;gap:0;grid-column:1;grid-row:1;}
 .hero-city{font-family:'Playfair Display',serif;font-size:clamp(38px,3.2vw,60px);font-weight:300;letter-spacing:-0.02em;line-height:0.9;color:#fff;margin-bottom:6px;}
 .hero-country{font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text2);margin-bottom:10px;}
 .hero-date{font-size:11px;color:var(--text2);margin-bottom:10px;letter-spacing:0.01em;}
@@ -99,12 +99,12 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .pcard.active .pcard-now{display:block;}
 
 /* CENTRE PANEL */
-.centre-panel{display:flex;align-items:center;justify-content:center;padding:0;min-height:0;overflow:hidden;position:relative;background:radial-gradient(circle at 50% 50%,rgba(64,86,132,0.55) 0%,rgba(48,66,108,0.38) 30%,rgba(30,44,76,0.20) 55%,rgba(16,24,44,0.08) 76%,#05070d 100%);}
+.centre-panel{display:flex;align-items:center;justify-content:center;padding:0;min-height:0;overflow:hidden;position:relative;grid-column:2;grid-row:1/3;background:radial-gradient(circle at 50% 50%,rgba(64,86,132,0.55) 0%,rgba(48,66,108,0.38) 30%,rgba(30,44,76,0.20) 55%,rgba(16,24,44,0.08) 76%,#05070d 100%);}
 .arc-canvas-wrap{position:relative;z-index:1;aspect-ratio:1;height:min(100%,950px);max-width:100%;border-radius:50%;overflow:hidden;}
 #prayer-arc{display:block;width:100%;height:100%;background:transparent;}
 
 /* RIGHT PANEL */
-.right-panel{display:flex;flex-direction:column;justify-content:center;padding:28px 24px;border-left:1px solid var(--border);gap:12px;min-height:0;overflow:hidden;}
+.right-panel{display:flex;flex-direction:column;justify-content:center;padding:28px 24px;border-left:1px solid var(--border);gap:12px;min-height:0;overflow:hidden;grid-column:3;grid-row:1/3;}
 .np-block{padding:16px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,0.02);position:relative;overflow:hidden;}
 .np-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--np-color,var(--cyan));}
 .np-tag{font-size:9px;font-weight:700;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;}
@@ -125,7 +125,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 @keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.4)}}
 
 /* BOTTOM BAR */
-.bottom-bar{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:44px;background:rgba(0,0,0,0.92);border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0;}
+.bottom-bar{grid-column:1/-1;grid-row:3;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:44px;background:rgba(0,0,0,0.92);border-top:1px solid rgba(255,255,255,0.08);flex-shrink:0;}
 .bb-left{display:flex;align-items:center;gap:8px;}
 .bb-logo{font-family:'Geist',sans-serif;font-weight:800;font-size:13px;display:flex;align-items:center;gap:7px;color:#fff;text-decoration:none;}
 .bb-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
@@ -162,14 +162,6 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 @media(max-width:1024px){
   html,body{overflow:auto;}
 
-  /* Single column, panels stack in visual order:
-     1. nav (sticky)
-     2. centre (clock) — full width hero
-     3. left-panel city info (compact)
-     4. prayer cards (full width stack)
-     5. right-panel stats
-     6. bottom-bar
-  */
   .page{
     grid-template-columns:1fr;
     grid-template-rows:auto;
@@ -179,57 +171,68 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
     flex-direction:column;
   }
 
-  /* Clock first — full width, square, fills screen width */
-  .centre-panel{
+  /* 1. City info first */
+  .city-block{
     order:1;
+    border:none;
+    padding:24px 20px 0;
+    justify-content:flex-start;
+  }
+  .city-name-block{margin-bottom:12px;}
+  .hero-city{font-size:clamp(36px,9vw,52px);}
+
+  /* 2. Clock second — slightly wider than screen for drama */
+  .centre-panel{
+    order:2;
     padding:0;
     width:100%;
-    height:100vw;
-    max-height:100vw;
+    height:105vw;
+    max-height:105vw;
+    overflow:hidden;
     background:radial-gradient(circle at 50% 50%,rgba(64,86,132,0.55) 0%,rgba(48,66,108,0.38) 30%,rgba(30,44,76,0.20) 55%,rgba(16,24,44,0.08) 76%,#05070d 100%);
   }
   .arc-canvas-wrap{
-    width:100vw;
-    height:100vw;
-    max-width:100vw;
+    width:105vw;
+    height:105vw;
+    max-width:105vw;
+    margin-left:-2.5vw;
     aspect-ratio:auto;
     border-radius:0;
   }
 
-  /* City info second — compact, no border */
-  .left-panel{
-    order:2;
+  /* 3. Prayer cards — left-aligned single column, below clock */
+  .prayer-stack-wrap{
+    order:3;
+    padding:16px 20px 8px;
+    width:100%;
+    grid-column:unset;
+    grid-row:unset;
     border:none;
-    padding:20px 20px 0;
-    justify-content:flex-start;
   }
-  .city-name-block{margin-bottom:16px;}
-  .hero-city{font-size:clamp(32px,8vw,48px);}
-
-  /* Prayer cards — full width single column */
   .prayer-stack{
     flex-direction:column;
     gap:6px;
-    padding:0 20px 20px;
+    width:100%;
   }
   .pcard{
     flex:none;
     width:100%;
     min-width:unset;
+    justify-content:flex-start;
   }
   .pcard-time{font-size:17px;}
 
-  /* Right panel — compact, no border */
+  /* Right panel — compact below cards */
   .right-panel{
-    order:3;
+    order:4;
     border:none;
     padding:0 20px 20px;
     gap:8px;
   }
 
-  /* Bottom bar — stacked */
+  /* Bottom bar */
   .bottom-bar{
-    order:4;
+    order:5;
     height:auto;
     flex-direction:column;
     align-items:flex-start;
@@ -246,7 +249,6 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   .hamburger{display:flex;}
   .nav-utc{display:none !important;}
 
-  /* Next prayer block — slightly more compact */
   .np-timer{font-size:24px;}
   .np-block{padding:14px;}
   .stat-card{padding:10px 12px;}
@@ -256,6 +258,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .fade-up:nth-child(1){animation-delay:0.05s}.fade-up:nth-child(2){animation-delay:0.1s}
 .fade-up:nth-child(3){animation-delay:0.15s}.fade-up:nth-child(4){animation-delay:0.2s}
 .fade-up:nth-child(5){animation-delay:0.25s}
+.prayer-stack-wrap{grid-column:1;grid-row:2;border-right:1px solid var(--border);padding:0 24px 24px;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
 </style>
 </head>
 <body>
@@ -288,13 +291,15 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 <div class="page">
 
   <!-- LEFT: City identity + vertical prayer cards -->
-  <div class="left-panel">
+  <div class="city-block">
     <div class="city-name-block">
       <div class="hero-city">Makkah</div>
       <div class="hero-country">Saudi Arabia</div>
       <div class="hero-date" id="hero-date">Thursday, 11 June 2026 · <span id="hijri-inline">24 Dhul Hijjah 1447 AH</span></div>
       <div class="hero-method">Umm al-Qura</div>
     </div>
+  </div>
+  <div class="prayer-stack-wrap">
     <div class="prayer-stack" id="prayer-stack"></div>
   </div>
 

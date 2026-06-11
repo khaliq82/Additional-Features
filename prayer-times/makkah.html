@@ -78,14 +78,11 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 
 /* LEFT PANEL */
 .left-panel{display:flex;flex-direction:column;justify-content:center;padding:28px 24px;border-right:1px solid var(--border);min-height:0;overflow:hidden;gap:0;}
-.hero-city{font-family:'Playfair Display',serif;font-size:clamp(38px,3.2vw,60px);font-weight:300;letter-spacing:-0.02em;line-height:0.9;color:#fff;margin-bottom:5px;}
-.hero-city-arabic{font-family:'Cormorant Garamond',serif;font-size:clamp(14px,1.2vw,20px);font-style:italic;color:var(--text2);margin-bottom:12px;}
-.hero-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
-.hero-badge{font-size:9px;font-weight:700;letter-spacing:0.1em;padding:3px 10px;border-radius:20px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.25);color:var(--cyan);}
-.hero-meta-text{font-size:11px;color:var(--text2);}
-.hero-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--text3);}
-.hero-date{font-size:11px;color:var(--text2);margin-bottom:18px;}
+.hero-city{font-family:'Playfair Display',serif;font-size:clamp(38px,3.2vw,60px);font-weight:300;letter-spacing:-0.02em;line-height:0.9;color:#fff;margin-bottom:6px;}
+.hero-country{font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text2);margin-bottom:10px;}
+.hero-date{font-size:11px;color:var(--text2);margin-bottom:10px;letter-spacing:0.01em;}
 .hero-date span{color:var(--cyan);font-weight:600;}
+.hero-method{font-size:11px;color:var(--text3);letter-spacing:0.06em;margin-bottom:18px;}
 
 /* VERTICAL PRAYER CARDS */
 .prayer-stack{display:flex;flex-direction:column;gap:6px;flex:1;min-height:0;justify-content:center;}
@@ -219,14 +216,9 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   <div class="left-panel">
     <div class="city-name-block">
       <div class="hero-city">Makkah</div>
-      <div class="hero-meta">
-        <span class="hero-badge">SAUDI ARABIA</span>
-        <span class="hero-meta-dot"></span>
-        <span class="hero-meta-text">AST · UTC+3</span>
-        <span class="hero-meta-dot"></span>
-        <span class="hero-meta-text">21.42°N, 39.83°E</span>
-      </div>
-      <div class="hero-date" id="hero-date">Wednesday, 10 June 2026 · <span id="hijri-inline">24 Dhul Hijjah 1447 AH</span></div>
+      <div class="hero-country">Saudi Arabia</div>
+      <div class="hero-date" id="hero-date">Thursday, 11 June 2026 · <span id="hijri-inline">24 Dhul Hijjah 1447 AH</span></div>
+      <div class="hero-method">Umm al-Qura</div>
     </div>
     <div class="prayer-stack" id="prayer-stack"></div>
   </div>
@@ -264,22 +256,11 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
         <div class="stat-value" id="sunrise-time">—</div>
         <div class="stat-sub">Fajr window closes at sunrise</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-label">Calculation Method</div>
-        <div class="stat-value" style="font-size:14px;">Umm al-Qura</div>
-        <div class="stat-sub">Official method · Saudi Arabia</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-label">Mosques in Makkah</div>
-        <div class="stat-value">1,494</div>
-        <div class="stat-sub">Mapped on AdhanLive globe</div>
-      </div>
     </div>
     <a href="/livemap" class="globe-cta">
       <div class="globe-cta-dot"></div>
       <div>
-        <div class="globe-cta-text">Watch on Live Globe</div>
-        <div class="globe-cta-sub">See Makkah light up at every prayer</div>
+        <div class="globe-cta-text">Open Live Globe</div>
       </div>
     </a>
   </div>

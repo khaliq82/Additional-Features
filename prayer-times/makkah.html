@@ -99,7 +99,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .pcard.active .pcard-now{display:block;}
 
 /* CENTRE PANEL */
-.centre-panel{display:flex;align-items:center;justify-content:center;padding:0;min-height:0;overflow:hidden;position:relative;grid-column:2;grid-row:1/3;background:none;}
+.centre-panel{display:flex;align-items:center;justify-content:center;padding:0;min-height:0;overflow:hidden;position:relative;grid-column:2;grid-row:1/3;background:radial-gradient(circle at 50% 50%,rgba(64,86,132,0.55) 0%,rgba(48,66,108,0.38) 30%,rgba(30,44,76,0.20) 55%,rgba(16,24,44,0.08) 76%,#05070d 100%);}
 .arc-canvas-wrap{position:relative;z-index:1;aspect-ratio:1;height:min(100%,950px);max-width:100%;border-radius:50%;overflow:hidden;}
 #prayer-arc{display:block;width:100%;height:100%;background:transparent;}
 
@@ -161,29 +161,84 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 /* MOBILE */
 @media(max-width:1024px){
   html,body{overflow:auto;}
-  .page{display:flex;flex-direction:column;height:auto;overflow:visible;}
 
-  /* 1. City info */
-  .city-block{order:1;padding:24px 20px 16px;grid-column:unset;grid-row:unset;min-height:unset;}
-  .city-block-inner{height:auto;}
+  .page{
+    grid-template-columns:1fr;
+    grid-template-rows:auto;
+    overflow:visible;
+    height:auto;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* 1. City info first */
+  .city-block{
+    order:1;
+    border:none;
+    padding:24px 20px 0;
+    justify-content:flex-start;
+  }
+  .city-name-block{margin-bottom:12px;}
   .hero-city{font-size:clamp(36px,9vw,52px);}
-  .hero-method{margin-bottom:0;}
-  .prayer-list{display:flex;margin-top:0;}
-  .prow{padding:10px 0;}
-  .prow-time{font-size:16px;}
 
-  /* 2. Clock full width */
-  .centre-panel{order:2;height:100vw;width:100%;overflow:hidden;grid-column:unset;grid-row:unset;}
-  .arc-canvas-wrap{width:105vw;height:105vw;max-width:105vw;margin-left:-2.5vw;aspect-ratio:auto;border-radius:0;}
+  /* 2. Clock second — slightly wider than screen for drama */
+  .centre-panel{
+    order:2;
+    padding:0;
+    width:100%;
+    height:105vw;
+    max-height:105vw;
+    overflow:hidden;
+    background:radial-gradient(circle at 50% 50%,rgba(64,86,132,0.55) 0%,rgba(48,66,108,0.38) 30%,rgba(30,44,76,0.20) 55%,rgba(16,24,44,0.08) 76%,#05070d 100%);
+  }
+  .arc-canvas-wrap{
+    width:105vw;
+    height:105vw;
+    max-width:105vw;
+    margin-left:-2.5vw;
+    aspect-ratio:auto;
+    border-radius:0;
+  }
 
-  /* 3. Prayer list below clock — shown as full-width rows */
-  .city-block::after{display:none;}
-  .right-panel{order:3;padding:20px 20px;grid-column:unset;grid-row:unset;gap:14px;}
-  .prayer-list-mobile{display:flex;flex-direction:column;gap:0;padding:16px 20px 0;}
+  /* 3. Prayer cards — left-aligned single column, below clock */
+  .prayer-stack-wrap{
+    order:3;
+    padding:16px 20px 8px;
+    width:100%;
+    grid-column:unset;
+    grid-row:unset;
+    border:none;
+  }
+  .prayer-stack{
+    flex-direction:column;
+    gap:6px;
+    width:100%;
+  }
+  .pcard{
+    flex:none;
+    width:100%;
+    min-width:unset;
+    justify-content:flex-start;
+  }
+  .pcard-time{font-size:17px;}
 
-  /* 4. Stats */
-  .np-timer{font-size:28px;}
-  .bottom-bar{order:4;height:auto;flex-direction:column;align-items:flex-start;gap:10px;padding:14px 20px;grid-column:unset;grid-row:unset;}
+  /* Right panel — compact below cards */
+  .right-panel{
+    order:4;
+    border:none;
+    padding:0 20px 20px;
+    gap:8px;
+  }
+
+  /* Bottom bar */
+  .bottom-bar{
+    order:5;
+    height:auto;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+    padding:14px 20px;
+  }
   .bb-center{display:none;}
 
   /* Nav */
@@ -194,9 +249,9 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   .hamburger{display:flex;}
   .nav-utc{display:none !important;}
 
-  /* Spatial glow on mobile */
-  .page::before{width:100vw;height:100vw;top:50vw;}
-}
+  .np-timer{font-size:24px;}
+  .np-block{padding:14px;}
+  .stat-card{padding:10px 12px;}
 }
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .fade-up{opacity:0;animation:fadeUp 0.6s ease forwards;}
@@ -235,20 +290,20 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 <div id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
 <div class="page">
 
-  <!-- LEFT: City identity + minimal prayer list -->
+  <!-- LEFT: City identity + vertical prayer cards -->
   <div class="city-block">
-    <div class="city-block-inner">
-      <div>
-        <div class="hero-city">Makkah</div>
-        <div class="hero-country">Saudi Arabia</div>
-        <div class="hero-date" id="hero-date">Thursday, 11 June 2026 · <span id="hijri-inline">24 Dhul Hijjah 1447 AH</span></div>
-        <div class="hero-method">Umm al-Qura</div>
-      </div>
-      <div class="prayer-list" id="prayer-list"></div>
+    <div class="city-name-block">
+      <div class="hero-city">Makkah</div>
+      <div class="hero-country">Saudi Arabia</div>
+      <div class="hero-date" id="hero-date">Thursday, 11 June 2026 · <span id="hijri-inline">24 Dhul Hijjah 1447 AH</span></div>
+      <div class="hero-method">Umm al-Qura</div>
     </div>
   </div>
+  <div class="prayer-stack-wrap">
+    <div class="prayer-stack" id="prayer-stack"></div>
+  </div>
 
-  <!-- CENTRE: Clock — dominant -->
+  <!-- CENTRE: Clock -->
   <div class="centre-panel">
     <div class="arc-canvas-wrap">
       <canvas id="prayer-arc" width="680" height="680"></canvas>
@@ -262,38 +317,32 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
     </div>
   </div>
 
-  <!-- RIGHT: Minimal live info -->
+  <!-- RIGHT: Live stats panel -->
   <div class="right-panel">
-
     <div class="np-block" id="np-block">
       <div class="np-tag">Next Prayer</div>
       <div class="np-name" id="next-name">—</div>
       <div class="np-timer" id="next-countdown">--:--:--</div>
-      <div class="np-timer-label">Time Remaining</div>
+      <div class="np-timer-label">TIME REMAINING</div>
     </div>
-
-    <div class="rp-divider"></div>
-
     <div class="stat-row">
       <div class="stat-card">
-        <div class="stat-label">Local Time</div>
+        <div class="stat-label">Local Time · Makkah</div>
         <div class="stat-value cyan" id="local-time">—</div>
         <div class="stat-sub">Arabia Standard Time</div>
       </div>
       <div class="stat-card">
-        <div class="stat-label">Sunrise</div>
+        <div class="stat-label">Sunrise · End of Fajr</div>
         <div class="stat-value" id="sunrise-time">—</div>
-        <div class="stat-sub">End of Fajr window</div>
+        <div class="stat-sub">Fajr window closes at sunrise</div>
       </div>
     </div>
-
-    <div class="rp-divider"></div>
-
     <a href="/livemap" class="globe-cta">
       <div class="globe-cta-dot"></div>
-      <div class="globe-cta-text">Open Live Globe</div>
+      <div>
+        <div class="globe-cta-text">Open Live Globe</div>
+      </div>
     </a>
-
   </div>
 
   <!-- BOTTOM BAR -->
@@ -306,7 +355,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
     <div class="bb-right">
       <span class="bb-share-label">Share</span>
       <button class="mf-share-btn whatsapp" onclick="shareMapMoment('whatsapp')">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         WhatsApp
       </button>
       <button class="mf-share-btn twitter" onclick="shareMapMoment('twitter')">
@@ -324,7 +373,6 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 
 <!-- SEO content below fold -->
 <div class="seo-section">
-
     <section class="content-section">
       <h2>How these times are calculated</h2>
       <p>Prayer times in Makkah follow the <strong>Umm al-Qura method</strong>, the official Islamic prayer calculation method of Saudi Arabia, published by Umm al-Qura University in Makkah itself. It is the method used by Al Masjid Al Haram and every mosque across the Kingdom, and the same method applied to all Saudi mosques on the <a href="/">AdhanLive globe</a>.</p>
@@ -443,25 +491,27 @@ let cachedTimes=null;
 function renderPrayers(){
   const now=new Date();
   cachedTimes=calcPrayers(CITY.lat,CITY.lon,CITY.tz,now,CITY.method);
+  const lh=localH();
   const ORDER=['fajr','dhuhr','asr','maghrib','isha'];
-  const list=document.getElementById('prayer-list');
-  if(!list)return;
-  list.innerHTML='';
-  function fmtT(fh){
-    const h=Math.floor(((fh%24)+24)%24),mn=Math.floor((fh-Math.floor(fh))*60);
-    const ap=h<12?'AM':'PM',hh=h%12||12;
-    return `${String(hh).padStart(2,'0')}:${String(mn).padStart(2,'0')} ${ap}`;
-  }
+  const stack=document.getElementById('prayer-stack');
+  if(!stack) return;
+  stack.innerHTML='';
   ORDER.forEach(key=>{
     const m=PMETA[key],t=cachedTimes[key];
-    const row=document.createElement('div');
-    row.className='prow';
-    row.style.setProperty('--pc',m.color);
-    row.innerHTML=`<div class="prow-left"><div class="prow-dot"></div><div class="prow-name">${m.en}</div><span class="prow-now">NOW</span></div><div class="prow-time">${isNaN(t)?'—':fmtT(t)}</div>`;
-    list.appendChild(row);
+    function fmtT(fh){
+      const h=Math.floor(((fh%24)+24)%24),mn=Math.floor((fh-Math.floor(fh))*60);
+      const ap=h<12?'AM':'PM',hh=h%12||12;
+      return `${String(hh).padStart(2,'0')}:${String(mn).padStart(2,'0')} ${ap}`;
+    }
+    const div=document.createElement('div');
+    div.className='pcard fade-up';
+    div.style.setProperty('--pc',m.color);
+    div.innerHTML=`<div class="pcard-dot"></div><div class="pcard-name">${m.en}</div><div class="pcard-time">${isNaN(t)?'—':fmtT(t)}</div><div class="pcard-now">NOW</div>`;
+    stack.appendChild(div);
   });
+  // Sunrise for right panel
   const srEl=document.getElementById('sunrise-time');
-  if(srEl&&cachedTimes.sunrise){
+  if(srEl && cachedTimes.sunrise){
     const sh=Math.floor(((cachedTimes.sunrise%24)+24)%24),sm=Math.floor((cachedTimes.sunrise-Math.floor(cachedTimes.sunrise))*60);
     const sap=sh<12?'AM':'PM',shh=sh%12||12;
     srEl.textContent=`${String(shh).padStart(2,'0')}:${String(sm).padStart(2,'0')} ${sap}`;
@@ -469,7 +519,7 @@ function renderPrayers(){
   updateActiveCard();
 }
 function updateActiveCard(){
-  const t=cachedTimes;if(!t)return;
+  const t=cachedTimes;
   const lh=localH();
   let active=null;
   if(lh>=t.fajr&&lh<t.sunrise)active='fajr';
@@ -478,8 +528,8 @@ function updateActiveCard(){
   else if(lh>=t.maghrib&&lh<t.isha)active='maghrib';
   else if(lh>=t.isha||lh<t.fajr)active='isha';
   const keys=['fajr','dhuhr','asr','maghrib','isha'];
-  document.querySelectorAll('.prow').forEach((row,i)=>{
-    row.classList.toggle('active',keys[i]===active);
+  document.querySelectorAll('.pcard').forEach((c,i)=>{
+    c.classList.toggle('active',keys[i]===active);
   });
 }
 function updateDate(){

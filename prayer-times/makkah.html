@@ -151,6 +151,17 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .rule-item{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;padding:18px;}
 .rule-item .r-name{font-size:12px;font-weight:700;letter-spacing:0.06em;margin-bottom:8px;}
 .rule-item .r-text{font-size:12.5px;color:var(--text2);line-height:1.6;}
+.live-cta-card{border:1px solid rgba(0,212,255,0.18);border-radius:16px;background:rgba(0,212,255,0.04);overflow:hidden;padding:40px 40px 36px;}
+.live-cta-inner{max-width:680px;}
+.live-cta-pulse{display:flex;align-items:center;gap:8px;margin-bottom:18px;}
+.live-cta-pulse span:first-child{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:pd 1.5s infinite;display:inline-block;}
+.live-cta-pulse span:last-child{font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--cyan);}
+.live-cta-title{font-family:'Playfair Display',serif;font-size:clamp(24px,2.5vw,36px);font-weight:400;color:#fff;margin-bottom:14px;line-height:1.15;}
+.live-cta-body{font-size:14px;line-height:1.75;color:var(--text2);margin-bottom:10px;max-width:600px;}
+.live-cta-data{font-size:11px;color:var(--text3);letter-spacing:0.06em;margin-bottom:24px;}
+.live-cta-btn{display:inline-flex;align-items:center;gap:10px;padding:13px 28px;border-radius:8px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--cyan);font-size:12px;font-weight:700;letter-spacing:0.1em;text-decoration:none;text-transform:uppercase;transition:all 0.25s;}
+.live-cta-btn:hover{background:rgba(0,212,255,0.18);border-color:rgba(0,212,255,0.6);}
+.live-cta-btn-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:pd 1.5s infinite;flex-shrink:0;}
 .cta-live-btn{display:inline-flex;align-items:center;gap:10px;margin-top:20px;padding:12px 24px;border-radius:8px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);color:var(--cyan);font-size:12px;font-weight:700;letter-spacing:0.08em;text-decoration:none;text-transform:uppercase;transition:all 0.2s;}
 .cta-live-btn:hover{background:rgba(0,212,255,0.14);border-color:rgba(0,212,255,0.5);}
 .cta-live-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:pd 1.5s infinite;flex-shrink:0;}
@@ -261,7 +272,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .fade-up:nth-child(1){animation-delay:0.05s}.fade-up:nth-child(2){animation-delay:0.1s}
 .fade-up:nth-child(3){animation-delay:0.15s}.fade-up:nth-child(4){animation-delay:0.2s}
 .fade-up:nth-child(5){animation-delay:0.25s}
-.prayer-stack-wrap{grid-column:1;grid-row:2;border-right:1px solid var(--border);padding:0 24px 24px;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
+.prayer-stack-wrap{grid-column:1;grid-row:2;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:0 24px 24px;display:flex;flex-direction:column;min-height:0;overflow:hidden;}
 </style>
 </head>
 <body>
@@ -382,12 +393,18 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
       </div>
     </section>
     <section class="content-section">
-      <h2>Watch it live</h2>
-      <p>Every mosque you see in the times above is a real place, mapped on AdhanLive. Right now, some of them are calling the Adhan. Watch the live wave sweep westward across the Earth, 280,621 mosques across 153 countries, five prayers, never stopping.</p>
-      <a href="/livemap" class="cta-live-btn">
-        <span class="cta-live-dot"></span>
-        Open Live Globe
-      </a>
+      <div class="live-cta-card">
+        <div class="live-cta-inner">
+          <div class="live-cta-pulse"><span></span><span></span></div>
+          <h2 class="live-cta-title">The Adhan Never Stops</h2>
+          <p class="live-cta-body">Somewhere on Earth, the call to prayer is always ringing. As the sun moves westward, the Adhan follows it, passing through every longitude. The Adhan is never silent, not even for a second.</p>
+          <p class="live-cta-data">280,621 mosques &middot; 153 countries &middot; 5 prayers &middot; live right now</p>
+          <a href="/livemap" class="live-cta-btn">
+            <span class="live-cta-btn-dot"></span>
+            Watch the Live Globe
+          </a>
+        </div>
+      </div>
     </section>
     <div class="cities-section">
       <div class="cities-label">PRAYER TIMES IN OTHER CITIES</div>
@@ -1174,7 +1191,7 @@ function drawArc(){
 
   ctx.restore();
 
-  // ── Prayer names curved along outer band — char by char on the arc ──
+  // ── Prayer names curved along outer band — char by char ──
   for(const p of ORDER){
     if(isNaN(cachedTimes[p]))continue;
     const ph=((cachedTimes[p]%24)+24)%24,pA=angle(ph),col=PMETA[p].color,isA=p===active;
@@ -1182,35 +1199,39 @@ function drawArc(){
     const fSize=isA?12:10;
     ctx.font=`700 ${fSize}px 'Geist',sans-serif`;
     ctx.fillStyle=isA?col:'rgba(255,255,255,0.5)';
-    ctx.textBaseline='middle';
+    ctx.textBaseline='middle';ctx.textAlign='center';
 
-    // Arc radius for label centre
     const r=bandMid;
-    // Character width + spacing
-    const charW=fSize*0.65;
-    const charGap=fSize*0.15;
-    const step=(charW+charGap)/r; // angular step per character in radians
+    const charW=fSize*0.68;
+    const charGap=fSize*0.14;
+    const step=(charW+charGap)/r;
     const totalSpan=(label.length-1)*step;
-    const startA=pA-totalSpan/2;
 
-    // Bottom half of clock (sin>0): text arcs along bottom, chars face inward
-    // so the word reads left-to-right as you look at it from outside
-    const isBottom=Math.sin(pA)>0;
+    // Top half (sin<=0): text on top of ring, reads left-to-right going clockwise
+    // Bottom half (sin>0): text on bottom of ring, reads left-to-right going counter-clockwise
+    const isBottom=Math.sin(pA)>0.05;
 
     for(let i=0;i<label.length;i++){
-      // For bottom half, reverse index so text reads correctly
-      const idx=isBottom?(label.length-1-i):i;
-      const ca=isBottom?(pA+totalSpan/2-i*step):(startA+i*step);
+      let ca,idx;
+      if(isBottom){
+        // Bottom: sweep counter-clockwise, reverse char order for correct reading
+        ca=pA+totalSpan/2-i*step;
+        idx=label.length-1-i;
+      } else {
+        // Top: sweep clockwise, normal char order
+        ca=pA-totalSpan/2+i*step;
+        idx=i;
+      }
+      const px=cx+r*Math.cos(ca);
+      const py=cy+r*Math.sin(ca);
       ctx.save();
-      ctx.translate(cx+r*Math.cos(ca), cy+r*Math.sin(ca));
-      // Tangent angle: top half rotates +90°, bottom half rotates -90°
-      ctx.rotate(isBottom?ca-Math.PI/2:ca+Math.PI/2);
-      ctx.textAlign='center';
+      ctx.translate(px,py);
+      // Always rotate so text faces outward from centre
+      ctx.rotate(ca+Math.PI/2);
       ctx.fillText(label[idx],0,0);
       ctx.restore();
     }
   }
-
 
   // Current time — arc-shaped pill hugging the outer ring, pearl white
   {

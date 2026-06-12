@@ -104,7 +104,8 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 #prayer-arc{display:block;width:100%;height:100%;background:transparent;}
 
 /* RIGHT PANEL */
-.right-panel{display:flex;flex-direction:column;justify-content:center;padding:0 24px;border-left:1px solid var(--border);gap:12px;min-height:0;overflow:hidden;grid-column:3;grid-row:2/3;border-bottom:1px solid rgba(255,255,255,0.12);}
+.right-border-top{grid-column:3;grid-row:1;border-left:1px solid var(--border);}
+flex-direction:column;justify-content:center;padding:0 24px;border-left:1px solid var(--border);gap:12px;min-height:0;overflow:hidden;grid-column:3;grid-row:2/3;border-bottom:1px solid rgba(255,255,255,0.12);}
 .np-block{padding:16px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,0.02);position:relative;overflow:hidden;}
 .np-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--np-color,var(--cyan));}
 .np-tag{font-size:9px;font-weight:700;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;}
@@ -332,6 +333,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   </div>
 
   <!-- RIGHT: Live stats panel -->
+  <div class="right-border-top"></div>
   <div class="right-panel">
     <div class="np-block" id="np-block">
       <div class="np-tag">Next Prayer</div>

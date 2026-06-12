@@ -141,20 +141,20 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 
 /* SEO CONTENT */
 /* SEO + below-fold content */
-.seo-section{max-width:1200px;margin:0 auto;padding:48px 32px;}
+.seo-section{width:100%;padding:0;}.seo-section-inner{max-width:1200px;margin:0 auto;padding:48px 32px;}
 /* Globe CTA section */
-.globe-cta-section{display:grid;grid-template-columns:1fr 400px;gap:48px;align-items:center;padding:56px 0;border-top:1px solid var(--border);}
-.globe-cta-label{font-size:10px;font-weight:700;letter-spacing:0.2em;color:var(--cyan);text-transform:uppercase;margin-bottom:14px;}
-.globe-cta-title{font-family:'Playfair Display',serif;font-size:clamp(28px,3vw,42px);font-weight:400;color:#fff;line-height:1.1;margin-bottom:16px;}
-.globe-cta-desc{font-size:14px;line-height:1.75;color:var(--text2);max-width:520px;margin-bottom:28px;}
+.globe-cta-section{width:100%;padding:80px 32px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(0,212,255,0.02);text-align:center;}
+.globe-cta-inner{max-width:680px;margin:0 auto;}.globe-cta-label{font-size:10px;font-weight:700;letter-spacing:0.2em;color:var(--cyan);text-transform:uppercase;margin-bottom:14px;}
+.globe-cta-title{font-family:'Playfair Display',serif;font-size:clamp(26px,2.8vw,40px);font-weight:400;color:#fff;line-height:1.15;margin-bottom:16px;}
+.globe-cta-desc{font-size:15px;line-height:1.75;color:var(--text2);max-width:580px;margin:0 auto 28px;}
 .globe-cta-btn{display:inline-flex;align-items:center;gap:10px;padding:12px 24px;border-radius:8px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);color:var(--cyan);font-size:12px;font-weight:700;letter-spacing:0.1em;text-decoration:none;text-transform:uppercase;transition:all 0.2s;}
 .globe-cta-btn:hover{background:rgba(0,212,255,0.16);border-color:rgba(0,212,255,0.5);}
 .globe-cta-btn-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:pd 1.5s infinite;flex-shrink:0;}
-.globe-cta-visual{position:relative;width:400px;height:400px;border-radius:50%;overflow:hidden;flex-shrink:0;cursor:pointer;}
-.globe-cta-visual:hover .mini-globe-overlay{opacity:1;}
-#mini-globe{display:block;width:100%;height:100%;background:transparent;}
-.mini-globe-overlay{position:absolute;inset:0;background:rgba(0,212,255,0.06);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;font-size:12px;font-weight:700;letter-spacing:0.1em;color:var(--cyan);text-transform:uppercase;border-radius:50%;border:1px solid rgba(0,212,255,0.3);}
-.mini-globe-overlay::after{content:'Open Live Globe';}
+
+
+
+
+
 /* Footer locked to bottom of page */
 .page-footer{background:rgba(0,0,0,0.95);border-top:1px solid rgba(255,255,255,0.08);padding:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
 .pf-logo{font-family:'Geist',sans-serif;font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px;color:#fff;text-decoration:none;}
@@ -165,7 +165,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .pf-links a:hover{color:var(--cyan);}
 .pf-copy{font-size:10px;color:rgba(255,255,255,0.15);letter-spacing:0.04em;}
 @media(max-width:768px){.globe-cta-section{grid-template-columns:1fr;gap:28px;}.globe-cta-visual{width:min(280px,80vw);height:min(280px,80vw);margin:0 auto;}.page-footer{flex-direction:column;align-items:flex-start;padding:24px 20px;}}
-.content-section{border-top:1px solid var(--border);padding:40px 0;}
+.content-section{border-top:1px solid rgba(255,255,255,0.08);padding:40px 0;}
 .content-section h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;margin-bottom:16px;color:#fff;}
 .content-section p{font-size:14px;line-height:1.75;color:var(--text2);max-width:760px;margin-bottom:14px;}
 .content-section p strong{color:#fff;font-weight:600;}
@@ -205,7 +205,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   .city-name-block{margin-bottom:12px;}
   .hero-city{font-size:clamp(36px,9vw,52px);}
 
-  /* 2. Clock second — slightly wider than screen for drama */
+  /* 2. Clock second, slightly wider than screen for drama */
   .centre-panel{
     order:2;
     padding:0;
@@ -224,7 +224,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
     border-radius:0;
   }
 
-  /* 3. Prayer cards — left-aligned single column, below clock */
+  /* 3. Prayer cards, left-aligned single column, below clock */
   .prayer-stack-wrap{
     order:3;
     padding:16px 20px 8px;
@@ -246,7 +246,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   }
   .pcard-time{font-size:17px;}
 
-  /* Right panel — compact below cards */
+  /* Right panel, compact below cards */
   .right-panel{
     order:4;
     border:none;
@@ -371,7 +371,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 </div>
 
 <!-- SEO content below fold -->
-<div class="seo-section">
+<div class="seo-section"><div class="seo-section-inner">
     <section class="content-section">
       <h2>How prayer times are calculated</h2>
       <p>Prayer times in Makkah follow the <strong>Umm al-Qura method</strong>, the official Islamic prayer calculation method of Saudi Arabia, published by Umm al-Qura University in Makkah itself. It is the method used by Al Masjid Al Haram and every mosque across the Kingdom, and the same method applied to all Saudi mosques on the <a href="/">AdhanLive globe</a>.</p>
@@ -399,20 +399,17 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
         </div>
       </div>
     </section>
+</div><!-- end seo-section-inner -->
   <!-- Live Globe CTA section -->
   <div class="globe-cta-section">
-    <div class="globe-cta-content">
-      <div class="globe-cta-label">ADHANLIVE</div>
-      <h2 class="globe-cta-title">The Adhan Never Stops</h2>
-      <p class="globe-cta-desc">Right now, thousands of mosques around the world are calling the Adhan. Watch the live wave sweep across the Earth in real time — 280,621 mosques, 153 countries, five prayers, one continuous wave.</p>
+    <div class="globe-cta-inner">
+      <div class="globe-cta-label">AdhanLive</div>
+      <h2 class="globe-cta-title">The Adhan is always calling somewhere on Earth</h2>
+      <p class="globe-cta-desc">Every minute of every day, the Adhan rings out from thousands of mosques across the world. Watch the live wave sweep westward in real time, across 280,621 mosques and 153 countries. Five prayers, one planet, never stopping.</p>
       <a href="/livemap" class="globe-cta-btn">
         <span class="globe-cta-btn-dot"></span>
         Open Live Globe
       </a>
-    </div>
-    <div class="globe-cta-visual" id="mini-globe-container">
-      <canvas id="mini-globe" width="400" height="400"></canvas>
-      <div class="mini-globe-overlay"></div>
     </div>
   </div>
 
@@ -438,13 +435,6 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   </div>
 </div>
 </div>
-
-<!-- Bottom bar -->
-<!-- BOTTOM BAR -->
-  <div class="bottom-bar">
-    <div class="bb-left">
-      <a href="/home" class="bb-logo"><div class="bb-dot"></div><span>Adhan<span style="color:#00d4ff">Live</span></span></a>
-      <div class="bb-tagline">The Adhan Never Stops</div>
     </div>
     <div class="bb-center">&copy; 2026 AdhanLive &middot; Mosque data &copy; OpenStreetMap contributors</div>
     <div class="bb-right">
@@ -464,7 +454,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
     </div>
   </div>
 
-<!-- Footer — locked to bottom of page -->
+<!-- Footer, locked to bottom of page -->
 <footer class="page-footer">
   <div>
     <a href="/home" class="pf-logo"><div class="pf-dot"></div><span>Adhan<span style="color:#00d4ff">Live</span></span></a>
@@ -710,7 +700,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.globalAlpha=1;
   ctx.restore();
 
-  // ── Time text — engraved into needle surface ──
+  // ── Time text, engraved into needle surface ──
   const textD=length*0.62;
   const flip=Math.cos(ang)<0;
   ctx.save();
@@ -719,7 +709,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.font=`700 10px 'Geist',sans-serif`;
 
-  // Layer 1: deep groove shadow — offset down-right, dark
+  // Layer 1: deep groove shadow, offset down-right, dark
   ctx.fillStyle='rgba(0,0,0,0.75)';
   ctx.shadowColor='rgba(0,0,0,0)'; ctx.shadowBlur=0;
   ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
@@ -735,14 +725,14 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.fillText(timeStr,0,0);
   ctx.restore();
 
-  // Layer 3: top highlight — light catching the upper edge of the groove
+  // Layer 3: top highlight, light catching the upper edge of the groove
   ctx.fillStyle='rgba(255,255,255,0.22)';
   ctx.save();
   ctx.translate(-0.5, -0.8);
   ctx.fillText(timeStr,0,0);
   ctx.restore();
 
-  // Layer 4: main engraved text — dimmer than surface, slightly desaturated
+  // Layer 4: main engraved text, dimmer than surface, slightly desaturated
   // Use needle color darkened, not cyan, so it looks carved INTO the material
   ctx.fillStyle='rgba(200,235,255,0.72)';
   ctx.fillText(timeStr,0,0);
@@ -761,7 +751,7 @@ function liftCol(hex, amount){
   return `rgb(${Math.round(r+(255-r)*amount)},${Math.round(g+(255-g)*amount)},${Math.round(b+(255-b)*amount)})`;
 }
 
-// Kaaba rotation angle — advances each frame
+// Kaaba rotation angle, advances each frame
 let _kaabaAngle = 0;
 
 function drawKaaba(ctx, cx, cy) {
@@ -912,7 +902,7 @@ function drawArc(){
   function hexRgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
   function angle(h){return(h/24)*Math.PI*2-Math.PI/2;}
 
-  // Background — fade to transparent early so the panel's ambient glow
+  // Background, fade to transparent early so the panel's ambient glow
   // shows through right up to the dial edge, with no dark disc creating a ring
   const base=ctx.createRadialGradient(cx,cy*0.85,0,cx,cy,size*0.5);
   base.addColorStop(0,'rgba(16,20,32,0.55)');base.addColorStop(0.30,'rgba(12,16,26,0.40)');
@@ -942,7 +932,7 @@ function drawArc(){
   ctx.strokeStyle='rgba(255,255,255,0.14)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,R-4,0,Math.PI*2);ctx.stroke();
   ctx.strokeStyle='rgba(255,255,255,0.10)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,R+4,0,Math.PI*2);ctx.stroke();
 
-  // Outer text band — narrow
+  // Outer text band, narrow
   ctx.save();ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.arc(cx,cy,RI,0,Math.PI*2,true);ctx.fillStyle='rgba(6,8,18,0.80)';ctx.fill();ctx.restore();
   ctx.strokeStyle='rgba(255,255,255,0.14)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,RI,0,Math.PI*2);ctx.stroke();
   ctx.strokeStyle='rgba(255,255,255,0.22)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.stroke();
@@ -956,7 +946,7 @@ function drawArc(){
   // Active prayer (used for needle edge highlight, no rim arc drawn)
   const active=currentPrayer(cachedTimes,lh);
 
-  // 24-hour numbers with tick lines — close to ring
+  // 24-hour numbers with tick lines, close to ring
   ctx.save();
   for(let h=0;h<24;h++){
     const a=angle(h);
@@ -994,11 +984,11 @@ function drawArc(){
     ctx.strokeStyle=isQ?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.12)';ctx.lineWidth=isQ?1.5:1;ctx.beginPath();ctx.moveTo(cx+r1*Math.cos(a),cy+r1*Math.sin(a));ctx.lineTo(cx+r2*Math.cos(a),cy+r2*Math.sin(a));ctx.stroke();
   }
 
-  // City name + next prayer countdown — top center of dial
+  // City name + next prayer countdown, top center of dial
   {
     ctx.save();
     ctx.textAlign='center'; ctx.textBaseline='middle';
-    // City name — moved up slightly to make room for countdown
+    // City name, moved up slightly to make room for countdown
     ctx.font=`700 ${Math.round(R*0.115)}px 'Playfair Display',serif`;
     ctx.fillStyle='rgba(180,220,255,0.82)';
     ctx.shadowColor='rgba(130,190,255,0.25)';
@@ -1054,10 +1044,10 @@ function drawArc(){
     ctx.restore();
   }
 
-  // Needles — fixed z-order (bottom to top): Isha, Maghrib, Asr, Dhuhr, Fajr, current time
+  // Needles, fixed z-order (bottom to top): Isha, Maghrib, Asr, Dhuhr, Fajr, current time
   // Each needle casts a subtle shadow onto the one below it (3D stack effect)
   const ZORDER=['isha','maghrib','asr','dhuhr','fajr'];
-  // Shadow offsets per layer — deeper layers cast softer shadows
+  // Shadow offsets per layer, deeper layers cast softer shadows
   const SHADOWS=[
     {blur:8,ox:2,oy:3,alpha:0.35},  // isha (bottom)
     {blur:7,ox:2,oy:3,alpha:0.32},  // maghrib
@@ -1111,7 +1101,7 @@ function drawArc(){
     ctx.fillStyle=spec;ctx.beginPath();ctx.arc(dotX,dotY,4.5,0,Math.PI*2);ctx.fill();
   }
 
-  // Current time needle — topmost layer with strongest shadow
+  // Current time needle, topmost layer with strongest shadow
   const ca=angle(lh),cc=Math.cos(ca),cs=Math.sin(ca);
   const tipX=cx+cc*(R+3),tipY=cy+cs*(R+3),ctTX=cx-cc*18,ctTY=cy-cs*18,ctp=[-cs,cc];
   ctx.strokeStyle='#00d4ff';ctx.lineWidth=14;ctx.globalAlpha=0.06;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(ctTX,ctTY);ctx.lineTo(tipX,tipY);ctx.stroke();
@@ -1123,7 +1113,7 @@ function drawArc(){
   ctx.fillStyle='#00d4ff';ctx.shadowColor='#00d4ff';ctx.shadowBlur=14;ctx.beginPath();ctx.arc(tipX,tipY,2.5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
   ctx.restore(); // end current time needle shadow
 
-  // ── Seconds hand — quartz tick, one revolution per minute ──
+  // ── Seconds hand, quartz tick, one revolution per minute ──
   // Gives the dial a live heartbeat. Drawn before the pivot so the
   // pivot crown covers its base like a real watch.
   {
@@ -1157,7 +1147,7 @@ function drawArc(){
     ctx.restore();
   }
 
-  // ── Premium screw pivot — Rolex-style crown ──
+  // ── Premium screw pivot, Rolex-style crown ──
   const pr=13; // outer radius
   ctx.save();
 
@@ -1168,7 +1158,7 @@ function drawArc(){
   ctx.beginPath(); ctx.arc(cx,cy,pr,0,Math.PI*2); ctx.fill();
   ctx.shadowBlur=0; ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
 
-  // Outer bezel — brushed metal ring
+  // Outer bezel, brushed metal ring
   const bezelG=ctx.createLinearGradient(cx-pr,cy-pr,cx+pr,cy+pr);
   bezelG.addColorStop(0,'#e8ecf2');
   bezelG.addColorStop(0.2,'#b0b8c4');
@@ -1178,7 +1168,7 @@ function drawArc(){
   ctx.fillStyle=bezelG;
   ctx.beginPath(); ctx.arc(cx,cy,pr,0,Math.PI*2); ctx.fill();
 
-  // Bezel specular arc — top-left highlight
+  // Bezel specular arc, top-left highlight
   ctx.strokeStyle='rgba(255,255,255,0.55)';
   ctx.lineWidth=1.2;
   ctx.beginPath();
@@ -1206,7 +1196,7 @@ function drawArc(){
     ctx.stroke();
   }
 
-  // Central jewel — deep ruby/sapphire style
+  // Central jewel, deep ruby/sapphire style
   const jewR=4.5;
   const jewG=ctx.createRadialGradient(cx-1.5,cy-1.5,0,cx,cy,jewR);
   jewG.addColorStop(0,'rgba(0,212,255,0.9)');
@@ -1228,39 +1218,45 @@ function drawArc(){
 
   ctx.restore();
 
-  // ── Prayer names on outer band — curved char-by-char following the arc ──
+  // ── Prayer names on outer band, curved char-by-char following the arc ──
   for(const p of ORDER){
     if(isNaN(cachedTimes[p]))continue;
     const ph=((cachedTimes[p]%24)+24)%24,pA=angle(ph),col=PMETA[p].color,isA=p===active;
     const label=PMETA[p].en.toUpperCase();
     const fSize=isA?12:10;
+    ctx.save();
     ctx.font=`700 ${fSize}px 'Geist',sans-serif`;
     ctx.fillStyle=isA?col:'rgba(255,255,255,0.5)';
     ctx.textAlign='center';ctx.textBaseline='middle';
 
-    // Measure total arc span needed for the label
-    const letterSpacing=fSize*0.88;
-    const totalArc=(label.length-1)*letterSpacing;
-    const totalAngle=totalArc/bandMid; // radians
+    // Calculate total arc span
+    const charW=fSize*0.7;
+    const gap=fSize*0.18;
+    const totalW=(label.length-1)*(charW+gap);
+    const totalAngle=totalW/bandMid;
     const startAngle=pA-totalAngle/2;
+    const stepAngle=label.length>1?totalAngle/(label.length-1):0;
 
-    // Draw each character along the arc
+    // Determine if label is on bottom half (text should flip to stay readable)
+    const isBottomHalf=Math.sin(pA)>0;
+
     for(let i=0;i<label.length;i++){
-      const charAngle=startAngle+i*(totalAngle/(label.length-1||1));
+      // Bottom half: reverse char order so text reads left-to-right
+      const charIdx=isBottomHalf?(label.length-1-i):i;
+      const charAngle=isBottomHalf?(pA+totalAngle/2-i*stepAngle):(startAngle+i*stepAngle);
       const cx2=cx+bandMid*Math.cos(charAngle);
       const cy2=cy+bandMid*Math.sin(charAngle);
       ctx.save();
       ctx.translate(cx2,cy2);
-      // Rotate each char to be tangent to the circle and face outward
-      // Top half: chars read left-right; bottom half: same (always readable)
-      const isBottom=Math.sin(charAngle)>0.08;
-      ctx.rotate(isBottom?charAngle+Math.PI/2-Math.PI:charAngle+Math.PI/2);
-      ctx.fillText(label[i],0,0);
+      // Tangent rotation: top half reads clockwise, bottom half reads counter-clockwise
+      ctx.rotate(isBottomHalf?charAngle-Math.PI/2:charAngle+Math.PI/2);
+      ctx.fillText(label[charIdx],0,0);
       ctx.restore();
     }
+    ctx.restore();
   }
 
-  // Current time — arc-shaped pill hugging the outer ring, pearl white
+  // Current time, arc-shaped pill hugging the outer ring, pearl white
   {
     const ct=h2t(lh);
     const nowD=cityNow();
@@ -1307,7 +1303,7 @@ function drawArc(){
     ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.shadowColor='rgba(0,212,255,0.35)'; ctx.shadowBlur=3;
     const onBottom=Math.sin(ca)>0;
-    const sc=1; // no scaling needed — pill sized to content
+    const sc=1; // no scaling needed, pill sized to content
     // Layout: [time LEFT][gap][ampm RIGHT] centered on ca
     // On bottom half: chars reversed, so swap block start positions too
     const timeBlockW=tW*sc, ampmBlockW=aW*sc;
@@ -1556,8 +1552,6 @@ function shareMapMoment(platform){
 }
 </script>
 
-<!-- Mini globe for Live Map CTA section — same globe as live map -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 (function(){
   const canvas=document.getElementById('mini-globe');
@@ -1584,7 +1578,7 @@ function shareMapMoment(platform){
   sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
   scene.add(new THREE.Points(sg,new THREE.PointsMaterial({color:0xffffff,size:0.18,transparent:true,opacity:0.55})));
 
-  // Earth — same texture as live map
+  // Earth, same texture as live map
   const tex=new THREE.TextureLoader().load('https://www.adhanlive.com/earth.jpg',undefined,undefined,
     ()=>new THREE.TextureLoader().load('https://raw.githubusercontent.com/mrdoob/three.js/r128/examples/textures/planets/earth_atmos_2048.jpg')
   );
@@ -1594,7 +1588,7 @@ function shareMapMoment(platform){
   );
   scene.add(globe);
 
-  // Atmosphere glow — same as live map
+  // Atmosphere glow, same as live map
   scene.add(new THREE.Mesh(
     new THREE.SphereGeometry(1.02,32,32),
     new THREE.ShaderMaterial({
@@ -1604,7 +1598,7 @@ function shareMapMoment(platform){
     })
   ));
 
-  // Lights — same as live map
+  // Lights, same as live map
   scene.add(new THREE.AmbientLight(0xffffff,0.35));
   const sun=new THREE.DirectionalLight(0xffffff,0.5);
   sun.position.set(5,3,5);scene.add(sun);

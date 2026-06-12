@@ -104,7 +104,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 #prayer-arc{display:block;width:100%;height:100%;background:transparent;}
 
 /* RIGHT PANEL */
-.right-panel{display:flex;flex-direction:column;justify-content:flex-end;padding:0 24px 28px;border-left:1px solid var(--border);gap:12px;min-height:0;overflow:hidden;grid-column:3;grid-row:1/3;border-bottom:1px solid rgba(255,255,255,0.12);}
+.right-panel{display:flex;flex-direction:column;justify-content:flex-end;padding:0 24px 28px;border-left:1px solid var(--border);gap:12px;min-height:0;overflow:hidden;grid-column:3;grid-row:2/3;border-bottom:1px solid rgba(255,255,255,0.12);}
 .np-block{padding:16px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,0.02);position:relative;overflow:hidden;}
 .np-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--np-color,var(--cyan));}
 .np-tag{font-size:9px;font-weight:700;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;}
@@ -1003,8 +1003,8 @@ function drawArc(){
       _x+=_inW;
       // Draw countdown
       ctx.font=`700 ${Math.round(R*0.072)}px 'Geist',sans-serif`;
-      ctx.fillStyle='rgba(0,212,255,0.9)';
-      ctx.shadowColor='rgba(0,212,255,0.3)'; ctx.shadowBlur=2;
+      ctx.fillStyle='rgba(238,233,222,0.95)';
+      ctx.shadowColor='rgba(238,233,222,0.2)'; ctx.shadowBlur=2;
       ctx.fillText(_countdown, _x, _y);
       ctx.shadowBlur=0;
       ctx.textAlign='center';
@@ -1186,7 +1186,7 @@ function drawArc(){
 
   ctx.restore();
 
-  // ── Prayer names curved along outer band — correct arc text ──
+  // ── Prayer names curved along outer band ──
   for(const p of ORDER){
     if(isNaN(cachedTimes[p]))continue;
     const ph=((cachedTimes[p]%24)+24)%24,pA=angle(ph),col=PMETA[p].color,isA=p===active;
@@ -1204,22 +1204,19 @@ function drawArc(){
     for(let i=0;i<label.length;i++){
       let ca,charIdx;
       if(isBottom){
-        // Bottom: sweep counter-clockwise, reverse char order, rotate ca-π/2
+        // Bottom: go counter-clockwise, reverse chars, rotate ca+π/2
+        // Counter-clockwise sweep + reversed chars + same rotation = readable bottom text
         ca=pA+totalSpan/2-i*step;
         charIdx=label.length-1-i;
-        ctx.save();
-        ctx.translate(cx+r*Math.cos(ca),cy+r*Math.sin(ca));
-        ctx.rotate(ca-Math.PI/2);
-        ctx.fillText(label[charIdx],0,0);
       } else {
-        // Top: sweep clockwise, normal char order, rotate ca+π/2
+        // Top: go clockwise, normal chars, rotate ca+π/2
         ca=pA-totalSpan/2+i*step;
         charIdx=i;
-        ctx.save();
-        ctx.translate(cx+r*Math.cos(ca),cy+r*Math.sin(ca));
-        ctx.rotate(ca+Math.PI/2);
-        ctx.fillText(label[charIdx],0,0);
       }
+      ctx.save();
+      ctx.translate(cx+r*Math.cos(ca),cy+r*Math.sin(ca));
+      ctx.rotate(ca+Math.PI/2);
+      ctx.fillText(label[charIdx],0,0);
       ctx.restore();
     }
   }

@@ -104,12 +104,12 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 #prayer-arc{display:block;width:100%;height:100%;background:transparent;}
 
 /* RIGHT PANEL */
-.right-panel{display:flex;flex-direction:column;justify-content:flex-end;padding:28px 24px;border-left:1px solid var(--border);gap:12px;min-height:0;overflow:hidden;grid-column:3;grid-row:1/3;border-bottom:1px solid rgba(255,255,255,0.12);}
+.right-panel{display:flex;flex-direction:column;justify-content:flex-end;padding:0 24px 28px;border-left:1px solid var(--border);gap:12px;min-height:0;overflow:hidden;grid-column:3;grid-row:1/3;border-bottom:1px solid rgba(255,255,255,0.12);}
 .np-block{padding:16px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,0.02);position:relative;overflow:hidden;}
 .np-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--np-color,var(--cyan));}
 .np-tag{font-size:9px;font-weight:700;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;}
 .np-name{font-size:14px;font-weight:700;color:var(--np-color,var(--cyan));margin-bottom:8px;}
-.np-timer{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-0.04em;color:rgba(235,230,220,0.92);line-height:1;}
+.np-timer{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-0.04em;color:rgba(238,233,222,0.95);line-height:1;}
 .np-timer-label{font-size:9px;color:var(--text3);letter-spacing:0.08em;margin-top:3px;}
 .stat-row{display:flex;flex-direction:column;gap:7px;}
 .stat-card{padding:10px 12px;border-radius:9px;border:1px solid var(--border);background:rgba(255,255,255,0.02);}
@@ -336,13 +336,13 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
     <div class="np-block" id="np-block">
       <div class="np-tag">Next Prayer</div>
       <div class="np-name" id="next-name">—</div>
-      <div class="np-timer" id="next-countdown">--:--:--</div>
+      <div class="np-timer" id="next-countdown" style="color:rgba(238,233,222,0.95)">--:--:--</div>
       <div class="np-timer-label">TIME REMAINING</div>
     </div>
     <div class="stat-row">
       <div class="stat-card">
         <div class="stat-label">Sehri Ends</div>
-        <div class="stat-value" id="sehri-time">—</div>
+        <div class="stat-value cyan" id="sehri-time">—</div>
         <div class="stat-sub">Last moment before Fajr</div>
       </div>
       <div class="stat-card">
@@ -937,8 +937,8 @@ function drawArc(){
     ctx.rotate(Math.sin(a)>0?a-Math.PI/2:a+Math.PI/2);
     ctx.textAlign='center';ctx.textBaseline='middle';
     const isKey=h%6===0;
-    ctx.font=`${isKey?'700':isMaj?'600':'400'} ${isKey?11:isMaj?9.5:7.5}px 'Geist',sans-serif`;
-    ctx.fillStyle=isKey?'rgba(235,230,220,0.75)':isMaj?'rgba(220,215,205,0.45)':'rgba(200,195,188,0.22)';
+    ctx.font=`${isKey?'700':isMaj?'600':'500'} ${isKey?12:isMaj?10:9}px 'Geist',sans-serif`;
+    ctx.fillStyle=isKey?'rgba(235,230,220,0.80)':isMaj?'rgba(225,220,210,0.50)':'rgba(210,205,195,0.32)';
     ctx.fillText(String(h).padStart(2,'0'),0,0);
     ctx.restore();
   }
@@ -1186,7 +1186,7 @@ function drawArc(){
 
   ctx.restore();
 
-  // ── Prayer names curved along outer band — always readable ──
+  // ── Prayer names curved along outer band — correct arc text ──
   for(const p of ORDER){
     if(isNaN(cachedTimes[p]))continue;
     const ph=((cachedTimes[p]%24)+24)%24,pA=angle(ph),col=PMETA[p].color,isA=p===active;
@@ -1202,21 +1202,24 @@ function drawArc(){
     const totalSpan=(label.length-1)*step;
     const isBottom=Math.sin(pA)>0.05;
     for(let i=0;i<label.length;i++){
-      // Same sweep direction for all — left to right clockwise
-      const ca=pA-totalSpan/2+i*step;
-      ctx.save();
-      ctx.translate(cx+r*Math.cos(ca),cy+r*Math.sin(ca));
+      let ca,charIdx;
       if(isBottom){
-        // Bottom half: rotate so text faces outward and reads correctly
-        // ca+π/2 faces text outward but upside down for bottom
-        // ca-π/2 faces text outward right-side up for bottom
+        // Bottom: sweep counter-clockwise, reverse char order, rotate ca-π/2
+        ca=pA+totalSpan/2-i*step;
+        charIdx=label.length-1-i;
+        ctx.save();
+        ctx.translate(cx+r*Math.cos(ca),cy+r*Math.sin(ca));
         ctx.rotate(ca-Math.PI/2);
-        // Flip x-axis only to correct mirror effect
-        ctx.scale(-1,1);
+        ctx.fillText(label[charIdx],0,0);
       } else {
+        // Top: sweep clockwise, normal char order, rotate ca+π/2
+        ca=pA-totalSpan/2+i*step;
+        charIdx=i;
+        ctx.save();
+        ctx.translate(cx+r*Math.cos(ca),cy+r*Math.sin(ca));
         ctx.rotate(ca+Math.PI/2);
+        ctx.fillText(label[charIdx],0,0);
       }
-      ctx.fillText(label[i],0,0);
       ctx.restore();
     }
   }

@@ -37,7 +37,7 @@
   --bg:#000000;--border:rgba(255,255,255,0.1);
   --text:#ffffff;--text2:rgba(255,255,255,0.6);--text3:rgba(255,255,255,0.25);
   --cyan:#00d4ff;
-  --fajr:#4466ff;--dhuhr:#ffcc00;--asr:#e07a2f;--maghrib:#d94f3d;--isha:#9b59c4;
+  --fajr:#4466ff;--dhuhr:#ffcc00;--asr:#e07a2f;--maghrib:#d94f3d;--isha:#b06ee0;
   --fajr-bg:rgba(68,102,255,0.12);--dhuhr-bg:rgba(255,204,0,0.12);
   --asr-bg:rgba(224,122,47,0.12);--maghrib-bg:rgba(217,79,61,0.12);--isha-bg:rgba(155,89,196,0.12);
 }
@@ -478,7 +478,7 @@ const PMETA={
   dhuhr:  {en:'Dhuhr',  icon:'☀️', color:'#ffcc00',bg:'rgba(255,204,0,0.12)'},
   asr:    {en:'Asr',    icon:'🌤️',color:'#e07a2f',bg:'rgba(224,122,47,0.12)'},
   maghrib:{en:'Maghrib',icon:'🌅',color:'#d94f3d',bg:'rgba(217,79,61,0.12)'},
-  isha:   {en:'Isha',   icon:'🌃',color:'#9b59c4',bg:'rgba(155,89,196,0.12)'},
+  isha:   {en:'Isha',   icon:'🌃',color:'#b06ee0',bg:'rgba(155,89,196,0.12)'},
 };
 const ORDER=['fajr','dhuhr','asr','maghrib','isha'];
 
@@ -903,14 +903,14 @@ function drawArc(){
 
   // Outer text band — dark 3D metallic gold
   const goldG=ctx.createLinearGradient(cx-RO,cy-RO,cx+RO,cy+RO);
-  goldG.addColorStop(0,'rgba(140,105,20,0.97)');
-  goldG.addColorStop(0.15,'rgba(200,160,45,0.98)');
-  goldG.addColorStop(0.28,'rgba(168,128,28,0.97)');
-  goldG.addColorStop(0.42,'rgba(215,175,55,1)');
-  goldG.addColorStop(0.55,'rgba(155,118,22,0.97)');
-  goldG.addColorStop(0.68,'rgba(205,165,48,0.98)');
-  goldG.addColorStop(0.82,'rgba(148,112,20,0.97)');
-  goldG.addColorStop(1,'rgba(130,98,15,0.95)');
+  goldG.addColorStop(0,'rgba(90,65,8,0.97)');
+  goldG.addColorStop(0.15,'rgba(140,105,20,0.98)');
+  goldG.addColorStop(0.28,'rgba(110,80,12,0.97)');
+  goldG.addColorStop(0.42,'rgba(155,118,25,1)');
+  goldG.addColorStop(0.55,'rgba(95,70,10,0.97)');
+  goldG.addColorStop(0.68,'rgba(145,108,18,0.98)');
+  goldG.addColorStop(0.82,'rgba(88,65,8,0.97)');
+  goldG.addColorStop(1,'rgba(80,58,6,0.95)');
   ctx.save();ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.arc(cx,cy,RI,0,Math.PI*2,true);ctx.fillStyle=goldG;ctx.fill();
   // Top edge — subtle specular highlight
   ctx.strokeStyle='rgba(255,220,100,0.5)';ctx.lineWidth=0.8;
@@ -1077,13 +1077,20 @@ function drawArc(){
     ctx.shadowOffsetY=sh.oy;
     drawPrayerNeedle(ctx,cx,cy,a,R-5,col,isA,`${tv.h12}:${tv.mm} ${tv.ampm}`);
     ctx.restore();
-    // Dot
-    ctx.fillStyle='rgba(0,0,0,0.4)';ctx.beginPath();ctx.arc(dotX+0.5,dotY+0.5,5,0,Math.PI*2);ctx.fill();
-    const dg=ctx.createRadialGradient(dotX,dotY,0,dotX,dotY,13);dg.addColorStop(0,hexRgba(col,0.2));dg.addColorStop(1,hexRgba(col,0));
-    ctx.fillStyle=dg;ctx.beginPath();ctx.arc(dotX,dotY,13,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle=col;ctx.shadowColor=col;ctx.shadowBlur=6;ctx.beginPath();ctx.arc(dotX,dotY,4.5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
-    const spec=ctx.createRadialGradient(dotX-1.5,dotY-1.5,0,dotX,dotY,4.5);spec.addColorStop(0,'rgba(255,255,255,0.7)');spec.addColorStop(0.4,'rgba(255,255,255,0.15)');spec.addColorStop(1,'rgba(255,255,255,0)');
-    ctx.fillStyle=spec;ctx.beginPath();ctx.arc(dotX,dotY,4.5,0,Math.PI*2);ctx.fill();
+    // Dot — only active prayer glows, others are dark/off
+    if(isA){
+      // Active — lit bulb with glow
+      ctx.fillStyle='rgba(0,0,0,0.4)';ctx.beginPath();ctx.arc(dotX+0.5,dotY+0.5,5,0,Math.PI*2);ctx.fill();
+      const dg=ctx.createRadialGradient(dotX,dotY,0,dotX,dotY,13);dg.addColorStop(0,hexRgba(col,0.4));dg.addColorStop(1,hexRgba(col,0));
+      ctx.fillStyle=dg;ctx.beginPath();ctx.arc(dotX,dotY,13,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=col;ctx.shadowColor=col;ctx.shadowBlur=10;ctx.beginPath();ctx.arc(dotX,dotY,5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+      const spec=ctx.createRadialGradient(dotX-1.5,dotY-1.5,0,dotX,dotY,5);spec.addColorStop(0,'rgba(255,255,255,0.8)');spec.addColorStop(0.4,'rgba(255,255,255,0.2)');spec.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.fillStyle=spec;ctx.beginPath();ctx.arc(dotX,dotY,5,0,Math.PI*2);ctx.fill();
+    } else {
+      // Inactive — dark off bulb, just a small dark circle
+      ctx.fillStyle='rgba(20,22,28,0.9)';ctx.beginPath();ctx.arc(dotX,dotY,4,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=0.8;ctx.beginPath();ctx.arc(dotX,dotY,4,0,Math.PI*2);ctx.stroke();
+    }
   }
 
   // Current time needle — topmost layer with strongest shadow

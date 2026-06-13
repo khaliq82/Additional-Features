@@ -901,14 +901,24 @@ function drawArc(){
   ctx.strokeStyle='rgba(255,255,255,0.10)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(cx,cy,R+4,0,Math.PI*2);ctx.stroke();
 
-  // Outer text band — metallic gold
+  // Outer text band — 3D metallic gold
   const goldG=ctx.createLinearGradient(cx-RO,cy-RO,cx+RO,cy+RO);
-  goldG.addColorStop(0,'rgba(212,175,55,0.95)');
-  goldG.addColorStop(0.25,'rgba(255,215,80,0.98)');
-  goldG.addColorStop(0.5,'rgba(230,190,60,0.95)');
-  goldG.addColorStop(0.75,'rgba(180,140,35,0.92)');
-  goldG.addColorStop(1,'rgba(212,175,55,0.95)');
-  ctx.save();ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.arc(cx,cy,RI,0,Math.PI*2,true);ctx.fillStyle=goldG;ctx.fill();ctx.restore();
+  goldG.addColorStop(0,'rgba(195,155,40,0.95)');
+  goldG.addColorStop(0.15,'rgba(255,225,100,0.98)');
+  goldG.addColorStop(0.30,'rgba(240,200,70,0.97)');
+  goldG.addColorStop(0.45,'rgba(255,230,110,1)');
+  goldG.addColorStop(0.55,'rgba(220,185,60,0.97)');
+  goldG.addColorStop(0.70,'rgba(255,220,90,0.98)');
+  goldG.addColorStop(0.85,'rgba(200,160,45,0.95)');
+  goldG.addColorStop(1,'rgba(175,135,30,0.93)');
+  ctx.save();ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.arc(cx,cy,RI,0,Math.PI*2,true);ctx.fillStyle=goldG;ctx.fill();
+  // Top edge highlight — light catching the rim
+  ctx.strokeStyle='rgba(255,245,180,0.7)';ctx.lineWidth=0.8;
+  ctx.beginPath();ctx.arc(cx,cy,RO-0.5,0,Math.PI*2);ctx.stroke();
+  // Bottom edge shadow — depth
+  ctx.strokeStyle='rgba(120,85,10,0.5)';ctx.lineWidth=0.8;
+  ctx.beginPath();ctx.arc(cx,cy,RI+0.5,0,Math.PI*2);ctx.stroke();
+  ctx.restore();
   ctx.strokeStyle='rgba(255,255,255,0.14)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,RI,0,Math.PI*2);ctx.stroke();
   ctx.strokeStyle='rgba(255,255,255,0.10)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.stroke();
 

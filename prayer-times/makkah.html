@@ -901,8 +901,14 @@ function drawArc(){
   ctx.strokeStyle='rgba(255,255,255,0.10)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(cx,cy,R+4,0,Math.PI*2);ctx.stroke();
 
-  // Outer text band — narrow
-  ctx.save();ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.arc(cx,cy,RI,0,Math.PI*2,true);ctx.fillStyle='rgba(210,198,172,0.92)';ctx.fill();ctx.restore();
+  // Outer text band — metallic gold
+  const goldG=ctx.createLinearGradient(cx-RO,cy-RO,cx+RO,cy+RO);
+  goldG.addColorStop(0,'rgba(212,175,55,0.95)');
+  goldG.addColorStop(0.25,'rgba(255,215,80,0.98)');
+  goldG.addColorStop(0.5,'rgba(230,190,60,0.95)');
+  goldG.addColorStop(0.75,'rgba(180,140,35,0.92)');
+  goldG.addColorStop(1,'rgba(212,175,55,0.95)');
+  ctx.save();ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.arc(cx,cy,RI,0,Math.PI*2,true);ctx.fillStyle=goldG;ctx.fill();ctx.restore();
   ctx.strokeStyle='rgba(255,255,255,0.14)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,RI,0,Math.PI*2);ctx.stroke();
   ctx.strokeStyle='rgba(255,255,255,0.10)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.stroke();
 
@@ -1193,7 +1199,7 @@ function drawArc(){
     const label=PMETA[p].en.toUpperCase();
     const fSize=isA?12:10;
     ctx.font=`700 ${fSize}px 'Geist',sans-serif`;
-    ctx.fillStyle=isA?col:'rgba(20,12,2,0.75)';
+    ctx.fillStyle=isA?col:'rgba(30,15,0,0.85)';
     ctx.textBaseline='middle';ctx.textAlign='center';
     const r=bandMid;
     const charW=fSize*0.68;

@@ -1129,22 +1129,21 @@ function drawArc(){
   ctx.beginPath(); ctx.arc(cx,cy,pr,0,Math.PI*2); ctx.fill();
   ctx.shadowBlur=0; ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
 
-  // Outer bezel — brushed metal ring
-  const bezelG=ctx.createLinearGradient(cx-pr,cy-pr,cx+pr,cy+pr);
-  bezelG.addColorStop(0,'#e8ecf2');
-  bezelG.addColorStop(0.2,'#b0b8c4');
-  bezelG.addColorStop(0.5,'#606878');
-  bezelG.addColorStop(0.75,'#3a4050');
-  bezelG.addColorStop(1,'#1e2230');
-  ctx.fillStyle=bezelG;
+  // Outer rim — cyan glowing ring
+  // Dark base fill
+  ctx.fillStyle='rgba(0,8,18,0.95)';
   ctx.beginPath(); ctx.arc(cx,cy,pr,0,Math.PI*2); ctx.fill();
-
-  // Bezel specular arc — top-left highlight
-  ctx.strokeStyle='rgba(255,255,255,0.55)';
-  ctx.lineWidth=1.2;
-  ctx.beginPath();
-  ctx.arc(cx,cy,pr-0.8,-Math.PI*0.9,-Math.PI*0.1);
-  ctx.stroke();
+  // Cyan rim stroke — outer edge
+  ctx.strokeStyle='rgba(0,212,255,0.9)';
+  ctx.lineWidth=2;
+  ctx.shadowColor='rgba(0,212,255,0.8)';
+  ctx.shadowBlur=12;
+  ctx.beginPath(); ctx.arc(cx,cy,pr-1,0,Math.PI*2); ctx.stroke();
+  ctx.shadowBlur=0;
+  // Inner softer cyan ring
+  ctx.strokeStyle='rgba(0,180,220,0.25)';
+  ctx.lineWidth=4;
+  ctx.beginPath(); ctx.arc(cx,cy,pr-4,0,Math.PI*2); ctx.stroke();
 
   // Inner recessed disc
   const innerG=ctx.createRadialGradient(cx-2,cy-2,0,cx,cy,pr-3);

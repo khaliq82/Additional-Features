@@ -875,8 +875,8 @@ function drawArc(){
   // Background — fade to transparent early so the panel's ambient glow
   // shows through right up to the dial edge, with no dark disc creating a ring
   const base=ctx.createRadialGradient(cx,cy,0,cx,cy,size*0.5);
-  base.addColorStop(0,'rgba(2,3,6,0.96)');base.addColorStop(0.55,'rgba(2,3,6,0.94)');
-  base.addColorStop(0.75,'rgba(2,3,6,0.70)');base.addColorStop(0.88,'rgba(2,3,6,0.25)');base.addColorStop(1,'rgba(2,3,6,0)');
+  base.addColorStop(0,'rgba(242,236,220,0.97)');base.addColorStop(0.55,'rgba(238,232,215,0.95)');
+  base.addColorStop(0.75,'rgba(232,225,205,0.80)');base.addColorStop(0.88,'rgba(225,218,198,0.35)');base.addColorStop(1,'rgba(220,212,192,0)');
   ctx.fillStyle=base;ctx.beginPath();ctx.arc(cx,cy,size*0.5,0,Math.PI*2);ctx.fill();
 
   // Islamic pattern
@@ -887,12 +887,12 @@ function drawArc(){
     for(let i=0;i<points*2;i++){const r=i%2===0?radius:radius*innerRatio,a=(i/points)*Math.PI-Math.PI/2;i===0?ctx.moveTo(r*Math.cos(a),r*Math.sin(a)):ctx.lineTo(r*Math.cos(a),r*Math.sin(a));}
     ctx.closePath();ctx.stroke();
   }
-  drawStar(R*0.95,8,0.72,'rgba(212,170,80,0.28)',0.9);drawStar(R*0.95,8,0.72,'rgba(212,170,80,0.10)',3.0);
-  drawStar(R*0.70,8,0.76,'rgba(212,170,80,0.22)',0.8);drawStar(R*0.48,8,0.74,'rgba(212,170,80,0.18)',0.7);
-  drawStar(R*0.26,8,0.70,'rgba(212,170,80,0.16)',0.6);
-  for(let i=0;i<24;i++){const a=(i/24)*Math.PI*2,iM=i%3===0;ctx.strokeStyle=iM?'rgba(212,170,80,0.12)':'rgba(212,170,80,0.05)';ctx.lineWidth=iM?0.5:0.25;ctx.beginPath();ctx.moveTo(R*0.06*Math.cos(a),R*0.06*Math.sin(a));ctx.lineTo(R*0.98*Math.cos(a),R*0.98*Math.sin(a));ctx.stroke();}
-  [0.22,0.40,0.58,0.76,0.92].forEach((r,i)=>{ctx.strokeStyle=i%2===0?'rgba(212,170,80,0.12)':'rgba(180,140,60,0.05)';ctx.lineWidth=i%2===0?0.5:0.3;ctx.beginPath();ctx.arc(0,0,R*r,0,Math.PI*2);ctx.stroke();});
-  const iF=ctx.createRadialGradient(0,0,R*0.3,0,0,R);iF.addColorStop(0,'rgba(0,0,0,0)');iF.addColorStop(0.7,'rgba(0,0,0,0.15)');iF.addColorStop(1,'rgba(0,0,0,0.5)');
+  drawStar(R*0.95,8,0.72,'rgba(160,120,40,0.22)',0.9);drawStar(R*0.95,8,0.72,'rgba(160,120,40,0.08)',3.0);
+  drawStar(R*0.70,8,0.76,'rgba(160,120,40,0.18)',0.8);drawStar(R*0.48,8,0.74,'rgba(160,120,40,0.15)',0.7);
+  drawStar(R*0.26,8,0.70,'rgba(160,120,40,0.12)',0.6);
+  for(let i=0;i<24;i++){const a=(i/24)*Math.PI*2,iM=i%3===0;ctx.strokeStyle=iM?'rgba(140,100,30,0.14)':'rgba(140,100,30,0.06)';ctx.lineWidth=iM?0.5:0.25;ctx.beginPath();ctx.moveTo(R*0.06*Math.cos(a),R*0.06*Math.sin(a));ctx.lineTo(R*0.98*Math.cos(a),R*0.98*Math.sin(a));ctx.stroke();}
+  [0.22,0.40,0.58,0.76,0.92].forEach((r,i)=>{ctx.strokeStyle=i%2===0?'rgba(140,100,30,0.14)':'rgba(160,120,40,0.06)';ctx.lineWidth=i%2===0?0.5:0.3;ctx.beginPath();ctx.arc(0,0,R*r,0,Math.PI*2);ctx.stroke();});
+  const iF=ctx.createRadialGradient(0,0,R*0.3,0,0,R);iF.addColorStop(0,'rgba(0,0,0,0)');iF.addColorStop(0.7,'rgba(180,160,120,0.08)');iF.addColorStop(1,'rgba(160,140,100,0.22)');
   ctx.fillStyle=iF;ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fill();
   ctx.restore();
 
@@ -902,7 +902,7 @@ function drawArc(){
   ctx.beginPath();ctx.arc(cx,cy,R+4,0,Math.PI*2);ctx.stroke();
 
   // Outer text band — narrow
-  ctx.save();ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.arc(cx,cy,RI,0,Math.PI*2,true);ctx.fillStyle='rgba(6,8,18,0.80)';ctx.fill();ctx.restore();
+  ctx.save();ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.arc(cx,cy,RI,0,Math.PI*2,true);ctx.fillStyle='rgba(225,218,200,0.85)';ctx.fill();ctx.restore();
   ctx.strokeStyle='rgba(255,255,255,0.14)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,RI,0,Math.PI*2);ctx.stroke();
   ctx.strokeStyle='rgba(255,255,255,0.10)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.stroke();
 
@@ -939,7 +939,7 @@ function drawArc(){
     ctx.textAlign='center';ctx.textBaseline='middle';
     const isKey=h%6===0;
     ctx.font=`${isKey?'700':isMaj?'600':'500'} ${isKey?12:isMaj?10:9}px 'Geist',sans-serif`;
-    ctx.fillStyle=isKey?'rgba(235,230,220,0.80)':isMaj?'rgba(225,220,210,0.50)':'rgba(210,205,195,0.32)';
+    ctx.fillStyle=isKey?'rgba(100,70,20,0.90)':isMaj?'rgba(120,85,25,0.60)':'rgba(140,100,30,0.40)';
     ctx.fillText(String(h).padStart(2,'0'),0,0);
     ctx.restore();
   }
@@ -959,7 +959,7 @@ function drawArc(){
     ctx.textAlign='center'; ctx.textBaseline='middle';
     // City name — moved up slightly to make room for countdown
     ctx.font=`700 ${Math.round(R*0.115)}px 'Playfair Display',serif`;
-    ctx.fillStyle='rgba(235,230,218,0.88)';
+    ctx.fillStyle='rgba(60,40,10,0.90)';
     ctx.shadowColor='rgba(130,190,255,0.25)';
     ctx.shadowBlur=3;
     ctx.fillText('Makkah', cx, cy - R*0.68);
@@ -1105,7 +1105,7 @@ function drawArc(){
     // Counterweight ring on the tail
     ctx.fillStyle='rgba(0,212,255,0.9)';
     ctx.beginPath();ctx.arc(sTailX,sTailY,3,0,Math.PI*2);ctx.fill();
-    ctx.fillStyle='rgba(6,8,18,1)';
+    ctx.fillStyle='rgba(220,210,188,1)';
     ctx.beginPath();ctx.arc(sTailX,sTailY,1.4,0,Math.PI*2);ctx.fill();
     // Tip dot
     ctx.fillStyle='rgba(0,212,255,1)';

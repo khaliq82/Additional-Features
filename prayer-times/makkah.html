@@ -901,22 +901,23 @@ function drawArc(){
   ctx.strokeStyle='rgba(255,255,255,0.10)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(cx,cy,R+4,0,Math.PI*2);ctx.stroke();
 
-  // Outer text band — 3D metallic gold
+  // Outer text band — 3D metallic silver
   const goldG=ctx.createLinearGradient(cx-RO,cy-RO,cx+RO,cy+RO);
-  goldG.addColorStop(0,'rgba(195,155,40,0.95)');
-  goldG.addColorStop(0.15,'rgba(255,225,100,0.98)');
-  goldG.addColorStop(0.30,'rgba(240,200,70,0.97)');
-  goldG.addColorStop(0.45,'rgba(255,230,110,1)');
-  goldG.addColorStop(0.55,'rgba(220,185,60,0.97)');
-  goldG.addColorStop(0.70,'rgba(255,220,90,0.98)');
-  goldG.addColorStop(0.85,'rgba(200,160,45,0.95)');
-  goldG.addColorStop(1,'rgba(175,135,30,0.93)');
+  goldG.addColorStop(0,'rgba(180,185,192,0.97)');
+  goldG.addColorStop(0.12,'rgba(240,244,248,1)');
+  goldG.addColorStop(0.25,'rgba(200,205,212,0.97)');
+  goldG.addColorStop(0.38,'rgba(255,255,255,1)');
+  goldG.addColorStop(0.50,'rgba(195,200,208,0.97)');
+  goldG.addColorStop(0.62,'rgba(245,248,252,1)');
+  goldG.addColorStop(0.75,'rgba(185,190,198,0.97)');
+  goldG.addColorStop(0.88,'rgba(225,228,235,0.98)');
+  goldG.addColorStop(1,'rgba(160,165,172,0.95)');
   ctx.save();ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.arc(cx,cy,RI,0,Math.PI*2,true);ctx.fillStyle=goldG;ctx.fill();
-  // Top edge highlight — light catching the rim
-  ctx.strokeStyle='rgba(255,245,180,0.7)';ctx.lineWidth=0.8;
+  // Top edge — bright specular highlight
+  ctx.strokeStyle='rgba(255,255,255,0.9)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(cx,cy,RO-0.5,0,Math.PI*2);ctx.stroke();
-  // Bottom edge shadow — depth
-  ctx.strokeStyle='rgba(120,85,10,0.5)';ctx.lineWidth=0.8;
+  // Inner edge — dark shadow for depth
+  ctx.strokeStyle='rgba(80,85,92,0.6)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(cx,cy,RI+0.5,0,Math.PI*2);ctx.stroke();
   ctx.restore();
   ctx.strokeStyle='rgba(255,255,255,0.14)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,RI,0,Math.PI*2);ctx.stroke();
@@ -1209,7 +1210,7 @@ function drawArc(){
     const label=PMETA[p].en.toUpperCase();
     const fSize=isA?12:10;
     ctx.font=`700 ${fSize}px 'Geist',sans-serif`;
-    ctx.fillStyle=isA?col:'rgba(30,15,0,0.85)';
+    ctx.fillStyle=isA?col:'rgba(30,32,36,0.85)';
     ctx.textBaseline='middle';ctx.textAlign='center';
     const r=bandMid;
     const charW=fSize*0.68;

@@ -901,22 +901,23 @@ function drawArc(){
   ctx.strokeStyle='rgba(255,255,255,0.10)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(cx,cy,R+4,0,Math.PI*2);ctx.stroke();
 
-  // Outer text band — dark 3D metallic gold
+  // Outer text band — dark 3D metallic silver
   const goldG=ctx.createLinearGradient(cx-RO,cy-RO,cx+RO,cy+RO);
-  goldG.addColorStop(0,'rgba(90,65,8,0.97)');
-  goldG.addColorStop(0.15,'rgba(140,105,20,0.98)');
-  goldG.addColorStop(0.28,'rgba(110,80,12,0.97)');
-  goldG.addColorStop(0.42,'rgba(155,118,25,1)');
-  goldG.addColorStop(0.55,'rgba(95,70,10,0.97)');
-  goldG.addColorStop(0.68,'rgba(145,108,18,0.98)');
-  goldG.addColorStop(0.82,'rgba(88,65,8,0.97)');
-  goldG.addColorStop(1,'rgba(80,58,6,0.95)');
+  goldG.addColorStop(0,'rgba(80,85,92,0.98)');
+  goldG.addColorStop(0.12,'rgba(140,148,158,0.99)');
+  goldG.addColorStop(0.22,'rgba(95,100,108,0.98)');
+  goldG.addColorStop(0.35,'rgba(160,168,178,1)');
+  goldG.addColorStop(0.48,'rgba(85,90,98,0.98)');
+  goldG.addColorStop(0.60,'rgba(148,155,165,0.99)');
+  goldG.addColorStop(0.72,'rgba(90,95,103,0.98)');
+  goldG.addColorStop(0.85,'rgba(132,140,150,0.98)');
+  goldG.addColorStop(1,'rgba(72,76,84,0.97)');
   ctx.save();ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.arc(cx,cy,RI,0,Math.PI*2,true);ctx.fillStyle=goldG;ctx.fill();
-  // Top edge — subtle specular highlight
-  ctx.strokeStyle='rgba(255,220,100,0.5)';ctx.lineWidth=0.8;
+  // Top edge — bright specular line
+  ctx.strokeStyle='rgba(210,215,225,0.7)';ctx.lineWidth=0.8;
   ctx.beginPath();ctx.arc(cx,cy,RO-0.5,0,Math.PI*2);ctx.stroke();
   // Inner edge — dark shadow for depth
-  ctx.strokeStyle='rgba(80,58,8,0.7)';ctx.lineWidth=1;
+  ctx.strokeStyle='rgba(30,32,36,0.8)';ctx.lineWidth=1;
   ctx.beginPath();ctx.arc(cx,cy,RI+0.5,0,Math.PI*2);ctx.stroke();
   ctx.restore();
   ctx.strokeStyle='rgba(255,255,255,0.14)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,RI,0,Math.PI*2);ctx.stroke();
@@ -1216,7 +1217,7 @@ function drawArc(){
     const label=PMETA[p].en.toUpperCase();
     const fSize=isA?12:10;
     ctx.font=`700 ${fSize}px 'Geist',sans-serif`;
-    ctx.fillStyle=isA?col:'rgba(30,15,0,0.85)';
+    ctx.fillStyle=isA?col:'rgba(220,225,232,0.90)';
     ctx.textBaseline='middle';ctx.textAlign='center';
     const r=bandMid;
     const charW=fSize*0.68;

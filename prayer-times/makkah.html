@@ -99,26 +99,12 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .pcard.active .pcard-now{display:block;}
 
 /* CENTRE PANEL */
-.centre-panel{display:flex;align-items:center;justify-content:center;padding:0;min-height:0;overflow:hidden;position:relative;grid-column:2;grid-row:1/3;border-bottom:1px solid rgba(255,255,255,0.12);background:#05070d;}
+.centre-panel{display:flex;align-items:center;justify-content:center;padding:0;min-height:0;overflow:hidden;position:relative;grid-column:2;grid-row:1/3;border-bottom:1px solid rgba(255,255,255,0.12);background:#00d4ff;}
 .arc-canvas-wrap{position:relative;z-index:1;aspect-ratio:1;height:min(100%,1020px);max-width:100%;border-radius:50%;overflow:hidden;}
 #prayer-arc{display:block;width:100%;height:100%;background:transparent;}
 
 /* RIGHT PANEL */
 /* Floating clock — Option A */
-.holo-shadow{
-  position:absolute;
-  inset:0;
-  background:rgba(0,170,230,0.05);
-  pointer-events:none;
-  z-index:0;
-}
-.holo-ambient{
-  position:absolute;
-  inset:0;
-  background:rgba(0,160,220,0.03);
-  pointer-events:none;
-  z-index:0;
-}
 .right-border-top{grid-column:3;grid-row:1;border-left:1px solid var(--border);}
 .right-panel{display:flex;flex-direction:column;justify-content:center;padding:20px;border-left:1px solid var(--border);gap:10px;min-height:0;overflow:hidden;grid-column:3;grid-row:2/3;border-bottom:1px solid rgba(255,255,255,0.12);}
 .np-block{padding:16px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,0.02);position:relative;overflow:hidden;}
@@ -219,7 +205,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
     height:105vw;
     max-height:105vw;
     overflow:hidden;
-    background:#05070d;
+    background:#00d4ff;
   }
   .arc-canvas-wrap{
     width:105vw;
@@ -335,8 +321,6 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 
   <!-- CENTRE: Clock -->
   <div class="centre-panel">
-    <div class="holo-ambient"></div>
-    <div class="holo-shadow"></div>
     <div class="arc-canvas-wrap">
       <canvas id="prayer-arc" width="680" height="680"></canvas>
       <div class="kaaba-pivot" style="display:none;">

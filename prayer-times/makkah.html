@@ -164,7 +164,9 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .mf-share-btn.copy{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.12);}
 
 @media(min-width:1025px){
-  #cities-more{display:grid !important;}
+  #cities-more{display:contents !important;}
+  #cities-featured{display:contents;}
+  .cities-all-wrap{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
   .cities-toggle{display:none;}
 }
 .seo-section{max-width:1200px;margin:0 auto;padding:48px 32px;}
@@ -466,21 +468,23 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
     </section>
     <div class="cities-section">
       <div class="cities-label">PRAYER TIMES IN OTHER CITIES</div>
-      <div class="cities-grid" id="cities-featured">
-        <a href="/prayer-times/madinah" class="city-link">Madeena <span class="city-link-arrow">→</span></a>
-        <a href="/prayer-times/cairo" class="city-link">Cairo <span class="city-link-arrow">→</span></a>
-        <a href="/prayer-times/dubai" class="city-link">Dubai <span class="city-link-arrow">→</span></a>
-      </div>
-      <div class="cities-grid cities-more" id="cities-more" style="display:none;margin-top:8px;">
-        <a href="/prayer-times/istanbul" class="city-link">Istanbul <span class="city-link-arrow">→</span></a>
-        <a href="/prayer-times/karachi" class="city-link">Karachi <span class="city-link-arrow">→</span></a>
-        <a href="/prayer-times/jakarta" class="city-link">Jakarta <span class="city-link-arrow">→</span></a>
-        <a href="/prayer-times/kuala-lumpur" class="city-link">Kuala Lumpur <span class="city-link-arrow">→</span></a>
-        <a href="/prayer-times/dhaka" class="city-link">Dhaka <span class="city-link-arrow">→</span></a>
-        <a href="/prayer-times/riyadh" class="city-link">Riyadh <span class="city-link-arrow">→</span></a>
-        <a href="/prayer-times/london" class="city-link">London <span class="city-link-arrow">→</span></a>
-        <a href="/prayer-times/new-york" class="city-link">New York <span class="city-link-arrow">→</span></a>
-        <a href="/prayer-times/paris" class="city-link">Paris <span class="city-link-arrow">→</span></a>
+      <div class="cities-all-wrap">
+        <div class="cities-grid" id="cities-featured">
+          <a href="/prayer-times/madinah" class="city-link">Madeena <span class="city-link-arrow">→</span></a>
+          <a href="/prayer-times/cairo" class="city-link">Cairo <span class="city-link-arrow">→</span></a>
+          <a href="/prayer-times/dubai" class="city-link">Dubai <span class="city-link-arrow">→</span></a>
+        </div>
+        <div class="cities-grid cities-more" id="cities-more" style="display:none;margin-top:8px;">
+          <a href="/prayer-times/istanbul" class="city-link">Istanbul <span class="city-link-arrow">→</span></a>
+          <a href="/prayer-times/karachi" class="city-link">Karachi <span class="city-link-arrow">→</span></a>
+          <a href="/prayer-times/jakarta" class="city-link">Jakarta <span class="city-link-arrow">→</span></a>
+          <a href="/prayer-times/kuala-lumpur" class="city-link">Kuala Lumpur <span class="city-link-arrow">→</span></a>
+          <a href="/prayer-times/dhaka" class="city-link">Dhaka <span class="city-link-arrow">→</span></a>
+          <a href="/prayer-times/riyadh" class="city-link">Riyadh <span class="city-link-arrow">→</span></a>
+          <a href="/prayer-times/london" class="city-link">London <span class="city-link-arrow">→</span></a>
+          <a href="/prayer-times/new-york" class="city-link">New York <span class="city-link-arrow">→</span></a>
+          <a href="/prayer-times/paris" class="city-link">Paris <span class="city-link-arrow">→</span></a>
+        </div>
       </div>
       <button class="cities-toggle" id="cities-toggle" onclick="toggleCities()">Show more cities ↓</button>
     </div>

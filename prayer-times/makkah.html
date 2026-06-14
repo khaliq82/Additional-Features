@@ -119,7 +119,8 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .stat-value{font-size:16px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;line-height:1;}
 .stat-value.cyan{color:var(--cyan);}
 .stat-sub{font-size:9px;color:var(--text2);margin-top:2px;}
-.np-progress{height:7px;border-radius:5px;background:rgba(255,255,255,0.06);margin-top:13px;overflow:hidden;position:relative;box-shadow:inset 0 1px 2px rgba(0,0,0,0.4);}
+.np-progress{height:7px;border-radius:5px;background:rgba(255,255,255,0.06);margin-top:13px;position:relative;box-shadow:inset 0 1px 2px rgba(0,0,0,0.4);}
+.np-progress-knob{position:absolute;top:50%;left:0%;width:12px;height:12px;border-radius:50%;background:var(--np-color,var(--cyan));transform:translate(-50%,-50%);box-shadow:0 0 8px var(--np-color,var(--cyan)),0 0 0 1.5px rgba(0,0,0,0.4);transition:left 0.9s linear;z-index:2;}
 .np-progress-fill{position:relative;height:100%;width:0%;border-radius:5px;overflow:hidden;background-color:var(--np-color,var(--cyan));background-image:linear-gradient(135deg,rgba(255,255,255,0.22) 25%,transparent 25%,transparent 50%,rgba(255,255,255,0.22) 50%,rgba(255,255,255,0.22) 75%,transparent 75%,transparent);background-size:16px 16px;box-shadow:0 0 9px var(--np-color,var(--cyan)),inset 0 0 0 1px rgba(255,255,255,0.12);transition:width 0.9s linear;animation:np-stripes 0.7s linear infinite;}
 .np-progress-fill::after{content:'';position:absolute;top:0;bottom:0;left:0;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.55),transparent);transform:translateX(-120%);animation:np-sheen 2.4s ease-in-out infinite;}
 @keyframes np-stripes{from{background-position:0 0;}to{background-position:16px 0;}}
@@ -356,7 +357,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
       <div class="np-name" id="next-name">—</div>
       <div class="np-timer" id="next-countdown" style="color:rgba(238,233,222,0.95)">--:--:--</div>
       <div class="np-timer-label">TIME REMAINING</div>
-      <div class="np-progress"><div class="np-progress-fill" id="np-progress-fill"></div></div>
+      <div class="np-progress"><div class="np-progress-fill" id="np-progress-fill"></div><div class="np-progress-knob" id="np-progress-knob"></div></div>
     </div>
     <div class="sun-arc">
       <div class="sun-arc-tag">Sun Path</div>
@@ -1525,18 +1526,22 @@ function updateCountdown(){
   if(cdEl)cdEl.textContent=`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
   // Progress through the current prayer window
   const pf=document.getElementById('np-progress-fill');
+  const knob=document.getElementById('np-progress-knob');
   if(pf){
     const pp=prevPrayer(cachedTimes,lh);
     const winStart=pp.time, winEnd=np.time;
     let f=(lh-winStart)/(winEnd-winStart);
     f=Math.max(0,Math.min(1,f));
+    const pct=(f*100).toFixed(2)+'%';
     const prev=parseFloat(pf.dataset.f||'0');
     if(f<prev){ // window rolled over — snap back without animating
       pf.style.transition='none';
-      pf.style.width=(f*100).toFixed(2)+'%';
-      requestAnimationFrame(()=>{pf.style.transition='';});
+      pf.style.width=pct;
+      if(knob){knob.style.transition='none';knob.style.left=pct;}
+      requestAnimationFrame(()=>{pf.style.transition='';if(knob)knob.style.transition='';});
     } else {
-      pf.style.width=(f*100).toFixed(2)+'%';
+      pf.style.width=pct;
+      if(knob)knob.style.left=pct;
     }
     pf.dataset.f=f;
   }

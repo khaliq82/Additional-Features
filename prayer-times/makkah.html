@@ -119,6 +119,17 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .stat-value{font-size:16px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;line-height:1;}
 .stat-value.cyan{color:var(--cyan);}
 .stat-sub{font-size:9px;color:var(--text2);margin-top:2px;}
+.np-progress{height:4px;border-radius:3px;background:rgba(255,255,255,0.07);margin-top:13px;overflow:hidden;}
+.np-progress-fill{height:100%;width:0%;border-radius:3px;background:var(--np-color,var(--cyan));box-shadow:0 0 7px var(--np-color,var(--cyan));transition:width 0.9s linear;}
+.sun-arc{border:1px solid var(--border);border-radius:11px;background:rgba(255,255,255,0.02);padding:11px 12px 9px;}
+.sun-arc-tag{font-size:9px;font-weight:700;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;}
+.sun-arc svg{display:block;overflow:visible;}
+#sun-arc-dot{filter:drop-shadow(0 0 5px rgba(255,200,90,0.85));transition:cx 0.9s linear,cy 0.9s linear;}
+.sun-arc-labels{display:flex;justify-content:space-between;padding:0 4px;margin-top:1px;}
+.sun-arc-labels span{display:flex;flex-direction:column;gap:1px;}
+.sun-arc-labels span:last-child{align-items:flex-end;}
+.sun-arc-labels em{font-style:normal;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);}
+.sun-arc-labels b{font-size:11px;font-weight:700;color:rgba(238,233,222,0.9);font-variant-numeric:tabular-nums;}
 .globe-cta{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);text-decoration:none;color:#fff;transition:all 0.2s;}
 .globe-cta:hover{background:rgba(0,212,255,0.12);border-color:rgba(0,212,255,0.4);}
 .globe-cta-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pd 1.5s infinite;flex-shrink:0;}
@@ -341,6 +352,31 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
       <div class="np-name" id="next-name">—</div>
       <div class="np-timer" id="next-countdown" style="color:rgba(238,233,222,0.95)">--:--:--</div>
       <div class="np-timer-label">TIME REMAINING</div>
+      <div class="np-progress"><div class="np-progress-fill" id="np-progress-fill"></div></div>
+    </div>
+    <div class="sun-arc">
+      <div class="sun-arc-tag">Sun Path</div>
+      <svg viewBox="0 0 260 92" width="100%" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <radialGradient id="sunGlow" cx="50%" cy="45%" r="55%">
+            <stop offset="0%" stop-color="#fff6df"/>
+            <stop offset="42%" stop-color="#ffd27a"/>
+            <stop offset="100%" stop-color="#ffb24d"/>
+          </radialGradient>
+          <linearGradient id="arcFillGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ffcf6e" stop-opacity="0.22"/>
+            <stop offset="100%" stop-color="#ffd27a" stop-opacity="0.92"/>
+          </linearGradient>
+        </defs>
+        <line x1="8" y1="74" x2="252" y2="74" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+        <path d="M20,74 A110,50 0 0 1 240,74" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2" stroke-linecap="round"/>
+        <path id="sun-arc-fill" d="M20,74 A110,50 0 0 1 240,74" fill="none" stroke="url(#arcFillGrad)" stroke-width="2.5" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"/>
+        <circle id="sun-arc-dot" cx="20" cy="74" r="6" fill="url(#sunGlow)"/>
+      </svg>
+      <div class="sun-arc-labels">
+        <span><em>Sunrise</em><b id="sun-rise-lbl">—</b></span>
+        <span><em>Sunset</em><b id="sun-set-lbl">—</b></span>
+      </div>
     </div>
     <div class="stat-row">
       <div class="stat-card">
@@ -504,6 +540,24 @@ function currentPrayer(times,lh){
 function nextPrayer(times,lh){
   for(const p of ORDER){if(isNaN(times[p]))continue;const t=((times[p]%24)+24)%24;if(t>lh)return{name:p,time:t};}
   return{name:'fajr',time:((times.fajr%24)+24)%24+24};
+}
+function prevPrayer(times,lh){
+  // Latest prayer at or before now = start of the current countdown window
+  let best=null;
+  for(const p of ORDER){
+    if(isNaN(times[p]))continue;
+    const t=((times[p]%24)+24)%24;
+    if(t<=lh && (!best||t>best.time)) best={name:p,time:t};
+  }
+  if(best)return best;
+  // Before today's Fajr: window started at yesterday's Isha (time-24)
+  let last=null;
+  for(const p of ORDER){
+    if(isNaN(times[p]))continue;
+    const t=((times[p]%24)+24)%24;
+    if(!last||t>last.time) last={name:p,time:t};
+  }
+  return last?{name:last.name,time:last.time-24}:{name:'isha',time:lh-1};
 }
 
 let cachedTimes=null;
@@ -1455,10 +1509,66 @@ function updateCountdown(){
   const hh=Math.floor(totalSec/3600),mm=Math.floor((totalSec%3600)/60),ss=totalSec%60;
   const cdEl=document.getElementById('next-countdown');
   if(cdEl)cdEl.textContent=`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+  // Progress through the current prayer window
+  const pf=document.getElementById('np-progress-fill');
+  if(pf){
+    const pp=prevPrayer(cachedTimes,lh);
+    const winStart=pp.time, winEnd=np.time;
+    let f=(lh-winStart)/(winEnd-winStart);
+    f=Math.max(0,Math.min(1,f));
+    const prev=parseFloat(pf.dataset.f||'0');
+    if(f<prev){ // window rolled over — snap back without animating
+      pf.style.transition='none';
+      pf.style.width=(f*100).toFixed(2)+'%';
+      requestAnimationFrame(()=>{pf.style.transition='';});
+    } else {
+      pf.style.width=(f*100).toFixed(2)+'%';
+    }
+    pf.dataset.f=f;
+  }
+}
+function updateSunArc(){
+  if(!cachedTimes)return;
+  const sr=cachedTimes.sunrise, ss=cachedTimes.maghrib; // sunset ≈ Maghrib
+  if(isNaN(sr)||isNaN(ss))return;
+  function fmtFH(fh){
+    const h=Math.floor(((fh%24)+24)%24),mn=Math.floor((fh-Math.floor(fh))*60);
+    const ap=h<12?'AM':'PM',hh=h%12||12;
+    return `${String(hh).padStart(2,'0')}:${String(mn).padStart(2,'0')} ${ap}`;
+  }
+  const rl=document.getElementById('sun-rise-lbl');
+  const sl=document.getElementById('sun-set-lbl');
+  if(rl)rl.textContent=fmtFH(sr);
+  if(sl)sl.textContent=fmtFH(ss);
+  const dot=document.getElementById('sun-arc-dot');
+  const fill=document.getElementById('sun-arc-fill');
+  if(!dot||!fill)return;
+  const cx=130,rx=110,ry=50,base=74;
+  const lh=localH();
+  const t=(lh-sr)/(ss-sr);
+  if(t>=0&&t<=1){
+    const ang=Math.PI*t;
+    const x=cx-rx*Math.cos(ang), y=base-ry*Math.sin(ang);
+    dot.setAttribute('cx',x.toFixed(1));
+    dot.setAttribute('cy',y.toFixed(1));
+    dot.setAttribute('r','6');
+    dot.setAttribute('fill','url(#sunGlow)');
+    dot.style.opacity='1';
+    fill.setAttribute('stroke-dasharray',`${(t*100).toFixed(2)} 100`);
+  } else {
+    // Night — sun below horizon (left before dawn, right after dusk)
+    fill.setAttribute('stroke-dasharray','0 100');
+    dot.setAttribute('cx', t<0?'20':'240');
+    dot.setAttribute('cy', (base+8).toFixed(1));
+    dot.setAttribute('r','4');
+    dot.setAttribute('fill','#5f6f8a');
+    dot.style.opacity='0.55';
+  }
 }
 function tick(){
   updateLocalTime();
   updateCountdown();
+  updateSunArc();
   updateActiveCard();
   drawArc();
 }

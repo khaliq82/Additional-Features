@@ -656,7 +656,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   const px=-sin, py=cos;
   const tipX=cx+cos*length, tipY=cy+sin*length;
   const tailLen=14, tailX=cx-cos*tailLen, tailY=cy-sin*tailLen;
-  const bodyW=(window.innerWidth>1024)?16:Math.min(16,length*0.07);
+  const bodyW=(window.innerWidth>1024)?16:Math.min(16,length*0.085);
   const bs=length*0.12, be=length*0.80, tipNeckD=length*0.86;
 
   // Light source: upper-left (approx -0.7, -0.7 direction)
@@ -666,8 +666,9 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   const litFace=Math.max(0, -(px*LX + py*LY)); // dot product of perpendicular vs light
   const litAlpha=0.15+litFace*0.55; // 0.15 to 0.70
 
+  const baseA=(window.innerWidth>1024)?0.45:0.55;
   ctx.save();
-  ctx.globalAlpha=0.45;
+  ctx.globalAlpha=baseA;
 
   // ── 1. Base fill with depth gradient (dark on shadow side, bright on lit side) ──
   const bevelG=ctx.createLinearGradient(
@@ -702,7 +703,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
     ctx.shadowBlur=6;
     ctx.stroke();
     ctx.shadowBlur=0;
-    ctx.globalAlpha=0.45;
+    ctx.globalAlpha=baseA;
   }
 
   // ── 2. Top-edge specular highlight (lit edge rim) ──
@@ -753,7 +754,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.restore();
 
   // ── Time text — engraved into needle surface ──
-  const textD=length*0.62;
+  const textD=length*((window.innerWidth>1024)?0.62:0.52);
   const flip=Math.cos(ang)<0;
   ctx.save();
   ctx.translate(cx+cos*textD, cy+sin*textD);

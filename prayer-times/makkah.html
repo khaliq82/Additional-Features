@@ -82,6 +82,8 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .hero-country{font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text2);margin-bottom:10px;}
 .hero-date{font-size:11px;color:var(--text2);margin-bottom:10px;letter-spacing:0.01em;}
 .hero-date span{color:var(--cyan);font-weight:600;}
+.hero-date .hijri-sep,.hero-date #hijri-inline{display:none;}
+.hero-date .hijri-sep{color:var(--text3);font-weight:400;}
 .hero-method{font-size:11px;color:var(--text3);letter-spacing:0.06em;margin-bottom:18px;}
 
 /* VERTICAL PRAYER CARDS */
@@ -204,38 +206,45 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
     flex-direction:column;
   }
 
-  /* 1. City info first */
+  /* 1. City info first — centered, city + country on one line */
   .city-block{
     order:1;
     border:none;
-    padding:24px 20px 0;
+    padding:22px 20px 6px;
     justify-content:flex-start;
+    align-items:center;
+    text-align:center;
   }
-  .city-name-block{margin-bottom:12px;}
-  .hero-city{font-size:clamp(36px,9vw,52px);}
+  .city-name-block{margin-bottom:0;}
+  .hero-city{display:inline;font-size:clamp(26px,6.6vw,38px);font-weight:300;line-height:1.1;margin:0;}
+  .hero-city::after{content:',';}
+  .hero-country{display:inline;font-family:'Playfair Display',serif;font-weight:300;font-size:clamp(26px,6.6vw,38px);text-transform:none;letter-spacing:-0.01em;color:var(--text2);margin:0;}
+  .hero-date{display:block;margin:9px 0 0;font-size:12px;}
+  .hero-date .hijri-sep,.hero-date #hijri-inline{display:inline;}
+  .hero-method{display:block;margin:6px 0 0;font-size:11px;}
 
-  /* 2. Clock second — slightly wider than screen for drama */
+  /* 2. Clock second — ~90vw, centered */
   .centre-panel{
     order:2;
-    padding:0;
+    padding:6px 0 2px;
     width:100%;
-    height:105vw;
-    max-height:105vw;
-    overflow:hidden;
+    height:auto;
+    max-height:none;
+    overflow:visible;
     background:var(--bg);
   }
   .arc-canvas-wrap{
-    width:105vw;
-    height:105vw;
-    max-width:105vw;
-    margin-left:-2.5vw;
+    width:90vw;
+    height:90vw;
+    max-width:90vw;
+    margin:0 auto;
     aspect-ratio:auto;
-    border-radius:0;
+    border-radius:50%;
   }
 
-  /* 3. Prayer cards — left-aligned single column, below clock */
+  /* 4. Full timetable at the bottom */
   .prayer-stack-wrap{
-    order:3;
+    order:4;
     padding:16px 20px 8px;
     width:100%;
     grid-column:unset;
@@ -255,13 +264,17 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   }
   .pcard-time{font-size:17px;}
 
-  /* Right panel — compact below cards */
+  /* 3. Next prayer + Sehri/Iftar + Sun path, above the timetable */
   .right-panel{
-    order:4;
+    order:3;
     border:none;
-    padding:0 20px 20px;
-    gap:8px;
+    padding:0 20px 6px;
+    gap:10px;
   }
+  .right-panel .np-block{order:1;}
+  .right-panel .stat-row{order:2;flex-direction:row;gap:8px;}
+  .right-panel .stat-row .stat-card{flex:1;}
+  .right-panel .sun-arc{order:3;}
 
   /* Bottom bar */
   .bottom-bar{
@@ -632,9 +645,9 @@ function updateDate(){
     }).format(new Date());
     dateStr+=` \u00b7 ${hijri}`;
   }catch(e){}
-  document.getElementById('hero-date').innerHTML=dateStr.split(' · ')[0];
-  const hijri=document.getElementById('hijri-inline');
-  if(hijri) hijri.textContent=dateStr.split(' · ')[1]||'';
+  const greg=dateStr.split(' · ')[0];
+  const hij=dateStr.split(' · ')[1]||'';
+  document.getElementById('hero-date').innerHTML=greg+'<span class="hijri-sep"> · </span><span id="hijri-inline">'+hij+'</span>';
 }
 
 function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
@@ -643,7 +656,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   const px=-sin, py=cos;
   const tipX=cx+cos*length, tipY=cy+sin*length;
   const tailLen=14, tailX=cx-cos*tailLen, tailY=cy-sin*tailLen;
-  const bodyW=16;
+  const bodyW=(window.innerWidth>1024)?16:Math.min(16,length*0.05);
   const bs=length*0.12, be=length*0.80, tipNeckD=length*0.86;
 
   // Light source: upper-left (approx -0.7, -0.7 direction)

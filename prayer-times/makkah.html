@@ -106,7 +106,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 /* RIGHT PANEL */
 /* Floating clock — Option A */
 .right-border-top{grid-column:3;grid-row:1;border-left:1px solid var(--border);}
-.right-panel{display:flex;flex-direction:column;justify-content:center;padding:20px;border-left:1px solid var(--border);gap:10px;min-height:0;overflow:hidden;grid-column:3;grid-row:2/3;border-bottom:1px solid rgba(255,255,255,0.12);}
+.right-panel{display:flex;flex-direction:column;justify-content:center;padding:20px;border-left:1px solid var(--border);gap:12px;min-height:0;overflow:hidden;grid-column:3;grid-row:1/3;border-bottom:1px solid rgba(255,255,255,0.12);}
 .np-block{padding:16px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,0.02);position:relative;overflow:hidden;}
 .np-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--np-color,var(--cyan));}
 .np-tag{font-size:9px;font-weight:700;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;}
@@ -119,12 +119,17 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .stat-value{font-size:16px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;line-height:1;}
 .stat-value.cyan{color:var(--cyan);}
 .stat-sub{font-size:9px;color:var(--text2);margin-top:2px;}
-.np-progress{height:4px;border-radius:3px;background:rgba(255,255,255,0.07);margin-top:13px;overflow:hidden;}
-.np-progress-fill{height:100%;width:0%;border-radius:3px;background:var(--np-color,var(--cyan));box-shadow:0 0 7px var(--np-color,var(--cyan));transition:width 0.9s linear;}
+.np-progress{height:7px;border-radius:5px;background:rgba(255,255,255,0.06);margin-top:13px;overflow:hidden;position:relative;box-shadow:inset 0 1px 2px rgba(0,0,0,0.4);}
+.np-progress-fill{position:relative;height:100%;width:0%;border-radius:5px;overflow:hidden;background-color:var(--np-color,var(--cyan));background-image:linear-gradient(135deg,rgba(255,255,255,0.22) 25%,transparent 25%,transparent 50%,rgba(255,255,255,0.22) 50%,rgba(255,255,255,0.22) 75%,transparent 75%,transparent);background-size:16px 16px;box-shadow:0 0 9px var(--np-color,var(--cyan)),inset 0 0 0 1px rgba(255,255,255,0.12);transition:width 0.9s linear;animation:np-stripes 0.7s linear infinite;}
+.np-progress-fill::after{content:'';position:absolute;top:0;bottom:0;left:0;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.55),transparent);transform:translateX(-120%);animation:np-sheen 2.4s ease-in-out infinite;}
+@keyframes np-stripes{from{background-position:0 0;}to{background-position:16px 0;}}
+@keyframes np-sheen{0%{transform:translateX(-120%);}55%,100%{transform:translateX(320%);}}
 .sun-arc{border:1px solid var(--border);border-radius:11px;background:rgba(255,255,255,0.02);padding:11px 12px 9px;}
 .sun-arc-tag{font-size:9px;font-weight:700;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;}
 .sun-arc svg{display:block;overflow:visible;}
-#sun-arc-dot{filter:drop-shadow(0 0 5px rgba(255,200,90,0.85));transition:cx 0.9s linear,cy 0.9s linear;}
+#sun-arc-dot{filter:drop-shadow(0 0 6px rgba(255,200,90,0.9));}
+#sun-arc-halo{filter:blur(2px);animation:sunpulse 3.6s ease-in-out infinite;}
+@keyframes sunpulse{0%,100%{opacity:0.16;}50%{opacity:0.30;}}
 .sun-arc-labels{display:flex;justify-content:space-between;padding:0 4px;margin-top:1px;}
 .sun-arc-labels span{display:flex;flex-direction:column;gap:1px;}
 .sun-arc-labels span:last-child{align-items:flex-end;}
@@ -345,7 +350,6 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   </div>
 
   <!-- RIGHT: Live stats panel -->
-  <div class="right-border-top"></div>
   <div class="right-panel">
     <div class="np-block" id="np-block">
       <div class="np-tag">Next Prayer</div>
@@ -356,22 +360,32 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
     </div>
     <div class="sun-arc">
       <div class="sun-arc-tag">Sun Path</div>
-      <svg viewBox="0 0 260 92" width="100%" preserveAspectRatio="xMidYMid meet">
+      <svg viewBox="0 0 260 96" width="100%" preserveAspectRatio="xMidYMid meet">
         <defs>
-          <radialGradient id="sunGlow" cx="50%" cy="45%" r="55%">
-            <stop offset="0%" stop-color="#fff6df"/>
-            <stop offset="42%" stop-color="#ffd27a"/>
-            <stop offset="100%" stop-color="#ffb24d"/>
+          <radialGradient id="sunCore" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#fffaf0"/>
+            <stop offset="45%" stop-color="#ffd684"/>
+            <stop offset="100%" stop-color="#ffb347"/>
           </radialGradient>
-          <linearGradient id="arcFillGrad" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stop-color="#ffcf6e" stop-opacity="0.22"/>
-            <stop offset="100%" stop-color="#ffd27a" stop-opacity="0.92"/>
+          <linearGradient id="sunTrail" gradientUnits="userSpaceOnUse" x1="18" y1="0" x2="242" y2="0">
+            <stop offset="0%" stop-color="#ffcf6e" stop-opacity="0.30"/>
+            <stop offset="50%" stop-color="#ffe7b3" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#ffcf6e" stop-opacity="0.30"/>
+          </linearGradient>
+          <linearGradient id="horizonFade" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0"/>
+            <stop offset="22%" stop-color="#ffffff" stop-opacity="0.13"/>
+            <stop offset="78%" stop-color="#ffffff" stop-opacity="0.13"/>
+            <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
           </linearGradient>
         </defs>
-        <line x1="8" y1="74" x2="252" y2="74" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
-        <path d="M20,74 A110,50 0 0 1 240,74" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2" stroke-linecap="round"/>
-        <path id="sun-arc-fill" d="M20,74 A110,50 0 0 1 240,74" fill="none" stroke="url(#arcFillGrad)" stroke-width="2.5" stroke-linecap="round" pathLength="100" stroke-dasharray="0 100"/>
-        <circle id="sun-arc-dot" cx="20" cy="74" r="6" fill="url(#sunGlow)"/>
+        <line x1="6" y1="74" x2="254" y2="74" stroke="url(#horizonFade)" stroke-width="1"/>
+        <path d="M18,74 A112,46 0 0 1 242,74" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="0.5 5"/>
+        <path id="sun-arc-fill" d="M18,74" fill="none" stroke="url(#sunTrail)" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="18" cy="74" r="1.6" fill="rgba(255,255,255,0.30)"/>
+        <circle cx="242" cy="74" r="1.6" fill="rgba(255,255,255,0.30)"/>
+        <circle id="sun-arc-halo" cx="18" cy="74" r="12" fill="#ffcf6e" opacity="0.16"/>
+        <circle id="sun-arc-dot" cx="18" cy="74" r="5.5" fill="url(#sunCore)"/>
       </svg>
       <div class="sun-arc-labels">
         <span><em>Sunrise</em><b id="sun-rise-lbl">—</b></span>
@@ -1541,9 +1555,10 @@ function updateSunArc(){
   if(rl)rl.textContent=fmtFH(sr);
   if(sl)sl.textContent=fmtFH(ss);
   const dot=document.getElementById('sun-arc-dot');
+  const halo=document.getElementById('sun-arc-halo');
   const fill=document.getElementById('sun-arc-fill');
   if(!dot||!fill)return;
-  const cx=130,rx=110,ry=50,base=74;
+  const cx=130,rx=112,ry=46,base=74;
   const lh=localH();
   const t=(lh-sr)/(ss-sr);
   if(t>=0&&t<=1){
@@ -1551,18 +1566,25 @@ function updateSunArc(){
     const x=cx-rx*Math.cos(ang), y=base-ry*Math.sin(ang);
     dot.setAttribute('cx',x.toFixed(1));
     dot.setAttribute('cy',y.toFixed(1));
-    dot.setAttribute('r','6');
-    dot.setAttribute('fill','url(#sunGlow)');
+    dot.setAttribute('r','5.5');
+    dot.setAttribute('fill','url(#sunCore)');
     dot.style.opacity='1';
-    fill.setAttribute('stroke-dasharray',`${(t*100).toFixed(2)} 100`);
+    if(halo){halo.setAttribute('cx',x.toFixed(1));halo.setAttribute('cy',y.toFixed(1));halo.setAttribute('r','12');halo.style.display='';}
+    // Traveled arc from sunrise (left) to current sun position
+    if(t>0.001){
+      fill.setAttribute('d',`M18,74 A${rx},${ry} 0 0 1 ${x.toFixed(1)},${y.toFixed(1)}`);
+      fill.style.display='';
+    } else { fill.style.display='none'; }
   } else {
     // Night — sun below horizon (left before dawn, right after dusk)
-    fill.setAttribute('stroke-dasharray','0 100');
-    dot.setAttribute('cx', t<0?'20':'240');
-    dot.setAttribute('cy', (base+8).toFixed(1));
+    fill.style.display='none';
+    const nx=t<0?18:242;
+    dot.setAttribute('cx',nx);
+    dot.setAttribute('cy',(base+8).toFixed(1));
     dot.setAttribute('r','4');
     dot.setAttribute('fill','#5f6f8a');
     dot.style.opacity='0.55';
+    if(halo)halo.style.display='none';
   }
 }
 function tick(){

@@ -518,8 +518,20 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 <script>
 // ── CITY CONFIG ──────────────────────────────────────────────
 const CITY = {
-  name:'Makkah', lat:21.4225, lon:39.8262, tz:3, method:'Makkah'
+  name:'Makkah', lat:21.4225, lon:39.8262, tz:3, tzName:'Asia/Riyadh', method:'Makkah'
 };
+// Returns the city's CURRENT UTC offset in hours, accounting for DST.
+// Uses the IANA tzName when present (always correct for today's date),
+// and falls back to the static tz for cities without a tzName.
+function cityOffset(){
+  if(!CITY.tzName) return CITY.tz;
+  try{
+    const now=new Date();
+    const tzDate=new Date(now.toLocaleString('en-US',{timeZone:CITY.tzName}));
+    const utcDate=new Date(now.toLocaleString('en-US',{timeZone:'UTC'}));
+    return Math.round((tzDate-utcDate)/3600000*4)/4; // nearest 15 min
+  }catch(e){ return CITY.tz; }
+}
 
 // ── PRAYER ENGINE ────────────────────────────────────────────
 // adhan.js is the verified engine, same as the AdhanLive globe.
@@ -560,7 +572,7 @@ function h2t(h){
 }
 function cityNow(){
   const now=new Date(),utc=now.getTime()+now.getTimezoneOffset()*60000;
-  return new Date(utc+CITY.tz*3600000);
+  return new Date(utc+cityOffset()*3600000);
 }
 function localH(){const d=cityNow();return d.getHours()+d.getMinutes()/60+d.getSeconds()/3600;}
 function currentPrayer(times,lh){
@@ -600,7 +612,7 @@ let cachedTimes=null;
 
 function renderPrayers(){
   const now=new Date();
-  cachedTimes=calcPrayers(CITY.lat,CITY.lon,CITY.tz,now,CITY.method);
+  cachedTimes=calcPrayers(CITY.lat,CITY.lon,cityOffset(),now,CITY.method);
   const lh=localH();
   const ORDER=['fajr','dhuhr','asr','maghrib','isha'];
   const stack=document.getElementById('prayer-stack');

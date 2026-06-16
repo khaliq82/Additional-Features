@@ -774,7 +774,12 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.restore();
 
   // ── Time text — engraved into needle surface ──
-  const textD=length*((window.innerWidth>1024)?0.62:0.52);
+  // Pull time labels inward when Isha is past 22:00 (high-latitude summer)
+  // to avoid collision with the city name / countdown text in the upper dial.
+  const ishaH=cachedTimes?((cachedTimes.isha%24)+24)%24:0;
+  const lateIsha=ishaH>=22;
+  const _mob=window.innerWidth<=1024;
+  const textD=length*(lateIsha?(_mob?0.38:0.42):(_mob?0.52:0.62));
   const flip=Math.cos(ang)<0;
   ctx.save();
   ctx.translate(cx+cos*textD, cy+sin*textD);
@@ -1075,11 +1080,11 @@ function drawArc(){
     ctx.strokeStyle=isQ?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.12)';ctx.lineWidth=isQ?1.5:1;ctx.beginPath();ctx.moveTo(cx+r1*Math.cos(a),cy+r1*Math.sin(a));ctx.lineTo(cx+r2*Math.cos(a),cy+r2*Math.sin(a));ctx.stroke();
   }
 
-  // City name + next prayer countdown — top center of dial
+  // City name + next prayer countdown — bottom center of dial (below pivot, clear of all needles)
   {
     ctx.save();
     ctx.textAlign='center'; ctx.textBaseline='middle';
-    // City name — moved up slightly to make room for countdown
+    // City name
     ctx.font=`700 ${Math.round(R*0.115)}px 'Playfair Display',serif`;
     ctx.fillStyle='rgba(235,230,218,0.88)';
     ctx.shadowColor='rgba(130,190,255,0.25)';
@@ -1107,7 +1112,7 @@ function drawArc(){
       ctx.fillStyle='rgba(255,255,255,0.35)';
       ctx.shadowBlur=0;
       const _inW=ctx.measureText(' in ').width;
-      // countdown in cyan
+      // countdown in pearl white
       ctx.font=`700 ${Math.round(R*0.072)}px 'Geist',sans-serif`;
       const _cdW=ctx.measureText(_countdown).width;
       const _totalW=_nameW+_inW+_cdW;

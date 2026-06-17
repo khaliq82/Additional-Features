@@ -798,7 +798,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
     const _fajrH=((cachedTimes.fajr%24)+24)%24;
     const _ishaH=((cachedTimes.isha%24)+24)%24;
     if(prayerKey==='fajr' && _fajrH>=5){
-      textD=length*(_mob?0.32:0.38);
+      textD=length*(_mob?0.15:0.22); // pull past capsule toward pivot
     }
     if(prayerKey==='isha' && _ishaH>=21){
       textD=length*(_mob?0.30:0.36);

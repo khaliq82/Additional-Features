@@ -1691,7 +1691,7 @@ function updateLocalTime(){
   // Sehri = Fajr time; Iftar = Maghrib time
   if(!cachedTimes)return;
   function fmtFH(fh){
-    const h=Math.floor(((fh%24)+24)%24),mn=Math.floor((fh-Math.floor(fh))*60);
+    const h=Math.floor(((fh%24)+24)%24),mn=Math.round((fh-Math.floor(fh))*60)%60;
     const ap=h<12?'AM':'PM',hh=h%12||12;
     return `${String(hh).padStart(2,'0')}:${String(mn).padStart(2,'0')} ${ap}`;
   }
@@ -1716,7 +1716,7 @@ function updateSunArc(){
   const sr=cachedTimes.sunrise, ss=cachedTimes.maghrib; // sunset ≈ Maghrib
   if(isNaN(sr)||isNaN(ss))return;
   function fmtFH(fh){
-    const h=Math.floor(((fh%24)+24)%24),mn=Math.floor((fh-Math.floor(fh))*60);
+    const h=Math.floor(((fh%24)+24)%24),mn=Math.round((fh-Math.floor(fh))*60)%60;
     const ap=h<12?'AM':'PM',hh=h%12||12;
     return `${String(hh).padStart(2,'0')}:${String(mn).padStart(2,'0')} ${ap}`;
   }

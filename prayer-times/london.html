@@ -548,11 +548,9 @@ function cityOffset(){
 // in city local time, preserving the interface the arc renderer expects.
 function calcPrayers(lat,lon,tz,date){
   // Method comes from the shared registry, keyed by country code (CITY.cc).
-  // London override: MWL + SeventhOfTheNight high-latitude rule (East London Mosque / London Unified Timetable).
-  // Without this, Fajr and Isha collapse to the same time in mid-June
-  // because the sun never reaches 18 degrees below the horizon.
+  // High-latitude rule (TwilightAngle) is applied automatically by
+  // AdhanMethods.paramsFor('GB') — no override needed here.
   var params=AdhanMethods.paramsFor(CITY.cc);
-  params.highLatitudeRule=adhan.HighLatitudeRule.SeventhOfTheNight;
   var pt=new adhan.PrayerTimes(
     new adhan.Coordinates(lat,lon),
     date,

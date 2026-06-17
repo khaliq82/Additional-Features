@@ -12,12 +12,12 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.adhanlive.com/prayer-times/madinah">
 <meta property="og:title" content="Prayer Times Madeena Today | AdhanLive">
-<meta property="og:description" content="Live prayer times for Madeena: Fajr, Dhuhr, Asr, Maghrib and Isha with countdown. Calculated with Umm al-Qura method.">
+<meta property="og:description" content="Live prayer times for Madeena: Fajr, Dhuhr, Asr, Maghrib and Isha with countdown.">
 <meta property="og:image" content="https://www.adhanlive.com/preview.jpg">
 <meta property="og:site_name" content="AdhanLive">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Prayer Times Madeena Today | AdhanLive">
-<meta name="twitter:description" content="Live prayer times for Madeena: Fajr, Dhuhr, Asr, Maghrib and Isha with countdown. Calculated with Umm al-Qura method.">
+<meta name="twitter:description" content="Live prayer times for Madeena: Fajr, Dhuhr, Asr, Maghrib and Isha with countdown.">
 <meta name="twitter:image" content="https://www.adhanlive.com/preview.jpg">
 <script type="application/ld+json">
 {
@@ -113,7 +113,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .np-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--np-color,var(--cyan));}
 .np-tag{font-size:9px;font-weight:700;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;}
 .np-name{font-size:14px;font-weight:700;color:var(--np-color,var(--cyan));margin-bottom:8px;}
-.np-timer{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-0.04em;color:rgba(238,233,222,0.95);line-height:1;}
+.np-timer{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1,'kern' 0;letter-spacing:-0.01em;color:rgba(238,233,222,0.95);line-height:1;font-family:'Geist','SF Mono','Roboto Mono','Courier New',monospace;}
 .np-timer-label{font-size:9px;color:var(--text3);letter-spacing:0.08em;margin-top:3px;}
 .stat-row{display:flex;flex-direction:column;gap:7px;}
 .stat-card{padding:10px 12px;border-radius:9px;border:1px solid var(--border);background:rgba(255,255,255,0.02);}
@@ -122,8 +122,8 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .stat-value.cyan{color:var(--cyan);}
 .stat-sub{font-size:9px;color:var(--text2);margin-top:2px;}
 .np-progress{height:7px;border-radius:5px;background:rgba(255,255,255,0.06);margin-top:13px;position:relative;box-shadow:inset 0 1px 2px rgba(0,0,0,0.4);}
-.np-progress-knob{position:absolute;top:50%;left:0%;width:12px;height:12px;border-radius:50%;background:var(--np-color,var(--cyan));transform:translate(-50%,-50%);box-shadow:0 0 5px var(--np-color,var(--cyan)),0 0 0 1.5px rgba(0,0,0,0.4);transition:left 0.9s linear;z-index:2;}
-.np-progress-fill{position:relative;height:100%;width:0%;border-radius:5px;overflow:hidden;opacity:0.8;background-color:var(--np-color,var(--cyan));background-image:linear-gradient(135deg,rgba(255,255,255,0.10) 25%,transparent 25%,transparent 50%,rgba(255,255,255,0.10) 50%,rgba(255,255,255,0.10) 75%,transparent 75%,transparent);background-size:16px 16px;box-shadow:0 0 4px var(--np-color,var(--cyan)),inset 0 0 0 1px rgba(255,255,255,0.05);transition:width 0.9s linear;animation:np-stripes 0.7s linear infinite;}
+.np-progress-knob{position:absolute;top:50%;left:0%;width:12px;height:12px;border-radius:50%;background:var(--np-color,var(--cyan));transform:translate(-50%,-50%);box-shadow:0 0 5px var(--np-color,var(--cyan)),0 0 0 1.5px rgba(0,0,0,0.4);z-index:2;}
+.np-progress-fill{position:relative;height:100%;width:0%;border-radius:5px;overflow:hidden;opacity:0.8;background-color:var(--np-color,var(--cyan));background-image:linear-gradient(135deg,rgba(255,255,255,0.10) 25%,transparent 25%,transparent 50%,rgba(255,255,255,0.10) 50%,rgba(255,255,255,0.10) 75%,transparent 75%,transparent);background-size:16px 16px;box-shadow:0 0 4px var(--np-color,var(--cyan)),inset 0 0 0 1px rgba(255,255,255,0.05);animation:np-stripes 0.7s linear infinite;}
 .np-progress-fill::after{content:'';position:absolute;top:0;bottom:0;left:0;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.22),transparent);transform:translateX(-120%);animation:np-sheen 2.4s ease-in-out infinite;}
 @keyframes np-stripes{from{background-position:0 0;}to{background-position:16px 0;}}
 @keyframes np-sheen{0%{transform:translateX(-120%);}55%,100%{transform:translateX(320%);}}
@@ -480,10 +480,8 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
           <a href="/prayer-times/jakarta" class="city-link">Jakarta <span class="city-link-arrow">→</span></a>
           <a href="/prayer-times/kuala-lumpur" class="city-link">Kuala Lumpur <span class="city-link-arrow">→</span></a>
           <a href="/prayer-times/dhaka" class="city-link">Dhaka <span class="city-link-arrow">→</span></a>
-          <a href="/prayer-times/riyadh" class="city-link">Riyadh <span class="city-link-arrow">→</span></a>
           <a href="/prayer-times/london" class="city-link">London <span class="city-link-arrow">→</span></a>
           <a href="/prayer-times/new-york" class="city-link">New York <span class="city-link-arrow">→</span></a>
-          <a href="/prayer-times/paris" class="city-link">Paris <span class="city-link-arrow">→</span></a>
         </div>
       </div>
       <button class="cities-toggle" id="cities-toggle" onclick="toggleCities()">Show more cities ↓</button>
@@ -515,10 +513,11 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   </div>
 
 <script src="https://cdn.jsdelivr.net/npm/adhan@4.4.3/lib/bundles/adhan.umd.min.js"></script>
+<script src="/adhan-methods.js"></script>
 <script>
 // ── CITY CONFIG ──────────────────────────────────────────────
 const CITY = {
-  name:'Madeena', lat:24.4672, lon:39.6151, tz:3, tzName:'Asia/Riyadh', method:'Makkah'
+  name:'Madeena', cc:'SA', lat:24.4672, lon:39.6151, tz:3, tzName:'Asia/Riyadh', method:'madinah'
 };
 // Returns the city's CURRENT UTC offset in hours, accounting for DST.
 // Uses the IANA tzName when present (always correct for today's date),
@@ -526,10 +525,18 @@ const CITY = {
 function cityOffset(){
   if(!CITY.tzName) return CITY.tz;
   try{
-    const now=new Date();
-    const tzDate=new Date(now.toLocaleString('en-US',{timeZone:CITY.tzName}));
-    const utcDate=new Date(now.toLocaleString('en-US',{timeZone:'UTC'}));
-    return Math.round((tzDate-utcDate)/3600000*4)/4; // nearest 15 min
+    // Use Intl.DateTimeFormat shortOffset to read GMT+X directly —
+    // avoids toLocaleString string-parsing which breaks when the browser
+    // itself is in a non-UTC timezone (the parsed Date inherits local tz).
+    const fmt=new Intl.DateTimeFormat('en-US',{
+      timeZone:CITY.tzName,hour:'numeric',minute:'numeric',
+      hour12:false,timeZoneName:'shortOffset'
+    });
+    const parts=fmt.formatToParts(Date.now());
+    const tzStr=(parts.find(p=>p.type==='timeZoneName')||{}).value||'';
+    const m=tzStr.match(/GMT([+-])(\d+)(?::(\d+))?/);
+    if(!m) return CITY.tz;
+    return (m[1]==='+'?1:-1)*(parseInt(m[2])+(parseInt(m[3]||0)/60));
   }catch(e){ return CITY.tz; }
 }
 
@@ -537,11 +544,14 @@ function cityOffset(){
 // adhan.js is the verified engine, same as the AdhanLive globe.
 // This adapter converts adhan.js UTC instants into fractional hours
 // in city local time, preserving the interface the arc renderer expects.
-function calcPrayers(lat,lon,tz,date,method){
+function calcPrayers(lat,lon,tz,date){
+  // Method comes from the shared registry, keyed by country code (CITY.cc).
+  // This block is identical on every city page — only CITY.cc differs.
+  var params=AdhanMethods.paramsFor(CITY.cc);
   var pt=new adhan.PrayerTimes(
     new adhan.Coordinates(lat,lon),
     date,
-    adhan.CalculationMethod.UmmAlQura()
+    params
   );
   function fh(d){
     var shifted=new Date(d.getTime()+tz*3600000);
@@ -567,14 +577,14 @@ const PMETA={
 const ORDER=['fajr','dhuhr','asr','maghrib','isha'];
 
 function h2t(h){
-  const tot=((h%24)+24)%24,hh=Math.floor(tot),mm=Math.floor((tot-hh)*60);
+  const tot=((h%24)+24)%24,hh=Math.floor(tot),mm=Math.round((tot-hh)*60)%60;
   return{h12:hh%12||12,mm:String(mm).padStart(2,'0'),ampm:hh>=12?'PM':'AM'};
 }
 function cityNow(){
-  const now=new Date(),utc=now.getTime()+now.getTimezoneOffset()*60000;
-  return new Date(utc+cityOffset()*3600000);
+  // Date.now() is always UTC ms — no getTimezoneOffset() needed
+  return new Date(Date.now()+cityOffset()*3600000);
 }
-function localH(){const d=cityNow();return d.getHours()+d.getMinutes()/60+d.getSeconds()/3600;}
+function localH(){const d=cityNow();return d.getUTCHours()+d.getUTCMinutes()/60+d.getUTCSeconds()/3600;}
 function currentPrayer(times,lh){
   // Real prayer windows: Fajr ends at sunrise; between sunrise and Dhuhr
   // no prayer window is open and this returns null.
@@ -621,7 +631,7 @@ function renderPrayers(){
   ORDER.forEach(key=>{
     const m=PMETA[key],t=cachedTimes[key];
     function fmtT(fh){
-      const h=Math.floor(((fh%24)+24)%24),mn=Math.floor((fh-Math.floor(fh))*60);
+      const h=Math.floor(((fh%24)+24)%24),mn=Math.round((fh-Math.floor(fh))*60)%60;
       const ap=h<12?'AM':'PM',hh=h%12||12;
       return `${String(hh).padStart(2,'0')}:${String(mn).padStart(2,'0')} ${ap}`;
     }
@@ -774,13 +784,18 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.restore();
 
   // ── Time text — engraved into needle surface ──
-  const textD=length*((window.innerWidth>1024)?0.62:0.52);
+  // Pull time labels inward when Isha is past 22:00 (high-latitude summer)
+  // to avoid collision with the city name / countdown text in the upper dial.
+  const ishaH=cachedTimes?((cachedTimes.isha%24)+24)%24:0;
+  const lateIsha=ishaH>=22;
+  const _mob=window.innerWidth<=1024;
+  const textD=length*(lateIsha?(_mob?0.38:0.42):(_mob?0.52:0.62));
   const flip=Math.cos(ang)<0;
   ctx.save();
   ctx.translate(cx+cos*textD, cy+sin*textD);
   ctx.rotate(flip?ang+Math.PI:ang);
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.font=`700 10px 'Geist',sans-serif`;
+  ctx.font=`700 12px 'Geist',sans-serif`;
 
   // Layer 1: deep groove shadow — offset down-right, dark
   ctx.fillStyle='rgba(0,0,0,0.75)';
@@ -972,7 +987,33 @@ function drawArc(){
   const RI=R+size*(_mobR?0.012:0.015);   // very tight band
   const RO=R+size*(_mobR?0.078:0.048);   // wider on mobile so names fit
   const bandMid=(RI+RO)/2;
-  const lh=localH();
+  // Single time snapshot — one cityNow() per frame prevents split-second drift
+  const _frameNow=cityNow();
+  const lh=_frameNow.getUTCHours()+_frameNow.getUTCMinutes()/60+_frameNow.getUTCSeconds()/3600;
+  // ── Countdown display + progress bar ──
+  // Use Date.now() milliseconds for the countdown to avoid floating-point
+  // precision errors from fractional-hour arithmetic (floor drift / skip).
+  {
+    const _np=nextPrayer(cachedTimes,lh);
+    // Use the frame snapshot — same Date object used for lh above.
+    const _npTotalSec=Math.round((((_np.time%24)+24)%24)*3600);
+    const _nowTotalSec=_frameNow.getUTCHours()*3600+_frameNow.getUTCMinutes()*60+_frameNow.getUTCSeconds();
+    let _ts=_npTotalSec-_nowTotalSec;
+    if(_ts<0) _ts+=86400;
+    const _hh=Math.floor(_ts/3600),_mm=Math.floor((_ts%3600)/60),_ss=_ts%60;
+    const _cdEl=document.getElementById('next-countdown');
+    if(_cdEl) _cdEl.textContent=String(_hh).padStart(2,'0')+':'+String(_mm).padStart(2,'0')+':'+String(_ss).padStart(2,'0');
+    // Progress bar
+    const _pf=document.getElementById('np-progress-fill');
+    const _knob=document.getElementById('np-progress-knob');
+    if(_pf){
+      const _pp=prevPrayer(cachedTimes,lh);
+      const _f=Math.max(0,Math.min(1,(lh-_pp.time)/(_np.time-_pp.time)));
+      const _pct=(_f*100).toFixed(3)+'%';
+      _pf.style.width=_pct;
+      if(_knob) _knob.style.left=_pct;
+    }
+  }
   function hexRgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
   function angle(h){return(h/24)*Math.PI*2-Math.PI/2;}
 
@@ -1075,11 +1116,11 @@ function drawArc(){
     ctx.strokeStyle=isQ?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.12)';ctx.lineWidth=isQ?1.5:1;ctx.beginPath();ctx.moveTo(cx+r1*Math.cos(a),cy+r1*Math.sin(a));ctx.lineTo(cx+r2*Math.cos(a),cy+r2*Math.sin(a));ctx.stroke();
   }
 
-  // City name + next prayer countdown — top center of dial
+  // City name + next prayer countdown — bottom center of dial (below pivot, clear of all needles)
   {
     ctx.save();
     ctx.textAlign='center'; ctx.textBaseline='middle';
-    // City name — moved up slightly to make room for countdown
+    // City name
     ctx.font=`700 ${Math.round(R*0.115)}px 'Playfair Display',serif`;
     ctx.fillStyle='rgba(235,230,218,0.88)';
     ctx.shadowColor='rgba(130,190,255,0.25)';
@@ -1107,10 +1148,12 @@ function drawArc(){
       ctx.fillStyle='rgba(255,255,255,0.35)';
       ctx.shadowBlur=0;
       const _inW=ctx.measureText(' in ').width;
-      // countdown in cyan
+      // countdown — fixed char width to prevent jitter
       ctx.font=`700 ${Math.round(R*0.072)}px 'Geist',sans-serif`;
-      const _cdW=ctx.measureText(_countdown).width;
-      const _totalW=_nameW+_inW+_cdW;
+      const _charW=ctx.measureText('0').width;
+      const _colonW=ctx.measureText(':').width*0.9;
+      const _cdFixedW=_charW*6+_colonW*2; // HH:MM:SS
+      const _totalW=_nameW+_inW+_cdFixedW;
       let _x=cx-_totalW/2;
       // Draw prayer name
       ctx.font=`600 ${Math.round(R*0.075)}px 'Geist',sans-serif`;
@@ -1124,16 +1167,153 @@ function drawArc(){
       ctx.fillStyle='rgba(255,255,255,0.35)';
       ctx.fillText(' in ', _x, _y);
       _x+=_inW;
-      // Draw countdown
+      // Draw countdown chars at fixed width
       ctx.font=`700 ${Math.round(R*0.072)}px 'Geist',sans-serif`;
       ctx.fillStyle='rgba(238,233,222,0.95)';
       ctx.shadowColor='rgba(238,233,222,0.2)'; ctx.shadowBlur=2;
-      ctx.fillText(_countdown, _x, _y);
+      ctx.textAlign='left';
+      for(let _i=0;_i<_countdown.length;_i++){
+        const _ch=_countdown[_i];
+        const _cw=_ch===':'?_colonW:_charW;
+        const _off=(_cw-ctx.measureText(_ch).width)/2;
+        ctx.fillText(_ch, _x+_off, _y);
+        _x+=_cw;
+      }
       ctx.shadowBlur=0;
       ctx.textAlign='center';
     }
     ctx.restore();
   }
+
+  // ── Time pit — 3D recessed channel on the horizontal 06 axis ──
+  // Sits on the right-side horizontal axis, between pivot and the "06" rim mark.
+  {
+    const pitW=R*0.44, pitH=R*0.115;
+    const pitX=cx+R*0.30, pitY=cy-pitH/2;
+    const pitR=pitH*0.45; // corner radius
+
+
+    ctx.save();
+    ctx.shadowColor='rgba(0,0,0,0.9)';
+    ctx.shadowBlur=pitH*1.1;
+    ctx.shadowOffsetY=pitH*0.5;
+    ctx.shadowOffsetX=pitH*0.08;
+    ctx.fillStyle='rgba(0,0,0,0)';
+    ctx.beginPath();
+    ctx.roundRect(pitX,pitY,pitW,pitH,pitR);
+    ctx.fill();
+    ctx.restore();
+
+    // 2. Pit floor — top-to-bottom depth gradient (lighter top = overhead light, darker bottom = depth)
+    const pitFloor=ctx.createLinearGradient(pitX,pitY,pitX,pitY+pitH);
+    pitFloor.addColorStop(0,'rgba(0,28,42,1)');
+    pitFloor.addColorStop(0.45,'rgba(0,20,32,1)');
+    pitFloor.addColorStop(1,'rgba(0,8,14,1)');
+    ctx.beginPath();
+    ctx.roundRect(pitX,pitY,pitW,pitH,pitR);
+    ctx.fillStyle=pitFloor;
+    ctx.fill();
+    // Cyan ambient from digit light source — centre radial
+    const pitAmbient=ctx.createRadialGradient(pitX+pitW/2,pitY+pitH*0.4,0,pitX+pitW/2,pitY+pitH/2,pitW*0.52);
+    pitAmbient.addColorStop(0,'rgba(0,212,255,0.13)');
+    pitAmbient.addColorStop(1,'rgba(0,212,255,0)');
+    ctx.beginPath();
+    ctx.roundRect(pitX,pitY,pitW,pitH,pitR);
+    ctx.fillStyle=pitAmbient;
+    ctx.fill();
+
+    // 3. Top-lip specular — bright white line where overhead light catches the machined edge
+    ctx.save();
+    ctx.shadowColor='rgba(255,255,255,0.5)';
+    ctx.shadowBlur=2;
+    const specGrad=ctx.createLinearGradient(pitX,pitY,pitX+pitW,pitY);
+    specGrad.addColorStop(0,'rgba(255,255,255,0)');
+    specGrad.addColorStop(0.15,'rgba(255,255,255,0.55)');
+    specGrad.addColorStop(0.5,'rgba(255,255,255,0.80)');
+    specGrad.addColorStop(0.85,'rgba(255,255,255,0.55)');
+    specGrad.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.beginPath();
+    ctx.roundRect(pitX+1,pitY+0.5,pitW-2,1,pitR*0.3);
+    ctx.fillStyle=specGrad;
+    ctx.fill();
+    ctx.restore();
+
+    // 4. Bottom shadow lip — dark line where the pit wall meets the floor (depth cue)
+    const botGrad=ctx.createLinearGradient(pitX,pitY+pitH-1,pitX+pitW,pitY+pitH-1);
+    botGrad.addColorStop(0,'rgba(0,0,0,0)');
+    botGrad.addColorStop(0.2,'rgba(0,0,0,0.6)');
+    botGrad.addColorStop(0.8,'rgba(0,0,0,0.6)');
+    botGrad.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.beginPath();
+    ctx.roundRect(pitX+1,pitY+pitH-2,pitW-2,2,pitR*0.2);
+    ctx.fillStyle=botGrad;
+    ctx.fill();
+
+    // 5. Outer border — metallic silver, matches clock rim language
+    ctx.save();
+    const pitBorderG=ctx.createLinearGradient(pitX,pitY,pitX+pitW,pitY+pitH);
+    pitBorderG.addColorStop(0,'rgba(180,185,195,0.75)');
+    pitBorderG.addColorStop(0.25,'rgba(110,118,128,0.55)');
+    pitBorderG.addColorStop(0.5,'rgba(200,208,218,0.85)');
+    pitBorderG.addColorStop(0.75,'rgba(100,108,118,0.50)');
+    pitBorderG.addColorStop(1,'rgba(160,168,178,0.70)');
+    ctx.beginPath();
+    ctx.roundRect(pitX,pitY,pitW,pitH,pitR);
+    ctx.strokeStyle=pitBorderG;
+    ctx.lineWidth=1.2;
+    ctx.stroke();
+    // Inner inset line — adds depth to the border
+    ctx.beginPath();
+    ctx.roundRect(pitX+1.5,pitY+1.5,pitW-3,pitH-3,Math.max(pitR-1.5,0));
+    ctx.strokeStyle='rgba(255,255,255,0.08)';
+    ctx.lineWidth=0.5;
+    ctx.stroke();
+    ctx.restore();
+
+    // 5. Time text — monospace, cyan glow, set into the pit
+    // 24-hour time HH:MM:SS — use frame snapshot, not a fresh cityNow()
+    const nowD=_frameNow;
+    const ph=lh%24;
+    const phh=String(Math.floor(ph)).padStart(2,'0');
+    const pmm=String(Math.floor(nowD.getMinutes())).padStart(2,'0');
+    const pss=String(nowD.getSeconds()).padStart(2,'0');
+    const timeStr=phh+':'+pmm+':'+pss;
+    const pitCY=pitY+pitH*0.57;
+    const pitCX=pitX+pitW/2;
+
+    // Subtle digit glow
+    ctx.save();
+    ctx.shadowColor='rgba(0,212,255,0.5)';
+    ctx.shadowBlur=pitH*0.7;
+    ctx.fillStyle='rgba(0,212,255,0.08)';
+    ctx.beginPath();
+    ctx.roundRect(pitX+pitW*0.05,pitY+pitH*0.1,pitW*0.9,pitH*0.8,pitR*0.5);
+    ctx.fill();
+    ctx.restore();
+
+    ctx.save();
+    ctx.textBaseline='middle';
+    const fsz=Math.round(pitH*0.66);
+    ctx.font='700 '+fsz+'px Geist,sans-serif';
+    const charW=ctx.measureText('0').width;
+    const colonW=ctx.measureText(':').width*0.9;
+    const fixedW=charW*6+colonW*2;
+    let cx0=pitCX-fixedW/2;
+    ctx.shadowColor='rgba(0,212,255,0.65)';
+    ctx.shadowBlur=pitH*0.5;
+    ctx.fillStyle='rgba(0,212,255,0.95)';
+    ctx.textAlign='left';
+    for(let i=0;i<timeStr.length;i++){
+      const ch=timeStr[i];
+      const chW=ch===':'?colonW:charW;
+      const off=(chW-ctx.measureText(ch).width)/2;
+      ctx.fillText(ch,cx0+off,pitCY);
+      cx0+=chW;
+    }
+    ctx.shadowBlur=0;
+    ctx.restore();
+  }
+
 
   // Needles — fixed z-order (bottom to top): Isha, Maghrib, Asr, Dhuhr, Fajr, current time
   // Each needle casts a subtle shadow onto the one below it (3D stack effect)
@@ -1181,7 +1361,11 @@ function drawArc(){
     ctx.shadowBlur=sh.blur;
     ctx.shadowOffsetX=sh.ox;
     ctx.shadowOffsetY=sh.oy;
-    drawPrayerNeedle(ctx,cx,cy,a,R-5,col,isA,`${tv.h12}:${tv.mm} ${tv.ampm}`);
+    // 24h time on needle — no AM/PM, slightly larger
+    const _nh=Math.floor(((cachedTimes[p]%24)+24)%24);
+    const _nm=tv.mm;
+    const _nTimeStr=String(_nh).padStart(2,'0')+':'+_nm;
+    drawPrayerNeedle(ctx,cx,cy,a,R-5,col,isA,_nTimeStr);
     ctx.restore();
     // Dot — only active prayer glows, others are dark/off
     if(isA){
@@ -1199,17 +1383,7 @@ function drawArc(){
     }
   }
 
-  // Current time needle — topmost layer with strongest shadow
-  const ca=angle(lh),cc=Math.cos(ca),cs=Math.sin(ca);
-  const tipX=cx+cc*(R+3),tipY=cy+cs*(R+3),ctTX=cx-cc*18,ctTY=cy-cs*18,ctp=[-cs,cc];
-  ctx.strokeStyle='#00d4ff';ctx.lineWidth=14;ctx.globalAlpha=0.06;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(ctTX,ctTY);ctx.lineTo(tipX,tipY);ctx.stroke();
-  ctx.lineWidth=5;ctx.globalAlpha=0.18;ctx.beginPath();ctx.moveTo(ctTX,ctTY);ctx.lineTo(tipX,tipY);ctx.stroke();ctx.lineCap='butt';ctx.globalAlpha=1;
-  ctx.save();ctx.fillStyle='rgba(255,255,255,0.97)';ctx.shadowColor='#00d4ff';ctx.shadowBlur=12;
-  ctx.beginPath();ctx.moveTo(ctTX,ctTY);ctx.lineTo(cx-ctp[0]*1.5-cc*4,cy-ctp[1]*1.5-cs*4);ctx.lineTo(cx-ctp[0]*3.5+cc*(R*0.08),cy-ctp[1]*3.5+cs*(R*0.08));ctx.lineTo(tipX,tipY);ctx.lineTo(cx+ctp[0]*3.5+cc*(R*0.08),cy+ctp[1]*3.5+cs*(R*0.08));ctx.lineTo(cx+ctp[0]*1.5-cc*4,cy+ctp[1]*1.5-cs*4);ctx.closePath();ctx.fill();ctx.shadowBlur=0;ctx.restore();
-  const tnHL=ctx.createLinearGradient(ctTX,ctTY,tipX,tipY);tnHL.addColorStop(0,'rgba(0,212,255,0)');tnHL.addColorStop(0.3,'rgba(255,255,255,0.6)');tnHL.addColorStop(0.9,'rgba(255,255,255,0.1)');tnHL.addColorStop(1,'rgba(255,255,255,0)');
-  ctx.strokeStyle=tnHL;ctx.lineWidth=0.8;ctx.beginPath();ctx.moveTo(ctTX,ctTY);ctx.lineTo(tipX,tipY);ctx.stroke();
-  ctx.fillStyle='#00d4ff';ctx.shadowColor='#00d4ff';ctx.shadowBlur=14;ctx.beginPath();ctx.arc(tipX,tipY,2.5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
-  ctx.restore(); // end current time needle shadow
+
 
   // ── Seconds hand — quartz tick, one revolution per minute ──
   // Gives the dial a live heartbeat. Drawn before the pivot so the
@@ -1350,84 +1524,6 @@ function drawArc(){
     }
   }
 
-  // Current time — arc-shaped pill hugging the outer ring, pearl white
-  {
-    const ct=h2t(lh);
-    const nowD=cityNow();
-    const ss=String(nowD.getSeconds()).padStart(2,'0');
-    const timeFullStr=`${ct.h12}:${ct.mm}:${ss} ${ct.ampm}`;
-    ctx.save();
-    // Pill constants
-    const pillH=16, pillR=RO+pillH/2+2;
-    // Thin connector line from needle tip to pill inner edge
-    const connR1=R+4, connR2=pillR-pillH/2-1;
-    ctx.save();
-    ctx.strokeStyle='rgba(0,212,255,0.35)';
-    ctx.lineWidth=0.8;
-    ctx.setLineDash([2,3]);
-    ctx.beginPath();
-    ctx.moveTo(cx+Math.cos(ca)*connR1, cy+Math.sin(ca)*connR1);
-    ctx.lineTo(cx+Math.cos(ca)*connR2, cy+Math.sin(ca)*connR2);
-    ctx.stroke();
-    ctx.setLineDash([]);
-    ctx.restore();
-    // Measure content first to size pill snugly
-    ctx.font=`700 12px 'Geist',sans-serif`;
-    const timeStr=`${ct.h12}:${ct.mm}:${ss}`;
-    const ampmStr=ct.ampm;
-    let tW=0; const tcws=[];
-    for(let i=0;i<timeStr.length;i++){const w=ctx.measureText(timeStr[i]).width;tcws.push(w);tW+=w;}
-    ctx.font=`600 9px 'Geist',sans-serif`;
-    let aW=0; const acws=[];
-    for(let i=0;i<ampmStr.length;i++){const w=ctx.measureText(ampmStr[i]).width;acws.push(w);aW+=w;}
-    const gap=4;
-    const totalW=tW+gap+aW;
-    // Pill span snugly fits content + small padding
-    const fixedSpan=Math.max(0.28,(totalW+14)/pillR);
-    const a0fix=ca-fixedSpan/2, a1fix=ca+fixedSpan/2;
-    // Draw pill
-    ctx.beginPath(); ctx.arc(cx,cy,pillR,a0fix,a1fix);
-    ctx.strokeStyle='rgba(3,6,14,0.85)'; ctx.lineWidth=pillH+4; ctx.lineCap='round'; ctx.stroke();
-    ctx.beginPath(); ctx.arc(cx,cy,pillR,a0fix,a1fix);
-    ctx.strokeStyle='rgba(0,212,255,0.75)'; ctx.lineWidth=pillH+6; ctx.lineCap='round';
-    ctx.globalAlpha=0.4; ctx.stroke(); ctx.globalAlpha=1;
-    ctx.beginPath(); ctx.arc(cx,cy,pillR,a0fix,a1fix);
-    ctx.strokeStyle='rgba(3,6,14,0.92)'; ctx.lineWidth=pillH; ctx.lineCap='round'; ctx.stroke();
-    ctx.lineCap='butt';
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.shadowColor='rgba(0,212,255,0.35)'; ctx.shadowBlur=3;
-    const onBottom=Math.sin(ca)>0;
-    const sc=1; // no scaling needed — pill sized to content
-    // Layout: [time LEFT][gap][ampm RIGHT] centered on ca
-    // On bottom half: chars reversed, so swap block start positions too
-    const timeBlockW=tW*sc, ampmBlockW=aW*sc;
-    const leftStart=-totalW*sc/2;
-    const tStart=onBottom?(leftStart+ampmBlockW+gap*sc):leftStart;
-    const aStart=onBottom?leftStart:(leftStart+timeBlockW+gap*sc);
-    // Render helper
-    const renderBlock=(str,cws2,startPx,fnt,col)=>{
-      ctx.font=fnt; ctx.fillStyle=col;
-      const ord=onBottom
-        ?Array.from({length:str.length},(_,i)=>str.length-1-i)
-        :Array.from({length:str.length},(_,i)=>i);
-      let cp=startPx;
-      for(let i=0;i<str.length;i++){
-        const idx=ord[i];
-        const chW=cws2[idx]*sc;
-        const cA=ca+(cp+chW/2)/pillR;
-        ctx.save();
-        ctx.translate(cx+Math.cos(cA)*pillR,cy+Math.sin(cA)*pillR);
-        ctx.rotate(onBottom?cA-Math.PI/2:cA+Math.PI/2);
-        ctx.fillText(str[idx],0,0);
-        ctx.restore();
-        cp+=chW;
-      }
-    };
-    renderBlock(timeStr,tcws,tStart,`700 12px 'Geist',sans-serif`,'rgba(0,212,255,0.95)');
-    renderBlock(ampmStr,acws,aStart,`600 9px 'Geist',sans-serif`,'rgba(0,212,255,0.72)');
-    ctx.shadowBlur=0;
-    ctx.restore();
-  }
 }
 
 // ── TICK ────────────────────────────────────────────────────
@@ -1552,34 +1648,7 @@ function updateCountdown(){
   const npBlock=document.getElementById('np-block');
   if(npBlock) npBlock.style.setProperty('--np-color',PMETA[nextKey]?.color||'#00d4ff');
   if(nameEl){nameEl.textContent=PMETA[nextKey]?.en||'—';nameEl.style.color=PMETA[nextKey]?.color||'#00d4ff';}
-  // time remaining
-  let diff=np.time-lh; // hours
-  if(diff<0)diff+=24;
-  const totalSec=Math.floor(diff*3600);
-  const hh=Math.floor(totalSec/3600),mm=Math.floor((totalSec%3600)/60),ss=totalSec%60;
-  const cdEl=document.getElementById('next-countdown');
-  if(cdEl)cdEl.textContent=`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
-  // Progress through the current prayer window
-  const pf=document.getElementById('np-progress-fill');
-  const knob=document.getElementById('np-progress-knob');
-  if(pf){
-    const pp=prevPrayer(cachedTimes,lh);
-    const winStart=pp.time, winEnd=np.time;
-    let f=(lh-winStart)/(winEnd-winStart);
-    f=Math.max(0,Math.min(1,f));
-    const pct=(f*100).toFixed(2)+'%';
-    const prev=parseFloat(pf.dataset.f||'0');
-    if(f<prev){ // window rolled over — snap back without animating
-      pf.style.transition='none';
-      pf.style.width=pct;
-      if(knob){knob.style.transition='none';knob.style.left=pct;}
-      requestAnimationFrame(()=>{pf.style.transition='';if(knob)knob.style.transition='';});
-    } else {
-      pf.style.width=pct;
-      if(knob)knob.style.left=pct;
-    }
-    pf.dataset.f=f;
-  }
+  // countdown + progress bar moved to drawArc for frame-accurate rendering
 }
 function updateSunArc(){
   if(!cachedTimes)return;
@@ -1639,14 +1708,19 @@ function tick(){
   updateCountdown();
   updateSunArc();
   updateActiveCard();
-  drawArc();
+  // drawArc runs in its own rAF loop — not called here
 }
 
 // ── INIT ────────────────────────────────────────────────────
 renderPrayers();
 updateDate();
 tick();
-requestAnimationFrame(()=>{drawArc();requestAnimationFrame(drawArc);});
+// drawArc loops itself at 60fps for smooth countdown and clock hand
+function drawLoop(){
+  drawArc();
+  requestAnimationFrame(drawLoop);
+}
+requestAnimationFrame(drawLoop);
 setInterval(tick,1000);
 const now=new Date();
 const msToMid=(86400-(now.getHours()*3600+now.getMinutes()*60+now.getSeconds()))*1000;

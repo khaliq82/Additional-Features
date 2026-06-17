@@ -1280,7 +1280,7 @@ function drawArc(){
     const pmm=String(Math.floor(nowD.getMinutes())).padStart(2,'0');
     const pss=String(nowD.getSeconds()).padStart(2,'0');
     const timeStr=phh+':'+pmm+':'+pss;
-    const pitCY=pitY+pitH*0.57;
+    const pitCY=pitY+pitH*(_mobR?0.52:0.57);
     const pitCX=pitX+pitW/2;
 
     // Subtle digit glow

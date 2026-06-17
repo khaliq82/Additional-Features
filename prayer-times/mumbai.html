@@ -242,9 +242,9 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
     background:var(--bg);
   }
   .arc-canvas-wrap{
-    width:90vw;
-    height:90vw;
-    max-width:90vw;
+    width:99vw;
+    height:99vw;
+    max-width:99vw;
     margin:0 auto;
     aspect-ratio:auto;
     border-radius:50%;
@@ -782,9 +782,9 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.globalAlpha=1;
   ctx.restore();
 
-  // ── Time text — engraved into needle surface ──
-  // Pull time labels inward when Isha is past 22:00 (high-latitude summer)
-  // to avoid collision with the city name / countdown text in the upper dial.
+  // ── Time text — engraved groove, prayer-color enamel fill ──
+  // The needle is metal. The time is carved into it. The groove is filled
+  // with the prayer's own color like enamel in a struck engraving.
   const ishaH=cachedTimes?((cachedTimes.isha%24)+24)%24:0;
   const lateIsha=ishaH>=22;
   const _mob=window.innerWidth<=1024;
@@ -794,35 +794,38 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.translate(cx+cos*textD, cy+sin*textD);
   ctx.rotate(flip?ang+Math.PI:ang);
   ctx.textAlign='center'; ctx.textBaseline='middle';
-  ctx.font=`700 12px 'Geist',sans-serif`;
+  ctx.font=`700 11px 'Geist',sans-serif`;
 
-  // Layer 1: deep groove shadow — offset down-right, dark
-  ctx.fillStyle='rgba(0,0,0,0.75)';
-  ctx.shadowColor='rgba(0,0,0,0)'; ctx.shadowBlur=0;
-  ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
+  // Layer 1 — deep groove shadow, bottom-right wall of the carved channel
   ctx.save();
-  ctx.translate(0.8, 1.2);
+  ctx.translate(0.9, 1.3);
+  ctx.fillStyle='rgba(0,0,0,0.9)';
+  ctx.shadowBlur=0;
   ctx.fillText(timeStr,0,0);
   ctx.restore();
 
-  // Layer 2: groove shadow left side (inner shadow illusion)
-  ctx.fillStyle='rgba(0,0,0,0.45)';
-  ctx.save();
-  ctx.translate(-0.4, 0.6);
-  ctx.fillText(timeStr,0,0);
-  ctx.restore();
-
-  // Layer 3: top highlight — light catching the upper edge of the groove
-  ctx.fillStyle='rgba(255,255,255,0.22)';
+  // Layer 2 — upper-left groove wall, slightly lighter
   ctx.save();
   ctx.translate(-0.5, -0.8);
+  ctx.fillStyle='rgba(0,0,0,0.55)';
   ctx.fillText(timeStr,0,0);
   ctx.restore();
 
-  // Layer 4: main engraved text — dimmer than surface, slightly desaturated
-  // Use needle color darkened, not cyan, so it looks carved INTO the material
-  ctx.fillStyle='rgba(200,235,255,0.72)';
+  // Layer 3 — enamel fill: prayer color sitting inside the groove
+  // Rich and opaque like paint in a carved channel, no glow
+  ctx.fillStyle=col;
+  ctx.globalAlpha=0.92;
+  ctx.shadowBlur=0;
   ctx.fillText(timeStr,0,0);
+  ctx.globalAlpha=1;
+
+  // Layer 4 — thin bright highlight on the top rim of the groove
+  // Light catches the very top edge of the carved letter
+  ctx.save();
+  ctx.translate(-0.4, -0.9);
+  ctx.fillStyle='rgba(255,255,255,0.18)';
+  ctx.fillText(timeStr,0,0);
+  ctx.restore();
 
   ctx.restore();
 }
@@ -1277,7 +1280,7 @@ function drawArc(){
     const pmm=String(Math.floor(nowD.getMinutes())).padStart(2,'0');
     const pss=String(nowD.getSeconds()).padStart(2,'0');
     const timeStr=phh+':'+pmm+':'+pss;
-    const pitCY=pitY+pitH*0.57;
+    const pitCY=pitY+pitH*(_mobR?0.52:0.57);
     const pitCX=pitX+pitW/2;
 
     // Subtle digit glow
@@ -1314,7 +1317,25 @@ function drawArc(){
   }
 
 
-  // ── Now-dot + animated flowing dashes to next prayer ──
+  // ── Prayer track ring — metallic golden circle at radius R ──
+  // Base stroke — dark gold
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI*2);
+  ctx.strokeStyle='rgba(180,140,50,0.55)';
+  ctx.lineWidth=1.2;
+  ctx.stroke();
+  ctx.restore();
+  // Highlight stroke — brighter gold, slightly inset
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, R-0.5, 0, Math.PI*2);
+  ctx.strokeStyle='rgba(255,210,90,0.30)';
+  ctx.lineWidth=0.6;
+  ctx.stroke();
+  ctx.restore();
+
+    // ── Now-dot + animated flowing dashes to next prayer ──
   // Drawn BEFORE needles — prayer bulbs render on top as time sweeps past.
   {
     const _np2=nextPrayer(cachedTimes,lh);
@@ -1435,9 +1456,9 @@ function drawArc(){
       const spec=ctx.createRadialGradient(dotX-1.5,dotY-1.5,0,dotX,dotY,5);spec.addColorStop(0,'rgba(255,255,255,0.8)');spec.addColorStop(0.4,'rgba(255,255,255,0.2)');spec.addColorStop(1,'rgba(255,255,255,0)');
       ctx.fillStyle=spec;ctx.beginPath();ctx.arc(dotX,dotY,5,0,Math.PI*2);ctx.fill();
     } else {
-      // Inactive — dark off bulb, just a small dark circle
-      ctx.fillStyle='rgba(20,22,28,0.9)';ctx.beginPath();ctx.arc(dotX,dotY,4,0,Math.PI*2);ctx.fill();
-      ctx.strokeStyle='rgba(255,255,255,0.12)';ctx.lineWidth=0.8;ctx.beginPath();ctx.arc(dotX,dotY,4,0,Math.PI*2);ctx.stroke();
+      // Inactive — fully solid prayer color, no glow. Illuminates only when active.
+      ctx.fillStyle=col;ctx.globalAlpha=1;ctx.beginPath();ctx.arc(dotX,dotY,4,0,Math.PI*2);ctx.fill();
+      ctx.globalAlpha=1;ctx.strokeStyle=hexRgba(col,0.85);ctx.lineWidth=0.8;ctx.beginPath();ctx.arc(dotX,dotY,4,0,Math.PI*2);ctx.stroke();
     }
   }
 

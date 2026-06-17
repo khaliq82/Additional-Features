@@ -1320,6 +1320,64 @@ function drawArc(){
   }
 
 
+  // ── Now-dot + animated flowing dashes to next prayer ──
+  // Drawn BEFORE needles — prayer bulbs render on top as time sweeps past.
+  {
+    const _np2=nextPrayer(cachedTimes,lh);
+    const _npCol=PMETA[_np2.name]?.color||'#00d4ff';
+    const _nowA=angle(lh);
+    const _npA=angle((((_np2.time%24)+24)%24));
+    const _dotR=R; // same circle as prayer needle tip bulbs
+
+    // Flowing dashes — slow march clockwise toward next prayer
+    const _t=Date.now();
+    const _dash=6;
+    const _gap=10;
+    const _period=_dash+_gap;
+    const _off=(_t/55)%_period;
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx,cy,_dotR,_nowA,_npA,false);
+    ctx.strokeStyle=_npCol;
+    ctx.globalAlpha=0.50;
+    ctx.lineWidth=2.2;
+    ctx.lineCap='round';
+    ctx.setLineDash([_dash,_gap]);
+    ctx.lineDashOffset=-_off;
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // Pulsating now-dot — matches AdhanLive logo pulse style
+    const _dotX=cx+_dotR*Math.cos(_nowA);
+    const _dotY=cy+_dotR*Math.sin(_nowA);
+    const _coreR=4;
+
+    // One expanding ring, ease-out, short travel, fades to 0. 2.4s cycle.
+    const _ringT=((_t%2400)/2400);
+    const _ringE=1-Math.pow(1-_ringT,2);
+    const _ringR=_coreR+(7*_ringE);
+    const _ringA=1-_ringE;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(_dotX,_dotY,_ringR,0,Math.PI*2);
+    ctx.strokeStyle='rgba(0,212,255,'+_ringA+')';
+    ctx.lineWidth=1;
+    ctx.stroke();
+    ctx.restore();
+
+    // Core dot — solid cyan, always visible
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(_dotX,_dotY,_coreR,0,Math.PI*2);
+    ctx.fillStyle='#00d4ff';
+    ctx.shadowColor='rgba(0,212,255,0.9)';
+    ctx.shadowBlur=6;
+    ctx.fill();
+    ctx.restore();
+  }
+
   // Needles — fixed z-order (bottom to top): Isha, Maghrib, Asr, Dhuhr, Fajr, current time
   // Each needle casts a subtle shadow onto the one below it (3D stack effect)
   const ZORDER=['isha','maghrib','asr','dhuhr','fajr'];
@@ -1635,7 +1693,7 @@ function updateLocalTime(){
   // Sehri = Fajr time; Iftar = Maghrib time
   if(!cachedTimes)return;
   function fmtFH(fh){
-    const h=Math.floor(((fh%24)+24)%24),mn=Math.floor((fh-Math.floor(fh))*60);
+    const h=Math.floor(((fh%24)+24)%24),mn=Math.round((fh-Math.floor(fh))*60)%60;
     const ap=h<12?'AM':'PM',hh=h%12||12;
     return `${String(hh).padStart(2,'0')}:${String(mn).padStart(2,'0')} ${ap}`;
   }
@@ -1660,7 +1718,7 @@ function updateSunArc(){
   const sr=cachedTimes.sunrise, ss=cachedTimes.maghrib; // sunset ≈ Maghrib
   if(isNaN(sr)||isNaN(ss))return;
   function fmtFH(fh){
-    const h=Math.floor(((fh%24)+24)%24),mn=Math.floor((fh-Math.floor(fh))*60);
+    const h=Math.floor(((fh%24)+24)%24),mn=Math.round((fh-Math.floor(fh))*60)%60;
     const ap=h<12?'AM':'PM',hh=h%12||12;
     return `${String(hh).padStart(2,'0')}:${String(mn).padStart(2,'0')} ${ap}`;
   }

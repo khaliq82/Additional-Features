@@ -145,13 +145,16 @@
     PK: {
       label: 'University of Karachi',
       verified: false,
-      build: function () { return adhan.CalculationMethod.Karachi(); }
+      // Hanafi madhab: Asr starts when shadow = 2x object height (vs Shafi = 1x)
+      // Difference is 44-82 minutes depending on season
+      build: function () { var p=adhan.CalculationMethod.Karachi(); p.madhab=adhan.Madhab.Hanafi; return p; }
     },
 
     BD: {
       label: 'University of Karachi',
       verified: false,
-      build: function () { return adhan.CalculationMethod.Karachi(); }
+      // Hanafi madhab — same as PK
+      build: function () { var p=adhan.CalculationMethod.Karachi(); p.madhab=adhan.Madhab.Hanafi; return p; }
     },
 
     US: {
@@ -177,7 +180,8 @@
     LK: { label: 'University of Karachi', verified: false,
           build: function () { return adhan.CalculationMethod.Karachi(); } },
     IN: { label: 'University of Karachi (India standard)', verified: false,
-          build: function () { return adhan.CalculationMethod.Karachi(); } },
+          // Hanafi madhab — standard across Indian subcontinent
+          build: function () { var p=adhan.CalculationMethod.Karachi(); p.madhab=adhan.Madhab.Hanafi; return p; } },
     PL: { label: 'Muslim World League', verified: false,
           build: function () { return adhan.CalculationMethod.MuslimWorldLeague(); } },
 

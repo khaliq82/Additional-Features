@@ -1326,13 +1326,12 @@ function drawArc(){
     const _npA=angle((((_np2.time%24)+24)%24));
     const _dotR=R; // same circle as prayer needle tip bulbs
 
-    // ── Flowing dashes — short segments marching clockwise toward next prayer ──
+    // ── Flowing dashes — slow march clockwise toward next prayer ──
     const _t=Date.now();
-    const _dash=6;        // dash length in px along arc
-    const _gap=10;        // gap between dashes
+    const _dash=6;
+    const _gap=10;
     const _period=_dash+_gap;
-    // offset marches forward each ms — dashes appear to flow clockwise
-    const _off=(_t/18)%_period;
+    const _off=(_t/55)%_period;  // 55ms per px — slow, deliberate flow
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx,cy,_dotR,_nowA,_npA,false);
@@ -1346,27 +1345,33 @@ function drawArc(){
     ctx.setLineDash([]);
     ctx.restore();
 
-    // ── Pulsating now-dot — small, breathing cyan ──
-    // Pulse: glow breathes on a ~2s sine cycle
-    const _pulse=0.5+0.5*Math.sin(_t/900); // 0→1→0, ~1.8s cycle
+    // ── Pulsating now-dot — matches AdhanLive logo pulse ──
+    // One expanding ring, ease-out, short travel, fades to 0. 2.4s cycle.
     const _dotX=cx+_dotR*Math.cos(_nowA);
     const _dotY=cy+_dotR*Math.sin(_nowA);
+    const _coreR=3; // core dot radius (same as logo-dot ~4.5px)
 
-    // Outer breathing halo — fades in and out
+    // Ring: t goes 0→1 over 2.4s, ease-out via 1-(1-t)^2
+    const _ringT=((_t%2400)/2400);              // 0→1 linear
+    const _ringE=1-Math.pow(1-_ringT,2);        // ease-out
+    const _ringR=_coreR+(4*_ringE);             // expands coreR → coreR+4 (short travel, like logo)
+    const _ringA=1-_ringE;                       // opacity 1→0
+
     ctx.save();
     ctx.beginPath();
-    ctx.arc(_dotX,_dotY,7+_pulse*4,0,Math.PI*2);
-    ctx.fillStyle='rgba(0,212,255,'+(0.06+_pulse*0.08)+')';
-    ctx.fill();
+    ctx.arc(_dotX,_dotY,_ringR,0,Math.PI*2);
+    ctx.strokeStyle='rgba(0,212,255,'+_ringA+')';
+    ctx.lineWidth=1;
+    ctx.stroke();
     ctx.restore();
 
-    // Core dot — radius 3, always visible
+    // Core dot — solid cyan, always visible
     ctx.save();
     ctx.beginPath();
-    ctx.arc(_dotX,_dotY,3,0,Math.PI*2);
+    ctx.arc(_dotX,_dotY,_coreR,0,Math.PI*2);
     ctx.fillStyle='#00d4ff';
-    ctx.shadowColor='rgba(0,212,255,1)';
-    ctx.shadowBlur=4+_pulse*8; // glow breathes 4→12
+    ctx.shadowColor='rgba(0,212,255,0.9)';
+    ctx.shadowBlur=6;
     ctx.fill();
     ctx.restore();
   }

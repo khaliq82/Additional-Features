@@ -683,7 +683,7 @@ function updateDate(){
   document.getElementById('hero-date').innerHTML=greg+'<span class="hijri-sep"> · </span><span id="hijri-inline">'+hij+'</span>';
 }
 
-function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
+function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, prayerKey){
   const cos=Math.cos(ang), sin=Math.sin(ang);
   // px/py = perpendicular (left side of needle when pointing outward)
   const px=-sin, py=cos;
@@ -794,11 +794,20 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   const _mob=window.innerWidth<=1024;
   let textD=length*(lateIsha?(_mob?0.38:0.42):(_mob?0.52:0.62));
 
-  // Angle-aware collision avoidance — only this needle's label moves
-  // Zone 1: time capsule zone (right side, cos > 0.6)
-  if(cos>0.6){ textD=length*(_mob?0.32:0.38); }
-  // Zone 2: upper zone, city name + countdown (sin < -0.55)
-  if(sin<-0.55){ textD=length*(_mob?0.30:0.36); }
+  // Time-based collision avoidance — only the needle that needs it moves.
+  // Fajr after 05:00 → pull inward (away from time capsule on right side).
+  // Isha after 21:00 → pull inward (away from city name + countdown at top).
+  // Each condition is independent. All other needles stay at default position.
+  if(cachedTimes && prayerKey){
+    const _fajrH=((cachedTimes.fajr%24)+24)%24;
+    const _ishaH=((cachedTimes.isha%24)+24)%24;
+    if(prayerKey==='fajr' && _fajrH>=5){
+      textD=length*(_mob?0.32:0.38);
+    }
+    if(prayerKey==='isha' && _ishaH>=21){
+      textD=length*(_mob?0.30:0.36);
+    }
+  }
 
   const flip=cos<0;
   ctx.save();
@@ -1454,7 +1463,7 @@ function drawArc(){
     const _nh=Math.floor(((cachedTimes[p]%24)+24)%24);
     const _nm=tv.mm;
     const _nTimeStr=String(_nh).padStart(2,'0')+':'+_nm;
-    drawPrayerNeedle(ctx,cx,cy,a,R-5,col,isA,_nTimeStr);
+    drawPrayerNeedle(ctx,cx,cy,a,R-5,col,isA,_nTimeStr,p);
     ctx.restore();
     // Dot — only active prayer glows, others are dark/off
     if(isA){

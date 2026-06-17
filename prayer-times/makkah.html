@@ -1336,7 +1336,7 @@ function drawArc(){
     ctx.beginPath();
     ctx.arc(cx,cy,_dotR,_nowA,_npA,false);
     ctx.strokeStyle=_npCol;
-    ctx.globalAlpha=0.35;
+    ctx.globalAlpha=0.50;
     ctx.lineWidth=2.2;
     ctx.lineCap='round';
     ctx.setLineDash([_dash,_gap]);
@@ -1349,12 +1349,12 @@ function drawArc(){
     // One expanding ring, ease-out, short travel, fades to 0. 2.4s cycle.
     const _dotX=cx+_dotR*Math.cos(_nowA);
     const _dotY=cy+_dotR*Math.sin(_nowA);
-    const _coreR=3; // core dot radius (same as logo-dot ~4.5px)
+    const _coreR=4; // slightly more presence at dial scale, still subtle
 
     // Ring: t goes 0→1 over 2.4s, ease-out via 1-(1-t)^2
     const _ringT=((_t%2400)/2400);              // 0→1 linear
     const _ringE=1-Math.pow(1-_ringT,2);        // ease-out
-    const _ringR=_coreR+(4*_ringE);             // expands coreR → coreR+4 (short travel, like logo)
+    const _ringR=_coreR+(7*_ringE);             // expands coreR → coreR+7, visible at dial scale
     const _ringA=1-_ringE;                       // opacity 1→0
 
     ctx.save();

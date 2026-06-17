@@ -1317,39 +1317,56 @@ function drawArc(){
   }
 
 
-  // ── Now-dot + arc to next prayer ──
-  // Drawn BEFORE needles — prayer bulbs will render on top of the dot
-  // as the current time sweeps past each prayer position.
+  // ── Now-dot + animated flowing dashes to next prayer ──
+  // Drawn BEFORE needles — prayer bulbs render on top as time sweeps past.
   {
     const _np2=nextPrayer(cachedTimes,lh);
     const _npCol=PMETA[_np2.name]?.color||'#00d4ff';
     const _nowA=angle(lh);
     const _npA=angle((((_np2.time%24)+24)%24));
-    // Radius R — same circle as prayer needle tip bulbs
-    const _dotR=R;
+    const _dotR=R; // same circle as prayer needle tip bulbs
 
-    // Dim colored arc clockwise from now-dot to next prayer bulb
+    // ── Flowing dashes — short segments marching clockwise toward next prayer ──
+    const _t=Date.now();
+    const _dash=6;        // dash length in px along arc
+    const _gap=10;        // gap between dashes
+    const _period=_dash+_gap;
+    // offset marches forward each ms — dashes appear to flow clockwise
+    const _off=(_t/18)%_period;
     ctx.save();
     ctx.beginPath();
     ctx.arc(cx,cy,_dotR,_nowA,_npA,false);
     ctx.strokeStyle=_npCol;
-    ctx.globalAlpha=0.30;
-    ctx.lineWidth=3;
+    ctx.globalAlpha=0.35;
+    ctx.lineWidth=2.2;
     ctx.lineCap='round';
+    ctx.setLineDash([_dash,_gap]);
+    ctx.lineDashOffset=-_off;
     ctx.stroke();
+    ctx.setLineDash([]);
     ctx.restore();
 
-    // Cyan now-dot — radius 5, same as active prayer bulb
+    // ── Pulsating now-dot — small, breathing cyan ──
+    // Pulse: glow breathes on a ~2s sine cycle
+    const _pulse=0.5+0.5*Math.sin(_t/900); // 0→1→0, ~1.8s cycle
+    const _dotX=cx+_dotR*Math.cos(_nowA);
+    const _dotY=cy+_dotR*Math.sin(_nowA);
+
+    // Outer breathing halo — fades in and out
     ctx.save();
     ctx.beginPath();
-    ctx.arc(
-      cx+_dotR*Math.cos(_nowA),
-      cy+_dotR*Math.sin(_nowA),
-      5, 0, Math.PI*2
-    );
+    ctx.arc(_dotX,_dotY,7+_pulse*4,0,Math.PI*2);
+    ctx.fillStyle='rgba(0,212,255,'+(0.06+_pulse*0.08)+')';
+    ctx.fill();
+    ctx.restore();
+
+    // Core dot — radius 3, always visible
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(_dotX,_dotY,3,0,Math.PI*2);
     ctx.fillStyle='#00d4ff';
-    ctx.shadowColor='rgba(0,212,255,0.9)';
-    ctx.shadowBlur=10;
+    ctx.shadowColor='rgba(0,212,255,1)';
+    ctx.shadowBlur=4+_pulse*8; // glow breathes 4→12
     ctx.fill();
     ctx.restore();
   }

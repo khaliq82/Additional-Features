@@ -785,7 +785,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.globalAlpha=1;
   ctx.restore();
 
-  // ── Time text — glow only, no fill, appears lit from within the needle ──
+  // ── Time text — glow only, appears lit from within the needle ──
   // Pull time labels inward when Isha is past 22:00 (high-latitude summer)
   const ishaH=cachedTimes?((cachedTimes.isha%24)+24)%24:0;
   const lateIsha=ishaH>=22;
@@ -798,17 +798,21 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.font=`700 12px 'Geist',sans-serif`;
 
-  // Pass 1 — wide soft glow for the halo effect
+  // Pass 1 — wide soft halo
   ctx.shadowColor=col;
-  ctx.shadowBlur=8;
-  ctx.fillStyle='rgba(0,0,0,0)'; // fully transparent fill
+  ctx.shadowBlur=10;
+  ctx.fillStyle='rgba(0,0,0,0.01)'; // near-invisible fill — needed for canvas shadow to render
   ctx.fillText(timeStr,0,0);
 
-  // Pass 2 — tighter brighter glow for crispness
-  ctx.shadowBlur=4;
+  // Pass 2 — tight bright glow for crispness
+  ctx.shadowBlur=5;
   ctx.fillText(timeStr,0,0);
 
+  // Pass 3 — very faint white core so text is just barely readable up close
   ctx.shadowBlur=0;
+  ctx.fillStyle='rgba(255,255,255,0.15)';
+  ctx.fillText(timeStr,0,0);
+
   ctx.restore();
 }
 

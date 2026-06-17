@@ -176,6 +176,8 @@
           build: function () { return adhan.CalculationMethod.Karachi(); } },
     LK: { label: 'University of Karachi', verified: false,
           build: function () { return adhan.CalculationMethod.Karachi(); } },
+    IN: { label: 'University of Karachi (India standard)', verified: false,
+          build: function () { return adhan.CalculationMethod.Karachi(); } },
     PL: { label: 'Muslim World League', verified: false,
           build: function () { return adhan.CalculationMethod.MuslimWorldLeague(); } },
 

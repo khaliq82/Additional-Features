@@ -1317,6 +1317,17 @@ function drawArc(){
   }
 
 
+  // ── Prayer track ring — thin cyan circle at radius R ──
+  // Gives the needle tips and now-dot a visible track to run on.
+  // Especially important on mobile where the track is otherwise invisible.
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI*2);
+  ctx.strokeStyle='rgba(0,212,255,0.12)';
+  ctx.lineWidth=0.8;
+  ctx.stroke();
+  ctx.restore();
+
   // ── Now-dot + animated flowing dashes to next prayer ──
   // Drawn BEFORE needles — prayer bulbs render on top as time sweeps past.
   {

@@ -1317,6 +1317,43 @@ function drawArc(){
   }
 
 
+  // ── Now-dot + arc to next prayer ──
+  // Drawn BEFORE needles — prayer bulbs will render on top of the dot
+  // as the current time sweeps past each prayer position.
+  {
+    const _np2=nextPrayer(cachedTimes,lh);
+    const _npCol=PMETA[_np2.name]?.color||'#00d4ff';
+    const _nowA=angle(lh);
+    const _npA=angle((((_np2.time%24)+24)%24));
+    // Radius R — same circle as prayer needle tip bulbs
+    const _dotR=R;
+
+    // Dim colored arc clockwise from now-dot to next prayer bulb
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx,cy,_dotR,_nowA,_npA,false);
+    ctx.strokeStyle=_npCol;
+    ctx.globalAlpha=0.30;
+    ctx.lineWidth=3;
+    ctx.lineCap='round';
+    ctx.stroke();
+    ctx.restore();
+
+    // Cyan now-dot — radius 5, same as active prayer bulb
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(
+      cx+_dotR*Math.cos(_nowA),
+      cy+_dotR*Math.sin(_nowA),
+      5, 0, Math.PI*2
+    );
+    ctx.fillStyle='#00d4ff';
+    ctx.shadowColor='rgba(0,212,255,0.9)';
+    ctx.shadowBlur=10;
+    ctx.fill();
+    ctx.restore();
+  }
+
   // Needles — fixed z-order (bottom to top): Isha, Maghrib, Asr, Dhuhr, Fajr, current time
   // Each needle casts a subtle shadow onto the one below it (3D stack effect)
   const ZORDER=['isha','maghrib','asr','dhuhr','fajr'];
@@ -1490,40 +1527,6 @@ function drawArc(){
   ctx.beginPath(); ctx.arc(cx,cy,jewR,0,Math.PI*2); ctx.fill();
 
   ctx.restore();
-
-  // ── Now-dot + arc to next prayer ──
-  {
-    const _np2=nextPrayer(cachedTimes,lh);
-    const _npCol=PMETA[_np2.name]?.color||'#00d4ff';
-    const _nowA=angle(lh);
-    const _npA=angle((((_np2.time%24)+24)%24));
-    const _dotR=bandMid;
-
-    // Arc from now to next prayer (clockwise), drawn first so dot sits on top
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(cx,cy,_dotR,_nowA,_npA,false);
-    ctx.strokeStyle=_npCol;
-    ctx.globalAlpha=0.28;
-    ctx.lineWidth=3.5;
-    ctx.lineCap='round';
-    ctx.stroke();
-    ctx.restore();
-
-    // Cyan now-dot on rim
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(
-      cx+_dotR*Math.cos(_nowA),
-      cy+_dotR*Math.sin(_nowA),
-      5.5, 0, Math.PI*2
-    );
-    ctx.fillStyle='#00d4ff';
-    ctx.shadowColor='rgba(0,212,255,0.85)';
-    ctx.shadowBlur=10;
-    ctx.fill();
-    ctx.restore();
-  }
 
   // ── Prayer names curved along outer band ──
   for(const p of ORDER){

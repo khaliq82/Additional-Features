@@ -1456,9 +1456,9 @@ function drawArc(){
       const spec=ctx.createRadialGradient(dotX-1.5,dotY-1.5,0,dotX,dotY,5);spec.addColorStop(0,'rgba(255,255,255,0.8)');spec.addColorStop(0.4,'rgba(255,255,255,0.2)');spec.addColorStop(1,'rgba(255,255,255,0)');
       ctx.fillStyle=spec;ctx.beginPath();ctx.arc(dotX,dotY,5,0,Math.PI*2);ctx.fill();
     } else {
-      // Inactive — solid golden bulb
-      ctx.fillStyle='rgba(180,140,50,0.55)';ctx.beginPath();ctx.arc(dotX,dotY,4,0,Math.PI*2);ctx.fill();
-      ctx.strokeStyle='rgba(255,210,90,0.5)';ctx.lineWidth=0.8;ctx.beginPath();ctx.arc(dotX,dotY,4,0,Math.PI*2);ctx.stroke();
+      // Inactive — prayer color fill, dim, no glow. Illuminates only when active.
+      ctx.fillStyle=hexRgba(col,0.25);ctx.beginPath();ctx.arc(dotX,dotY,4,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle=hexRgba(col,0.45);ctx.lineWidth=0.8;ctx.beginPath();ctx.arc(dotX,dotY,4,0,Math.PI*2);ctx.stroke();
     }
   }
 

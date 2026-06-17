@@ -791,8 +791,24 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   const ishaH=cachedTimes?((cachedTimes.isha%24)+24)%24:0;
   const lateIsha=ishaH>=22;
   const _mob=window.innerWidth<=1024;
-  const textD=length*(lateIsha?(_mob?0.38:0.42):(_mob?0.52:0.62));
-  const flip=Math.cos(ang)<0;
+
+  // Base label distance along the needle
+  let textD=length*(lateIsha?(_mob?0.38:0.42):(_mob?0.52:0.62));
+
+  // ── Angle-aware collision avoidance ──
+  // Only THIS needle's label moves if its angle points into a busy zone.
+  // Other needles are untouched.
+
+  // Zone 1 — Time capsule (right side, 03h–07h on dial): cos(ang) > 0.6
+  if(cos>0.6){
+    textD=length*(_mob?0.32:0.38);
+  }
+  // Zone 2 — Upper zone (city name + countdown, 20h–24h/00h–02h): sin(ang) < -0.55
+  if(sin<-0.55){
+    textD=length*(_mob?0.30:0.36);
+  }
+
+  const flip=cos<0;
   ctx.save();
   ctx.translate(cx+cos*textD, cy+sin*textD);
   ctx.rotate(flip?ang+Math.PI:ang);

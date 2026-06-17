@@ -788,8 +788,15 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr){
   const ishaH=cachedTimes?((cachedTimes.isha%24)+24)%24:0;
   const lateIsha=ishaH>=22;
   const _mob=window.innerWidth<=1024;
-  const textD=length*(lateIsha?(_mob?0.38:0.42):(_mob?0.52:0.62));
-  const flip=Math.cos(ang)<0;
+  let textD=length*(lateIsha?(_mob?0.38:0.42):(_mob?0.52:0.62));
+
+  // Angle-aware collision avoidance — only this needle's label moves
+  // Zone 1: time capsule zone (right side, cos > 0.6)
+  if(cos>0.6){ textD=length*(_mob?0.32:0.38); }
+  // Zone 2: upper zone, city name + countdown (sin < -0.55)
+  if(sin<-0.55){ textD=length*(_mob?0.30:0.36); }
+
+  const flip=cos<0;
   ctx.save();
   ctx.translate(cx+cos*textD, cy+sin*textD);
   ctx.rotate(flip?ang+Math.PI:ang);

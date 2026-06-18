@@ -723,7 +723,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   ctx.lineTo(cx+cos*b0-px*stemW,    cy+sin*b0-py*stemW);
   ctx.lineTo(cx+cos*stemS-px*stemW, cy+sin*stemS-py*stemW);
   ctx.closePath();
-  ctx.fillStyle=_hr(col, 1.0);
+  ctx.fillStyle=_hr(col, isActive?1.0:0.40);
   ctx.fill();
   ctx.restore();
 
@@ -736,7 +736,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   ctx.lineTo(cx+cos*sp0-px*stemW,  cy+sin*sp0-py*stemW);
   ctx.lineTo(cx+cos*b1-px*stemW,   cy+sin*b1-py*stemW);
   ctx.closePath();
-  ctx.fillStyle=_hr(col, 1.0);
+  ctx.fillStyle=_hr(col, isActive?1.0:0.40);
   ctx.fill();
   ctx.restore();
 
@@ -772,8 +772,8 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   ctx.fillStyle=cartG; ctx.fill();
 
   // Prayer-color outline — active is brighter/thicker, no glow
-  ctx.strokeStyle=_hr(col, isActive?1.0:0.55);
-  ctx.lineWidth=isActive?1.8:1.0;
+  ctx.strokeStyle=_hr(col, isActive?1.0:0.35);
+  ctx.lineWidth=isActive?1.8:0.8;
   ctx.stroke();
 
   // ── Text — white pearl, existing font, flip for upper half ───────────────

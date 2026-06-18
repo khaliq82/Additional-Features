@@ -684,8 +684,8 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   const px=-sin, py=cos;
 
   // ── Geometry ──────────────────────────────────────────────────────────────
-  const tipR    = length - 4;
-  const bulbD   = length * 0.55;   // cartouche centre — fixed ring
+  const tipR    = length;      // tip touches prayer dot on track ring
+  const bulbD   = length * 0.42;   // cartouche centre — moved toward pivot
   const spinW   = length * 0.088;  // needle stem half-width
   const stemW   = length * 0.009;  // thin wire half-width
   const spearW  = length * 0.003;  // spear base half-width
@@ -723,7 +723,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   ctx.lineTo(cx+cos*b0-px*stemW,    cy+sin*b0-py*stemW);
   ctx.lineTo(cx+cos*stemS-px*stemW, cy+sin*stemS-py*stemW);
   ctx.closePath();
-  ctx.fillStyle=_hr(col, isActive?0.80:0.50);
+  ctx.fillStyle=_hr(col, 1.0);
   ctx.fill();
   ctx.restore();
 
@@ -736,7 +736,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   ctx.lineTo(cx+cos*sp0-px*stemW,  cy+sin*sp0-py*stemW);
   ctx.lineTo(cx+cos*b1-px*stemW,   cy+sin*b1-py*stemW);
   ctx.closePath();
-  ctx.fillStyle=_hr(col, isActive?0.80:0.50);
+  ctx.fillStyle=_hr(col, 1.0);
   ctx.fill();
   ctx.restore();
 
@@ -771,11 +771,10 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   cartG.addColorStop(1,   'rgba(255,255,255,0.12)');
   ctx.fillStyle=cartG; ctx.fill();
 
-  // Prayer-color outline
-  ctx.strokeStyle=_hr(col, isActive?1.0:0.65);
+  // Prayer-color outline — active is brighter/thicker, no glow
+  ctx.strokeStyle=_hr(col, isActive?1.0:0.55);
   ctx.lineWidth=isActive?1.8:1.0;
-  if(isActive){ctx.shadowColor=col;ctx.shadowBlur=6;}
-  ctx.stroke(); ctx.shadowBlur=0;
+  ctx.stroke();
 
   // ── Text — white pearl, existing font, flip for upper half ───────────────
   const flip=cos<0;

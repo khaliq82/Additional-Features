@@ -795,16 +795,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   // Fajr after 05:00 → pull inward (away from time capsule on right side).
   // Isha after 21:00 → pull inward (away from city name + countdown at top).
   // Each condition is independent. All other needles stay at default position.
-  if(cachedTimes && prayerKey){
-    const _fajrH=((cachedTimes.fajr%24)+24)%24;
-    const _ishaH=((cachedTimes.isha%24)+24)%24;
-    if(prayerKey==='fajr' && _fajrH>=5){
-      textD=length*(_mob?0.15:0.22); // pull past capsule toward pivot
-    }
-    if(prayerKey==='isha' && _ishaH>=21){
-      textD=length*(_mob?0.30:0.36);
-    }
-  }
+  // Needle text stays at natural position — capsule moves instead (see pitX/pitY logic)
 
   const flip=cos<0;
   ctx.save();
@@ -1140,7 +1131,7 @@ function drawArc(){
     ctx.save();
     ctx.textAlign='center'; ctx.textBaseline='middle';
     // City name
-    ctx.font=`700 ${Math.round(R*0.115)}px 'Playfair Display',serif`;
+    ctx.font=`700 ${Math.round(R*0.09)}px 'Playfair Display',serif`;
     ctx.fillStyle='rgba(235,230,218,0.88)';
     ctx.shadowColor='rgba(130,190,255,0.25)';
     ctx.shadowBlur=3;
@@ -1158,7 +1149,7 @@ function drawArc(){
       const _label=PMETA[_next2.name].en;
       const _y=cy-R*0.55;
       // Prayer name in its color
-      ctx.font=`600 ${Math.round(R*0.075)}px 'Geist',sans-serif`;
+      ctx.font=`600 ${Math.round(R*0.062)}px 'Geist',sans-serif`;
       ctx.fillStyle=_col;
       ctx.shadowColor=_col;
       ctx.shadowBlur=2;
@@ -1168,14 +1159,14 @@ function drawArc(){
       ctx.shadowBlur=0;
       const _inW=ctx.measureText(' in ').width;
       // countdown — fixed char width to prevent jitter
-      ctx.font=`700 ${Math.round(R*0.072)}px 'Geist',sans-serif`;
+      ctx.font=`700 ${Math.round(R*0.060)}px 'Geist',sans-serif`;
       const _charW=ctx.measureText('0').width;
       const _colonW=ctx.measureText(':').width*0.9;
       const _cdFixedW=_charW*6+_colonW*2; // HH:MM:SS
       const _totalW=_nameW+_inW+_cdFixedW;
       let _x=cx-_totalW/2;
       // Draw prayer name
-      ctx.font=`600 ${Math.round(R*0.075)}px 'Geist',sans-serif`;
+      ctx.font=`600 ${Math.round(R*0.062)}px 'Geist',sans-serif`;
       ctx.fillStyle=_col;
       ctx.shadowColor=_col; ctx.shadowBlur=2;
       ctx.textAlign='left';
@@ -1187,7 +1178,7 @@ function drawArc(){
       ctx.fillText(' in ', _x, _y);
       _x+=_inW;
       // Draw countdown chars at fixed width
-      ctx.font=`700 ${Math.round(R*0.072)}px 'Geist',sans-serif`;
+      ctx.font=`700 ${Math.round(R*0.060)}px 'Geist',sans-serif`;
       ctx.fillStyle='rgba(238,233,222,0.95)';
       ctx.shadowColor='rgba(238,233,222,0.2)'; ctx.shadowBlur=2;
       ctx.textAlign='left';
@@ -1208,7 +1199,12 @@ function drawArc(){
   // Sits on the right-side horizontal axis, between pivot and the "06" rim mark.
   {
     const pitW=R*0.44, pitH=R*0.115;
-    const pitX=cx+R*0.30, pitY=cy-pitH/2;
+    const _fajrForPit=((cachedTimes.fajr%24)+24)%24;
+    const _pitShift=_fajrForPit>=5;
+    const _pitAng=_pitShift?(8/24)*Math.PI*2-Math.PI/2:0;
+    const _pitR2=R*0.72;
+    const pitX=_pitShift?(cx+_pitR2*Math.cos(_pitAng)-pitW/2):(cx+R*0.30);
+    const pitY=_pitShift?(cy+_pitR2*Math.sin(_pitAng)-pitH/2):(cy-pitH/2);
     const pitR=pitH*0.45; // corner radius
 
 

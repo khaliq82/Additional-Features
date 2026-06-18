@@ -714,58 +714,61 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
     return mg;
   }
 
-  // ── Segment 1: pivot stem → cartouche left tip ───────────────────────────
+  // ── Segment 1: double rail from pivot → cartouche left tip ──────────────
+  const railW  = stemW * 1.6;   // outer edge of rail
+  const railIn = stemW * 0.3;   // inner edge of rail (hollow gap between)
+
+  // Rail A — one side
   ctx.save();
   ctx.beginPath();
-  ctx.moveTo(cx+cos*stemS+px*stemW, cy+sin*stemS+py*stemW);
-  ctx.bezierCurveTo(
-    cx+cos*(stemS+(b0-stemS)*0.5)+px*stemW*0.4, cy+sin*(stemS+(b0-stemS)*0.5)+py*stemW*0.4,
-    cx+cos*(b0-length*0.008)+px*stemW*0.15,      cy+sin*(b0-length*0.008)+py*stemW*0.15,
-    cx+cos*b0,                                    cy+sin*b0
-  );
-  ctx.bezierCurveTo(
-    cx+cos*(b0-length*0.008)-px*stemW*0.15,      cy+sin*(b0-length*0.008)-py*stemW*0.15,
-    cx+cos*(stemS+(b0-stemS)*0.5)-px*stemW*0.4,  cy+sin*(stemS+(b0-stemS)*0.5)-py*stemW*0.4,
-    cx+cos*stemS-px*stemW,                        cy+sin*stemS-py*stemW
-  );
+  ctx.moveTo(cx+cos*stemS+px*railW, cy+sin*stemS+py*railW);
+  ctx.lineTo(cx+cos*b0+px*railW,    cy+sin*b0+py*railW);
+  ctx.lineTo(cx+cos*b0+px*railIn,   cy+sin*b0+py*railIn);
+  ctx.lineTo(cx+cos*stemS+px*railIn, cy+sin*stemS+py*railIn);
   ctx.closePath();
-  ctx.fillStyle=metalGrad(cx+cos*stemS, cy+sin*stemS);
+  ctx.fillStyle=metalGrad(cx+cos*stemS+px*(railW+railIn)*0.5, cy+sin*stemS+py*(railW+railIn)*0.5);
   ctx.fill();
   ctx.strokeStyle='rgba(255,255,255,0.30)'; ctx.lineWidth=0.5; ctx.stroke();
   ctx.restore();
 
-  // ── Segment 2: double-rail spear (hollow channel, two rails converging to tip) ──
-  // Like the reference image — two parallel metallic rails with open space between,
-  // meeting at a fine spear point at the outer dial.
-  const railW  = stemW * 1.8;   // outer edge of each rail
-  const railIn = stemW * 0.4;   // inner edge of each rail (hollow gap)
-  const gapEnd = tipR - spearL * 0.6; // where rails merge into solid spear
-
-  // Rail 1 — top rail
+  // Rail B — other side (mirror)
   ctx.save();
   ctx.beginPath();
-  // Start from cartouche tip, outer edge
-  ctx.moveTo(cx+cos*b1+px*railW, cy+sin*b1+py*railW);
+  ctx.moveTo(cx+cos*stemS-px*railIn, cy+sin*stemS-py*railIn);
+  ctx.lineTo(cx+cos*b0-px*railIn,    cy+sin*b0-py*railIn);
+  ctx.lineTo(cx+cos*b0-px*railW,     cy+sin*b0-py*railW);
+  ctx.lineTo(cx+cos*stemS-px*railW,  cy+sin*stemS-py*railW);
+  ctx.closePath();
+  ctx.fillStyle=metalGrad(cx+cos*stemS-px*(railW+railIn)*0.5, cy+sin*stemS-py*(railW+railIn)*0.5);
+  ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,0.30)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.restore();
+
+  // ── Segment 2: double rail from cartouche right tip → spear point ────────
+  const gapEnd = tipR - spearL * 0.5; // where rails merge into tip
+
+  // Rail C — one side, tapers to tip
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(cx+cos*b1+px*railW,    cy+sin*b1+py*railW);
   ctx.lineTo(cx+cos*gapEnd+px*railW, cy+sin*gapEnd+py*railW);
-  // Taper to tip
-  ctx.lineTo(cx+cos*tipR, cy+sin*tipR);
-  // Inner edge back
-  ctx.lineTo(cx+cos*gapEnd+px*railIn, cy+sin*gapEnd+py*railIn);
-  ctx.lineTo(cx+cos*b1+px*railIn, cy+sin*b1+py*railIn);
+  ctx.lineTo(cx+cos*tipR,            cy+sin*tipR);
+  ctx.lineTo(cx+cos*gapEnd+px*railIn,cy+sin*gapEnd+py*railIn);
+  ctx.lineTo(cx+cos*b1+px*railIn,    cy+sin*b1+py*railIn);
   ctx.closePath();
   ctx.fillStyle=metalGrad(cx+cos*b1+px*(railW+railIn)*0.5, cy+sin*b1+py*(railW+railIn)*0.5);
   ctx.fill();
   ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=0.5; ctx.stroke();
   ctx.restore();
 
-  // Rail 2 — bottom rail (mirror)
+  // Rail D — other side (mirror), tapers to tip
   ctx.save();
   ctx.beginPath();
-  ctx.moveTo(cx+cos*b1-px*railIn, cy+sin*b1-py*railIn);
+  ctx.moveTo(cx+cos*b1-px*railIn,    cy+sin*b1-py*railIn);
   ctx.lineTo(cx+cos*gapEnd-px*railIn, cy+sin*gapEnd-py*railIn);
-  ctx.lineTo(cx+cos*tipR, cy+sin*tipR);
-  ctx.lineTo(cx+cos*gapEnd-px*railW, cy+sin*gapEnd-py*railW);
-  ctx.lineTo(cx+cos*b1-px*railW, cy+sin*b1-py*railW);
+  ctx.lineTo(cx+cos*tipR,             cy+sin*tipR);
+  ctx.lineTo(cx+cos*gapEnd-px*railW,  cy+sin*gapEnd-py*railW);
+  ctx.lineTo(cx+cos*b1-px*railW,      cy+sin*b1-py*railW);
   ctx.closePath();
   ctx.fillStyle=metalGrad(cx+cos*b1-px*(railW+railIn)*0.5, cy+sin*b1-py*(railW+railIn)*0.5);
   ctx.fill();

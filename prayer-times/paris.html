@@ -897,13 +897,20 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   cartG.addColorStop(1,   'rgba(255,255,255,0.20)');
   ctx.fillStyle=cartG; ctx.fill();
 
-  // Prayer-color outline — left side only (right side blends into minaret)
-  // Redraw only the left half of the cartouche path for stroke
+  // Prayer-color outline
   ctx.beginPath();
   ctx.moveTo(-cW, 0);
   ctx.bezierCurveTo(-cW+cuspD*1.2,-cuspD*0.5, -cW+cuspD*2,-cH*0.55, -cW+cuspD*2.5,-cH);
-  ctx.arcTo(-cW+cuspD*3,-cH, 0,-cH, cR);
-  ctx.lineTo(0,-cH);
+  ctx.arcTo(-cW+cuspD*3,-cH, cW-cuspD*3,-cH, cR);
+  ctx.lineTo(cW-cuspD*3,-cH);
+  ctx.arcTo(cW-cuspD*2.5,-cH, cW-cuspD*2,-cH*0.55, cR);
+  ctx.bezierCurveTo(cW-cuspD*2,-cH*0.55, cW-cuspD*1.2,-cuspD*0.5, cW,0);
+  ctx.bezierCurveTo(cW-cuspD*1.2,cuspD*0.5, cW-cuspD*2,cH*0.55, cW-cuspD*2.5,cH);
+  ctx.arcTo(cW-cuspD*3,cH, -cW+cuspD*3,cH, cR);
+  ctx.lineTo(-cW+cuspD*3,cH);
+  ctx.arcTo(-cW+cuspD*2.5,cH, -cW+cuspD*2,cH*0.55, cR);
+  ctx.bezierCurveTo(-cW+cuspD*2,cH*0.55, -cW+cuspD*1.2,cuspD*0.5, -cW,0);
+  ctx.closePath();
   ctx.strokeStyle=_hr(col, 0.90);
   ctx.lineWidth=1.6;
   ctx.stroke();

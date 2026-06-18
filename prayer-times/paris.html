@@ -714,65 +714,30 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
     return mg;
   }
 
-  // ── Segment 1: double rail from pivot → cartouche left tip ──────────────
-  const railW  = stemW * 1.6;   // outer edge of rail
-  const railIn = stemW * 0.3;   // inner edge of rail (hollow gap between)
+  // ── Solid needle body — drawn first, cartouche sits on top ──────────────
+  const railW  = stemW * 1.6;
+  const gapEnd = tipR - spearL * 0.5;
 
-  // Rail A — one side
   ctx.save();
   ctx.beginPath();
+  // Full needle outline: pivot → tip → back, single solid shape
   ctx.moveTo(cx+cos*stemS+px*railW, cy+sin*stemS+py*railW);
-  ctx.lineTo(cx+cos*b0+px*railW,    cy+sin*b0+py*railW);
-  ctx.lineTo(cx+cos*b0+px*railIn,   cy+sin*b0+py*railIn);
-  ctx.lineTo(cx+cos*stemS+px*railIn, cy+sin*stemS+py*railIn);
-  ctx.closePath();
-  ctx.fillStyle=metalGrad(cx+cos*stemS+px*(railW+railIn)*0.5, cy+sin*stemS+py*(railW+railIn)*0.5);
-  ctx.fill();
-  ctx.strokeStyle='rgba(255,255,255,0.30)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.lineTo(cx+cos*tipR - px*0,    cy+sin*tipR);  // taper top side to tip
+  // Actually draw both sides cleanly
   ctx.restore();
 
-  // Rail B — other side (mirror)
+  // One solid filled path: pivot stem → spear tip → back
   ctx.save();
   ctx.beginPath();
-  ctx.moveTo(cx+cos*stemS-px*railIn, cy+sin*stemS-py*railIn);
-  ctx.lineTo(cx+cos*b0-px*railIn,    cy+sin*b0-py*railIn);
-  ctx.lineTo(cx+cos*b0-px*railW,     cy+sin*b0-py*railW);
-  ctx.lineTo(cx+cos*stemS-px*railW,  cy+sin*stemS-py*railW);
-  ctx.closePath();
-  ctx.fillStyle=metalGrad(cx+cos*stemS-px*(railW+railIn)*0.5, cy+sin*stemS-py*(railW+railIn)*0.5);
-  ctx.fill();
-  ctx.strokeStyle='rgba(255,255,255,0.30)'; ctx.lineWidth=0.5; ctx.stroke();
-  ctx.restore();
-
-  // ── Segment 2: double rail from cartouche right tip → spear point ────────
-  const gapEnd = tipR - spearL * 0.5; // where rails merge into tip
-
-  // Rail C — one side, tapers to tip
-  ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(cx+cos*b1+px*railW,    cy+sin*b1+py*railW);
-  ctx.lineTo(cx+cos*gapEnd+px*railW, cy+sin*gapEnd+py*railW);
-  ctx.lineTo(cx+cos*tipR,            cy+sin*tipR);
-  ctx.lineTo(cx+cos*gapEnd+px*railIn,cy+sin*gapEnd+py*railIn);
-  ctx.lineTo(cx+cos*b1+px*railIn,    cy+sin*b1+py*railIn);
-  ctx.closePath();
-  ctx.fillStyle=metalGrad(cx+cos*b1+px*(railW+railIn)*0.5, cy+sin*b1+py*(railW+railIn)*0.5);
-  ctx.fill();
-  ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=0.5; ctx.stroke();
-  ctx.restore();
-
-  // Rail D — other side (mirror), tapers to tip
-  ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(cx+cos*b1-px*railIn,    cy+sin*b1-py*railIn);
-  ctx.lineTo(cx+cos*gapEnd-px*railIn, cy+sin*gapEnd-py*railIn);
+  ctx.moveTo(cx+cos*stemS+px*railW,   cy+sin*stemS+py*railW);
+  ctx.lineTo(cx+cos*gapEnd+px*railW,  cy+sin*gapEnd+py*railW);
   ctx.lineTo(cx+cos*tipR,             cy+sin*tipR);
   ctx.lineTo(cx+cos*gapEnd-px*railW,  cy+sin*gapEnd-py*railW);
-  ctx.lineTo(cx+cos*b1-px*railW,      cy+sin*b1-py*railW);
+  ctx.lineTo(cx+cos*stemS-px*railW,   cy+sin*stemS-py*railW);
   ctx.closePath();
-  ctx.fillStyle=metalGrad(cx+cos*b1-px*(railW+railIn)*0.5, cy+sin*b1-py*(railW+railIn)*0.5);
+  ctx.fillStyle=metalGrad(cx+cos*(stemS+tipR)*0.5, cy+sin*(stemS+tipR)*0.5);
   ctx.fill();
-  ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,0.25)'; ctx.lineWidth=0.5; ctx.stroke();
   ctx.restore();
 
   // ── Islamic cartouche frame ───────────────────────────────────────────────

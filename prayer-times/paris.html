@@ -734,26 +734,42 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   ctx.strokeStyle='rgba(255,255,255,0.30)'; ctx.lineWidth=0.5; ctx.stroke();
   ctx.restore();
 
-  // ── Segment 2: cartouche right tip → spear point ─────────────────────────
+  // ── Segment 2: double-rail spear (hollow channel, two rails converging to tip) ──
+  // Like the reference image — two parallel metallic rails with open space between,
+  // meeting at a fine spear point at the outer dial.
+  const railW  = stemW * 1.8;   // outer edge of each rail
+  const railIn = stemW * 0.4;   // inner edge of each rail (hollow gap)
+  const gapEnd = tipR - spearL * 0.6; // where rails merge into solid spear
+
+  // Rail 1 — top rail
   ctx.save();
   ctx.beginPath();
-  ctx.moveTo(cx+cos*b1, cy+sin*b1);
-  ctx.bezierCurveTo(
-    cx+cos*(b1+length*0.008)+px*stemW*0.15, cy+sin*(b1+length*0.008)+py*stemW*0.15,
-    cx+cos*sp0+px*stemW*0.4,                cy+sin*sp0+py*stemW*0.4,
-    cx+cos*sp0+px*spearW,                   cy+sin*sp0+py*spearW
-  );
+  // Start from cartouche tip, outer edge
+  ctx.moveTo(cx+cos*b1+px*railW, cy+sin*b1+py*railW);
+  ctx.lineTo(cx+cos*gapEnd+px*railW, cy+sin*gapEnd+py*railW);
+  // Taper to tip
   ctx.lineTo(cx+cos*tipR, cy+sin*tipR);
-  ctx.lineTo(cx+cos*sp0-px*spearW, cy+sin*sp0-py*spearW);
-  ctx.bezierCurveTo(
-    cx+cos*sp0-px*stemW*0.4,                cy+sin*sp0-py*stemW*0.4,
-    cx+cos*(b1+length*0.008)-px*stemW*0.15, cy+sin*(b1+length*0.008)-py*stemW*0.15,
-    cx+cos*b1,                              cy+sin*b1
-  );
+  // Inner edge back
+  ctx.lineTo(cx+cos*gapEnd+px*railIn, cy+sin*gapEnd+py*railIn);
+  ctx.lineTo(cx+cos*b1+px*railIn, cy+sin*b1+py*railIn);
   ctx.closePath();
-  ctx.fillStyle=metalGrad(cx+cos*b1, cy+sin*b1);
+  ctx.fillStyle=metalGrad(cx+cos*b1+px*(railW+railIn)*0.5, cy+sin*b1+py*(railW+railIn)*0.5);
   ctx.fill();
-  ctx.strokeStyle='rgba(255,255,255,0.30)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.restore();
+
+  // Rail 2 — bottom rail (mirror)
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(cx+cos*b1-px*railIn, cy+sin*b1-py*railIn);
+  ctx.lineTo(cx+cos*gapEnd-px*railIn, cy+sin*gapEnd-py*railIn);
+  ctx.lineTo(cx+cos*tipR, cy+sin*tipR);
+  ctx.lineTo(cx+cos*gapEnd-px*railW, cy+sin*gapEnd-py*railW);
+  ctx.lineTo(cx+cos*b1-px*railW, cy+sin*b1-py*railW);
+  ctx.closePath();
+  ctx.fillStyle=metalGrad(cx+cos*b1-px*(railW+railIn)*0.5, cy+sin*b1-py*(railW+railIn)*0.5);
+  ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=0.5; ctx.stroke();
   ctx.restore();
 
   // ── Islamic cartouche frame ───────────────────────────────────────────────

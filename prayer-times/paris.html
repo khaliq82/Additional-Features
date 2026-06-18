@@ -806,10 +806,10 @@ function drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive){
   ctx.closePath();
 
   // Fill
-  ctx.fillStyle = isActive?'rgba(255,255,255,1.0)':'rgba(220,230,255,0.60)';
+  ctx.fillStyle = 'rgba(220,230,255,0.75)';
   ctx.fill();
   // Edge
-  ctx.strokeStyle = isActive?'rgba(255,255,255,0.7)':'rgba(220,230,255,0.30)';
+  ctx.strokeStyle = 'rgba(220,230,255,0.35)';
   ctx.lineWidth = 0.5;
   ctx.stroke();
   ctx.restore();
@@ -890,11 +890,11 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
 
   // Metallic semi-transparent fill
   const cartG=ctx.createLinearGradient(0,-cH,0,cH);
-  cartG.addColorStop(0,   'rgba(255,255,255,0.18)');
-  cartG.addColorStop(0.3,  'rgba(180,190,210,0.22)');
-  cartG.addColorStop(0.5,  'rgba(80,90,110,0.35)');
-  cartG.addColorStop(0.7,  'rgba(180,190,210,0.20)');
-  cartG.addColorStop(1,   'rgba(255,255,255,0.12)');
+  cartG.addColorStop(0,   'rgba(255,255,255,0.28)');
+  cartG.addColorStop(0.3,  'rgba(180,190,210,0.32)');
+  cartG.addColorStop(0.5,  'rgba(80,90,110,0.45)');
+  cartG.addColorStop(0.7,  'rgba(180,190,210,0.30)');
+  cartG.addColorStop(1,   'rgba(255,255,255,0.20)');
   ctx.fillStyle=cartG; ctx.fill();
 
   // Prayer-color outline — active is brighter/thicker, no glow

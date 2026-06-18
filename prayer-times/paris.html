@@ -941,8 +941,8 @@ function drawArc(){
   ctx.clearRect(0,0,size,size);
   if(!cachedTimes)return;
   const cx=size/2,cy=size/2;
-  const R=size*(_mobR?0.38:0.34);
   const _mobR=window.innerWidth<=1024;
+  const R=size*(_mobR?0.38:0.34);
   const RI=R+size*(_mobR?0.010:0.015);   // very tight band
   const RO=R+size*(_mobR?0.048:0.048);   // narrowed on mobile
   const bandMid=(RI+RO)/2;

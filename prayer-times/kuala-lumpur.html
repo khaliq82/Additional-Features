@@ -1205,7 +1205,7 @@ function drawArc(){
     const _fajrForPit=((cachedTimes.fajr%24)+24)%24;
     const _pitShift=_fajrForPit>=5;
     const _pitAng=_pitShift?(9.3/24)*Math.PI*2-Math.PI/2:0;
-    const _pitR2=R*0.58; // inward toward pivot, clear of needle bodies
+    const _pitR2=R*0.65; // inward toward pivot, clear of needle bodies
     const pitX=_pitShift?(cx+_pitR2*Math.cos(_pitAng)-pitW/2):(cx+R*0.30);
     const pitY=_pitShift?(cy+_pitR2*Math.sin(_pitAng)-pitH/2):(cy-pitH/2);
     const pitR=pitH*0.45; // corner radius

@@ -692,7 +692,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   const spearL  = length * 0.10;   // spear taper length
   const spinL   = length * 0.18;   // cartouche half-length zone
 
-  const pivR2   = length * 0.045;  // pivot circle radius
+  const pivR2   = length * (window.innerWidth<=1024?0.030:0.045);  // smaller on mobile
   const stemS   = pivR2 + length*0.018;
   const b0      = bulbD - spinL;   // cartouche left tip
   const b1      = bulbD + spinL;   // cartouche right tip
@@ -941,10 +941,10 @@ function drawArc(){
   ctx.clearRect(0,0,size,size);
   if(!cachedTimes)return;
   const cx=size/2,cy=size/2;
-  const R=size*0.34;
+  const R=size*(_mobR?0.38:0.34);
   const _mobR=window.innerWidth<=1024;
-  const RI=R+size*(_mobR?0.012:0.015);   // very tight band
-  const RO=R+size*(_mobR?0.078:0.048);   // wider on mobile so names fit
+  const RI=R+size*(_mobR?0.010:0.015);   // very tight band
+  const RO=R+size*(_mobR?0.048:0.048);   // narrowed on mobile
   const bandMid=(RI+RO)/2;
   // Single time snapshot — one cityNow() per frame prevents split-second drift
   const _frameNow=cityNow();
@@ -1084,7 +1084,7 @@ function drawArc(){
     ctx.fillStyle='rgba(235,230,218,0.88)';
     ctx.shadowColor='rgba(130,190,255,0.25)';
     ctx.shadowBlur=3;
-    ctx.fillText('Paris', cx, cy - R*0.76);
+    ctx.fillText('Paris', cx, cy - R*(_mobR?0.70:0.76));
     ctx.shadowBlur=0;
     ctx.restore();
   }

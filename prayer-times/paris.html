@@ -859,7 +859,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   ctx.lineTo(cx+cos*b0-px*stemW,    cy+sin*b0-py*stemW);
   ctx.lineTo(cx+cos*stemS-px*stemW, cy+sin*stemS-py*stemW);
   ctx.closePath();
-  ctx.fillStyle=_hr(col, isActive?1.0:0.60);
+  ctx.fillStyle='rgba(220,230,255,0.75)';
   ctx.fill();
   ctx.restore();
 
@@ -898,8 +898,8 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   ctx.fillStyle=cartG; ctx.fill();
 
   // Prayer-color outline — active is brighter/thicker, no glow
-  ctx.strokeStyle=_hr(col, isActive?1.0:0.55);
-  ctx.lineWidth=isActive?1.8:0.8;
+  ctx.strokeStyle=_hr(col, 0.90);
+  ctx.lineWidth=1.6;
   ctx.stroke();
 
   // ── Text — white pearl, existing font, flip for upper half ───────────────

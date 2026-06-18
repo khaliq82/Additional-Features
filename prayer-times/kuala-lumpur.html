@@ -1199,10 +1199,13 @@ function drawArc(){
   // Sits on the right-side horizontal axis, between pivot and the "06" rim mark.
   {
     const pitW=R*0.44, pitH=R*0.115;
+    // When Fajr >= 05:00 the capsule shifts to the 08:00 position on the dial,
+    // pulled inward toward the pivot so it clears the Fajr needle body.
+    // This applies to any city in the world where Fajr falls after 05:00.
     const _fajrForPit=((cachedTimes.fajr%24)+24)%24;
     const _pitShift=_fajrForPit>=5;
     const _pitAng=_pitShift?(8/24)*Math.PI*2-Math.PI/2:0;
-    const _pitR2=R*0.72;
+    const _pitR2=R*0.45; // inward toward pivot, clear of needle bodies
     const pitX=_pitShift?(cx+_pitR2*Math.cos(_pitAng)-pitW/2):(cx+R*0.30);
     const pitY=_pitShift?(cy+_pitR2*Math.sin(_pitAng)-pitH/2):(cy-pitH/2);
     const pitR=pitH*0.45; // corner radius

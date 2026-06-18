@@ -681,158 +681,123 @@ function updateDate(){
 
 function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, prayerKey){
   const cos=Math.cos(ang), sin=Math.sin(ang);
-  // px/py = perpendicular (left side of needle when pointing outward)
   const px=-sin, py=cos;
-  const tipX=cx+cos*length, tipY=cy+sin*length;
-  const tailLen=14, tailX=cx-cos*tailLen, tailY=cy-sin*tailLen;
-  const bodyW=(window.innerWidth>1024)?16:Math.min(16,length*0.085);
-  const bs=length*0.12, be=length*0.80, tipNeckD=length*0.86;
 
-  // Light source: upper-left (approx -0.7, -0.7 direction)
-  // lit side = top-left edge of needle, shadow side = bottom-right edge
-  const LX=-0.7, LY=-0.7; // light direction
-  // How much is this needle's left edge facing the light?
-  const litFace=Math.max(0, -(px*LX + py*LY)); // dot product of perpendicular vs light
-  const litAlpha=0.15+litFace*0.55; // 0.15 to 0.70
+  // ── Geometry ──────────────────────────────────────────────────────────────
+  const tipR    = length - 4;
+  const bulbD   = length * 0.55;   // cartouche centre — fixed ring
+  const spinW   = length * 0.088;  // needle stem half-width
+  const stemW   = length * 0.009;  // thin wire half-width
+  const spearW  = length * 0.003;  // spear base half-width
+  const spearL  = length * 0.10;   // spear taper length
+  const spinL   = length * 0.18;   // cartouche half-length zone
 
-  const baseA=(window.innerWidth>1024)?0.45:0.55;
-  ctx.save();
-  ctx.globalAlpha=baseA;
+  const pivR2   = length * 0.045;  // pivot circle radius
+  const stemS   = pivR2 + length*0.018;
+  const b0      = bulbD - spinL;   // cartouche left tip
+  const b1      = bulbD + spinL;   // cartouche right tip
+  const sp0     = tipR - spearL;   // spear base
 
-  // ── 1. Base fill with depth gradient (dark on shadow side, bright on lit side) ──
-  const bevelG=ctx.createLinearGradient(
-    cx-px*bodyW+cos*bs, cy-py*bodyW+sin*bs,  // left edge (lit side)
-    cx+px*bodyW+cos*bs, cy+py*bodyW+sin*bs   // right edge (shadow side)
-  );
-  // Lit side: slightly brighter than col, shadow side: much darker
-  bevelG.addColorStop(0, col);
-  bevelG.addColorStop(0.15, col);
-  bevelG.addColorStop(0.55, shadeCol(col, 0.55));
-  bevelG.addColorStop(1,   shadeCol(col, 0.25));
-  ctx.fillStyle=bevelG;
-  ctx.beginPath();
-  ctx.moveTo(tailX,tailY);
-  ctx.lineTo(cx-px*1.2-cos*(bs*0.3),cy-py*1.2-sin*(bs*0.3));
-  ctx.lineTo(cx-px*bodyW+cos*bs,cy-py*bodyW+sin*bs);
-  ctx.lineTo(cx-px*bodyW+cos*be,cy-py*bodyW+sin*be);
-  ctx.bezierCurveTo(cx-px*bodyW+cos*(be+(tipNeckD-be)*0.4),cy-py*bodyW+sin*(be+(tipNeckD-be)*0.4),cx-px*1.5+cos*tipNeckD,cy-py*1.5+sin*tipNeckD,tipX,tipY);
-  ctx.bezierCurveTo(cx+px*1.5+cos*tipNeckD,cy+py*1.5+sin*tipNeckD,cx+px*bodyW+cos*(be+(tipNeckD-be)*0.4),cy+py*bodyW+sin*(be+(tipNeckD-be)*0.4),cx+px*bodyW+cos*be,cy+py*bodyW+sin*be);
-  ctx.lineTo(cx+px*bodyW+cos*bs,cy+py*bodyW+sin*bs);
-  ctx.lineTo(cx+px*1.2-cos*(bs*0.3),cy+py*1.2-sin*(bs*0.3));
-  ctx.closePath();
-  ctx.fill();
-
-  // ── Active needle: glowing edge in the prayer's own color ──
-  if(isActive){
-    ctx.globalAlpha=0.9;
-    ctx.strokeStyle=liftCol(col,0.55);
-    ctx.lineWidth=1.3;
-    ctx.lineJoin='round';
-    ctx.shadowColor=col;
-    ctx.shadowBlur=6;
-    ctx.stroke();
-    ctx.shadowBlur=0;
-    ctx.globalAlpha=baseA;
+  // Helper — metallic perpendicular gradient
+  function metalGrad(x1,y1){
+    const mg=ctx.createLinearGradient(
+      x1+px*stemW, y1+py*stemW,
+      x1-px*stemW, y1-py*stemW
+    );
+    mg.addColorStop(0,   'rgba(255,255,255,0.55)');
+    mg.addColorStop(0.18, hexRgba(col,0.85));
+    mg.addColorStop(0.5,  hexRgba(col,0.40));
+    mg.addColorStop(0.82, hexRgba(col,0.60));
+    mg.addColorStop(1,   'rgba(255,255,255,0.12)');
+    return mg;
   }
 
-  // ── 2. Top-edge specular highlight (lit edge rim) ──
-  ctx.globalAlpha=litAlpha*0.35;
-  ctx.strokeStyle='rgba(255,255,255,0.9)';
-  ctx.lineWidth=0.8;
-  ctx.lineCap='round';
+  // ── Segment 1: pivot stem → cartouche left tip ───────────────────────────
+  ctx.save();
   ctx.beginPath();
-  ctx.moveTo(cx-px*bodyW+cos*bs, cy-py*bodyW+sin*bs);
-  ctx.lineTo(cx-px*bodyW+cos*be, cy-py*bodyW+sin*be);
+  ctx.moveTo(cx+cos*stemS+px*stemW, cy+sin*stemS+py*stemW);
   ctx.bezierCurveTo(
-    cx-px*bodyW+cos*(be+(tipNeckD-be)*0.4), cy-py*bodyW+sin*(be+(tipNeckD-be)*0.4),
-    cx-px*1.5+cos*tipNeckD, cy-py*1.5+sin*tipNeckD,
-    tipX, tipY
+    cx+cos*(stemS+(b0-stemS)*0.5)+px*stemW*0.4, cy+sin*(stemS+(b0-stemS)*0.5)+py*stemW*0.4,
+    cx+cos*(b0-length*0.008)+px*stemW*0.15,      cy+sin*(b0-length*0.008)+py*stemW*0.15,
+    cx+cos*b0,                                    cy+sin*b0
   );
-  ctx.stroke();
-
-  // ── 3. Bottom-edge shadow rim ──
-  ctx.globalAlpha=0.15;
-  ctx.strokeStyle='rgba(0,0,0,0.8)';
-  ctx.lineWidth=1.2;
-  ctx.beginPath();
-  ctx.moveTo(cx+px*bodyW+cos*bs, cy+py*bodyW+sin*bs);
-  ctx.lineTo(cx+px*bodyW+cos*be, cy+py*bodyW+sin*be);
   ctx.bezierCurveTo(
-    cx+px*bodyW+cos*(be+(tipNeckD-be)*0.4), cy+py*bodyW+sin*(be+(tipNeckD-be)*0.4),
-    cx+px*1.5+cos*tipNeckD, cy+py*1.5+sin*tipNeckD,
-    tipX, tipY
+    cx+cos*(b0-length*0.008)-px*stemW*0.15,      cy+sin*(b0-length*0.008)-py*stemW*0.15,
+    cx+cos*(stemS+(b0-stemS)*0.5)-px*stemW*0.4,  cy+sin*(stemS+(b0-stemS)*0.5)-py*stemW*0.4,
+    cx+cos*stemS-px*stemW,                        cy+sin*stemS-py*stemW
   );
-  ctx.stroke();
-  ctx.lineCap='butt';
-
-  // ── 4. Central ridge highlight (simulates raised center spine) ──
-  ctx.globalAlpha=0.07;
-  const ridgeG=ctx.createLinearGradient(cx+cos*bs,cy+sin*bs,tipX,tipY);
-  ridgeG.addColorStop(0,'rgba(255,255,255,0)');
-  ridgeG.addColorStop(0.2,'rgba(255,255,255,0.9)');
-  ridgeG.addColorStop(0.85,'rgba(255,255,255,0.3)');
-  ridgeG.addColorStop(1,'rgba(255,255,255,0)');
-  ctx.strokeStyle=ridgeG;
-  ctx.lineWidth=1.5;
-  ctx.beginPath();
-  ctx.moveTo(cx+cos*bs,cy+sin*bs);
-  ctx.lineTo(tipX,tipY);
-  ctx.stroke();
-
-  ctx.globalAlpha=1;
+  ctx.closePath();
+  ctx.fillStyle=metalGrad(cx+cos*stemS, cy+sin*stemS);
+  ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,0.30)'; ctx.lineWidth=0.5; ctx.stroke();
   ctx.restore();
 
-  // ── Time text — engraved groove, prayer-color enamel fill ──
-  // The needle is metal. The time is carved into it. The groove is filled
-  // with the prayer's own color like enamel in a struck engraving.
-  const ishaH=cachedTimes?((cachedTimes.isha%24)+24)%24:0;
-  const lateIsha=ishaH>=22;
-  const _mob=window.innerWidth<=1024;
-  let textD=length*(lateIsha?(_mob?0.38:0.42):(_mob?0.52:0.62));
-
-  // Time-based collision avoidance — only the needle that needs it moves.
-  // Fajr after 05:00 → pull inward (away from time capsule on right side).
-  // Isha after 21:00 → pull inward (away from city name + countdown at top).
-  // Each condition is independent. All other needles stay at default position.
-  // Needle text stays at natural position — capsule moves instead (see pitX/pitY logic)
-
-  const flip=cos<0;
+  // ── Segment 2: cartouche right tip → spear point ─────────────────────────
   ctx.save();
-  ctx.translate(cx+cos*textD, cy+sin*textD);
-  ctx.rotate(flip?ang+Math.PI:ang);
+  ctx.beginPath();
+  ctx.moveTo(cx+cos*b1, cy+sin*b1);
+  ctx.bezierCurveTo(
+    cx+cos*(b1+length*0.008)+px*stemW*0.15, cy+sin*(b1+length*0.008)+py*stemW*0.15,
+    cx+cos*sp0+px*stemW*0.4,                cy+sin*sp0+py*stemW*0.4,
+    cx+cos*sp0+px*spearW,                   cy+sin*sp0+py*spearW
+  );
+  ctx.lineTo(cx+cos*tipR, cy+sin*tipR);
+  ctx.lineTo(cx+cos*sp0-px*spearW, cy+sin*sp0-py*spearW);
+  ctx.bezierCurveTo(
+    cx+cos*sp0-px*stemW*0.4,                cy+sin*sp0-py*stemW*0.4,
+    cx+cos*(b1+length*0.008)-px*stemW*0.15, cy+sin*(b1+length*0.008)-py*stemW*0.15,
+    cx+cos*b1,                              cy+sin*b1
+  );
+  ctx.closePath();
+  ctx.fillStyle=metalGrad(cx+cos*b1, cy+sin*b1);
+  ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,0.30)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.restore();
+
+  // ── Islamic cartouche frame ───────────────────────────────────────────────
+  const bCX=cx+cos*bulbD, bCY=cy+sin*bulbD;
+  ctx.save();
+  ctx.translate(bCX, bCY);
+  ctx.rotate(ang);
+
+  const cW=spinL*1.1, cH=spinW*0.72, cR=cH*0.45, cuspD=spinW*0.28;
+
+  ctx.beginPath();
+  ctx.moveTo(-cW, 0);
+  ctx.bezierCurveTo(-cW+cuspD*1.2,-cuspD*0.5, -cW+cuspD*2,-cH*0.55, -cW+cuspD*2.5,-cH);
+  ctx.arcTo(-cW+cuspD*3,-cH, cW-cuspD*3,-cH, cR);
+  ctx.lineTo(cW-cuspD*3,-cH);
+  ctx.arcTo(cW-cuspD*2.5,-cH, cW-cuspD*2,-cH*0.55, cR);
+  ctx.bezierCurveTo(cW-cuspD*2,-cH*0.55, cW-cuspD*1.2,-cuspD*0.5, cW,0);
+  ctx.bezierCurveTo(cW-cuspD*1.2,cuspD*0.5, cW-cuspD*2,cH*0.55, cW-cuspD*2.5,cH);
+  ctx.arcTo(cW-cuspD*3,cH, -cW+cuspD*3,cH, cR);
+  ctx.lineTo(-cW+cuspD*3,cH);
+  ctx.arcTo(-cW+cuspD*2.5,cH, -cW+cuspD*2,cH*0.55, cR);
+  ctx.bezierCurveTo(-cW+cuspD*2,cH*0.55, -cW+cuspD*1.2,cuspD*0.5, -cW,0);
+  ctx.closePath();
+
+  // Metallic semi-transparent fill
+  const cartG=ctx.createLinearGradient(0,-cH,0,cH);
+  cartG.addColorStop(0,   'rgba(255,255,255,0.18)');
+  cartG.addColorStop(0.3,  'rgba(180,190,210,0.22)');
+  cartG.addColorStop(0.5,  'rgba(80,90,110,0.35)');
+  cartG.addColorStop(0.7,  'rgba(180,190,210,0.20)');
+  cartG.addColorStop(1,   'rgba(255,255,255,0.12)');
+  ctx.fillStyle=cartG; ctx.fill();
+
+  // Prayer-color outline
+  ctx.strokeStyle=hexRgba(col, isActive?1.0:0.65);
+  ctx.lineWidth=isActive?1.8:1.0;
+  if(isActive){ctx.shadowColor=col;ctx.shadowBlur=6;}
+  ctx.stroke(); ctx.shadowBlur=0;
+
+  // ── Text — white pearl, existing font, flip for upper half ───────────────
+  const flip=cos<0;
+  if(flip) ctx.rotate(Math.PI);
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.font=`700 11px 'Geist',sans-serif`;
-
-  // Layer 1 — deep groove shadow, bottom-right wall of the carved channel
-  ctx.save();
-  ctx.translate(0.9, 1.3);
-  ctx.fillStyle='rgba(0,0,0,0.9)';
-  ctx.shadowBlur=0;
+  ctx.fillStyle=isActive?'#ffffff':'rgba(220,230,255,0.85)';
   ctx.fillText(timeStr,0,0);
-  ctx.restore();
-
-  // Layer 2 — upper-left groove wall, slightly lighter
-  ctx.save();
-  ctx.translate(-0.5, -0.8);
-  ctx.fillStyle='rgba(0,0,0,0.55)';
-  ctx.fillText(timeStr,0,0);
-  ctx.restore();
-
-  // Layer 3 — enamel fill: prayer color sitting inside the groove
-  // Rich and opaque like paint in a carved channel, no glow
-  ctx.fillStyle=col;
-  ctx.globalAlpha=0.92;
-  ctx.shadowBlur=0;
-  ctx.fillText(timeStr,0,0);
-  ctx.globalAlpha=1;
-
-  // Layer 4 — thin bright highlight on the top rim of the groove
-  // Light catches the very top edge of the carved letter
-  ctx.save();
-  ctx.translate(-0.4, -0.9);
-  ctx.fillStyle='rgba(255,255,255,0.18)';
-  ctx.fillText(timeStr,0,0);
-  ctx.restore();
 
   ctx.restore();
 }

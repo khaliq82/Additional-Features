@@ -683,7 +683,7 @@ function updateDate(){
 // b1   = start point (cartouche right tip), on the needle axis at distance b1 from pivot
 // tipR = end point (track ring)
 // ang  = needle angle
-function drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive){
+function drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive, baseWidth){
   function _hr(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
   const cos=Math.cos(ang), sin=Math.sin(ang);
   const px=-sin, py=cos;
@@ -695,7 +695,7 @@ function drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive){
   // Wide base → taper → first ledge → shaft → second ledge → neck → dome → spire
   const p = (f) => b1 + L*f; // position at fraction f
 
-  const baseW    = L * 0.055;  // half-width at wide base (connects to cartouche)
+  const baseW    = baseWidth || L * 0.055;  // matches cartouche tip height
   const taper1W  = L * 0.028;  // half-width after first taper
   const ledge1W  = L * 0.042;  // half-width at first ledge flare
   const shaftW   = L * 0.018;  // half-width of thin shaft
@@ -864,7 +864,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   ctx.restore();
 
   // ── Segment 2: minaret tip (cartouche right tip → track ring) ──────────────
-  drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive);
+  drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive, cH);
 
   // ── Islamic cartouche frame ───────────────────────────────────────────────
   const bCX=cx+cos*bulbD, bCY=cy+sin*bulbD;
@@ -897,7 +897,20 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   cartG.addColorStop(1,   'rgba(255,255,255,0.20)');
   ctx.fillStyle=cartG; ctx.fill();
 
-  // Prayer-color outline — active is brighter/thicker, no glow
+  // Prayer-color outline — left side only (right side blends into minaret)
+  // Redraw only the left half of the cartouche path for stroke
+  ctx.beginPath();
+  ctx.moveTo(-cW, 0);
+  ctx.bezierCurveTo(-cW+cuspD*1.2,-cuspD*0.5, -cW+cuspD*2,-cH*0.55, -cW+cuspD*2.5,-cH);
+  ctx.arcTo(-cW+cuspD*3,-cH, 0,-cH, cR);
+  ctx.lineTo(0,-cH);
+  ctx.strokeStyle=_hr(col, 0.90);
+  ctx.lineWidth=1.6;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(0,cH);
+  ctx.arcTo(-cW+cuspD*3,cH, -cW+cuspD*2.5,cH, cR);
+  ctx.bezierCurveTo(-cW+cuspD*2,cH*0.55, -cW+cuspD*1.2,cuspD*0.5, -cW,0);
   ctx.strokeStyle=_hr(col, 0.90);
   ctx.lineWidth=1.6;
   ctx.stroke();

@@ -806,10 +806,10 @@ function drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive){
   ctx.closePath();
 
   // Fill
-  ctx.fillStyle = _hr(col, isActive?1.0:0.60);
+  ctx.fillStyle = isActive?'rgba(255,255,255,1.0)':'rgba(220,230,255,0.60)';
   ctx.fill();
   // Edge
-  ctx.strokeStyle = _hr(col, isActive?0.9:0.40);
+  ctx.strokeStyle = isActive?'rgba(255,255,255,0.7)':'rgba(220,230,255,0.30)';
   ctx.lineWidth = 0.5;
   ctx.stroke();
   ctx.restore();

@@ -1408,7 +1408,7 @@ function drawArc(){
   }
 
   // ── Premium screw pivot — Rolex-style crown ──
-  const pr=13; // outer radius
+  const pr=_mobR?8:13; // outer radius — smaller on mobile
   ctx.save();
 
   // Outer drop shadow

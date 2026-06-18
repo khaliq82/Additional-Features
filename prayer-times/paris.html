@@ -864,7 +864,7 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   ctx.restore();
 
   // ── Segment 2: minaret tip (cartouche right tip → track ring) ──────────────
-  drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive, cH);
+  drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive, length*0.088*0.72);
 
   // ── Islamic cartouche frame ───────────────────────────────────────────────
   const bCX=cx+cos*bulbD, bCY=cy+sin*bulbD;

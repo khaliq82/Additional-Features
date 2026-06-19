@@ -2002,7 +2002,7 @@ if(_searchInp){
         box.innerHTML=results.map(function(r){
           var parts=r.display_name.split(',');
           var city=parts[0].trim(), country=parts[parts.length-1].trim();
-          return '<div onclick="selectCity('+r.lat+','+r.lon+')" style="padding:10px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);" onmouseover="this.style.background='rgba(0,212,255,0.08)'" onmouseout="this.style.background=''">'
+          return '<div onclick="selectCity('+r.lat+','+r.lon+')" style="padding:10px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);">'
             +'<div style="color:#fff;font-family:Geist,sans-serif;font-size:0.9rem;">'+city+'</div>'
             +'<div style="color:rgba(255,255,255,0.4);font-size:0.78rem;margin-top:2px;">'+country+'</div>'
             +'</div>';
@@ -2050,10 +2050,14 @@ document.addEventListener('DOMContentLoaded',function(){
           box.innerHTML=results.map(function(r){
             var parts=r.display_name.split(',');
             var city=parts[0].trim(),country=parts[parts.length-1].trim();
-            return '<div onclick="selectCity('+r.lat+','+r.lon+')" style="padding:10px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);" onmouseover="this.style.background='rgba(0,212,255,0.08)'" onmouseout="this.style.background=''">'
-              +'<div style="color:#fff;font-family:Geist,sans-serif;font-size:0.9rem;">'+city+'</div>'
-              +'<div style="color:rgba(255,255,255,0.4);font-size:0.78rem;margin-top:2px;">'+country+'</div>'
-              +'</div>';
+            var item=document.createElement('div');
+            item.style.cssText='padding:10px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);';
+            item.innerHTML='<div style="color:#fff;font-family:Geist,sans-serif;font-size:0.9rem;">'+city+'</div>'
+              +'<div style="color:rgba(255,255,255,0.4);font-size:0.78rem;margin-top:2px;">'+country+'</div>';
+            item.addEventListener('mouseover',function(){this.style.background='rgba(0,212,255,0.08)';});
+            item.addEventListener('mouseout',function(){this.style.background='';});
+            item.addEventListener('click',function(){selectCity(r.lat,r.lon);});
+            return item.outerHTML;
           }).join('');
           box.style.display='block';
         }).catch(function(){});

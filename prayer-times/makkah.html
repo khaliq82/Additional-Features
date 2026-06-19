@@ -1259,61 +1259,6 @@ function drawArc(){
     ctx.shadowBlur=3;
     ctx.fillText('Makkah', cx, cy - R*0.68);
     ctx.shadowBlur=0;
-    // Next prayer countdown
-    const _lh2=localH();
-    const _next2=nextPrayer(cachedTimes,_lh2);
-    if(_next2){
-      const _diff=(_next2.time-_lh2+24)%24;
-      const _ts=Math.floor(_diff*3600);
-      const _hh=Math.floor(_ts/3600),_mm=Math.floor((_ts%3600)/60),_ss2=_ts%60;
-      const _countdown=`${String(_hh).padStart(2,'0')}:${String(_mm).padStart(2,'0')}:${String(_ss2).padStart(2,'0')}`;
-      const _col=PMETA[_next2.name].color;
-      const _label=PMETA[_next2.name].en;
-      const _y=cy-R*0.55;
-      // Prayer name in its color
-      ctx.font=`600 ${Math.round(R*0.062)}px 'Geist',sans-serif`;
-      ctx.fillStyle=_col;
-      ctx.shadowColor=_col;
-      ctx.shadowBlur=2;
-      const _nameW=ctx.measureText(_label).width;
-      // "in" in dim white
-      ctx.fillStyle='rgba(255,255,255,0.35)';
-      ctx.shadowBlur=0;
-      const _inW=ctx.measureText(' in ').width;
-      // countdown — fixed char width to prevent jitter
-      ctx.font=`700 ${Math.round(R*0.060)}px 'Geist',sans-serif`;
-      const _charW=ctx.measureText('0').width;
-      const _colonW=ctx.measureText(':').width*0.9;
-      const _cdFixedW=_charW*6+_colonW*2; // HH:MM:SS
-      const _totalW=_nameW+_inW+_cdFixedW;
-      let _x=cx-_totalW/2;
-      // Draw prayer name
-      ctx.font=`600 ${Math.round(R*0.062)}px 'Geist',sans-serif`;
-      ctx.fillStyle=_col;
-      ctx.shadowColor=_col; ctx.shadowBlur=2;
-      ctx.textAlign='left';
-      ctx.fillText(_label, _x, _y);
-      _x+=_nameW;
-      ctx.shadowBlur=0;
-      // Draw " in "
-      ctx.fillStyle='rgba(255,255,255,0.35)';
-      ctx.fillText(' in ', _x, _y);
-      _x+=_inW;
-      // Draw countdown chars at fixed width
-      ctx.font=`700 ${Math.round(R*0.060)}px 'Geist',sans-serif`;
-      ctx.fillStyle='rgba(238,233,222,0.95)';
-      ctx.shadowColor='rgba(238,233,222,0.2)'; ctx.shadowBlur=2;
-      ctx.textAlign='left';
-      for(let _i=0;_i<_countdown.length;_i++){
-        const _ch=_countdown[_i];
-        const _cw=_ch===':'?_colonW:_charW;
-        const _off=(_cw-ctx.measureText(_ch).width)/2;
-        ctx.fillText(_ch, _x+_off, _y);
-        _x+=_cw;
-      }
-      ctx.shadowBlur=0;
-      ctx.textAlign='center';
-    }
     ctx.restore();
   }
 

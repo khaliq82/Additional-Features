@@ -1933,10 +1933,17 @@ function shareMapMoment(platform){
 // Hub page — location detection, search, dynamic update
 // ════════════════════════════════════════════════════════
 function hubTick(){
-  // Recalculate every second
   cachedTimes=calcPrayers(CITY.lat,CITY.lon,cityOffset(),new Date());
   updateActiveCard();
-  updateHeroPanel();
+  // Update next prayer name in right panel
+  var lh=localH();
+  var np=nextPrayer(cachedTimes,lh);
+  var nameEl=document.getElementById('next-name');
+  if(nameEl && np){
+    nameEl.textContent=np.name.charAt(0).toUpperCase()+np.name.slice(1);
+    var colors={fajr:'#4466ff',dhuhr:'#ffcc00',asr:'#e07a2f',maghrib:'#d94f3d',isha:'#9b59c4'};
+    nameEl.style.color=colors[np.name]||'var(--cyan)';
+  }
 }
 
 function updateHeroPanel(){
@@ -1963,9 +1970,12 @@ function loadLocation(lat, lon){
       CITY.name=addr.city||addr.town||addr.village||addr.county||addr.state||d.display_name.split(',')[0]||'';
       CITY.country=addr.country||'';
       CITY.lat=lat; CITY.lon=lon;
-      // Rough tz offset from longitude
+      // Set tzName from Intl using country code as hint
+      // Use rough lon-based offset as fallback
       CITY.tz=Math.round(lon/15);
-      CITY.tzName='';
+      CITY.tzName=''; // cityOffset() will use Intl auto-detection
+      cachedTimes=calcPrayers(CITY.lat,CITY.lon,cityOffset(),new Date());
+      renderPrayers();
       updateHeroPanel();
       cachedTimes=calcPrayers(CITY.lat,CITY.lon,cityOffset(),new Date());
       window.history.replaceState({},'','/prayer-times?lat='+lat.toFixed(4)+'&lon='+lon.toFixed(4));
@@ -1980,40 +1990,6 @@ function detectLocation(){
     function(){console.log('Geolocation denied');},
     {timeout:8000,maximumAge:300000}
   );
-}
-
-// Search
-var _st=null;
-var _searchInp=document.getElementById('hub-search');
-if(_searchInp){
-  _searchInp.addEventListener('input',function(){
-    clearTimeout(_st);
-    var q=this.value.trim();
-    var box=document.getElementById('hub-results');
-    if(q.length<2){if(box)box.style.display='none';return;}
-    _st=setTimeout(function(){
-      fetch('https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(q)+'&limit=6&accept-language=en',
-        {headers:{'User-Agent':'AdhanLive/1.0 (adhanlive.com)'}})
-      .then(function(r){return r.json();})
-      .then(function(results){
-        var box=document.getElementById('hub-results');
-        if(!box)return;
-        if(!results.length){box.style.display='none';return;}
-        box.innerHTML=results.map(function(r){
-          var parts=r.display_name.split(',');
-          var city=parts[0].trim(), country=parts[parts.length-1].trim();
-          return '<div onclick="selectCity('+r.lat+','+r.lon+')" style="padding:10px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);">'
-            +'<div style="color:#fff;font-family:Geist,sans-serif;font-size:0.9rem;">'+city+'</div>'
-            +'<div style="color:rgba(255,255,255,0.4);font-size:0.78rem;margin-top:2px;">'+country+'</div>'
-            +'</div>';
-        }).join('');
-        box.style.display='block';
-      }).catch(function(){});
-    },350);
-  });
-  _searchInp.addEventListener('blur',function(){
-    setTimeout(function(){var b=document.getElementById('hub-results');if(b)b.style.display='none';},200);
-  });
 }
 
 function selectCity(lat,lon){

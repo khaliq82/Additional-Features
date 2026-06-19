@@ -1,20 +1,21 @@
-/* adhan-methods.js — v2
+/* adhan-methods.js — v3
    AdhanLive — single source of truth for prayer-time calculation methods.
 
    Keyed by ISO 3166-1 alpha-2 country code.
    Requires adhan.js to be loaded first (global `adhan`).
 
-   Usage:
+   Usage on city pages:
      const params = AdhanMethods.paramsFor('MY');
-     const pt     = new adhan.PrayerTimes(coords, date, params);
-     const label  = AdhanMethods.labelFor('MY');  // 'JAKIM, Malaysia'
 
-   High-latitude handling:
-     AdhanMethods.paramsFor() automatically applies the correct
-     HighLatitudeRule for countries above ~51°N. The rule is baked
-     into the returned params object — no extra code needed on city pages.
+   Usage on hub page (region-aware):
+     const params = AdhanMethods.paramsForRegion('IN', 'Tamil Nadu');
+     const label  = AdhanMethods.labelFor('IN');
 
-   verified: true = checked against official authority source.
+   v3 additions:
+   - paramsForRegion(cc, state) — sub-national madhab overrides
+   - South India Shafi states (Tamil Nadu, Kerala, Karnataka, Goa,
+     Andhra Pradesh, Telangana, Lakshadweep)
+   - latitude-based high-lat auto-detection for hub page
 */
 (function (global) {
   'use strict';
@@ -26,189 +27,211 @@
 
   // ── Helpers ──────────────────────────────────────────────────────────────
 
-  // Custom angle-based params.
-  // CRITICAL: first arg is the METHOD NAME ('Other'), NOT the fajr angle.
-  // Passing a number there silently drops ishaAngle to 0.
   function angles(fajr, isha, madhab) {
     var p = new adhan.CalculationParameters('Other', fajr, isha);
     if (madhab) p.madhab = madhab;
     return p;
   }
 
-  // ── High-latitude rule ───────────────────────────────────────────────────
-  //
-  // Problem: above ~48°N in summer, the sun never drops far enough below the
-  // horizon for true astronomical twilight. Pure angle math either gives
-  // impossibly early/late times or collapses Fajr and Isha to the same value.
-  //
-  // Solution: TwilightAngle rule — adhan.js uses the twilight angle itself
-  // to estimate Fajr/Isha proportionally. Empirically tested against:
-  //   - London Unified Timetable (ICC / East London Mosque / London Central)
-  //   - Jun 17 2026: our Fajr 02:30 vs London Unified 02:39 (9 min gap)
-  //   - Sep 15 2026: our Fajr 04:39 vs London Unified 04:40 (1 min gap)
-  //
-  // Affected cities (latitude > ~51°N, tested June peak):
-  //   London (51.5°N), Amsterdam (52.4°N), Berlin (52.5°N), Stockholm (59.3°N)
-  //
-  // NOT affected (angle calculation works fine year-round):
-  //   Paris (48.9°N), Toronto (43.7°N), New York (40.7°N), Istanbul (41.0°N)
-  //   All cities below 42°N (Makkah, Cairo, Dubai, KL, Jakarta, etc.)
-  //
-  // Countries flagged for TwilightAngle rule:
+  // ── High-latitude countries ───────────────────────────────────────────────
   var HIGH_LAT_TWILIGHT = {
-    GB: true,  // United Kingdom   — 51.5°N, London Unified closest match
-    NL: true,  // Netherlands      — 52.4°N Amsterdam, same issue
-    DE: true,  // Germany          — 52.5°N Berlin
-    SE: true,  // Sweden           — 59.3°N Stockholm
-    NO: true,  // Norway           — 59.9°N Oslo
-    DK: true,  // Denmark          — 55.7°N Copenhagen
-    FI: true,  // Finland          — 60.2°N Helsinki
-    BE: true,  // Belgium          — 50.8°N Brussels (borderline, safer with rule)
-    IE: true,  // Ireland          — 53.3°N Dublin
-    IS: true,  // Iceland          — 64.1°N Reykjavik
-    CA: true,  // Canada           — varies; Toronto fine, but rule safe for all
+    GB:true, NL:true, DE:true, SE:true, NO:true,
+    DK:true, FI:true, BE:true, IE:true, IS:true, CA:true,
   };
 
-  function applyHighLatRule(params, cc) {
-    if (HIGH_LAT_TWILIGHT[cc]) {
-      params.highLatitudeRule = adhan.HighLatitudeRule.TwilightAngle;
-    }
-    return params;
-  }
+  // ── Sub-national region overrides ─────────────────────────────────────────
+  // Keyed by CC, value is a function(stateName) → params | null
+  // Return null to fall through to country default.
+  //
+  // State names are as returned by Nominatim's 'state' field.
+  // We normalise to lowercase for matching.
+
+  var REGION_OVERRIDES = {
+
+    // India — South Indian states follow Shafi madhab for Asr
+    // All other Indian states follow Hanafi (country default)
+    'IN': function(state) {
+      var s = (state||'').toLowerCase();
+      var SHAFI_STATES = [
+        'tamil nadu', 'kerala', 'karnataka', 'goa',
+        'andhra pradesh', 'telangana', 'lakshadweep',
+        'puducherry', 'pondicherry'
+      ];
+      for (var i=0; i<SHAFI_STATES.length; i++) {
+        if (s.indexOf(SHAFI_STATES[i]) !== -1) {
+          return angles(18, 18, adhan.Madhab.Shafi);
+        }
+      }
+      return null; // fall through to Hanafi default
+    },
+
+    // Indonesia — Kemenag is national, but Aceh province uses slightly
+    // stricter local times; fall through for now, flag for future data
+    'ID': function(state) {
+      return null; // all provinces use Kemenag national method
+    },
+
+    // Malaysia — all states use JAKIM; no regional variation needed
+    'MY': function(state) {
+      return null;
+    },
+
+  };
 
   // ── Registry ─────────────────────────────────────────────────────────────
 
   var REGISTRY = {
 
-    // ── Verified against official source ──
-    SA: {
-      label: 'Umm al-Qura University, Makkah',
-      verified: true,
-      build: function () { return adhan.CalculationMethod.UmmAlQura(); }
-    },
+    SA: { label:'Umm al-Qura University, Makkah', verified:true,
+          build: function(){ return adhan.CalculationMethod.UmmAlQura(); } },
 
-    MY: {
-      label: 'JAKIM, Malaysia',
-      verified: true,
-      // Fajr 18° / Isha 18° — confirmed vs e-Solat, 17 Jun 2026
-      // Malaysia moved from 20° to 18° Fajr in 2021 fatwa
-      build: function () { return angles(18, 18, adhan.Madhab.Shafi); }
-    },
+    MY: { label:'JAKIM, Malaysia', verified:true,
+          build: function(){ return angles(18, 18, adhan.Madhab.Shafi); } },
 
-    GB: {
-      label: 'London Unified Timetable (MWL + TwilightAngle)',
-      verified: true,
-      // TwilightAngle is empirically closest to London Unified / ICC timetable.
-      // Jun 17: our 02:30 Fajr vs London Unified 02:39 (9 min gap).
-      // SeventhOfNight was 1hr off. MiddleOfNight collapsed in summer.
-      build: function () {
-        var p = adhan.CalculationMethod.MuslimWorldLeague();
-        p.highLatitudeRule = adhan.HighLatitudeRule.TwilightAngle;
-        return p;
-      }
-    },
+    GB: { label:'Muslim World League + TwilightAngle (closest to London Unified)', verified:true,
+          build: function(){
+            var p=adhan.CalculationMethod.MuslimWorldLeague();
+            p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle;
+            return p;
+          }},
 
-    // ── Not yet verified against official source ──
+    SG: { label:'MUIS, Singapore', verified:false,
+          build: function(){ return angles(20, 18, adhan.Madhab.Shafi); } },
 
-    SG: {
-      label: 'MUIS, Singapore',
-      verified: false,
-      // MUIS uses Fajr 20° — different from Malaysia's 18°
-      build: function () { return angles(20, 18, adhan.Madhab.Shafi); }
-    },
+    ID: { label:'Kemenag, Indonesia', verified:false,
+          build: function(){ return angles(20, 18, adhan.Madhab.Shafi); } },
 
-    ID: {
-      label: 'Kemenag, Indonesia',
-      verified: false,
-      // Kemenag ~Fajr 20° / Isha 18° — verify vs bimasislam.kemenag.go.id
-      build: function () { return angles(20, 18, adhan.Madhab.Shafi); }
-    },
+    EG: { label:'Egyptian General Authority of Survey', verified:false,
+          build: function(){ return adhan.CalculationMethod.Egyptian(); } },
 
-    EG: {
-      label: 'Egyptian General Authority of Survey',
-      verified: false,
-      build: function () { return adhan.CalculationMethod.Egyptian(); }
-    },
+    TR: { label:'Diyanet, Türkiye', verified:false,
+          build: function(){ return adhan.CalculationMethod.Turkey(); } },
 
-    TR: {
-      label: 'Diyanet, Türkiye',
-      verified: false,
-      build: function () { return adhan.CalculationMethod.Turkey(); }
-    },
+    AE: { label:'UAE General Authority of Islamic Affairs', verified:false,
+          build: function(){ return adhan.CalculationMethod.Dubai(); } },
 
-    AE: {
-      label: 'UAE General Authority of Islamic Affairs',
-      verified: false,
-      build: function () { return adhan.CalculationMethod.Dubai(); }
-    },
+    PK: { label:'University of Karachi (Hanafi)', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.Karachi(); p.madhab=adhan.Madhab.Hanafi; return p; } },
 
-    PK: {
-      label: 'University of Karachi',
-      verified: false,
-      // Hanafi madhab: Asr starts when shadow = 2x object height (vs Shafi = 1x)
-      // Difference is 44-82 minutes depending on season
-      build: function () { var p=adhan.CalculationMethod.Karachi(); p.madhab=adhan.Madhab.Hanafi; return p; }
-    },
+    BD: { label:'University of Karachi (Hanafi)', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.Karachi(); p.madhab=adhan.Madhab.Hanafi; return p; } },
 
-    BD: {
-      label: 'University of Karachi',
-      verified: false,
-      // Hanafi madhab — same as PK
-      build: function () { var p=adhan.CalculationMethod.Karachi(); p.madhab=adhan.Madhab.Hanafi; return p; }
-    },
+    IN: { label:'University of Karachi (Hanafi — North/Central India)', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.Karachi(); p.madhab=adhan.Madhab.Hanafi; return p; } },
 
-    US: {
-      label: 'ISNA, North America',
-      verified: false,
-      build: function () { return adhan.CalculationMethod.NorthAmerica(); }
-    },
+    US: { label:'ISNA, North America', verified:false,
+          build: function(){ return adhan.CalculationMethod.NorthAmerica(); } },
 
-    FR: {
-      label: 'Union of Islamic Organisations of France (UOIF)',
-      verified: false,
-      // Paris 48.9°N — angle calculation works year-round, no high-lat rule
-      build: function () { return angles(12, 12); }
-    },
+    FR: { label:'Union of Islamic Organisations of France (UOIF)', verified:false,
+          build: function(){ return angles(12, 12); } },
 
-    // ── Extensions from country/method notes ──
-    LY: { label: 'Egyptian General Authority of Survey', verified: false,
-          build: function () { return adhan.CalculationMethod.Egyptian(); } },
-    SO: { label: 'Egyptian General Authority of Survey', verified: false,
-          build: function () { return adhan.CalculationMethod.Egyptian(); } },
-    NP: { label: 'University of Karachi', verified: false,
-          build: function () { return adhan.CalculationMethod.Karachi(); } },
-    LK: { label: 'University of Karachi', verified: false,
-          build: function () { return adhan.CalculationMethod.Karachi(); } },
-    IN: { label: 'University of Karachi (India standard)', verified: false,
-          // Hanafi madhab — standard across Indian subcontinent
-          build: function () { var p=adhan.CalculationMethod.Karachi(); p.madhab=adhan.Madhab.Hanafi; return p; } },
-    PL: { label: 'Muslim World League', verified: false,
-          build: function () { return adhan.CalculationMethod.MuslimWorldLeague(); } },
+    // Subcontinent + nearby
+    NP: { label:'University of Karachi', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.Karachi(); p.madhab=adhan.Madhab.Hanafi; return p; } },
+    LK: { label:'University of Karachi', verified:false,
+          build: function(){ return adhan.CalculationMethod.Karachi(); } },
+    AF: { label:'University of Karachi (Hanafi)', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.Karachi(); p.madhab=adhan.Madhab.Hanafi; return p; } },
+
+    // North Africa / Middle East
+    LY: { label:'Egyptian General Authority of Survey', verified:false,
+          build: function(){ return adhan.CalculationMethod.Egyptian(); } },
+    SO: { label:'Egyptian General Authority of Survey', verified:false,
+          build: function(){ return adhan.CalculationMethod.Egyptian(); } },
+    SD: { label:'Egyptian General Authority of Survey', verified:false,
+          build: function(){ return adhan.CalculationMethod.Egyptian(); } },
+    TN: { label:'Egyptian General Authority of Survey', verified:false,
+          build: function(){ return adhan.CalculationMethod.Egyptian(); } },
+    DZ: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+    MA: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+    IQ: { label:'Umm al-Qura University, Makkah', verified:false,
+          build: function(){ return adhan.CalculationMethod.UmmAlQura(); } },
+    KW: { label:'Umm al-Qura University, Makkah', verified:false,
+          build: function(){ return adhan.CalculationMethod.UmmAlQura(); } },
+    BH: { label:'Umm al-Qura University, Makkah', verified:false,
+          build: function(){ return adhan.CalculationMethod.UmmAlQura(); } },
+    QA: { label:'Umm al-Qura University, Makkah', verified:false,
+          build: function(){ return adhan.CalculationMethod.UmmAlQura(); } },
+    OM: { label:'Umm al-Qura University, Makkah', verified:false,
+          build: function(){ return adhan.CalculationMethod.UmmAlQura(); } },
+    YE: { label:'Umm al-Qura University, Makkah', verified:false,
+          build: function(){ return adhan.CalculationMethod.UmmAlQura(); } },
+    JO: { label:'Umm al-Qura University, Makkah', verified:false,
+          build: function(){ return adhan.CalculationMethod.UmmAlQura(); } },
+    SY: { label:'Umm al-Qura University, Makkah', verified:false,
+          build: function(){ return adhan.CalculationMethod.UmmAlQura(); } },
+    LB: { label:'Umm al-Qura University, Makkah', verified:false,
+          build: function(){ return adhan.CalculationMethod.UmmAlQura(); } },
+    PS: { label:'Umm al-Qura University, Makkah', verified:false,
+          build: function(){ return adhan.CalculationMethod.UmmAlQura(); } },
+    IR: { label:'University of Tehran', verified:false,
+          build: function(){ return adhan.CalculationMethod.Tehran(); } },
+
+    // Southeast Asia
+    PH: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+    TH: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+    MM: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+    BN: { label:'MUIS, Singapore', verified:false,
+          build: function(){ return angles(20, 18, adhan.Madhab.Shafi); } },
+
+    // Sub-Saharan Africa
+    NG: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+    ET: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+    GH: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+    SN: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+    TZ: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+    KE: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+
+    // North America
+    MX: { label:'ISNA, North America', verified:false,
+          build: function(){ return adhan.CalculationMethod.NorthAmerica(); } },
+    AU: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+
+    // Europe
+    PL: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+    RU: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+    ES: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
+    IT: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
 
     // High-lat European countries — MWL + TwilightAngle
-    NL: { label: 'Muslim World League', verified: false,
-          build: function () { var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
-    DE: { label: 'Muslim World League', verified: false,
-          build: function () { var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
-    SE: { label: 'Muslim World League', verified: false,
-          build: function () { var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
-    NO: { label: 'Muslim World League', verified: false,
-          build: function () { var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
-    DK: { label: 'Muslim World League', verified: false,
-          build: function () { var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
-    FI: { label: 'Muslim World League', verified: false,
-          build: function () { var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
-    BE: { label: 'Muslim World League', verified: false,
-          build: function () { var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
-    IE: { label: 'Muslim World League', verified: false,
-          build: function () { var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
-    IS: { label: 'Muslim World League', verified: false,
-          build: function () { var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
-    CA: { label: 'ISNA, North America', verified: false,
-          build: function () { var p=adhan.CalculationMethod.NorthAmerica(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    NL: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    DE: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    SE: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    NO: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    DK: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    FI: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    BE: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    IE: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    IS: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    CA: { label:'ISNA, North America', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.NorthAmerica(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
   };
 
-  // Fallback for any country not yet in the registry
   var DEFAULT = {
     label: 'Muslim World League',
     verified: false,
@@ -219,11 +242,71 @@
     return REGISTRY[String(cc || '').toUpperCase()] || DEFAULT;
   }
 
+  // ── Latitude-based high-lat auto-detection ────────────────────────────────
+  // For hub page: if country isn't in HIGH_LAT_TWILIGHT but latitude > 51°,
+  // automatically apply TwilightAngle rule.
+  function applyLatRule(params, lat) {
+    if (lat && Math.abs(lat) > 51) {
+      if (!params.highLatitudeRule ||
+          params.highLatitudeRule === adhan.HighLatitudeRule.MiddleOfTheNight) {
+        params.highLatitudeRule = adhan.HighLatitudeRule.TwilightAngle;
+      }
+    }
+    return params;
+  }
+
+  // ── Public API ────────────────────────────────────────────────────────────
+
   global.AdhanMethods = {
-    paramsFor:  function (cc) { return entry(cc).build(); },
-    labelFor:   function (cc) { return entry(cc).label; },
+
+    // City pages — country-level only
+    paramsFor: function (cc) {
+      return entry(cc).build();
+    },
+
+    // Hub page — region-aware, with latitude fallback for high-lat
+    paramsForRegion: function (cc, state, lat) {
+      var ccUp = String(cc || '').toUpperCase();
+      var override = REGION_OVERRIDES[ccUp];
+      var params = null;
+
+      // Try region override first
+      if (override) {
+        params = override(state || '');
+      }
+
+      // Fall through to country default
+      if (!params) {
+        params = entry(ccUp).build();
+      }
+
+      // Auto high-lat rule from latitude if not already set
+      if (lat !== undefined) {
+        applyLatRule(params, lat);
+      }
+
+      return params;
+    },
+
+    // Label — shows region info when available
+    labelFor: function (cc, state) {
+      var ccUp = String(cc || '').toUpperCase();
+      var base = entry(ccUp).label;
+      // For India, annotate with madhab when we know the state
+      if (ccUp === 'IN' && state) {
+        var s = (state||'').toLowerCase();
+        var SHAFI = ['tamil nadu','kerala','karnataka','goa','andhra pradesh','telangana','lakshadweep','puducherry','pondicherry'];
+        for (var i=0; i<SHAFI.length; i++) {
+          if (s.indexOf(SHAFI[i]) !== -1) {
+            return 'University of Karachi (Shafi — South India)';
+          }
+        }
+      }
+      return base;
+    },
+
     isVerified: function (cc) { return entry(cc).verified === true; },
-    has:        function (cc) { return Object.prototype.hasOwnProperty.call(REGISTRY, String(cc || '').toUpperCase()); },
+    has:        function (cc) { return Object.prototype.hasOwnProperty.call(REGISTRY, String(cc||'').toUpperCase()); },
     registry:   REGISTRY
   };
 

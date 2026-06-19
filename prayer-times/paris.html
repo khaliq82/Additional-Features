@@ -811,14 +811,14 @@ function drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive){
     cx+cos*b1+px*baseW, cy+sin*b1+py*baseW,
     cx+cos*b1-px*baseW, cy+sin*b1-py*baseW
   );
-  _mg2.addColorStop(0,   'rgba(255,255,255,0.90)');
-  _mg2.addColorStop(0.20,'rgba(200,210,230,0.85)');
-  _mg2.addColorStop(0.50,'rgba(80,90,110,0.80)');
-  _mg2.addColorStop(0.80,'rgba(160,175,200,0.75)');
-  _mg2.addColorStop(1,   'rgba(255,255,255,0.50)');
+  _mg2.addColorStop(0,   'rgba(255,220,100,0.90)');
+  _mg2.addColorStop(0.20,'rgba(180,140,50,0.85)');
+  _mg2.addColorStop(0.50,'rgba(60,40,10,0.85)');
+  _mg2.addColorStop(0.80,'rgba(160,120,40,0.80)');
+  _mg2.addColorStop(1,   'rgba(220,180,80,0.55)');
   ctx.fillStyle=_mg2;
   ctx.fill();
-  ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.strokeStyle='rgba(255,210,90,0.40)'; ctx.lineWidth=0.5; ctx.stroke();
   ctx.restore();
 }
 
@@ -871,14 +871,14 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
     cx+cos*stemS+px*stemW, cy+sin*stemS+py*stemW,
     cx+cos*stemS-px*stemW, cy+sin*stemS-py*stemW
   );
-  _mg1.addColorStop(0,   'rgba(255,255,255,0.90)');
-  _mg1.addColorStop(0.20,'rgba(200,210,230,0.85)');
-  _mg1.addColorStop(0.50,'rgba(80,90,110,0.80)');
-  _mg1.addColorStop(0.80,'rgba(160,175,200,0.75)');
-  _mg1.addColorStop(1,   'rgba(255,255,255,0.50)');
+  _mg1.addColorStop(0,   'rgba(255,220,100,0.90)');
+  _mg1.addColorStop(0.20,'rgba(180,140,50,0.85)');
+  _mg1.addColorStop(0.50,'rgba(60,40,10,0.85)');
+  _mg1.addColorStop(0.80,'rgba(160,120,40,0.80)');
+  _mg1.addColorStop(1,   'rgba(220,180,80,0.55)');
   ctx.fillStyle=_mg1;
   ctx.fill();
-  ctx.strokeStyle='rgba(255,255,255,0.40)'; ctx.lineWidth=0.6; ctx.stroke();
+  ctx.strokeStyle='rgba(255,210,90,0.45)'; ctx.lineWidth=0.6; ctx.stroke();
   ctx.restore();
 
   // ── Segment 2: minaret tip (cartouche right tip → track ring) ──────────────

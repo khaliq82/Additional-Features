@@ -1,0 +1,2235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prayer Times Worldwide — Live Islamic Prayer Times | AdhanLive</title>
+<meta name="description" content="Live prayer times for any city in the world. Fajr, Dhuhr, Asr, Maghrib and Isha with live countdown. Auto-detects your location.">
+<meta name="keywords" content="prayer times, salah times, namaz times, fajr, dhuhr, asr, maghrib, isha, islamic prayer times worldwide">
+<link rel="canonical" href="https://www.adhanlive.com/prayer-times">
+<meta property="og:title" content="Prayer Times Worldwide | AdhanLive">
+<meta property="og:description" content="Live prayer times for any city in the world. Auto-detects your location.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Cormorant+Display:wght@300;400&family=Geist:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#000000;--border:rgba(255,255,255,0.1);
+  --text:#ffffff;--text2:rgba(255,255,255,0.6);--text3:rgba(255,255,255,0.25);
+  --cyan:#00d4ff;
+  --fajr:#4466ff;--dhuhr:#ffcc00;--asr:#e07a2f;--maghrib:#d94f3d;--isha:#b06ee0;
+  --fajr-bg:rgba(68,102,255,0.12);--dhuhr-bg:rgba(255,204,0,0.12);
+  --asr-bg:rgba(224,122,47,0.12);--maghrib-bg:rgba(217,79,61,0.12);--isha-bg:rgba(155,89,196,0.12);
+}
+html{scroll-behavior:smooth;}
+body::before{
+  content:'';position:fixed;inset:0;z-index:999;pointer-events:none;opacity:0.35;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+/* NAV */
+nav{position:sticky;top:0;z-index:500;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(0,0,0,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);flex-shrink:0;}
+.logo{font-family:'Geist',sans-serif;font-weight:800;font-size:18px;letter-spacing:-0.02em;display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;color:#fff;}
+.logo-dot{width:9px;height:9px;border-radius:50%;background:#00d4ff;box-shadow:0 0 12px #00d4ff;position:relative;flex-shrink:0;}
+.logo-dot::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(0,212,255,0.4);animation:logoPulse 2.4s ease-out infinite;}
+@keyframes logoPulse{0%{transform:scale(1);opacity:1}100%{transform:scale(2.8);opacity:0}}
+.nav-right{display:flex;align-items:center;gap:12px;}
+.nav-links{display:flex;gap:32px;align-items:center;}
+.nav-links a{font-size:11px;letter-spacing:0.12em;color:rgba(255,255,255,0.7);font-weight:600;text-decoration:none;cursor:pointer;transition:color 0.2s;text-transform:uppercase;position:relative;display:inline-block;}
+.nav-links a:hover{color:#ffffff;}
+.nav-links a.active{color:#00d4ff;}
+.nav-dot-badge{position:absolute;top:-5px;right:-10px;width:6px;height:6px;border-radius:50%;background:#00d4ff;box-shadow:0 0 8px #00d4ff;display:inline-block;z-index:10;}
+.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:32px;height:32px;background:none;border:none;cursor:pointer;padding:4px;position:relative;}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:transform 0.3s,opacity 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+#mobile-menu-overlay{display:none;position:fixed;inset:0;z-index:498;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);}
+#mobile-menu-overlay.visible{display:block;}
+.nav-utc{display:flex;align-items:stretch;padding:0;border:1px solid rgba(255,255,255,0.1);border-radius:6px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;}
+.nav-utc-dates{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:5px 12px;}
+.nav-utc-hijri{font-size:9px;letter-spacing:0.04em;color:#00d4ff;font-weight:600;}
+.nav-utc-greg{font-size:9px;letter-spacing:0.03em;color:rgba(255,255,255,0.5);}
+.nav-utc-divider{width:1px;background:rgba(255,255,255,0.1);align-self:stretch;}
+.nav-utc-time{display:flex;align-items:center;justify-content:center;padding:5px 12px;font-size:13px;font-weight:600;letter-spacing:0.04em;color:#ffffff;}
+/* THREE-COLUMN DASHBOARD LAYOUT */
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+.page{height:calc(100vh - 56px);display:grid;grid-template-columns:320px 1fr 300px;grid-template-rows:auto 1fr auto;overflow:hidden;}
+
+/* LEFT PANEL */
+.city-block{display:flex;flex-direction:column;justify-content:flex-end;padding:28px 24px 12px;border-right:1px solid var(--border);overflow:hidden;gap:0;grid-column:1;grid-row:1;background:var(--bg);}
+.hero-city{font-family:'Playfair Display',serif;font-size:clamp(38px,3.2vw,60px);font-weight:300;letter-spacing:-0.02em;line-height:0.9;color:#fff;margin-bottom:6px;}
+.hero-country{font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text2);margin-bottom:10px;}
+.hero-date{font-size:11px;color:var(--text2);margin-bottom:10px;letter-spacing:0.01em;}
+.hero-date span{color:var(--cyan);font-weight:600;}
+.hero-date .hijri-sep,.hero-date #hijri-inline{display:none;}
+.hero-date .hijri-sep{color:var(--text3);font-weight:400;}
+.hero-method{font-size:11px;color:rgba(235,238,243,0.82);font-weight:500;letter-spacing:0.06em;margin-bottom:18px;}
+
+/* VERTICAL PRAYER CARDS */
+.prayer-stack{display:flex;flex-direction:column;gap:6px;flex:1;min-height:0;justify-content:center;}
+.pcard{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,0.02);position:relative;overflow:hidden;transition:border-color 0.3s,background 0.3s;}
+.pcard::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--pc);opacity:0.4;transition:opacity 0.3s;}
+.pcard.active{border-color:var(--pc);background:rgba(255,255,255,0.04);}
+.pcard.active::before{opacity:1;}
+.pcard-dot{width:7px;height:7px;border-radius:50%;background:var(--pc);flex-shrink:0;}
+.pcard-name{font-size:11px;font-weight:700;letter-spacing:0.08em;color:var(--text2);text-transform:uppercase;flex:1;}
+.pcard.active .pcard-name{color:#fff;}
+.pcard-time{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums;color:#fff;letter-spacing:-0.02em;}
+.pcard.active .pcard-time{color:var(--pc);}
+.pcard-now{font-size:7px;font-weight:800;letter-spacing:0.12em;color:var(--pc);background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;display:none;flex-shrink:0;}
+.pcard.active .pcard-now{display:block;}
+
+/* CENTRE PANEL */
+.centre-panel{display:flex;align-items:center;justify-content:center;padding:0;min-height:0;overflow:hidden;position:relative;grid-column:2;grid-row:1/3;border-bottom:1px solid rgba(255,255,255,0.12);background:var(--bg);}
+.arc-canvas-wrap{position:relative;z-index:1;aspect-ratio:1;height:min(100%,1020px);max-width:100%;border-radius:50%;overflow:hidden;}
+#prayer-arc{display:block;width:100%;height:100%;background:transparent;}
+
+/* RIGHT PANEL */
+/* Floating clock — Option A */
+.right-border-top{grid-column:3;grid-row:1;border-left:1px solid var(--border);}
+.right-panel{display:flex;flex-direction:column;justify-content:center;padding:20px;border-left:1px solid var(--border);gap:12px;min-height:0;overflow:hidden;grid-column:3;grid-row:1/3;border-bottom:1px solid rgba(255,255,255,0.12);}
+.np-block{padding:16px;border-radius:12px;border:1px solid var(--border);background:rgba(255,255,255,0.02);position:relative;overflow:hidden;}
+.np-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--np-color,var(--cyan));}
+.np-tag{font-size:9px;font-weight:700;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;}
+.np-name{font-size:14px;font-weight:700;color:var(--np-color,var(--cyan));margin-bottom:8px;}
+.np-timer{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;font-feature-settings:'tnum' 1,'kern' 0;letter-spacing:-0.01em;color:rgba(238,233,222,0.95);line-height:1;font-family:'Geist','SF Mono','Roboto Mono','Courier New',monospace;}
+.np-timer-label{font-size:9px;color:var(--text3);letter-spacing:0.08em;margin-top:3px;}
+.stat-row{display:flex;flex-direction:column;gap:7px;}
+.stat-card{padding:10px 12px;border-radius:9px;border:1px solid var(--border);background:rgba(255,255,255,0.02);}
+.stat-label{font-size:8px;font-weight:700;letter-spacing:0.14em;color:var(--text3);text-transform:uppercase;margin-bottom:3px;}
+.stat-value{font-size:16px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;line-height:1;}
+.stat-value.cyan{color:var(--cyan);}
+.stat-sub{font-size:9px;color:var(--text2);margin-top:2px;}
+.np-progress{height:7px;border-radius:5px;background:rgba(255,255,255,0.06);margin-top:13px;position:relative;box-shadow:inset 0 1px 2px rgba(0,0,0,0.4);}
+.np-progress-knob{position:absolute;top:50%;left:0%;width:12px;height:12px;border-radius:50%;background:var(--np-color,var(--cyan));transform:translate(-50%,-50%);box-shadow:0 0 5px var(--np-color,var(--cyan)),0 0 0 1.5px rgba(0,0,0,0.4);z-index:2;}
+.np-progress-fill{position:relative;height:100%;width:0%;border-radius:5px;overflow:hidden;opacity:0.8;background-color:var(--np-color,var(--cyan));background-image:linear-gradient(135deg,rgba(255,255,255,0.10) 25%,transparent 25%,transparent 50%,rgba(255,255,255,0.10) 50%,rgba(255,255,255,0.10) 75%,transparent 75%,transparent);background-size:16px 16px;box-shadow:0 0 4px var(--np-color,var(--cyan)),inset 0 0 0 1px rgba(255,255,255,0.05);animation:np-stripes 0.7s linear infinite;}
+.np-progress-fill::after{content:'';position:absolute;top:0;bottom:0;left:0;width:45%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.22),transparent);transform:translateX(-120%);animation:np-sheen 2.4s ease-in-out infinite;}
+@keyframes np-stripes{from{background-position:0 0;}to{background-position:16px 0;}}
+@keyframes np-sheen{0%{transform:translateX(-120%);}55%,100%{transform:translateX(320%);}}
+.sun-arc{border:1px solid var(--border);border-radius:11px;background:rgba(255,255,255,0.02);padding:11px 12px 9px;}
+.sun-arc-tag{font-size:9px;font-weight:700;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase;margin-bottom:5px;}
+.sun-arc svg{display:block;overflow:visible;}
+#sun-arc-dot{filter:drop-shadow(0 0 6px rgba(255,200,90,0.9));}
+#sun-arc-halo{filter:blur(2px);animation:sunpulse 3.6s ease-in-out infinite;}
+@keyframes sunpulse{0%,100%{opacity:0.16;}50%{opacity:0.30;}}
+.sun-arc-labels{display:flex;justify-content:space-between;padding:0 4px;margin-top:1px;}
+.sun-arc-labels span{display:flex;flex-direction:column;gap:1px;}
+.sun-arc-labels span:last-child{align-items:flex-end;}
+.sun-arc-labels em{font-style:normal;font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);}
+.sun-arc-labels b{font-size:11px;font-weight:700;color:rgba(238,233,222,0.9);font-variant-numeric:tabular-nums;}
+.globe-cta{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;background:rgba(0,212,255,0.06);border:1px solid rgba(0,212,255,0.2);text-decoration:none;color:#fff;transition:all 0.2s;}
+.globe-cta:hover{background:rgba(0,212,255,0.12);border-color:rgba(0,212,255,0.4);}
+.globe-cta-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:pd 1.5s infinite;flex-shrink:0;}
+.globe-cta-text{font-size:11px;font-weight:700;letter-spacing:0.06em;color:var(--cyan);}
+.globe-cta-sub{font-size:9px;color:var(--text2);margin-top:1px;}
+@keyframes pd{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.4)}}
+
+/* BOTTOM BAR */
+.bottom-bar{position:sticky;bottom:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:44px;background:rgba(6,10,16,0.97);backdrop-filter:blur(12px);border-top:1px solid var(--border);flex-shrink:0;}
+.bb-left{display:flex;align-items:center;gap:8px;}
+.bb-logo{font-family:'Geist',sans-serif;font-weight:800;font-size:13px;display:flex;align-items:center;gap:7px;color:#fff;text-decoration:none;}
+.bb-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+.bb-tagline{font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:0.06em;border-left:1px solid rgba(255,255,255,0.08);padding-left:10px;}
+.bb-center{font-size:9px;color:rgba(255,255,255,0.15);letter-spacing:0.04em;}
+.bb-right{display:flex;align-items:center;gap:6px;}
+.bb-share-label{font-size:9px;color:rgba(255,255,255,0.3);letter-spacing:0.08em;text-transform:uppercase;margin-right:4px;}
+.cities-toggle{margin-top:14px;background:none;border:1px solid var(--border);border-radius:8px;color:var(--text2);font-size:11px;font-weight:600;letter-spacing:0.08em;padding:9px 18px;cursor:pointer;width:100%;transition:all 0.2s;}
+.cities-toggle:hover{border-color:rgba(0,212,255,0.35);color:var(--cyan);}
+.btn-label{display:none;}
+.mf-share-btn{display:flex;align-items:center;gap:5px;padding:8px;border-radius:50%;width:34px;height:34px;justify-content:center;border:none;cursor:pointer;transition:opacity 0.2s;}
+.mf-share-btn:hover{opacity:0.85;}
+.mf-share-btn.whatsapp{background:#25D366;color:#fff;}
+.mf-share-btn.twitter{background:#000;color:#fff;border:1px solid rgba(255,255,255,0.15);}
+.mf-share-btn.copy{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.12);}
+
+@media(min-width:1025px){
+  #cities-more{display:contents !important;}
+  #cities-featured{display:contents;}
+  .cities-all-wrap{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;}
+  .cities-toggle{display:none;}
+}
+.seo-section{max-width:1200px;margin:0 auto;padding:48px 32px;}
+.content-section{padding:40px 0;}.first-section{padding-top:0;}
+.content-section h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:600;margin-bottom:16px;color:#fff;}
+.content-section p{font-size:14px;line-height:1.75;color:var(--text2);max-width:760px;margin-bottom:14px;}
+.content-section p strong{color:#fff;font-weight:600;}
+.content-section a{color:var(--cyan);text-decoration:none;}
+.content-section a:hover{text-decoration:underline;}
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:22px;}
+.rule-item{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.rule-item .r-name{font-size:12px;font-weight:700;letter-spacing:0.06em;margin-bottom:8px;}
+.rule-item .r-text{font-size:12.5px;color:var(--text2);line-height:1.6;}
+.live-cta-card{border:1px solid rgba(0,212,255,0.18);border-radius:16px;background:rgba(0,212,255,0.04);overflow:hidden;padding:40px 40px 36px;}
+.live-cta-inner{max-width:680px;}
+.live-cta-pulse{display:flex;align-items:center;gap:8px;margin-bottom:18px;}
+.live-cta-pulse span:first-child{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:pd 1.5s infinite;display:inline-block;}
+.live-cta-pulse span:last-child{font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--cyan);}
+.live-cta-title{font-family:'Playfair Display',serif;font-size:clamp(24px,2.5vw,36px);font-weight:400;color:#fff;margin-bottom:14px;line-height:1.15;}
+.live-cta-body{font-size:14px;line-height:1.75;color:var(--text2);margin-bottom:10px;max-width:600px;}
+.live-cta-data{font-size:11px;color:var(--text3);letter-spacing:0.06em;margin-bottom:24px;}
+.live-cta-btn{display:inline-flex;align-items:center;gap:10px;padding:13px 28px;border-radius:8px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--cyan);font-size:12px;font-weight:700;letter-spacing:0.1em;text-decoration:none;text-transform:uppercase;transition:all 0.25s;}
+.live-cta-btn:hover{background:rgba(0,212,255,0.18);border-color:rgba(0,212,255,0.6);}
+.live-cta-btn-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:pd 1.5s infinite;flex-shrink:0;}
+.cta-live-btn{display:inline-flex;align-items:center;gap:10px;margin-top:20px;padding:12px 24px;border-radius:8px;background:rgba(0,212,255,0.07);border:1px solid rgba(0,212,255,0.25);color:var(--cyan);font-size:12px;font-weight:700;letter-spacing:0.08em;text-decoration:none;text-transform:uppercase;transition:all 0.2s;}
+.cta-live-btn:hover{background:rgba(0,212,255,0.14);border-color:rgba(0,212,255,0.5);}
+.cta-live-dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);animation:pd 1.5s infinite;flex-shrink:0;}
+.cities-section{border-top:1px solid var(--border);padding-top:40px;margin-bottom:48px;}
+.cities-label{font-size:10px;font-weight:700;letter-spacing:0.15em;color:var(--text3);margin-bottom:20px;}
+.cities-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;}
+.city-link{padding:14px 16px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,0.02);text-decoration:none;color:#fff;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:space-between;transition:all 0.2s;}
+.city-link:hover{border-color:rgba(0,212,255,0.3);background:rgba(0,212,255,0.05);color:var(--cyan);}
+.city-link-arrow{color:var(--text3);font-size:11px;}
+
+/* MOBILE */
+@media(max-width:1024px){
+  html,body{overflow:auto;}
+
+  .page{
+    grid-template-columns:1fr;
+    grid-template-rows:auto;
+    overflow:visible;
+    height:auto;
+    display:flex;
+    flex-direction:column;
+  }
+
+  /* 1. City info first — centered, city + country on one line */
+  .city-block{
+    order:1;
+    border:none;
+    padding:22px 20px 6px;
+    justify-content:flex-start;
+    align-items:center;
+    text-align:center;
+  }
+  .city-name-block{margin-bottom:0;}
+  .hero-city{display:inline;font-size:clamp(26px,6.6vw,38px);font-weight:300;line-height:1.1;margin:0;}
+  .hero-city::after{content:',';}
+  .hero-country{display:inline;font-family:'Playfair Display',serif;font-weight:300;font-size:clamp(26px,6.6vw,38px);text-transform:none;letter-spacing:-0.01em;color:var(--text2);margin:0;}
+  .hero-date{display:block;margin:9px 0 0;font-size:12px;}
+  .hero-date .hijri-sep,.hero-date #hijri-inline{display:inline;}
+  .hero-method{display:block;margin:6px 0 0;font-size:11px;}
+
+  /* 2. Clock second — ~90vw, centered */
+  .centre-panel{
+    order:2;
+    padding:6px 0 2px;
+    width:100%;
+    height:auto;
+    max-height:none;
+    overflow:visible;
+    background:var(--bg);
+  }
+  .arc-canvas-wrap{
+    width:99vw;
+    height:99vw;
+    max-width:99vw;
+    margin:0 auto;
+    aspect-ratio:auto;
+    border-radius:50%;
+  }
+
+  /* 4. Full timetable at the bottom */
+  .prayer-stack-wrap{
+    order:4;
+    padding:16px 20px 8px;
+    width:100%;
+    grid-column:unset;
+    grid-row:unset;
+    border:none;
+  }
+  .prayer-stack{
+    flex-direction:column;
+    gap:6px;
+    width:100%;
+  }
+  .pcard{
+    flex:none;
+    width:100%;
+    min-width:unset;
+    justify-content:flex-start;
+  }
+  .pcard-time{font-size:17px;}
+
+  /* 3. Next prayer + Sehri/Iftar + Sun path, above the timetable */
+  .right-panel{
+    order:3;
+    border:none;
+    padding:0 20px 6px;
+    gap:10px;
+  }
+  .right-panel .np-block{order:1;}
+  .right-panel .stat-row{order:2;flex-direction:row;gap:8px;}
+  .right-panel .stat-row .stat-card{flex:1;}
+  .right-panel .sun-arc{order:3;}
+
+  /* Bottom bar */
+  .bb-tagline{display:none;}
+  .bb-center{display:none;}
+  .bb-share-label{display:none;}
+  /* Nav */
+  nav{padding:0 20px;}
+  .nav-links{display:none;position:fixed;top:56px;left:0;right:0;z-index:9999;background:rgba(0,0,0,0.97);backdrop-filter:blur(24px);flex-direction:column;gap:0;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .nav-links.mobile-open{display:flex;}
+  .nav-links a{padding:16px 24px;font-size:14px;letter-spacing:0.06em;border-bottom:1px solid rgba(255,255,255,0.06);width:100%;}
+  .hamburger{display:flex;}
+  .nav-utc{display:none !important;}
+
+  .np-timer{font-size:24px;}
+  .np-block{padding:14px;}
+  .stat-card{padding:10px 12px;}
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{opacity:0;animation:fadeUp 0.6s ease forwards;}
+.fade-up:nth-child(1){animation-delay:0.05s}.fade-up:nth-child(2){animation-delay:0.1s}
+.fade-up:nth-child(3){animation-delay:0.15s}.fade-up:nth-child(4){animation-delay:0.2s}
+.fade-up:nth-child(5){animation-delay:0.25s}
+.prayer-stack-wrap{grid-column:1;grid-row:2;border-right:1px solid var(--border);border-bottom:1px solid rgba(255,255,255,0.12);padding:24px 24px 28px;display:flex;flex-direction:column;justify-content:center;min-height:0;overflow:hidden;background:var(--bg);}
+
+
+/* ── Hub-specific styles ── */
+.hub-hero{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  padding:32px 40px 0;
+  min-height:100px;
+}
+.hub-city-name{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.2rem,5vw,3.8rem);
+  font-weight:700;
+  color:#fff;
+  line-height:1.1;
+  margin:0;
+}
+.hub-country{
+  font-size:0.72rem;
+  font-weight:600;
+  letter-spacing:0.15em;
+  color:#00d4ff;
+  margin-top:4px;
+  text-transform:uppercase;
+}
+.hub-date{
+  font-size:0.85rem;
+  color:rgba(255,255,255,0.55);
+  margin-top:6px;
+}
+.hub-method{
+  font-size:0.82rem;
+  font-weight:600;
+  color:rgba(255,255,255,0.75);
+  margin-top:4px;
+}
+.hub-search-wrap{
+  width:100%;
+  padding:20px 40px 28px;
+  position:relative;
+}
+.hub-search-bar{
+  width:100%;
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(0,212,255,0.25);
+  border-radius:12px;
+  padding:14px 50px 14px 20px;
+  font-size:1rem;
+  color:#fff;
+  font-family:'Geist',sans-serif;
+  outline:none;
+  transition:border-color 0.2s, background 0.2s;
+}
+.hub-search-bar:focus{
+  border-color:rgba(0,212,255,0.7);
+  background:rgba(255,255,255,0.09);
+}
+.hub-search-bar::placeholder{ color:rgba(255,255,255,0.35); }
+.hub-search-icon{
+  position:absolute;
+  right:58px;
+  top:50%;
+  transform:translateY(-50%);
+  color:rgba(0,212,255,0.6);
+  pointer-events:none;
+  font-size:1.1rem;
+}
+.hub-search-results{
+  position:absolute;
+  top:calc(100% - 8px);
+  left:40px;
+  right:40px;
+  background:#0e1018;
+  border:1px solid rgba(0,212,255,0.2);
+  border-radius:0 0 12px 12px;
+  z-index:100;
+  max-height:280px;
+  overflow-y:auto;
+  display:none;
+}
+.hub-search-results.visible{ display:block; }
+.hub-result-item{
+  padding:12px 20px;
+  cursor:pointer;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  transition:background 0.15s;
+}
+.hub-result-item:hover{ background:rgba(0,212,255,0.08); }
+.hub-result-city{ font-size:0.95rem; color:#fff; font-family:'Geist',sans-serif; }
+.hub-result-country{ font-size:0.78rem; color:rgba(255,255,255,0.45); margin-top:2px; }
+.hub-loading{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:60px 20px;
+  color:rgba(255,255,255,0.5);
+  font-family:'Geist',sans-serif;
+  font-size:0.9rem;
+  gap:12px;
+}
+.hub-loading-dot{
+  width:8px; height:8px; border-radius:50%;
+  background:#00d4ff;
+  animation:hubPulse 1.4s ease-in-out infinite;
+}
+@keyframes hubPulse{0%,100%{opacity:0.3;transform:scale(0.8);}50%{opacity:1;transform:scale(1.2);}}
+.hub-error{
+  padding:40px 40px;
+  color:rgba(255,100,100,0.8);
+  font-family:'Geist',sans-serif;
+  font-size:0.9rem;
+}
+.hub-locate-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(0,212,255,0.1);
+  border:1px solid rgba(0,212,255,0.3);
+  border-radius:8px;
+  padding:8px 16px;
+  color:#00d4ff;
+  font-size:0.82rem;
+  font-family:'Geist',sans-serif;
+  cursor:pointer;
+  transition:background 0.2s;
+  margin-top:10px;
+}
+.hub-locate-btn:hover{ background:rgba(0,212,255,0.18); }
+
+@media(max-width:1024px){
+  .hub-hero{ padding:20px 20px 0; }
+  .hub-search-wrap{ padding:16px 20px 20px; }
+  .hub-search-results{ left:20px; right:20px; }
+  .hub-search-icon{ right:38px; }
+}
+</style>
+</head>
+<body>
+<nav>
+  <a class="logo" href="/home"><div class="logo-dot"></div><span style="display:inline">Adhan<span style="color:#00d4ff">Live</span></span></a>
+  <div class="nav-links" id="nav-links">
+    <a href="/home" onclick="closeMobileMenu()">Home</a>
+    <a href="/livemap" onclick="closeMobileMenu()">Live Map</a>
+    <a href="/adhanclock" onclick="closeMobileMenu();markVisited('clock')" id="nav-clock-link">Adhan Clock<span class="nav-dot-badge" id="dot-clock"></span></a>
+    <a href="/arcs" onclick="closeMobileMenu();markVisited('arc')" id="nav-arc">Arc Explorer<span class="nav-dot-badge" id="dot-arc"></span></a>
+    <a href="/ask" onclick="closeMobileMenu();markVisited('ask')" id="nav-ask">Ask AdhanLive<span class="nav-dot-badge" id="dot-ask"></span></a>
+    <a href="/about" onclick="closeMobileMenu()">About</a>
+    <a href="/contact" onclick="closeMobileMenu()">Contact</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-utc" id="utc-clock">
+      <div class="nav-utc-dates">
+        <div class="nav-utc-greg" id="utc-greg">Wed, 10 Jun 2026</div>
+        <div class="nav-utc-hijri" id="utc-hijri">24 Dhul Hijjah 1447</div>
+      </div>
+      <div class="nav-utc-divider"></div>
+      <div class="nav-utc-time" id="utc-time">12:00:00 PM</div>
+    </div>
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Top-right nav clock -->
+<div class="nav-clock-wrap" id="nav-clock-wrap">
+  <div class="nav-clock-date" id="nav-date">—</div>
+  <div class="nav-clock-hijri" id="nav-hijri">—</div>
+  <div class="nav-clock-time" id="nav-time">—</div>
+</div>
+
+<div class="page-wrap" style="display:grid;grid-template-columns:320px 1fr 260px;min-height:calc(100vh - 56px);">
+
+  <!-- Left panel -->
+  <div class="left-panel" style="border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;">
+    <div class="hub-hero" id="hub-hero">
+      <div class="hub-loading">
+        <div class="hub-loading-dot"></div>
+        Detecting your location...
+      </div>
+    </div>
+    <div class="hub-search-wrap" id="hub-search-wrap" style="display:none;">
+      <input type="text" class="hub-search-bar" id="hub-search" placeholder="Search any city in the world..." autocomplete="off" spellcheck="false">
+      <span class="hub-search-icon">⌕</span>
+      <div class="hub-search-results" id="hub-results"></div>
+    </div>
+    <div class="prayer-stack-wrap" id="prayer-stack"></div>
+  </div>
+
+  <!-- Clock -->
+  <div class="clock-col" style="display:flex;align-items:center;justify-content:center;padding:20px;">
+    <div class="arc-canvas-wrap" id="arc-wrap" style="width:min(100%,680px);height:min(100%,680px);aspect-ratio:1;position:relative;">
+      <canvas id="arcCanvas"></canvas>
+    </div>
+  </div>
+
+  <!-- Right panel -->
+  <div class="right-panel" style="border-left:1px solid rgba(255,255,255,0.06);padding:24px 20px;display:flex;flex-direction:column;gap:16px;">
+    <div class="stat-card" id="next-prayer-card">
+      <div class="stat-label">NEXT PRAYER</div>
+      <div class="stat-name" id="next-prayer-name" style="color:#00d4ff;font-size:1.1rem;font-weight:600;font-family:'Geist',sans-serif;margin:4px 0;">—</div>
+      <div class="stat-value" id="next-prayer-countdown" style="font-size:2.2rem;font-weight:700;font-family:'Geist',sans-serif;color:#fff;letter-spacing:-0.02em;">—:—:—</div>
+      <div class="stat-label" style="margin-top:4px;">TIME REMAINING</div>
+      <div class="progress-bar-wrap" style="margin-top:8px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden;">
+        <div id="progress-bar" style="height:100%;background:#00d4ff;border-radius:2px;width:50%;transition:width 1s linear;"></div>
+      </div>
+    </div>
+    <div class="stat-card" id="sun-card">
+      <div class="stat-label">SUN PATH</div>
+      <canvas id="sunCanvas" width="220" height="80" style="width:100%;margin:8px 0;"></canvas>
+      <div style="display:flex;justify-content:space-between;">
+        <div><div class="stat-label">SUNRISE</div><div class="stat-value cyan" id="sunrise-time">—</div></div>
+        <div style="text-align:right;"><div class="stat-label">SUNSET</div><div class="stat-value cyan" id="sunset-time">—</div></div>
+      </div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">SEHRI ENDS</div>
+      <div class="stat-value cyan" id="sehri-time">—</div>
+      <div class="stat-sublabel">Last moment before Fajr</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">IFTAR</div>
+      <div class="stat-value cyan" id="iftar-time">—</div>
+      <div class="stat-sublabel">At Maghrib</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Mobile layout adjustments -->
+<style>
+@media(max-width:1024px){
+  .page-wrap{
+    grid-template-columns:1fr !important;
+    grid-template-rows:auto auto auto;
+  }
+  .left-panel{ border-right:none !important; border-bottom:1px solid rgba(255,255,255,0.06); }
+  .right-panel{ border-left:none !important; border-top:1px solid rgba(255,255,255,0.06); padding:20px; }
+  .arc-canvas-wrap{ width:99vw !important; height:99vw !important; }
+}
+</style>
+
+<footer style="text-align:center;padding:16px;color:rgba(255,255,255,0.25);font-size:0.75rem;font-family:'Geist',sans-serif;border-top:1px solid rgba(255,255,255,0.06);">
+  <span class="logo"><div class="logo-dot"></div><span>Adhan<span style="color:#00d4ff">Live</span></span></span>
+  &nbsp;&middot;&nbsp; The live global visualization of Islamic prayer
+  &nbsp;&middot;&nbsp; &copy; 2026 AdhanLive &middot; Mosque data &copy; OpenStreetMap contributors
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/adhan@4.4.3/lib/bundles/adhan.umd.min.js"></script>
+<script src="/adhan-methods.js"></script>
+<script>
+// ── Dynamic CITY object — updated by location detect or search ──────────────
+var CITY = {
+  name:   '',
+  country:'',
+  cc:     '',
+  state:  '',
+  lat:    21.4225,
+  lon:    39.8262,
+  tz:     3,
+  tzName: 'Asia/Riyadh',
+  method: 'auto'
+};
+
+function cityOffset(){
+  if(!CITY.tzName) return CITY.tz;
+  try{
+    // Use Intl.DateTimeFormat shortOffset to read GMT+X directly —
+    // avoids toLocaleString string-parsing which breaks when the browser
+    // itself is in a non-UTC timezone (the parsed Date inherits local tz).
+    const fmt=new Intl.DateTimeFormat('en-US',{
+      timeZone:CITY.tzName,hour:'numeric',minute:'numeric',
+      hour12:false,timeZoneName:'shortOffset'
+    });
+    const parts=fmt.formatToParts(Date.now());
+    const tzStr=(parts.find(p=>p.type==='timeZoneName')||{}).value||'';
+    const m=tzStr.match(/GMT([+-])(\d+)(?::(\d+))?/);
+    if(!m) return CITY.tz;
+    return (m[1]==='+'?1:-1)*(parseInt(m[2])+(parseInt(m[3]||0)/60));
+  }catch(e){ return CITY.tz; }
+}
+
+// ── PRAYER ENGINE ────────────────────────────────────────────
+// adhan.js is the verified engine, same as the AdhanLive globe.
+// This adapter converts adhan.js UTC instants into fractional hours
+// in city local time, preserving the interface the arc renderer expects.
+function calcPrayers(lat,lon,tz,date){
+  // Method comes from the shared registry, keyed by country code (CITY.cc).
+  // This block is identical on every city page — only CITY.cc differs.
+  var params=AdhanMethods.paramsFor(CITY.cc);
+  var pt=new adhan.PrayerTimes(
+    new adhan.Coordinates(lat,lon),
+    date,
+    params
+  );
+  function fh(d){
+    var shifted=new Date(d.getTime()+tz*3600000);
+    return shifted.getUTCHours()+shifted.getUTCMinutes()/60+shifted.getUTCSeconds()/3600;
+  }
+  return{
+    fajr:fh(pt.fajr),
+    sunrise:fh(pt.sunrise),
+    dhuhr:fh(pt.dhuhr),
+    asr:fh(pt.asr),
+    maghrib:fh(pt.maghrib),
+    isha:fh(pt.isha)
+  };
+}
+
+const PMETA={
+  fajr:   {en:'Fajr',   icon:'🌙',color:'#4466ff',bg:'rgba(68,102,255,0.12)'},
+  dhuhr:  {en:'Dhuhr',  icon:'☀️', color:'#ffcc00',bg:'rgba(255,204,0,0.12)'},
+  asr:    {en:'Asr',    icon:'🌤️',color:'#e07a2f',bg:'rgba(224,122,47,0.12)'},
+  maghrib:{en:'Maghrib',icon:'🌅',color:'#d94f3d',bg:'rgba(217,79,61,0.12)'},
+  isha:   {en:'Isha',   icon:'🌃',color:'#b06ee0',bg:'rgba(155,89,196,0.12)'},
+};
+const ORDER=['fajr','dhuhr','asr','maghrib','isha'];
+
+function h2t(h){
+  const tot=((h%24)+24)%24,hh=Math.floor(tot),mm=Math.round((tot-hh)*60)%60;
+  return{h12:hh%12||12,mm:String(mm).padStart(2,'0'),ampm:hh>=12?'PM':'AM'};
+}
+function cityNow(){
+  // Date.now() is always UTC ms — no getTimezoneOffset() needed
+  return new Date(Date.now()+cityOffset()*3600000);
+}
+function localH(){const d=cityNow();return d.getUTCHours()+d.getUTCMinutes()/60+d.getUTCSeconds()/3600;}
+function currentPrayer(times,lh){
+  // Real prayer windows: Fajr ends at sunrise; between sunrise and Dhuhr
+  // no prayer window is open and this returns null.
+  if(lh>=times.fajr&&lh<times.sunrise)return 'fajr';
+  if(lh>=times.dhuhr&&lh<times.asr)return 'dhuhr';
+  if(lh>=times.asr&&lh<times.maghrib)return 'asr';
+  if(lh>=times.maghrib&&lh<times.isha)return 'maghrib';
+  if(lh>=times.isha||lh<times.fajr)return 'isha';
+  return null;
+}
+function nextPrayer(times,lh){
+  for(const p of ORDER){if(isNaN(times[p]))continue;const t=((times[p]%24)+24)%24;if(t>lh)return{name:p,time:t};}
+  return{name:'fajr',time:((times.fajr%24)+24)%24+24};
+}
+function prevPrayer(times,lh){
+  // Latest prayer at or before now = start of the current countdown window
+  let best=null;
+  for(const p of ORDER){
+    if(isNaN(times[p]))continue;
+    const t=((times[p]%24)+24)%24;
+    if(t<=lh && (!best||t>best.time)) best={name:p,time:t};
+  }
+  if(best)return best;
+  // Before today's Fajr: window started at yesterday's Isha (time-24)
+  let last=null;
+  for(const p of ORDER){
+    if(isNaN(times[p]))continue;
+    const t=((times[p]%24)+24)%24;
+    if(!last||t>last.time) last={name:p,time:t};
+  }
+  return last?{name:last.name,time:last.time-24}:{name:'isha',time:lh-1};
+}
+
+let cachedTimes=null;
+
+function renderPrayers(){
+  const now=new Date();
+  cachedTimes=calcPrayers(CITY.lat,CITY.lon,cityOffset(),now,CITY.method);
+  const lh=localH();
+  const ORDER=['fajr','dhuhr','asr','maghrib','isha'];
+  const stack=document.getElementById('prayer-stack');
+  if(!stack) return;
+  stack.innerHTML='';
+  ORDER.forEach(key=>{
+    const m=PMETA[key],t=cachedTimes[key];
+    function fmtT(fh){
+      const h=Math.floor(((fh%24)+24)%24),mn=Math.round((fh-Math.floor(fh))*60)%60;
+      const ap=h<12?'AM':'PM',hh=h%12||12;
+      return `${String(hh).padStart(2,'0')}:${String(mn).padStart(2,'0')} ${ap}`;
+    }
+    const div=document.createElement('div');
+    div.className='pcard fade-up';
+    div.style.setProperty('--pc',m.color);
+    div.innerHTML=`<div class="pcard-dot"></div><div class="pcard-name">${m.en}</div><div class="pcard-time">${isNaN(t)?'—':fmtT(t)}</div><div class="pcard-now">NOW</div>`;
+    stack.appendChild(div);
+  });
+  // Sunrise for right panel
+  const srEl=document.getElementById('sunrise-time');
+  if(srEl && cachedTimes.sunrise){
+    const sh=Math.floor(((cachedTimes.sunrise%24)+24)%24),sm=Math.floor((cachedTimes.sunrise-Math.floor(cachedTimes.sunrise))*60);
+    const sap=sh<12?'AM':'PM',shh=sh%12||12;
+    srEl.textContent=`${String(shh).padStart(2,'0')}:${String(sm).padStart(2,'0')} ${sap}`;
+  }
+  updateActiveCard();
+}
+function updateActiveCard(){
+  const t=cachedTimes;
+  const lh=localH();
+  let active=null;
+  if(lh>=t.fajr&&lh<t.sunrise)active='fajr';
+  else if(lh>=t.dhuhr&&lh<t.asr)active='dhuhr';
+  else if(lh>=t.asr&&lh<t.maghrib)active='asr';
+  else if(lh>=t.maghrib&&lh<t.isha)active='maghrib';
+  else if(lh>=t.isha||lh<t.fajr)active='isha';
+  const keys=['fajr','dhuhr','asr','maghrib','isha'];
+  document.querySelectorAll('.pcard').forEach((c,i)=>{
+    c.classList.toggle('active',keys[i]===active);
+  });
+}
+function updateDate(){
+  const d=cityNow();
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  let dateStr=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  try{
+    const hijri=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{
+      day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Riyadh'
+    }).format(new Date());
+    dateStr+=` \u00b7 ${hijri}`;
+  }catch(e){}
+  const greg=dateStr.split(' · ')[0];
+  const hij=dateStr.split(' · ')[1]||'';
+  document.getElementById('hero-date').innerHTML=greg+'<span class="hijri-sep"> · </span><span id="hijri-inline">'+hij+'</span>';
+}
+
+
+
+// Override calcPrayers to use paramsForRegion
+function calcPrayers(lat, lon, tz, date){
+  var params = AdhanMethods.paramsForRegion(CITY.cc, CITY.state, lat);
+  var pt = new adhan.PrayerTimes(new adhan.Coordinates(lat, lon), date, params);
+  function fh(d){ var s=new Date(d.getTime()+tz*3600000); return s.getUTCHours()+s.getUTCMinutes()/60+s.getUTCSeconds()/3600; }
+  return{ fajr:fh(pt.fajr), sunrise:fh(pt.sunrise), dhuhr:fh(pt.dhuhr), asr:fh(pt.asr), maghrib:fh(pt.maghrib), isha:fh(pt.isha) };
+}
+
+function drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive){
+  function _hr(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
+  const cos=Math.cos(ang), sin=Math.sin(ang);
+  const px=-sin, py=cos;
+
+  // Total length of this segment
+  const L = tipR - b1;
+
+  // ── Key positions along the axis (as fractions of L from b1) ──
+  // Wide base → taper → first ledge → shaft → second ledge → neck → dome → spire
+  const p = (f) => b1 + L*f; // position at fraction f
+
+  const baseW    = L * 0.055;  // half-width at wide base (connects to cartouche)
+  const taper1W  = L * 0.028;  // half-width after first taper
+  const ledge1W  = L * 0.042;  // half-width at first ledge flare
+  const shaftW   = L * 0.018;  // half-width of thin shaft
+  const ledge2W  = L * 0.038;  // half-width at second ledge (muezzin balcony)
+  const neckW    = L * 0.014;  // half-width of neck above second ledge
+  const domeW    = L * 0.024;  // half-width at dome swelling
+  const spireW   = L * 0.006;  // half-width at spire base
+
+  // Axis positions (fractions along L)
+  const f_base   = 0.00;
+  const f_t1a    = 0.10;  // start of first taper
+  const f_t1b    = 0.20;  // end of first taper
+  const f_l1a    = 0.22;  // start of first ledge
+  const f_l1b    = 0.28;  // end of first ledge
+  const f_l1c    = 0.32;  // ledge taper back to shaft
+  const f_sh1    = 0.35;  // shaft start
+  const f_sh2    = 0.52;  // shaft end
+  const f_l2a    = 0.54;  // second ledge start
+  const f_l2b    = 0.60;  // second ledge peak
+  const f_l2c    = 0.66;  // second ledge taper back
+  const f_neck   = 0.70;  // neck
+  const f_dome1  = 0.72;  // dome start
+  const f_dome2  = 0.82;  // dome peak
+  const f_dome3  = 0.88;  // dome end / spire base
+  const f_spire  = 0.92;  // spire shoulder
+  const f_tip    = 1.00;  // sharp point
+
+  function pt(f, w){
+    const d = p(f);
+    return [cx+cos*d+px*w, cy+sin*d+py*w];
+  }
+
+  // ── Build path — top side ──
+  ctx.save();
+  ctx.beginPath();
+
+  // Base
+  let [x,y] = pt(f_base, baseW); ctx.moveTo(x,y);
+
+  // Taper from base to narrow
+  [x,y] = pt(f_t1a, baseW);   ctx.lineTo(x,y);
+  [x,y] = pt(f_t1b, taper1W); ctx.lineTo(x,y);
+
+  // First ledge — step out then back
+  [x,y] = pt(f_l1a, taper1W); ctx.lineTo(x,y);
+  [x,y] = pt(f_l1b, ledge1W); ctx.lineTo(x,y);  // ledge flare
+  [x,y] = pt(f_l1c, taper1W); ctx.lineTo(x,y);  // taper back
+  [x,y] = pt(f_sh1, shaftW);  ctx.lineTo(x,y);  // narrow to shaft
+
+  // Thin shaft
+  [x,y] = pt(f_sh2, shaftW); ctx.lineTo(x,y);
+
+  // Second ledge (muezzin balcony) — step out then back
+  [x,y] = pt(f_l2a, shaftW);  ctx.lineTo(x,y);
+  [x,y] = pt(f_l2b, ledge2W); ctx.lineTo(x,y);  // balcony flare
+  [x,y] = pt(f_l2c, shaftW);  ctx.lineTo(x,y);  // taper back
+  [x,y] = pt(f_neck, neckW);  ctx.lineTo(x,y);  // narrow neck
+
+  // Dome — bezier swell
+  const [dx1,dy1] = pt(f_dome1, neckW);
+  const [dx2,dy2] = pt(f_dome2, domeW);
+  const [dx3,dy3] = pt(f_dome3, spireW);
+  ctx.lineTo(dx1,dy1);
+  ctx.bezierCurveTo(
+    cx+cos*p(f_dome1)+px*domeW*0.6, cy+sin*p(f_dome1)+py*domeW*0.6,
+    cx+cos*p(f_dome2)+px*domeW,     cy+sin*p(f_dome2)+py*domeW,
+    cx+cos*p(f_dome2)+px*domeW,     cy+sin*p(f_dome2)+py*domeW
+  );
+  ctx.bezierCurveTo(
+    cx+cos*p(f_dome2)+px*domeW,     cy+sin*p(f_dome2)+py*domeW,
+    cx+cos*p(f_dome3)+px*domeW*0.3, cy+sin*p(f_dome3)+py*domeW*0.3,
+    dx3, dy3
+  );
+
+  // Spire — sharp point
+  [x,y] = pt(f_spire, spireW); ctx.lineTo(x,y);
+  [x,y] = pt(f_tip, 0);        ctx.lineTo(x,y); // sharp tip
+
+  // ── Bottom side (mirror) ──
+  [x,y] = pt(f_spire, -spireW); ctx.lineTo(x,y);
+
+  const [dbx1,dby1] = pt(f_dome3, -spireW);
+  const [dbx2,dby2] = pt(f_dome2, -domeW);
+  ctx.lineTo(dbx1,dby1);
+  ctx.bezierCurveTo(
+    cx+cos*p(f_dome3)-px*domeW*0.3, cy+sin*p(f_dome3)-py*domeW*0.3,
+    cx+cos*p(f_dome2)-px*domeW,     cy+sin*p(f_dome2)-py*domeW,
+    cx+cos*p(f_dome2)-px*domeW,     cy+sin*p(f_dome2)-py*domeW
+  );
+  ctx.bezierCurveTo(
+    cx+cos*p(f_dome2)-px*domeW,     cy+sin*p(f_dome2)-py*domeW,
+    cx+cos*p(f_dome1)-px*domeW*0.6, cy+sin*p(f_dome1)-py*domeW*0.6,
+    cx+cos*p(f_dome1)-px*neckW,     cy+sin*p(f_dome1)-py*neckW
+  );
+
+  [x,y] = pt(f_neck,  -neckW);  ctx.lineTo(x,y);
+  [x,y] = pt(f_l2c,  -shaftW); ctx.lineTo(x,y);
+  [x,y] = pt(f_l2b, -ledge2W); ctx.lineTo(x,y);
+  [x,y] = pt(f_l2a,  -shaftW); ctx.lineTo(x,y);
+  [x,y] = pt(f_sh2,  -shaftW); ctx.lineTo(x,y);
+  [x,y] = pt(f_sh1,  -shaftW); ctx.lineTo(x,y);
+  [x,y] = pt(f_l1c, -taper1W); ctx.lineTo(x,y);
+  [x,y] = pt(f_l1b, -ledge1W); ctx.lineTo(x,y);
+  [x,y] = pt(f_l1a, -taper1W); ctx.lineTo(x,y);
+  [x,y] = pt(f_t1b, -taper1W); ctx.lineTo(x,y);
+  [x,y] = pt(f_t1a,  -baseW);  ctx.lineTo(x,y);
+  [x,y] = pt(f_base, -baseW);  ctx.lineTo(x,y);
+  ctx.closePath();
+
+  // Fill
+  // Metallic perpendicular gradient
+  const _mg2=ctx.createLinearGradient(
+    cx+cos*b1+px*baseW, cy+sin*b1+py*baseW,
+    cx+cos*b1-px*baseW, cy+sin*b1-py*baseW
+  );
+  _mg2.addColorStop(0,   'rgba(255,220,100,0.90)');
+  _mg2.addColorStop(0.20,'rgba(180,140,50,0.85)');
+  _mg2.addColorStop(0.50,'rgba(60,40,10,0.85)');
+  _mg2.addColorStop(0.80,'rgba(160,120,40,0.80)');
+  _mg2.addColorStop(1,   'rgba(220,180,80,0.55)');
+  ctx.fillStyle=_mg2;
+  ctx.fill();
+  ctx.strokeStyle='rgba(255,210,90,0.40)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.restore();
+}
+
+function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, prayerKey){
+  const cos=Math.cos(ang), sin=Math.sin(ang);
+  const px=-sin, py=cos;
+
+  // ── Geometry ──────────────────────────────────────────────────────────────
+  const tipR    = length;      // tip touches prayer dot on track ring
+  const bulbD   = length * 0.42;   // cartouche centre — moved toward pivot
+  const spinW   = length * 0.088;  // needle stem half-width
+  const stemW   = length * 0.009;  // thin wire half-width
+  const spearW  = length * 0.003;  // spear base half-width
+  const spearL  = length * 0.10;   // spear taper length
+  const spinL   = length * 0.18;   // cartouche half-length zone
+
+  const pivR2   = length * (window.innerWidth<=1024?0.030:0.045);  // smaller on mobile
+  const stemS   = pivR2 + length*0.018;
+  const b0      = bulbD - spinL;   // cartouche left tip
+  const b1      = bulbD + spinL;   // cartouche right tip
+  const sp0     = tipR - spearL;   // spear base
+
+  // Self-contained color helper (hexRgba may be out of scope here)
+  function _hr(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
+  // Helper — metallic perpendicular gradient
+  function metalGrad(x1,y1){
+    const mg=ctx.createLinearGradient(
+      x1+px*stemW, y1+py*stemW,
+      x1-px*stemW, y1-py*stemW
+    );
+    mg.addColorStop(0,   'rgba(255,255,255,0.55)');
+    mg.addColorStop(0.18, _hr(col,0.85));
+    mg.addColorStop(0.5,  _hr(col,0.40));
+    mg.addColorStop(0.82, _hr(col,0.60));
+    mg.addColorStop(1,   'rgba(255,255,255,0.12)');
+    return mg;
+  }
+
+  // ── Needle: two separate segments, flat prayer color, no metallic shine ──
+  // Segment 1: pivot → cartouche left tip (b0)
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(cx+cos*stemS+px*stemW, cy+sin*stemS+py*stemW);
+  ctx.lineTo(cx+cos*b0+px*stemW,    cy+sin*b0+py*stemW);
+  ctx.lineTo(cx+cos*b0-px*stemW,    cy+sin*b0-py*stemW);
+  ctx.lineTo(cx+cos*stemS-px*stemW, cy+sin*stemS-py*stemW);
+  ctx.closePath();
+  // Metallic perpendicular gradient across needle width
+  const _mg1=ctx.createLinearGradient(
+    cx+cos*stemS+px*stemW, cy+sin*stemS+py*stemW,
+    cx+cos*stemS-px*stemW, cy+sin*stemS-py*stemW
+  );
+  _mg1.addColorStop(0,   'rgba(255,220,100,0.90)');
+  _mg1.addColorStop(0.20,'rgba(180,140,50,0.85)');
+  _mg1.addColorStop(0.50,'rgba(60,40,10,0.85)');
+  _mg1.addColorStop(0.80,'rgba(160,120,40,0.80)');
+  _mg1.addColorStop(1,   'rgba(220,180,80,0.55)');
+  ctx.fillStyle=_mg1;
+  ctx.fill();
+  ctx.strokeStyle='rgba(255,210,90,0.45)'; ctx.lineWidth=0.6; ctx.stroke();
+  ctx.restore();
+
+  // ── Segment 2: minaret tip (cartouche right tip → track ring) ──────────────
+  drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive);
+
+  // ── Islamic cartouche frame ───────────────────────────────────────────────
+  const bCX=cx+cos*bulbD, bCY=cy+sin*bulbD;
+  ctx.save();
+  ctx.translate(bCX, bCY);
+  ctx.rotate(ang);
+
+  const cW=spinL*1.1, cH=spinW*0.72, cR=cH*0.45, cuspD=spinW*0.28;
+
+  ctx.beginPath();
+  ctx.moveTo(-cW, 0);
+  ctx.bezierCurveTo(-cW+cuspD*1.2,-cuspD*0.5, -cW+cuspD*2,-cH*0.55, -cW+cuspD*2.5,-cH);
+  ctx.arcTo(-cW+cuspD*3,-cH, cW-cuspD*3,-cH, cR);
+  ctx.lineTo(cW-cuspD*3,-cH);
+  ctx.arcTo(cW-cuspD*2.5,-cH, cW-cuspD*2,-cH*0.55, cR);
+  ctx.bezierCurveTo(cW-cuspD*2,-cH*0.55, cW-cuspD*1.2,-cuspD*0.5, cW,0);
+  ctx.bezierCurveTo(cW-cuspD*1.2,cuspD*0.5, cW-cuspD*2,cH*0.55, cW-cuspD*2.5,cH);
+  ctx.arcTo(cW-cuspD*3,cH, -cW+cuspD*3,cH, cR);
+  ctx.lineTo(-cW+cuspD*3,cH);
+  ctx.arcTo(-cW+cuspD*2.5,cH, -cW+cuspD*2,cH*0.55, cR);
+  ctx.bezierCurveTo(-cW+cuspD*2,cH*0.55, -cW+cuspD*1.2,cuspD*0.5, -cW,0);
+  ctx.closePath();
+
+  // Metallic semi-transparent fill
+  const cartG=ctx.createLinearGradient(0,-cH,0,cH);
+  cartG.addColorStop(0,   'rgba(255,220,100,0.55)');
+  cartG.addColorStop(0.20, 'rgba(180,140,50,0.50)');
+  cartG.addColorStop(0.50, 'rgba(40,25,5,0.70)');
+  cartG.addColorStop(0.80, 'rgba(160,120,40,0.45)');
+  cartG.addColorStop(1,   'rgba(220,180,80,0.40)');
+  ctx.fillStyle=cartG; ctx.fill();
+
+  // Prayer-color outline
+  ctx.beginPath();
+  ctx.moveTo(-cW, 0);
+  ctx.bezierCurveTo(-cW+cuspD*1.2,-cuspD*0.5, -cW+cuspD*2,-cH*0.55, -cW+cuspD*2.5,-cH);
+  ctx.arcTo(-cW+cuspD*3,-cH, cW-cuspD*3,-cH, cR);
+  ctx.lineTo(cW-cuspD*3,-cH);
+  ctx.arcTo(cW-cuspD*2.5,-cH, cW-cuspD*2,-cH*0.55, cR);
+  ctx.bezierCurveTo(cW-cuspD*2,-cH*0.55, cW-cuspD*1.2,-cuspD*0.5, cW,0);
+  ctx.bezierCurveTo(cW-cuspD*1.2,cuspD*0.5, cW-cuspD*2,cH*0.55, cW-cuspD*2.5,cH);
+  ctx.arcTo(cW-cuspD*3,cH, -cW+cuspD*3,cH, cR);
+  ctx.lineTo(-cW+cuspD*3,cH);
+  ctx.arcTo(-cW+cuspD*2.5,cH, -cW+cuspD*2,cH*0.55, cR);
+  ctx.bezierCurveTo(-cW+cuspD*2,cH*0.55, -cW+cuspD*1.2,cuspD*0.5, -cW,0);
+  ctx.closePath();
+  // Outline — prayer color when active, silver when inactive. No glow or shadow.
+  ctx.strokeStyle=isActive?_hr(col,1.0):'rgba(255,255,255,0.85)';
+  ctx.lineWidth=isActive?2.0:1.4;
+  ctx.shadowBlur=0;
+  ctx.stroke();
+  if(!isActive){ctx.strokeStyle=_hr(col,0.45);ctx.lineWidth=0.7;ctx.stroke();}
+  ctx.beginPath();
+  ctx.moveTo(0,cH);
+  ctx.arcTo(-cW+cuspD*3,cH, -cW+cuspD*2.5,cH, cR);
+  ctx.bezierCurveTo(-cW+cuspD*2,cH*0.55, -cW+cuspD*1.2,cuspD*0.5, -cW,0);
+  // Outline — prayer color when active, silver when inactive. No glow or shadow.
+  ctx.strokeStyle=isActive?_hr(col,1.0):'rgba(255,255,255,0.85)';
+  ctx.lineWidth=isActive?2.0:1.4;
+  ctx.shadowBlur=0;
+  ctx.stroke();
+  if(!isActive){ctx.strokeStyle=_hr(col,0.45);ctx.lineWidth=0.7;ctx.stroke();}
+
+  // ── Text — white pearl, existing font, flip for upper half ───────────────
+  const flip=cos<0;
+  if(flip) ctx.rotate(Math.PI);
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font=`700 11px 'Geist',sans-serif`;
+  ctx.fillStyle=isActive?'#ffffff':'rgba(220,230,255,0.85)';
+  ctx.fillText(timeStr,0,0);
+
+  ctx.restore();
+}
+
+// Helper: darken a hex color by factor (0=black, 1=original)
+function shadeCol(hex, factor){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `rgb(${Math.round(r*factor)},${Math.round(g*factor)},${Math.round(b*factor)})`;
+}
+// Helper: lighten a hex color toward white by amount (0=original, 1=white)
+function liftCol(hex, amount){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `rgb(${Math.round(r+(255-r)*amount)},${Math.round(g+(255-g)*amount)},${Math.round(b+(255-b)*amount)})`;
+}
+
+// Kaaba rotation angle — advances each frame
+let _kaabaAngle = 0;
+
+function drawKaaba(ctx, cx, cy) {
+  const S = 13;       // half-size of cube face
+  const H = 15;       // total height of cube
+  const BH = H * 0.38; // gold band height (top 38%)
+  const a = _kaabaAngle;
+  _kaabaAngle += 0.008; // slow rotation speed
+
+  // ── Isometric 3D cube projection ──
+  // We show 2 faces: front-left and front-right, plus top
+  // Rotation: spin around Y axis
+  const cosA = Math.cos(a), sinA = Math.sin(a);
+
+  // 8 corners of unit cube [-1..1, -1..1, -1..1]
+  // Project with simple perspective: rotate Y, then isometric-ish
+  const project = (x, y, z) => {
+    // Rotate around Y axis
+    const rx = x * cosA + z * sinA;
+    const rz = -x * sinA + z * cosA;
+    // Perspective projection (slight)
+    const scale = S / (2.2 + rz * 0.18);
+    return [cx + rx * scale, cy + y * (H/2) / 2.2 + rz * 0.06 * S];
+  };
+
+  // Cube corners: [x, y, z] in [-1,1] space
+  // y: -1=top, +1=bottom
+  const TLF = project(-1,-1,-1); // top-left-front
+  const TRF = project( 1,-1,-1); // top-right-front
+  const TLB = project(-1,-1, 1); // top-left-back
+  const TRB = project( 1,-1, 1); // top-right-back
+  const BLF = project(-1, 1,-1); // bottom-left-front
+  const BRF = project( 1, 1,-1); // bottom-right-front
+  const BLB = project(-1, 1, 1); // bottom-left-back
+  const BRB = project( 1, 1, 1); // bottom-right-back
+
+  // Band split points (38% down from top)
+  const f = BH / H; // fraction
+  const lerp = (a,b,t) => [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t];
+  const BTLF = lerp(TLF,BLF,f), BTRF = lerp(TRF,BRF,f);
+  const BTLB = lerp(TLB,BLB,f), BTRB = lerp(TRB,BRB,f);
+
+  // Determine which faces are visible (front-facing)
+  const leftVis  = Math.cos(a + Math.PI/4) > 0;
+  const rightVis = Math.cos(a - Math.PI/4) > 0;
+
+  const drawFace = (pts, fillColor, strokeColor) => {
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], pts[0][1]);
+    for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0], pts[i][1]);
+    ctx.closePath();
+    ctx.fillStyle = fillColor; ctx.fill();
+    ctx.strokeStyle = strokeColor; ctx.lineWidth = 0.7; ctx.stroke();
+  };
+
+  ctx.save();
+  // Drop shadow under Kaaba
+  ctx.shadowColor = 'rgba(0,0,0,0.7)';
+  ctx.shadowBlur = 8; ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 2;
+
+  // ── Left face ──
+  if(leftVis){
+    // Lower black section
+    drawFace([BTLF,BTLB,BLB,BLF], 'rgba(12,10,8,0.97)', 'rgba(180,150,60,0.6)');
+    // Upper gold band
+    drawFace([TLF,TLB,BTLB,BTLF], 'rgba(160,120,30,0.95)', 'rgba(200,170,60,0.8)');
+  }
+  // ── Right face ──
+  if(rightVis){
+    // Lower black section
+    drawFace([BTRF,BTLF,BLF,BRF], 'rgba(18,15,10,0.97)', 'rgba(180,150,60,0.6)');
+    // Upper gold band
+    drawFace([TRF,TLF,BTLF,BTRF], 'rgba(190,145,35,0.95)', 'rgba(220,185,65,0.85)');
+  }
+  ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+
+  // ── Top face ──
+  drawFace([TLF,TRF,TRB,TLB], 'rgba(25,20,12,0.98)', 'rgba(190,155,50,0.7)');
+
+  // ── Gold edge highlights ──
+  ctx.strokeStyle = 'rgba(230,185,60,0.85)'; ctx.lineWidth = 1;
+  // Vertical front-left edge
+  ctx.beginPath(); ctx.moveTo(TLF[0],TLF[1]); ctx.lineTo(BLF[0],BLF[1]); ctx.stroke();
+  // Vertical front-right edge
+  ctx.beginPath(); ctx.moveTo(TRF[0],TRF[1]); ctx.lineTo(BRF[0],BRF[1]); ctx.stroke();
+  // Top front edge
+  ctx.strokeStyle = 'rgba(245,205,70,0.9)'; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(TLF[0],TLF[1]); ctx.lineTo(TRF[0],TRF[1]); ctx.stroke();
+
+  // ── Gold band horizontal lines ──
+  ctx.strokeStyle = 'rgba(220,178,50,0.7)'; ctx.lineWidth = 0.5;
+  if(leftVis){
+    ctx.beginPath(); ctx.moveTo(BTLF[0],BTLF[1]); ctx.lineTo(BTLB[0],BTLB[1]); ctx.stroke();
+  }
+  if(rightVis){
+    ctx.beginPath(); ctx.moveTo(BTRF[0],BTRF[1]); ctx.lineTo(BTLF[0],BTLF[1]); ctx.stroke();
+  }
+
+  // ── Door (small gold rectangle on front face) ──
+  if(rightVis && Math.abs(sinA) < 0.7){
+    const doorT = lerp(TRF, TLF, 0.35);
+    const doorB = lerp(BRF, BLF, 0.18);
+    const doorL = lerp(doorT, TLF, 0.1);
+    const doorR = lerp(doorT, TRF, 0.1);
+    const doorBL = lerp(doorB, BLF, 0.1);
+    const doorBR = lerp(doorB, BRF, 0.1);
+    ctx.beginPath();
+    ctx.moveTo(doorL[0], lerp(TRF,BRF,0.25)[1]);
+    ctx.lineTo(doorR[0], lerp(TRF,BRF,0.25)[1]);
+    ctx.lineTo(doorR[0], lerp(TRF,BRF,0.52)[1]);
+    ctx.lineTo(doorL[0], lerp(TRF,BRF,0.52)[1]);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(190,148,35,0.85)'; ctx.fill();
+    ctx.strokeStyle = 'rgba(240,200,60,0.9)'; ctx.lineWidth = 0.6; ctx.stroke();
+  }
+
+  // ── Soft cyan glow ring underneath (connects to clock aesthetic) ──
+  const glowR = ctx.createRadialGradient(cx,cy,8,cx,cy,18);
+  glowR.addColorStop(0,'rgba(0,212,255,0.08)');
+  glowR.addColorStop(1,'rgba(0,212,255,0)');
+  ctx.fillStyle = glowR;
+  ctx.beginPath(); ctx.arc(cx, cy, 18, 0, Math.PI*2); ctx.fill();
+
+  ctx.restore();
+}
+
+function drawArc(){
+  const canvas=document.getElementById('prayer-arc');
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  const wrap=canvas.parentElement;
+  const size=Math.round(wrap.getBoundingClientRect().width)||wrap.offsetWidth||400;
+  if(size<10)return;
+  if(canvas._lastSize!==size||canvas._lastDpr!==dpr){
+    canvas.width=Math.round(size*dpr);canvas.height=Math.round(size*dpr);
+    canvas.style.width=size+'px';canvas.style.height=size+'px';
+    canvas._lastSize=size;canvas._lastDpr=dpr;
+  }
+  const ctx=canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,size,size);
+  if(!cachedTimes)return;
+  const cx=size/2,cy=size/2;
+  const _mobR=window.innerWidth<=1024;
+  const R=size*(_mobR?0.38:0.34);
+  const RI=R+size*(_mobR?0.010:0.015);   // very tight band
+  const RO=R+size*(_mobR?0.048:0.048);   // narrowed on mobile   // wider on mobile so names fit
+  const bandMid=(RI+RO)/2;
+  // Single time snapshot — one cityNow() per frame prevents split-second drift
+  const _frameNow=cityNow();
+  const lh=_frameNow.getUTCHours()+_frameNow.getUTCMinutes()/60+_frameNow.getUTCSeconds()/3600;
+  // ── Countdown display + progress bar ──
+  // Use Date.now() milliseconds for the countdown to avoid floating-point
+  // precision errors from fractional-hour arithmetic (floor drift / skip).
+  {
+    const _np=nextPrayer(cachedTimes,lh);
+    // Use the frame snapshot — same Date object used for lh above.
+    const _npTotalSec=Math.round((((_np.time%24)+24)%24)*3600);
+    const _nowTotalSec=_frameNow.getUTCHours()*3600+_frameNow.getUTCMinutes()*60+_frameNow.getUTCSeconds();
+    let _ts=_npTotalSec-_nowTotalSec;
+    if(_ts<0) _ts+=86400;
+    const _hh=Math.floor(_ts/3600),_mm=Math.floor((_ts%3600)/60),_ss=_ts%60;
+    const _cdEl=document.getElementById('next-countdown');
+    if(_cdEl) _cdEl.textContent=String(_hh).padStart(2,'0')+':'+String(_mm).padStart(2,'0')+':'+String(_ss).padStart(2,'0');
+    // Progress bar
+    const _pf=document.getElementById('np-progress-fill');
+    const _knob=document.getElementById('np-progress-knob');
+    if(_pf){
+      const _pp=prevPrayer(cachedTimes,lh);
+      const _f=Math.max(0,Math.min(1,(lh-_pp.time)/(_np.time-_pp.time)));
+      const _pct=(_f*100).toFixed(3)+'%';
+      _pf.style.width=_pct;
+      if(_knob) _knob.style.left=_pct;
+    }
+  }
+  function hexRgba(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
+  function angle(h){return(h/24)*Math.PI*2-Math.PI/2;}
+
+  // Background — fade to transparent early so the panel's ambient glow
+  // shows through right up to the dial edge, with no dark disc creating a ring
+  const base=ctx.createRadialGradient(cx,cy,0,cx,cy,size*0.5);
+  base.addColorStop(0,'rgba(2,3,6,0.96)');base.addColorStop(0.55,'rgba(2,3,6,0.94)');
+  base.addColorStop(0.75,'rgba(2,3,6,0.70)');base.addColorStop(0.88,'rgba(2,3,6,0.25)');base.addColorStop(1,'rgba(2,3,6,0)');
+  ctx.fillStyle=base;ctx.beginPath();ctx.arc(cx,cy,size*0.5,0,Math.PI*2);ctx.fill();
+
+  // Islamic pattern
+  ctx.save();ctx.translate(cx,cy);
+  ctx.beginPath();ctx.arc(0,0,R+2,0,Math.PI*2);ctx.clip();
+  function drawStar(radius,points,innerRatio,color,lineW){
+    ctx.strokeStyle=color;ctx.lineWidth=lineW;ctx.beginPath();
+    for(let i=0;i<points*2;i++){const r=i%2===0?radius:radius*innerRatio,a=(i/points)*Math.PI-Math.PI/2;i===0?ctx.moveTo(r*Math.cos(a),r*Math.sin(a)):ctx.lineTo(r*Math.cos(a),r*Math.sin(a));}
+    ctx.closePath();ctx.stroke();
+  }
+  drawStar(R*0.95,8,0.72,'rgba(212,170,80,0.28)',0.9);drawStar(R*0.95,8,0.72,'rgba(212,170,80,0.10)',3.0);
+  drawStar(R*0.70,8,0.76,'rgba(212,170,80,0.22)',0.8);drawStar(R*0.48,8,0.74,'rgba(212,170,80,0.18)',0.7);
+  drawStar(R*0.26,8,0.70,'rgba(212,170,80,0.16)',0.6);
+  for(let i=0;i<24;i++){const a=(i/24)*Math.PI*2,iM=i%3===0;ctx.strokeStyle=iM?'rgba(212,170,80,0.12)':'rgba(212,170,80,0.05)';ctx.lineWidth=iM?0.5:0.25;ctx.beginPath();ctx.moveTo(R*0.06*Math.cos(a),R*0.06*Math.sin(a));ctx.lineTo(R*0.98*Math.cos(a),R*0.98*Math.sin(a));ctx.stroke();}
+  [0.22,0.40,0.58,0.76,0.92].forEach((r,i)=>{ctx.strokeStyle=i%2===0?'rgba(212,170,80,0.12)':'rgba(180,140,60,0.05)';ctx.lineWidth=i%2===0?0.5:0.3;ctx.beginPath();ctx.arc(0,0,R*r,0,Math.PI*2);ctx.stroke();});
+  const iF=ctx.createRadialGradient(0,0,R*0.3,0,0,R);iF.addColorStop(0,'rgba(0,0,0,0)');iF.addColorStop(0.7,'rgba(0,0,0,0.15)');iF.addColorStop(1,'rgba(0,0,0,0.5)');
+  ctx.fillStyle=iF;ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);ctx.fill();
+  ctx.restore();
+
+  // Outer rim — cyan glowing ring
+  // Outer faint ring
+  ctx.strokeStyle='rgba(255,255,255,0.10)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.arc(cx,cy,R+4,0,Math.PI*2);ctx.stroke();
+
+  // Outer text band — dark 3D metallic silver
+  const goldG=ctx.createLinearGradient(cx-RO,cy-RO,cx+RO,cy+RO);
+  goldG.addColorStop(0,'rgba(28,30,35,0.99)');
+  goldG.addColorStop(0.10,'rgba(75,80,88,1)');
+  goldG.addColorStop(0.20,'rgba(32,34,40,0.99)');
+  goldG.addColorStop(0.32,'rgba(95,102,112,1)');
+  goldG.addColorStop(0.42,'rgba(25,27,32,0.99)');
+  goldG.addColorStop(0.54,'rgba(80,86,95,1)');
+  goldG.addColorStop(0.65,'rgba(30,32,38,0.99)');
+  goldG.addColorStop(0.78,'rgba(70,75,84,1)');
+  goldG.addColorStop(0.90,'rgba(22,24,28,0.99)');
+  goldG.addColorStop(1,'rgba(55,58,65,0.98)');
+  ctx.save();ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.arc(cx,cy,RI,0,Math.PI*2,true);ctx.fillStyle=goldG;ctx.fill();
+  // Top edge — bright specular line
+  ctx.strokeStyle='rgba(200,210,225,0.85)';ctx.lineWidth=1.2;
+  ctx.beginPath();ctx.arc(cx,cy,RO-0.5,0,Math.PI*2);ctx.stroke();
+  // Inner edge — dark shadow for depth
+  ctx.strokeStyle='rgba(30,32,36,0.8)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.arc(cx,cy,RI+0.5,0,Math.PI*2);ctx.stroke();
+  ctx.restore();
+  ctx.strokeStyle='rgba(255,255,255,0.14)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,RI,0,Math.PI*2);ctx.stroke();
+  ctx.strokeStyle='rgba(255,255,255,0.10)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(cx,cy,RO,0,Math.PI*2);ctx.stroke();
+
+  // Night/day
+  const mH=((cachedTimes.maghrib%24)+24)%24,fH=((cachedTimes.fajr%24)+24)%24;
+  ctx.strokeStyle='rgba(60,40,140,0.2)';ctx.lineWidth=4;ctx.beginPath();ctx.arc(cx,cy,R,angle(mH),angle(fH+24));ctx.stroke();
+  ctx.strokeStyle='rgba(200,150,40,0.08)';ctx.lineWidth=4;ctx.beginPath();ctx.arc(cx,cy,R,angle(fH),angle(mH));ctx.stroke();
+
+  // Active prayer (used for needle edge highlight, no rim arc drawn)
+  const active=currentPrayer(cachedTimes,lh);
+
+  // 24-hour numbers with tick lines — close to ring
+  ctx.save();
+  for(let h=0;h<24;h++){
+    const a=angle(h);
+    const isMaj=h%6===0, isHalf=h%3===0;
+    const tickOuter=R-3;
+    const tickLen=isMaj?10:isHalf?7:5;
+    const tickInner=tickOuter-tickLen;
+
+    // Tick line on ring
+    ctx.strokeStyle=isMaj?'rgba(255,255,255,0.30)':isHalf?'rgba(255,255,255,0.15)':'rgba(255,255,255,0.08)';
+    ctx.lineWidth=isMaj?1.5:1;
+    ctx.beginPath();
+    ctx.moveTo(cx+tickOuter*Math.cos(a),cy+tickOuter*Math.sin(a));
+    ctx.lineTo(cx+tickInner*Math.cos(a),cy+tickInner*Math.sin(a));
+    ctx.stroke();
+
+    // Number just inside tick
+    const nr=tickInner-9;
+    const nx=cx+nr*Math.cos(a),ny=cy+nr*Math.sin(a);
+    ctx.save();ctx.translate(nx,ny);
+    ctx.rotate(Math.sin(a)>0?a-Math.PI/2:a+Math.PI/2);
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    const isKey=h%6===0;
+    ctx.font=`${isKey?'700':isMaj?'600':'500'} ${isKey?12:isMaj?10:9}px 'Geist',sans-serif`;
+    ctx.fillStyle=isKey?'rgba(235,230,220,0.80)':isMaj?'rgba(225,220,210,0.50)':'rgba(210,205,195,0.32)';
+    ctx.fillText(String(h).padStart(2,'0'),0,0);
+    ctx.restore();
+  }
+  ctx.restore();
+
+  // Hour ticks
+  for(let h=0;h<24;h++){
+    const a=angle(h),isQ=h%6===0,isH=h%3===0;if(!isH&&!isQ)continue;
+    const len=isQ?12:7,r1=R-len/2,r2=R+len/2;
+    ctx.strokeStyle='rgba(0,0,0,0.7)';ctx.lineWidth=isQ?2:1.5;ctx.beginPath();ctx.moveTo(cx+(r1+0.6)*Math.cos(a),cy+(r1+0.6)*Math.sin(a));ctx.lineTo(cx+(r2+0.6)*Math.cos(a),cy+(r2+0.6)*Math.sin(a));ctx.stroke();
+    ctx.strokeStyle=isQ?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.12)';ctx.lineWidth=isQ?1.5:1;ctx.beginPath();ctx.moveTo(cx+r1*Math.cos(a),cy+r1*Math.sin(a));ctx.lineTo(cx+r2*Math.cos(a),cy+r2*Math.sin(a));ctx.stroke();
+  }
+
+  // City name + next prayer countdown — bottom center of dial (below pivot, clear of all needles)
+  {
+    ctx.save();
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    // City name
+    ctx.font=`700 ${Math.round(R*0.09)}px 'Playfair Display',serif`;
+    ctx.fillStyle='rgba(235,230,218,0.88)';
+    ctx.shadowColor='rgba(130,190,255,0.25)';
+    ctx.shadowBlur=3;
+    ctx.fillText('Makkah', cx, cy - R*0.68);
+    ctx.shadowBlur=0;
+    ctx.restore();
+  }
+
+  // ── Time pit — 3D recessed channel on the horizontal 06 axis ──
+  // Sits on the right-side horizontal axis, between pivot and the "06" rim mark.
+  {
+    const pitW=R*0.44, pitH=R*0.115;
+    // When Fajr >= 05:00 the capsule shifts to the 08:00 position on the dial,
+    // pulled inward toward the pivot so it clears the Fajr needle body.
+    // This applies to any city in the world where Fajr falls after 05:00.
+    const _fajrForPit=((cachedTimes.fajr%24)+24)%24;
+    const _pitShift=_fajrForPit>=5;
+    const _pitAng=_pitShift?(8/24)*Math.PI*2-Math.PI/2:0;
+    const _pitR2=R*0.45;
+    const pitX=_pitShift?(cx+_pitR2*Math.cos(_pitAng)-pitW/2):(cx+R*0.30);
+    const pitY=_pitShift?(cy+_pitR2*Math.sin(_pitAng)-pitH/2):(cy-pitH/2);
+    const pitR=pitH*0.45; // corner radius
+
+
+    ctx.save();
+    ctx.shadowColor='rgba(0,0,0,0.9)';
+    ctx.shadowBlur=pitH*1.1;
+    ctx.shadowOffsetY=pitH*0.5;
+    ctx.shadowOffsetX=pitH*0.08;
+    ctx.fillStyle='rgba(0,0,0,0)';
+    ctx.beginPath();
+    ctx.roundRect(pitX,pitY,pitW,pitH,pitR);
+    ctx.fill();
+    ctx.restore();
+
+    // 2. Pit floor — top-to-bottom depth gradient (lighter top = overhead light, darker bottom = depth)
+    const pitFloor=ctx.createLinearGradient(pitX,pitY,pitX,pitY+pitH);
+    pitFloor.addColorStop(0,'rgba(0,28,42,1)');
+    pitFloor.addColorStop(0.45,'rgba(0,20,32,1)');
+    pitFloor.addColorStop(1,'rgba(0,8,14,1)');
+    ctx.beginPath();
+    ctx.roundRect(pitX,pitY,pitW,pitH,pitR);
+    ctx.fillStyle=pitFloor;
+    ctx.fill();
+    // Cyan ambient from digit light source — centre radial
+    const pitAmbient=ctx.createRadialGradient(pitX+pitW/2,pitY+pitH*0.4,0,pitX+pitW/2,pitY+pitH/2,pitW*0.52);
+    pitAmbient.addColorStop(0,'rgba(0,212,255,0.13)');
+    pitAmbient.addColorStop(1,'rgba(0,212,255,0)');
+    ctx.beginPath();
+    ctx.roundRect(pitX,pitY,pitW,pitH,pitR);
+    ctx.fillStyle=pitAmbient;
+    ctx.fill();
+
+    // 3. Top-lip specular — bright white line where overhead light catches the machined edge
+    ctx.save();
+    ctx.shadowColor='rgba(255,255,255,0.5)';
+    ctx.shadowBlur=2;
+    const specGrad=ctx.createLinearGradient(pitX,pitY,pitX+pitW,pitY);
+    specGrad.addColorStop(0,'rgba(255,255,255,0)');
+    specGrad.addColorStop(0.15,'rgba(255,255,255,0.55)');
+    specGrad.addColorStop(0.5,'rgba(255,255,255,0.80)');
+    specGrad.addColorStop(0.85,'rgba(255,255,255,0.55)');
+    specGrad.addColorStop(1,'rgba(255,255,255,0)');
+    ctx.beginPath();
+    ctx.roundRect(pitX+1,pitY+0.5,pitW-2,1,pitR*0.3);
+    ctx.fillStyle=specGrad;
+    ctx.fill();
+    ctx.restore();
+
+    // 4. Bottom shadow lip — dark line where the pit wall meets the floor (depth cue)
+    const botGrad=ctx.createLinearGradient(pitX,pitY+pitH-1,pitX+pitW,pitY+pitH-1);
+    botGrad.addColorStop(0,'rgba(0,0,0,0)');
+    botGrad.addColorStop(0.2,'rgba(0,0,0,0.6)');
+    botGrad.addColorStop(0.8,'rgba(0,0,0,0.6)');
+    botGrad.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.beginPath();
+    ctx.roundRect(pitX+1,pitY+pitH-2,pitW-2,2,pitR*0.2);
+    ctx.fillStyle=botGrad;
+    ctx.fill();
+
+    // 5. Outer border — metallic silver, matches clock rim language
+    ctx.save();
+    const pitBorderG=ctx.createLinearGradient(pitX,pitY,pitX+pitW,pitY+pitH);
+    pitBorderG.addColorStop(0,'rgba(180,185,195,0.75)');
+    pitBorderG.addColorStop(0.25,'rgba(110,118,128,0.55)');
+    pitBorderG.addColorStop(0.5,'rgba(200,208,218,0.85)');
+    pitBorderG.addColorStop(0.75,'rgba(100,108,118,0.50)');
+    pitBorderG.addColorStop(1,'rgba(160,168,178,0.70)');
+    ctx.beginPath();
+    ctx.roundRect(pitX,pitY,pitW,pitH,pitR);
+    ctx.strokeStyle=pitBorderG;
+    ctx.lineWidth=1.2;
+    ctx.stroke();
+    // Inner inset line — adds depth to the border
+    ctx.beginPath();
+    ctx.roundRect(pitX+1.5,pitY+1.5,pitW-3,pitH-3,Math.max(pitR-1.5,0));
+    ctx.strokeStyle='rgba(255,255,255,0.08)';
+    ctx.lineWidth=0.5;
+    ctx.stroke();
+    ctx.restore();
+
+    // 5. Time text — monospace, cyan glow, set into the pit
+    // 24-hour time HH:MM:SS — use frame snapshot, not a fresh cityNow()
+    const nowD=_frameNow;
+    const ph=lh%24;
+    const phh=String(Math.floor(ph)).padStart(2,'0');
+    const pmm=String(Math.floor(nowD.getMinutes())).padStart(2,'0');
+    const pss=String(nowD.getSeconds()).padStart(2,'0');
+    const timeStr=phh+':'+pmm+':'+pss;
+    const pitCY=pitY+pitH*(_mobR?0.52:0.57);
+    const pitCX=pitX+pitW/2;
+
+    // Subtle digit glow
+    ctx.save();
+    ctx.shadowColor='rgba(0,212,255,0.5)';
+    ctx.shadowBlur=pitH*0.7;
+    ctx.fillStyle='rgba(0,212,255,0.08)';
+    ctx.beginPath();
+    ctx.roundRect(pitX+pitW*0.05,pitY+pitH*0.1,pitW*0.9,pitH*0.8,pitR*0.5);
+    ctx.fill();
+    ctx.restore();
+
+    ctx.save();
+    ctx.textBaseline='middle';
+    const fsz=Math.round(pitH*0.66);
+    ctx.font='700 '+fsz+'px Geist,sans-serif';
+    const charW=ctx.measureText('0').width;
+    const colonW=ctx.measureText(':').width*0.9;
+    const fixedW=charW*6+colonW*2;
+    let cx0=pitCX-fixedW/2;
+    ctx.shadowColor='rgba(0,212,255,0.65)';
+    ctx.shadowBlur=pitH*0.5;
+    ctx.fillStyle='rgba(0,212,255,0.95)';
+    ctx.textAlign='left';
+    for(let i=0;i<timeStr.length;i++){
+      const ch=timeStr[i];
+      const chW=ch===':'?colonW:charW;
+      const off=(chW-ctx.measureText(ch).width)/2;
+      ctx.fillText(ch,cx0+off,pitCY);
+      cx0+=chW;
+    }
+    ctx.shadowBlur=0;
+    ctx.restore();
+  }
+
+
+  // ── Prayer track ring — metallic golden circle at radius R ──
+  // Base stroke — dark gold
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, R, 0, Math.PI*2);
+  ctx.strokeStyle='rgba(180,140,50,0.55)';
+  ctx.lineWidth=1.2;
+  ctx.stroke();
+  ctx.restore();
+  // Highlight stroke — brighter gold, slightly inset
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, R-0.5, 0, Math.PI*2);
+  ctx.strokeStyle='rgba(255,210,90,0.30)';
+  ctx.lineWidth=0.6;
+  ctx.stroke();
+  ctx.restore();
+
+  // ── Now-dot + animated flowing dashes to next prayer ──
+  // Drawn BEFORE needles — prayer bulbs render on top as time sweeps past.
+  {
+    const _np2=nextPrayer(cachedTimes,lh);
+    const _npCol=PMETA[_np2.name]?.color||'#00d4ff';
+    const _nowA=angle(lh);
+    const _npA=angle((((_np2.time%24)+24)%24));
+    const _dotR=R; // same circle as prayer needle tip bulbs
+
+    // ── Flowing dashes — slow march clockwise toward next prayer ──
+    const _t=Date.now();
+    const _dash=6;
+    const _gap=10;
+    const _period=_dash+_gap;
+    const _off=(_t/55)%_period;  // 55ms per px — slow, deliberate flow
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx,cy,_dotR,_nowA,_npA,false);
+    ctx.strokeStyle='#00d4ff';
+    ctx.globalAlpha=0.50;
+    ctx.lineWidth=2.2;
+    ctx.lineCap='round';
+    ctx.setLineDash([_dash,_gap]);
+    ctx.lineDashOffset=-_off;
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+
+    // ── Pulsating now-dot — matches AdhanLive logo pulse ──
+    // One expanding ring, ease-out, short travel, fades to 0. 2.4s cycle.
+    const _dotX=cx+_dotR*Math.cos(_nowA);
+    const _dotY=cy+_dotR*Math.sin(_nowA);
+    const _coreR=4; // slightly more presence at dial scale, still subtle
+
+    // Ring: t goes 0→1 over 2.4s, ease-out via 1-(1-t)^2
+    const _ringT=((_t%2400)/2400);              // 0→1 linear
+    const _ringE=1-Math.pow(1-_ringT,2);        // ease-out
+    const _ringR=_coreR+(7*_ringE);             // expands coreR → coreR+7, visible at dial scale
+    const _ringA=1-_ringE;                       // opacity 1→0
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(_dotX,_dotY,_ringR,0,Math.PI*2);
+    ctx.strokeStyle='rgba(0,212,255,'+_ringA+')';
+    ctx.lineWidth=1;
+    ctx.stroke();
+    ctx.restore();
+
+    // Core dot — solid cyan, always visible
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(_dotX,_dotY,_coreR,0,Math.PI*2);
+    ctx.fillStyle='#00d4ff';
+    ctx.shadowColor='rgba(0,212,255,0.9)';
+    ctx.shadowBlur=6;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Needles — fixed z-order (bottom to top): Isha, Maghrib, Asr, Dhuhr, Fajr, current time
+  // Each needle casts a subtle shadow onto the one below it (3D stack effect)
+  const ZORDER=['isha','maghrib','asr','dhuhr','fajr'];
+  // Shadow offsets per layer — deeper layers cast softer shadows
+  const SHADOWS=[
+    {blur:8,ox:2,oy:3,alpha:0.35},  // isha (bottom)
+    {blur:7,ox:2,oy:3,alpha:0.32},  // maghrib
+    {blur:7,ox:2,oy:2,alpha:0.30},  // asr
+    {blur:6,ox:1,oy:2,alpha:0.28},  // dhuhr
+    {blur:6,ox:1,oy:2,alpha:0.26},  // fajr
+  ];
+  for(let zi=0;zi<ZORDER.length;zi++){
+    const p=ZORDER[zi];
+    if(isNaN(cachedTimes[p]))continue;
+    const ph=((cachedTimes[p]%24)+24)%24,a=angle(ph),col=PMETA[p].color,isA=p===active;
+    const dotX=cx+R*Math.cos(a),dotY=cy+R*Math.sin(a);
+    const tv=h2t(cachedTimes[p]);
+    const sh=SHADOWS[zi];
+    // Draw shadow pass first (dark silhouette offset)
+    ctx.save();
+    ctx.globalAlpha=sh.alpha;
+    ctx.filter=`blur(${sh.blur}px)`;
+    ctx.fillStyle='rgba(0,0,0,0.7)';
+    const cos2=Math.cos(a),sin2=Math.sin(a),py2=cos2,px2=-sin2;
+    const bW=R*0.11,bs=R*0.04,be=R*0.72,te=R-5,tN=te-R*0.09;
+    ctx.beginPath();
+    ctx.moveTo(cx-px2*bs+cos2*(-sh.ox)+sh.ox+sin2*sh.oy,cy-py2*bs+sin2*(-sh.oy)+sh.oy-cos2*sh.oy);
+    // simplified shadow: just offset the whole needle path
+    ctx.save();
+    ctx.translate(sh.ox,sh.oy);
+    ctx.beginPath();
+    ctx.moveTo(cx-px2*bs,cy-py2*bs);
+    ctx.lineTo(cx-px2*bW+cos2*bs,cy-py2*bW+sin2*bs);
+    ctx.bezierCurveTo(cx-px2*bW+cos2*be,cy-py2*bW+sin2*be,cx-px2*2+cos2*tN,cy-py2*2+sin2*tN,cx+cos2*te,cy+sin2*te);
+    ctx.lineTo(cx+px2*2+cos2*tN,cy+py2*2+sin2*tN);
+    ctx.bezierCurveTo(cx+px2*bW+cos2*be,cy+py2*bW+sin2*be,cx+px2*bW+cos2*bs,cy+py2*bW+sin2*bs,cx+px2*bs,cy+py2*bs);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+    ctx.restore();
+    // Draw actual needle
+    ctx.save();
+    ctx.shadowColor='rgba(0,0,0,0.55)';
+    ctx.shadowBlur=sh.blur;
+    ctx.shadowOffsetX=sh.ox;
+    ctx.shadowOffsetY=sh.oy;
+    // 24h time on needle — no AM/PM, slightly larger
+    const _nh=Math.floor(((cachedTimes[p]%24)+24)%24);
+    const _nm=tv.mm;
+    const _nTimeStr=String(_nh).padStart(2,'0')+':'+_nm;
+    drawPrayerNeedle(ctx,cx,cy,a,R-5,col,isA,_nTimeStr,p);
+    ctx.restore();
+    // Dot — only active prayer glows, others are dark/off
+    if(isA){
+      // Active — lit bulb with glow
+      ctx.fillStyle='rgba(0,0,0,0.4)';ctx.beginPath();ctx.arc(dotX+0.5,dotY+0.5,5,0,Math.PI*2);ctx.fill();
+      const dg=ctx.createRadialGradient(dotX,dotY,0,dotX,dotY,13);dg.addColorStop(0,hexRgba(col,0.4));dg.addColorStop(1,hexRgba(col,0));
+      ctx.fillStyle=dg;ctx.beginPath();ctx.arc(dotX,dotY,13,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=col;ctx.shadowColor=col;ctx.shadowBlur=10;ctx.beginPath();ctx.arc(dotX,dotY,5,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;
+      const spec=ctx.createRadialGradient(dotX-1.5,dotY-1.5,0,dotX,dotY,5);spec.addColorStop(0,'rgba(255,255,255,0.8)');spec.addColorStop(0.4,'rgba(255,255,255,0.2)');spec.addColorStop(1,'rgba(255,255,255,0)');
+      ctx.fillStyle=spec;ctx.beginPath();ctx.arc(dotX,dotY,5,0,Math.PI*2);ctx.fill();
+    } else {
+      // Inactive — fully solid prayer color, no glow. Illuminates only when active.
+      ctx.fillStyle=col;ctx.globalAlpha=1;ctx.beginPath();ctx.arc(dotX,dotY,4,0,Math.PI*2);ctx.fill();
+      ctx.globalAlpha=1;ctx.strokeStyle=hexRgba(col,0.85);ctx.lineWidth=0.8;ctx.beginPath();ctx.arc(dotX,dotY,4,0,Math.PI*2);ctx.stroke();
+    }
+  }
+
+
+
+  // ── Seconds hand — quartz tick, one revolution per minute ──
+  // Gives the dial a live heartbeat. Drawn before the pivot so the
+  // pivot crown covers its base like a real watch.
+  {
+    const secs=cityNow().getSeconds();
+    const sa=(secs/60)*Math.PI*2-Math.PI/2;
+    const scos=Math.cos(sa),ssin=Math.sin(sa);
+    const sTipX=cx+scos*(R-10),sTipY=cy+ssin*(R-10);
+    const sTailX=cx-scos*24,sTailY=cy-ssin*24;
+    ctx.save();
+    // Soft shadow under the hand
+    ctx.strokeStyle='rgba(0,0,0,0.5)';
+    ctx.lineWidth=2.2;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(sTailX+1.5,sTailY+2);ctx.lineTo(sTipX+1.5,sTipY+2);ctx.stroke();
+    // The hand: thin cyan with subtle glow
+    ctx.strokeStyle='rgba(0,212,255,0.92)';
+    ctx.lineWidth=1.4;
+    ctx.shadowColor='rgba(0,212,255,0.45)';ctx.shadowBlur=5;
+    ctx.beginPath();ctx.moveTo(sTailX,sTailY);ctx.lineTo(sTipX,sTipY);ctx.stroke();
+    ctx.shadowBlur=0;
+    // Counterweight ring on the tail
+    ctx.fillStyle='rgba(0,212,255,0.9)';
+    ctx.beginPath();ctx.arc(sTailX,sTailY,3,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='rgba(6,8,18,1)';
+    ctx.beginPath();ctx.arc(sTailX,sTailY,1.4,0,Math.PI*2);ctx.fill();
+    // Tip dot
+    ctx.fillStyle='rgba(0,212,255,1)';
+    ctx.shadowColor='rgba(0,212,255,0.6)';ctx.shadowBlur=7;
+    ctx.beginPath();ctx.arc(sTipX,sTipY,1.8,0,Math.PI*2);ctx.fill();
+    ctx.shadowBlur=0;
+    ctx.lineCap='butt';
+    ctx.restore();
+  }
+
+  // ── Premium screw pivot — Rolex-style crown ──
+  const pr=_mobR?8:13; // outer radius — smaller on mobile
+  ctx.save();
+
+  // Outer drop shadow
+  ctx.shadowColor='rgba(0,0,0,0.8)';
+  ctx.shadowBlur=12; ctx.shadowOffsetX=2; ctx.shadowOffsetY=3;
+  ctx.fillStyle='#0a0c12';
+  ctx.beginPath(); ctx.arc(cx,cy,pr,0,Math.PI*2); ctx.fill();
+  ctx.shadowBlur=0; ctx.shadowOffsetX=0; ctx.shadowOffsetY=0;
+
+  // Outer rim — cyan glowing ring
+  // Dark base fill
+  ctx.fillStyle='rgba(0,8,18,0.95)';
+  ctx.beginPath(); ctx.arc(cx,cy,pr,0,Math.PI*2); ctx.fill();
+  // Cyan rim stroke — outer edge
+  ctx.strokeStyle='rgba(0,212,255,0.9)';
+  ctx.lineWidth=2;
+  ctx.shadowColor='rgba(0,212,255,0.8)';
+  ctx.shadowBlur=12;
+  ctx.beginPath(); ctx.arc(cx,cy,pr-1,0,Math.PI*2); ctx.stroke();
+  ctx.shadowBlur=0;
+  // Inner softer cyan ring
+  ctx.strokeStyle='rgba(0,180,220,0.25)';
+  ctx.lineWidth=4;
+  ctx.beginPath(); ctx.arc(cx,cy,pr-4,0,Math.PI*2); ctx.stroke();
+
+  // Inner recessed disc
+  const innerG=ctx.createRadialGradient(cx-2,cy-2,0,cx,cy,pr-3);
+  innerG.addColorStop(0,'#2a2e3a');
+  innerG.addColorStop(0.4,'#1a1e28');
+  innerG.addColorStop(0.8,'#12151e');
+  innerG.addColorStop(1,'#0a0c14');
+  ctx.fillStyle=innerG;
+  ctx.beginPath(); ctx.arc(cx,cy,pr-3,0,Math.PI*2); ctx.fill();
+
+  // Knurling lines around bezel edge (8 marks)
+  for(let i=0;i<16;i++){
+    const ka=i*Math.PI/8;
+    const r1=pr-1.5, r2=pr-0.3;
+    ctx.strokeStyle=i%2===0?'rgba(255,255,255,0.3)':'rgba(0,0,0,0.4)';
+    ctx.lineWidth=0.8;
+    ctx.beginPath();
+    ctx.moveTo(cx+Math.cos(ka)*r1,cy+Math.sin(ka)*r1);
+    ctx.lineTo(cx+Math.cos(ka)*r2,cy+Math.sin(ka)*r2);
+    ctx.stroke();
+  }
+
+  // Central jewel — deep ruby/sapphire style
+  const jewR=4.5;
+  const jewG=ctx.createRadialGradient(cx-1.5,cy-1.5,0,cx,cy,jewR);
+  jewG.addColorStop(0,'rgba(0,212,255,0.9)');
+  jewG.addColorStop(0.3,'rgba(0,140,200,0.7)');
+  jewG.addColorStop(0.7,'rgba(0,60,120,0.9)');
+  jewG.addColorStop(1,'rgba(0,20,50,1)');
+  ctx.fillStyle=jewG;
+  ctx.shadowColor='rgba(0,212,255,0.6)'; ctx.shadowBlur=8;
+  ctx.beginPath(); ctx.arc(cx,cy,jewR,0,Math.PI*2); ctx.fill();
+  ctx.shadowBlur=0;
+
+  // Jewel specular highlight
+  const specG=ctx.createRadialGradient(cx-1.8,cy-1.8,0,cx,cy,jewR);
+  specG.addColorStop(0,'rgba(255,255,255,0.7)');
+  specG.addColorStop(0.4,'rgba(255,255,255,0.1)');
+  specG.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=specG;
+  ctx.beginPath(); ctx.arc(cx,cy,jewR,0,Math.PI*2); ctx.fill();
+
+  ctx.restore();
+
+  // ── Prayer names curved along outer band ──
+  for(const p of ORDER){
+    if(isNaN(cachedTimes[p]))continue;
+    const ph=((cachedTimes[p]%24)+24)%24,pA=angle(ph),col=PMETA[p].color,isA=p===active;
+    const label=PMETA[p].en.toUpperCase();
+    const fSize=isA?12:10;
+    ctx.font=`700 ${fSize}px 'Geist',sans-serif`;
+    ctx.fillStyle=isA?col:'rgba(220,225,232,0.90)';
+    ctx.textBaseline='middle';ctx.textAlign='center';
+    const r=bandMid;
+    const charW=fSize*0.68;
+    const charGap=fSize*0.14;
+    const step=(charW+charGap)/r;
+    const totalSpan=(label.length-1)*step;
+    const isBottom=Math.sin(pA)>0.05;
+    for(let i=0;i<label.length;i++){
+      let ca,rot;
+      if(isBottom){
+        // Bottom: sweep counter-clockwise so D lands on viewer left, R on right
+        // ca-π/2 rotation makes text face outward upright
+        ca=pA+totalSpan/2-i*step;
+        rot=ca-Math.PI/2;
+      } else {
+        // Top: sweep clockwise, ca+π/2 rotation
+        ca=pA-totalSpan/2+i*step;
+        rot=ca+Math.PI/2;
+      }
+      ctx.save();
+      ctx.translate(cx+r*Math.cos(ca),cy+r*Math.sin(ca));
+      ctx.rotate(rot);
+      ctx.fillText(label[i],0,0);
+      ctx.restore();
+    }
+  }
+
+}
+
+// ── TICK ────────────────────────────────────────────────────
+function drawKaabaCanvas(){
+  const kc=document.getElementById('kaaba-canvas');
+  if(!kc)return;
+  const wrap=kc.parentElement;
+  const size=wrap.offsetWidth||680;
+  const dpr=window.devicePixelRatio||1;
+  if(kc._lastSize!==size){
+    kc.width=size*dpr; kc.height=size*dpr;
+    kc._lastSize=size;
+  }
+  const kctx=kc.getContext('2d');
+  kctx.setTransform(dpr,0,0,dpr,0,0);
+  kctx.clearRect(0,0,size,size);
+  const cx=size/2, cy=size/2;
+  _kaabaAngle+=0.008;
+  const a=_kaabaAngle;
+
+  // Match CSS Kaaba exactly: 16x16x16 cube with rotateX(-20deg) tilt
+  const W=14; // half-width
+  const H=14; // half-height
+  const D=14; // half-depth
+  const tiltX=Math.cos(-0.35); // rotateX(-20deg)
+  const tiltY=Math.sin(-0.35);
+  const cosA=Math.cos(a), sinA=Math.sin(a);
+
+  // Project 3D point to 2D with Y-rotation + X-tilt
+  const proj=(x,y,z)=>{
+    const rx=x*cosA+z*sinA;
+    const rz=-x*sinA+z*cosA;
+    const ry=y*tiltX-rz*tiltY;
+    const rz2=y*tiltY+rz*tiltX;
+    const sc=1/(1+rz2*0.008);
+    return[cx+rx*sc,cy+ry*sc];
+  };
+
+  const TLF=proj(-W,-H,-D),TRF=proj(W,-H,-D);
+  const TLB=proj(-W,-H,D), TRB=proj(W,-H,D);
+  const BLF=proj(-W,H,-D), BRF=proj(W,H,-D);
+  const BLB=proj(-W,H,D),  BRB=proj(W,H,D);
+
+  // Gold band: top 38% of cube height
+  const bh=0.38;
+  const lerp=(a,b,t)=>[a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];
+  const BTLF=lerp(TLF,BLF,bh),BTRF=lerp(TRF,BRF,bh);
+  const BTLB=lerp(TLB,BLB,bh),BTRB=lerp(TRB,BRB,bh);
+
+  const face=(pts,fill,stroke,lw=0.7)=>{
+    kctx.beginPath();
+    kctx.moveTo(pts[0][0],pts[0][1]);
+    for(let i=1;i<pts.length;i++)kctx.lineTo(pts[i][0],pts[i][1]);
+    kctx.closePath();
+    kctx.fillStyle=fill; kctx.fill();
+    if(stroke){kctx.strokeStyle=stroke;kctx.lineWidth=lw;kctx.stroke();}
+  };
+
+  kctx.save();
+  kctx.shadowColor='rgba(0,0,0,0.7)';
+  kctx.shadowBlur=8; kctx.shadowOffsetX=1; kctx.shadowOffsetY=2;
+
+  const leftVis=Math.cos(a+Math.PI/4)>0;
+  const rightVis=Math.cos(a-Math.PI/4)>0;
+
+  // Left face
+  if(leftVis){
+    face([BTLF,BTLB,BLB,BLF],'#0a0805','rgba(196,162,74,0.35)');
+    face([TLF,TLB,BTLB,BTLF],'rgba(140,105,22,0.97)','rgba(196,162,74,0.6)');
+  }
+  // Right face (front)
+  if(rightVis){
+    face([BTRF,BTLF,BLF,BRF],'#0d0a06','rgba(196,162,74,0.35)');
+    face([TRF,TLF,BTLF,BTRF],'rgba(175,132,28,0.97)','rgba(196,162,74,0.7)');
+  }
+
+  kctx.shadowBlur=0; kctx.shadowOffsetX=0; kctx.shadowOffsetY=0;
+
+  // Top face
+  face([TLF,TRF,TRB,TLB],'#111008','rgba(196,162,74,0.4)');
+
+  // Gold edge lines
+  kctx.strokeStyle='rgba(196,162,74,0.8)'; kctx.lineWidth=1;
+  [[TLF,BLF],[TRF,BRF],[TLF,TRF]].forEach(([a,b])=>{
+    kctx.beginPath();kctx.moveTo(a[0],a[1]);kctx.lineTo(b[0],b[1]);kctx.stroke();
+  });
+
+  // Gold band horizontal line (Kiswah border)
+  kctx.strokeStyle='rgba(196,162,74,0.7)'; kctx.lineWidth=0.5;
+  if(leftVis){kctx.beginPath();kctx.moveTo(BTLF[0],BTLF[1]);kctx.lineTo(BTLB[0],BTLB[1]);kctx.stroke();}
+  if(rightVis){kctx.beginPath();kctx.moveTo(BTRF[0],BTRF[1]);kctx.lineTo(BTLF[0],BTLF[1]);kctx.stroke();}
+
+  // Cyan glow underneath
+  const gr=kctx.createRadialGradient(cx,cy,4,cx,cy,20);
+  gr.addColorStop(0,'rgba(0,212,255,0.1)');
+  gr.addColorStop(1,'rgba(0,212,255,0)');
+  kctx.fillStyle=gr;
+  kctx.beginPath();kctx.arc(cx,cy,20,0,Math.PI*2);kctx.fill();
+
+  kctx.restore();
+}
+
+function updateLocalTime(){
+  // Sehri = Fajr time; Iftar = Maghrib time
+  if(!cachedTimes)return;
+  function fmtFH(fh){
+    const h=Math.floor(((fh%24)+24)%24),mn=Math.round((fh-Math.floor(fh))*60)%60;
+    const ap=h<12?'AM':'PM',hh=h%12||12;
+    return `${String(hh).padStart(2,'0')}:${String(mn).padStart(2,'0')} ${ap}`;
+  }
+  const se=document.getElementById('sehri-time');
+  const ift=document.getElementById('iftar-time');
+  if(se&&cachedTimes.fajr) se.textContent=fmtFH(cachedTimes.fajr);
+  if(ift&&cachedTimes.maghrib) ift.textContent=fmtFH(cachedTimes.maghrib);
+}
+function updateCountdown(){
+  if(!cachedTimes)return;
+  const lh=localH();
+  const np=nextPrayer(cachedTimes,lh);
+  const nextKey=np.name;
+  const nameEl=document.getElementById('next-name');
+  const npBlock=document.getElementById('np-block');
+  if(npBlock) npBlock.style.setProperty('--np-color',PMETA[nextKey]?.color||'#00d4ff');
+  if(nameEl){nameEl.textContent=PMETA[nextKey]?.en||'—';nameEl.style.color=PMETA[nextKey]?.color||'#00d4ff';}
+  // countdown + progress bar moved to drawArc for frame-accurate rendering
+}
+function updateSunArc(){
+  if(!cachedTimes)return;
+  const sr=cachedTimes.sunrise, ss=cachedTimes.maghrib; // sunset ≈ Maghrib
+  if(isNaN(sr)||isNaN(ss))return;
+  function fmtFH(fh){
+    const h=Math.floor(((fh%24)+24)%24),mn=Math.round((fh-Math.floor(fh))*60)%60;
+    const ap=h<12?'AM':'PM',hh=h%12||12;
+    return `${String(hh).padStart(2,'0')}:${String(mn).padStart(2,'0')} ${ap}`;
+  }
+  const rl=document.getElementById('sun-rise-lbl');
+  const sl=document.getElementById('sun-set-lbl');
+  if(rl)rl.textContent=fmtFH(sr);
+  if(sl)sl.textContent=fmtFH(ss);
+  const dot=document.getElementById('sun-arc-dot');
+  const halo=document.getElementById('sun-arc-halo');
+  const fill=document.getElementById('sun-arc-fill');
+  if(!dot||!fill)return;
+  const cx=130,rx=112,ry=46,base=74;
+  const lh=localH();
+  const t=(lh-sr)/(ss-sr);
+  if(t>=0&&t<=1){
+    const ang=Math.PI*t;
+    const x=cx-rx*Math.cos(ang), y=base-ry*Math.sin(ang);
+    dot.setAttribute('cx',x.toFixed(1));
+    dot.setAttribute('cy',y.toFixed(1));
+    dot.setAttribute('r','5.5');
+    dot.setAttribute('fill','url(#sunCore)');
+    dot.style.opacity='1';
+    if(halo){halo.setAttribute('cx',x.toFixed(1));halo.setAttribute('cy',y.toFixed(1));halo.setAttribute('r','12');halo.style.display='';}
+    // Traveled arc from sunrise (left) to current sun position
+    if(t>0.001){
+      fill.setAttribute('d',`M18,74 A${rx},${ry} 0 0 1 ${x.toFixed(1)},${y.toFixed(1)}`);
+      fill.style.display='';
+    } else { fill.style.display='none'; }
+  } else {
+    // Night — sun below horizon (left before dawn, right after dusk)
+    fill.style.display='none';
+    const nx=t<0?18:242;
+    dot.setAttribute('cx',nx);
+    dot.setAttribute('cy',(base+8).toFixed(1));
+    dot.setAttribute('r','4');
+    dot.setAttribute('fill','#5f6f8a');
+    dot.style.opacity='0.55';
+    if(halo)halo.style.display='none';
+  }
+}
+function toggleCities(){
+  const more=document.getElementById('cities-more');
+  const btn=document.getElementById('cities-toggle');
+  const open=more.style.display==='none';
+  more.style.display=open?'grid':'none';
+  btn.textContent=open?'Show fewer cities ↑':'Show more cities ↓';
+}
+function tick(){
+  updateLocalTime();
+  updateCountdown();
+  updateSunArc();
+  updateActiveCard();
+  // drawArc runs in its own rAF loop — not called here
+}
+
+// ── INIT ────────────────────────────────────────────────────
+renderPrayers();
+updateDate();
+tick();
+// drawArc loops itself at 60fps for smooth countdown and clock hand
+function drawLoop(){
+  drawArc();
+  requestAnimationFrame(drawLoop);
+}
+
+// ── Format helpers ────────────────────────────────────────────────────────
+function fmtFH(fh){
+  var h=Math.floor(((fh%24)+24)%24),mn=Math.round((fh-Math.floor(fh))*60)%60;
+  var ap=h<12?'AM':'PM',hh=h%12||12;
+  return String(hh).padStart(2,'0')+':'+String(mn).padStart(2,'0')+' '+ap;
+}
+
+// ── Update right panel ────────────────────────────────────────────────────
+function updateRight(){
+  if(!cachedTimes)return;
+  var sr=cachedTimes.sunrise, ss=cachedTimes.maghrib;
+  var rl=document.getElementById('sunrise-time');
+  var sl=document.getElementById('sunset-time');
+  if(rl)rl.textContent=fmtFH(sr);
+  if(sl)sl.textContent=fmtFH(ss);
+  var se=document.getElementById('sehri-time');
+  var ift=document.getElementById('iftar-time');
+  if(se)se.textContent=fmtFH(cachedTimes.fajr);
+  if(ift)ift.textContent=fmtFH(cachedTimes.maghrib);
+}
+
+// ── Update left panel hero ────────────────────────────────────────────────
+function updateHero(){
+  var hero=document.getElementById('hub-hero');
+  var method=AdhanMethods.labelFor(CITY.cc, CITY.state);
+  var d=cityNow();
+  var dateStr=d.toLocaleDateString('en-GB',{timeZone:CITY.tzName||'UTC',weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  hero.innerHTML=
+    '<h1 class="hub-city-name">'+CITY.name+'</h1>'+
+    '<div class="hub-country">'+CITY.country+'</div>'+
+    '<div class="hub-date">'+dateStr+'</div>'+
+    '<div class="hub-method">'+method+'</div>'+
+    '<button class="hub-locate-btn" onclick="detectLocation()" title="Use my location">📍 Use my location</button>';
+}
+
+// ── Update prayer cards ───────────────────────────────────────────────────
+var PMETA_HUB=[
+  {key:'fajr',   en:'Fajr',    color:'#4466ff'},
+  {key:'dhuhr',  en:'Dhuhr',   color:'#ffcc00'},
+  {key:'asr',    en:'Asr',     color:'#e07a2f'},
+  {key:'maghrib',en:'Maghrib', color:'#d94f3d'},
+  {key:'isha',   en:'Isha',    color:'#9b59c4'},
+];
+function updateCards(){
+  if(!cachedTimes)return;
+  var stack=document.getElementById('prayer-stack');
+  if(!stack)return;
+  var lh=localH();
+  var np=nextPrayer(cachedTimes,lh);
+  stack.innerHTML='';
+  PMETA_HUB.forEach(function(m){
+    var t=cachedTimes[m.key];
+    var isA=m.key===np.name;
+    var h=Math.floor(((t%24)+24)%24),mn=Math.round((t-Math.floor(t))*60)%60;
+    var ap=h<12?'AM':'PM',hh=h%12||12;
+    var ts=String(hh).padStart(2,'0')+':'+String(mn).padStart(2,'0')+' '+ap;
+    var div=document.createElement('div');
+    div.className='pcard'+(isA?' pcard-active':'');
+    div.style.setProperty('--pc',m.color);
+    div.innerHTML='<div class="pcard-dot"></div><div class="pcard-name">'+m.en+'</div><div class="pcard-time">'+ts+'</div><div class="pcard-now">NOW</div>';
+    stack.appendChild(div);
+  });
+}
+
+// ── Nominatim reverse geocode ─────────────────────────────────────────────
+function reverseGeocode(lat, lon, cb){
+  var url='https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lon+'&accept-language=en';
+  fetch(url, {headers:{'User-Agent':'AdhanLive/1.0 (adhanlive.com)'}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var addr=d.address||{};
+      var cc=(addr.country_code||'sa').toUpperCase();
+      var state=addr.state||addr.province||addr.region||addr.county||'';
+      var city=addr.city||addr.town||addr.village||addr.county||addr.state||d.display_name.split(',')[0]||'';
+      var country=addr.country||'';
+      cb(null,{cc:cc,state:state,city:city,country:country,lat:lat,lon:lon});
+    })
+    .catch(function(e){cb(e,null);});
+}
+
+// Nominatim forward geocode (city search)
+var _searchTimer=null;
+function searchCities(q){
+  if(!q||q.length<2)return;
+  var url='https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(q)+'&limit=6&accept-language=en&featuretype=city';
+  fetch(url,{headers:{'User-Agent':'AdhanLive/1.0 (adhanlive.com)'}})
+    .then(function(r){return r.json();})
+    .then(function(results){showResults(results,q);})
+    .catch(function(){});
+}
+
+function showResults(results, q){
+  var box=document.getElementById('hub-results');
+  if(!box)return;
+  if(!results||results.length===0){
+    box.innerHTML='<div class="hub-result-item"><div class="hub-result-city">No results found for "'+q+'"</div></div>';
+    box.classList.add('visible');
+    return;
+  }
+  box.innerHTML=results.map(function(r){
+    var parts=r.display_name.split(',');
+    var city=parts[0].trim();
+    var country=parts[parts.length-1].trim();
+    return '<div class="hub-result-item" onclick="selectResult('+r.lat+','+r.lon+',\''+city.replace(/'/g,'\\'')+'\')">'
+      +'<div class="hub-result-city">'+city+'</div>'
+      +'<div class="hub-result-country">'+country+'</div>'
+      +'</div>';
+  }).join('');
+  box.classList.add('visible');
+}
+
+function selectResult(lat, lon, cityName){
+  var box=document.getElementById('hub-results');
+  if(box){box.classList.remove('visible');box.innerHTML='';}
+  var inp=document.getElementById('hub-search');
+  if(inp)inp.value=cityName;
+  loadLocation(lat, lon);
+}
+
+// ── Load a location (lat/lon) → full clock update ─────────────────────────
+function loadLocation(lat, lon){
+  reverseGeocode(lat, lon, function(err, info){
+    if(err||!info){
+      // Fallback: use lat/lon with MWL
+      CITY.lat=lat; CITY.lon=lon; CITY.cc='SA'; CITY.state='';
+      CITY.name='Unknown Location'; CITY.country='';
+    } else {
+      CITY.lat=info.lat; CITY.lon=info.lon;
+      CITY.cc=info.cc; CITY.state=info.state;
+      CITY.name=info.city; CITY.country=info.country;
+    }
+    // Resolve timezone from Nominatim lat/lon using Intl
+    // Use a best-effort: if tzName known use it, else fall back to UTC offset
+    CITY.tzName=''; // will trigger cityOffset() fallback via Intl
+    // Try to get offset from browser using the coordinates
+    CITY.tz=getOffsetForCoords(lat, lon);
+    updateHero();
+    // Force prayer recalc
+    cachedTimes=calcPrayers(CITY.lat,CITY.lon,cityOffset(),new Date());
+    updateCards();
+    updateRight();
+    // Update URL
+    var url=window.location.pathname+'?lat='+lat.toFixed(4)+'&lon='+lon.toFixed(4);
+    window.history.replaceState({}, '', url);
+  });
+}
+
+// Best-effort timezone offset from coordinates
+// Uses a lookup by approximate longitude (UTC offset ≈ lon/15)
+function getOffsetForCoords(lat, lon){
+  // Rough offset — cityOffset() via Intl will correct this if tzName is set
+  return Math.round(lon/15);
+}
+
+// ── Auto-detect location ──────────────────────────────────────────────────
+function detectLocation(){
+  var hero=document.getElementById('hub-hero');
+  hero.innerHTML='<div class="hub-loading"><div class="hub-loading-dot"></div>Detecting your location...</div>';
+  if(!navigator.geolocation){
+    hero.innerHTML='<div class="hub-error">Geolocation not supported by your browser.</div>';
+    loadDefault(); return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      loadLocation(pos.coords.latitude, pos.coords.longitude);
+      document.getElementById('hub-search-wrap').style.display='';
+    },
+    function(err){
+      hero.innerHTML='<div class="hub-error">Could not detect location. Please search for your city.</div>';
+      document.getElementById('hub-search-wrap').style.display='';
+      loadDefault();
+    },
+    {timeout:8000, maximumAge:300000}
+  );
+}
+
+function loadDefault(){
+  // Default to Makkah if no location
+  CITY={name:'Makkah',country:'Saudi Arabia',cc:'SA',state:'',lat:21.4225,lon:39.8262,tz:3,tzName:'Asia/Riyadh',method:'auto'};
+  updateHero();
+  cachedTimes=calcPrayers(CITY.lat,CITY.lon,3,new Date());
+  updateCards();
+  updateRight();
+}
+
+// ── Search input handler ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function(){
+  var inp=document.getElementById('hub-search');
+  if(inp){
+    inp.addEventListener('input', function(){
+      var q=this.value.trim();
+      clearTimeout(_searchTimer);
+      if(q.length<2){
+        var box=document.getElementById('hub-results');
+        if(box){box.classList.remove('visible');box.innerHTML='';}
+        return;
+      }
+      _searchTimer=setTimeout(function(){searchCities(q);},350);
+    });
+    inp.addEventListener('blur',function(){
+      setTimeout(function(){
+        var box=document.getElementById('hub-results');
+        if(box)box.classList.remove('visible');
+      },200);
+    });
+  }
+
+  // Check URL params first
+  var params=new URLSearchParams(window.location.search);
+  var lat=parseFloat(params.get('lat')), lon=parseFloat(params.get('lon'));
+  if(!isNaN(lat)&&!isNaN(lon)){
+    document.getElementById('hub-search-wrap').style.display='';
+    loadLocation(lat, lon);
+  } else {
+    detectLocation();
+  }
+});
+
+// Close results on outside click
+document.addEventListener('click',function(e){
+  if(!e.target.closest('#hub-search-wrap')){
+    var box=document.getElementById('hub-results');
+    if(box)box.classList.remove('visible');
+  }
+});
+
+// ── Tick + draw loop ──────────────────────────────────────────────────────
+function tick(){
+  var now=cityNow();
+  cachedTimes=calcPrayers(CITY.lat,CITY.lon,cityOffset(),now);
+  updateCards();
+  updateRight();
+  // Update next prayer countdown in right panel
+  var lh=localH();
+  var np=nextPrayer(cachedTimes,lh);
+  var npEl=document.getElementById('next-prayer-name');
+  if(npEl)npEl.textContent=np.name.charAt(0).toUpperCase()+np.name.slice(1);
+  var npT=document.getElementById('next-prayer-countdown');
+  if(npT){
+    var nowSec=now.getUTCHours()*3600+now.getUTCMinutes()*60+now.getUTCSeconds();
+    var npSec=Math.round(((np.time%24)+24)%24*3600);
+    var diff=(npSec-nowSec+86400)%86400;
+    var hh=Math.floor(diff/3600),mm=Math.floor((diff%3600)/60),ss=diff%60;
+    npT.textContent=String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0')+':'+String(ss).padStart(2,'0');
+    // Color matches next prayer
+    var colors={fajr:'#4466ff',dhuhr:'#ffcc00',asr:'#e07a2f',maghrib:'#d94f3d',isha:'#9b59c4'};
+    if(npEl)npEl.style.color=colors[np.name]||'#00d4ff';
+  }
+  // Sun arc
+  drawSunArc();
+}
+
+function drawSunArc(){
+  if(!cachedTimes)return;
+  var c=document.getElementById('sunCanvas');
+  if(!c)return;
+  var ctx2=c.getContext('2d');
+  var W=c.width, H=c.height;
+  ctx2.clearRect(0,0,W,H);
+  var lh=localH();
+  var sr=cachedTimes.sunrise, ss=cachedTimes.maghrib;
+  var day=ss-sr; if(day<=0)return;
+  var prog=Math.max(0,Math.min(1,(lh-sr)/day));
+  var cx2=W/2, cy2=H*0.85, rx=W*0.44, ry=H*0.75;
+  // Arc path
+  ctx2.beginPath();
+  ctx2.ellipse(cx2,cy2,rx,ry,0,Math.PI,0,false);
+  ctx2.strokeStyle='rgba(255,210,90,0.2)';
+  ctx2.lineWidth=1.5;
+  ctx2.setLineDash([3,5]);
+  ctx2.stroke();
+  ctx2.setLineDash([]);
+  // Sun dot
+  var a=Math.PI-(prog*Math.PI);
+  var sx=cx2+rx*Math.cos(a), sy=cy2+ry*Math.sin(a);
+  ctx2.beginPath();
+  ctx2.arc(sx,sy,5,0,Math.PI*2);
+  var sg=ctx2.createRadialGradient(sx,sy,0,sx,sy,5);
+  sg.addColorStop(0,'rgba(255,220,80,1)');
+  sg.addColorStop(1,'rgba(255,160,40,0.6)');
+  ctx2.fillStyle=sg;
+  ctx2.shadowColor='rgba(255,200,60,0.8)';
+  ctx2.shadowBlur=8;
+  ctx2.fill();
+  ctx2.shadowBlur=0;
+}
+
+function drawLoop(){ drawArc(); requestAnimationFrame(drawLoop); }
+requestAnimationFrame(drawLoop);
+setInterval(tick, 1000);
+
+// Nav clock
+function tickNavClock(){
+  var n=new Date();
+  var de=document.getElementById('nav-date');
+  var te=document.getElementById('nav-time');
+  if(de)de.textContent=n.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  if(te)te.textContent=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+tickNavClock(); setInterval(tickNavClock,1000);
+
+// Mobile menu
+function toggleMobileMenu(){
+  document.getElementById('nav-links').classList.toggle('mobile-open');
+  document.getElementById('mobile-menu-overlay').classList.toggle('visible');
+}
+function closeMobileMenu(){
+  document.getElementById('nav-links').classList.remove('mobile-open');
+  document.getElementById('mobile-menu-overlay').classList.remove('visible');
+}
+</script>
+</body>
+</html>

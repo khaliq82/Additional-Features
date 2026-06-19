@@ -344,7 +344,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
       <div class="hero-country" id="hub-country">Saudi Arabia</div>
       <div class="hero-date" id="hero-date"><span id="hub-date">Thursday, 19 June 2026</span> · <span id="hijri-inline"></span></div>
       <div class="hero-method" id="hub-method">Umm al-Qura University, Makkah</div>
-      <button id="hub-locate-btn" onclick="detectLocation()" style="margin-top:10px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:8px;padding:7px 14px;color:#00d4ff;font-size:0.78rem;font-family:Geist,sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">📍 Detect my location</button>
+
       <div style="margin-top:12px;position:relative;">
         <input type="text" id="hub-search" placeholder="Search any city..." autocomplete="off"
           style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px 38px 10px 14px;font-size:0.88rem;color:#fff;font-family:Geist,sans-serif;outline:none;box-sizing:border-box;">
@@ -1854,30 +1854,9 @@ function toggleCities(){
   more.style.display=open?'grid':'none';
   btn.textContent=open?'Show fewer cities ↑':'Show more cities ↓';
 }
-function tick(){
-  updateLocalTime();
-  updateCountdown();
-  updateSunArc();
-  updateActiveCard();
-  // drawArc runs in its own rAF loop — not called here
-}
+// City-page tick removed — hub tick handles updates
 
-// ── INIT ────────────────────────────────────────────────────
-renderPrayers();
-updateDate();
-tick();
-// drawArc loops itself at 60fps for smooth countdown and clock hand
-function drawLoop(){
-  drawArc();
-  requestAnimationFrame(drawLoop);
-}
-requestAnimationFrame(drawLoop);
-setInterval(tick,1000);
-const now=new Date();
-const msToMid=(86400-(now.getHours()*3600+now.getMinutes()*60+now.getSeconds()))*1000;
-setTimeout(()=>{renderPrayers();setInterval(renderPrayers,86400000);},msToMid);
-// Refresh card active states every minute so NOW follows real prayer windows
-setInterval(renderPrayers,60000);
+// Init handled by DOMContentLoaded below
 setInterval(updateActiveCard,15000);
 let _resizeTimer;
 window.addEventListener('resize',()=>{
@@ -1953,6 +1932,12 @@ function shareMapMoment(platform){
 // ════════════════════════════════════════════════════════
 // Hub page — location detection, search, dynamic update
 // ════════════════════════════════════════════════════════
+function hubTick(){
+  // Recalculate every second
+  cachedTimes=calcPrayers(CITY.lat,CITY.lon,cityOffset(),new Date());
+  updateActiveCard();
+  updateHeroPanel();
+}
 
 function updateHeroPanel(){
   var d = cityNow();
@@ -2037,16 +2022,61 @@ function selectCity(lat,lon){
   loadLocation(lat,lon);
 }
 
-// Check URL params on load
-(function(){
+// Init on DOMContentLoaded
+document.addEventListener('DOMContentLoaded',function(){
+  // Start draw loop
+  cachedTimes=calcPrayers(CITY.lat,CITY.lon,CITY.tz,new Date());
+  renderPrayers();
+  updateDate();
+  updateHeroPanel();
+  requestAnimationFrame(function loop(){ drawArc(); requestAnimationFrame(loop); });
+  setInterval(hubTick,1000);
+
+  // Search input
+  var inp=document.getElementById('hub-search');
+  if(inp){
+    inp.addEventListener('input',function(){
+      clearTimeout(_st);
+      var q=this.value.trim();
+      var box=document.getElementById('hub-results');
+      if(q.length<2){if(box)box.style.display='none';return;}
+      _st=setTimeout(function(){
+        fetch('https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(q)+'&limit=6&accept-language=en',
+          {headers:{'User-Agent':'AdhanLive/1.0 (adhanlive.com)'}})
+        .then(function(r){return r.json();})
+        .then(function(results){
+          var box=document.getElementById('hub-results');
+          if(!box||!results.length){if(box)box.style.display='none';return;}
+          box.innerHTML=results.map(function(r){
+            var parts=r.display_name.split(',');
+            var city=parts[0].trim(),country=parts[parts.length-1].trim();
+            return '<div onclick="selectCity('+r.lat+','+r.lon+')" style="padding:10px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);" onmouseover="this.style.background='rgba(0,212,255,0.08)'" onmouseout="this.style.background=''">'
+              +'<div style="color:#fff;font-family:Geist,sans-serif;font-size:0.9rem;">'+city+'</div>'
+              +'<div style="color:rgba(255,255,255,0.4);font-size:0.78rem;margin-top:2px;">'+country+'</div>'
+              +'</div>';
+          }).join('');
+          box.style.display='block';
+        }).catch(function(){});
+      },350);
+    });
+    inp.addEventListener('blur',function(){
+      setTimeout(function(){var b=document.getElementById('hub-results');if(b)b.style.display='none';},200);
+    });
+  }
+
+  // Silent auto-detect location
   var p=new URLSearchParams(window.location.search);
-  var lat=parseFloat(p.get('lat')), lon=parseFloat(p.get('lon'));
+  var lat=parseFloat(p.get('lat')),lon=parseFloat(p.get('lon'));
   if(!isNaN(lat)&&!isNaN(lon)){
     loadLocation(lat,lon);
-  } else {
-    detectLocation();
+  } else if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      function(pos){loadLocation(pos.coords.latitude,pos.coords.longitude);},
+      function(){/* denied — keep default Makkah */},
+      {timeout:8000,maximumAge:300000}
+    );
   }
-})();
+});
 
 </script>
 </body>

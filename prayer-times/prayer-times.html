@@ -337,13 +337,20 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 <div id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
 <div class="page">
 
-  <!-- LEFT: City identity + vertical prayer cards -->
+  <!-- LEFT: City identity — dynamic hub version -->
   <div class="city-block">
     <div class="city-name-block">
-      <div class="hero-city">Makkah</div>
-      <div class="hero-country">Saudi Arabia</div>
-      <div class="hero-date" id="hero-date">Thursday, 11 June 2026 · <span id="hijri-inline">24 Dhul Hijjah 1447 AH</span></div>
-      <div class="hero-method">Umm al-Qura University, Makkah</div>
+      <div class="hero-city" id="hub-city-name">Makkah</div>
+      <div class="hero-country" id="hub-country">Saudi Arabia</div>
+      <div class="hero-date" id="hero-date"><span id="hub-date">Thursday, 19 June 2026</span> · <span id="hijri-inline"></span></div>
+      <div class="hero-method" id="hub-method">Umm al-Qura University, Makkah</div>
+      <button id="hub-locate-btn" onclick="detectLocation()" style="margin-top:10px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:8px;padding:7px 14px;color:#00d4ff;font-size:0.78rem;font-family:Geist,sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">📍 Detect my location</button>
+      <div style="margin-top:12px;position:relative;">
+        <input type="text" id="hub-search" placeholder="Search any city..." autocomplete="off"
+          style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px 38px 10px 14px;font-size:0.88rem;color:#fff;font-family:Geist,sans-serif;outline:none;box-sizing:border-box;">
+        <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:rgba(0,212,255,0.5);pointer-events:none;font-size:1rem;">⌕</span>
+        <div id="hub-results" style="display:none;position:absolute;top:100%;left:0;right:0;background:#0e1018;border:1px solid rgba(0,212,255,0.2);border-top:none;border-radius:0 0 10px 10px;z-index:200;max-height:240px;overflow-y:auto;"></div>
+      </div>
     </div>
   </div>
   <div class="prayer-stack-wrap">

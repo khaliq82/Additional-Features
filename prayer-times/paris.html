@@ -929,26 +929,22 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   ctx.arcTo(-cW+cuspD*2.5,cH, -cW+cuspD*2,cH*0.55, cR);
   ctx.bezierCurveTo(-cW+cuspD*2,cH*0.55, -cW+cuspD*1.2,cuspD*0.5, -cW,0);
   ctx.closePath();
-  // Polished metallic outline — silver highlight
-  ctx.strokeStyle='rgba(255,255,255,0.85)';
-  ctx.lineWidth=1.4;
+  // Outline — prayer color when active, silver when inactive. No glow or shadow.
+  ctx.strokeStyle=isActive?_hr(col,1.0):'rgba(255,255,255,0.85)';
+  ctx.lineWidth=isActive?2.0:1.4;
+  ctx.shadowBlur=0;
   ctx.stroke();
-  // Subtle prayer-color inner glow layer
-  ctx.strokeStyle=_hr(col,0.45);
-  ctx.lineWidth=0.7;
-  ctx.stroke();
+  if(!isActive){ctx.strokeStyle=_hr(col,0.45);ctx.lineWidth=0.7;ctx.stroke();}
   ctx.beginPath();
   ctx.moveTo(0,cH);
   ctx.arcTo(-cW+cuspD*3,cH, -cW+cuspD*2.5,cH, cR);
   ctx.bezierCurveTo(-cW+cuspD*2,cH*0.55, -cW+cuspD*1.2,cuspD*0.5, -cW,0);
-  // Polished metallic outline — silver highlight
-  ctx.strokeStyle='rgba(255,255,255,0.85)';
-  ctx.lineWidth=1.4;
+  // Outline — prayer color when active, silver when inactive. No glow or shadow.
+  ctx.strokeStyle=isActive?_hr(col,1.0):'rgba(255,255,255,0.85)';
+  ctx.lineWidth=isActive?2.0:1.4;
+  ctx.shadowBlur=0;
   ctx.stroke();
-  // Subtle prayer-color inner glow layer
-  ctx.strokeStyle=_hr(col,0.45);
-  ctx.lineWidth=0.7;
-  ctx.stroke();
+  if(!isActive){ctx.strokeStyle=_hr(col,0.45);ctx.lineWidth=0.7;ctx.stroke();}
 
   // ── Text — white pearl, existing font, flip for upper half ───────────────
   const flip=cos<0;

@@ -807,14 +807,14 @@ function drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive){
     cx+cos*b1+px*baseW, cy+sin*b1+py*baseW,
     cx+cos*b1-px*baseW, cy+sin*b1-py*baseW
   );
-  _mg2.addColorStop(0,   'rgba(255,255,255,0.90)');
-  _mg2.addColorStop(0.20,'rgba(200,210,230,0.85)');
-  _mg2.addColorStop(0.50,'rgba(80,90,110,0.80)');
-  _mg2.addColorStop(0.80,'rgba(160,175,200,0.75)');
-  _mg2.addColorStop(1,   'rgba(255,255,255,0.50)');
+  _mg2.addColorStop(0,   'rgba(255,220,100,0.90)');
+  _mg2.addColorStop(0.20,'rgba(180,140,50,0.85)');
+  _mg2.addColorStop(0.50,'rgba(60,40,10,0.85)');
+  _mg2.addColorStop(0.80,'rgba(160,120,40,0.80)');
+  _mg2.addColorStop(1,   'rgba(220,180,80,0.55)');
   ctx.fillStyle=_mg2;
   ctx.fill();
-  ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.strokeStyle='rgba(255,210,90,0.40)'; ctx.lineWidth=0.5; ctx.stroke();
   ctx.restore();
 }
 
@@ -867,14 +867,14 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
     cx+cos*stemS+px*stemW, cy+sin*stemS+py*stemW,
     cx+cos*stemS-px*stemW, cy+sin*stemS-py*stemW
   );
-  _mg1.addColorStop(0,   'rgba(255,255,255,0.90)');
-  _mg1.addColorStop(0.20,'rgba(200,210,230,0.85)');
-  _mg1.addColorStop(0.50,'rgba(80,90,110,0.80)');
-  _mg1.addColorStop(0.80,'rgba(160,175,200,0.75)');
-  _mg1.addColorStop(1,   'rgba(255,255,255,0.50)');
+  _mg1.addColorStop(0,   'rgba(255,220,100,0.90)');
+  _mg1.addColorStop(0.20,'rgba(180,140,50,0.85)');
+  _mg1.addColorStop(0.50,'rgba(60,40,10,0.85)');
+  _mg1.addColorStop(0.80,'rgba(160,120,40,0.80)');
+  _mg1.addColorStop(1,   'rgba(220,180,80,0.55)');
   ctx.fillStyle=_mg1;
   ctx.fill();
-  ctx.strokeStyle='rgba(255,255,255,0.40)'; ctx.lineWidth=0.6; ctx.stroke();
+  ctx.strokeStyle='rgba(255,210,90,0.45)'; ctx.lineWidth=0.6; ctx.stroke();
   ctx.restore();
 
   // ── Segment 2: minaret tip (cartouche right tip → track ring) ──────────────
@@ -904,11 +904,11 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
 
   // Metallic semi-transparent fill
   const cartG=ctx.createLinearGradient(0,-cH,0,cH);
-  cartG.addColorStop(0,   'rgba(255,255,255,0.55)');
-  cartG.addColorStop(0.20, 'rgba(200,215,235,0.50)');
-  cartG.addColorStop(0.50, 'rgba(40,50,70,0.65)');
-  cartG.addColorStop(0.80, 'rgba(180,200,220,0.45)');
-  cartG.addColorStop(1,   'rgba(255,255,255,0.35)');
+  cartG.addColorStop(0,   'rgba(255,220,100,0.55)');
+  cartG.addColorStop(0.20, 'rgba(180,140,50,0.50)');
+  cartG.addColorStop(0.50, 'rgba(40,25,5,0.70)');
+  cartG.addColorStop(0.80, 'rgba(160,120,40,0.45)');
+  cartG.addColorStop(1,   'rgba(220,180,80,0.40)');
   ctx.fillStyle=cartG; ctx.fill();
 
   // Prayer-color outline
@@ -925,23 +925,21 @@ function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, pray
   ctx.arcTo(-cW+cuspD*2.5,cH, -cW+cuspD*2,cH*0.55, cR);
   ctx.bezierCurveTo(-cW+cuspD*2,cH*0.55, -cW+cuspD*1.2,cuspD*0.5, -cW,0);
   ctx.closePath();
-  // Outline — prayer color when active, silver when inactive
+  // Outline — prayer color when active, silver when inactive. No glow or shadow.
   ctx.strokeStyle=isActive?_hr(col,1.0):'rgba(255,255,255,0.85)';
   ctx.lineWidth=isActive?2.0:1.4;
-  if(isActive){ctx.shadowColor=col;ctx.shadowBlur=6;}
-  ctx.stroke();
   ctx.shadowBlur=0;
+  ctx.stroke();
   if(!isActive){ctx.strokeStyle=_hr(col,0.45);ctx.lineWidth=0.7;ctx.stroke();}
   ctx.beginPath();
   ctx.moveTo(0,cH);
   ctx.arcTo(-cW+cuspD*3,cH, -cW+cuspD*2.5,cH, cR);
   ctx.bezierCurveTo(-cW+cuspD*2,cH*0.55, -cW+cuspD*1.2,cuspD*0.5, -cW,0);
-  // Outline — prayer color when active, silver when inactive
+  // Outline — prayer color when active, silver when inactive. No glow or shadow.
   ctx.strokeStyle=isActive?_hr(col,1.0):'rgba(255,255,255,0.85)';
   ctx.lineWidth=isActive?2.0:1.4;
-  if(isActive){ctx.shadowColor=col;ctx.shadowBlur=6;}
-  ctx.stroke();
   ctx.shadowBlur=0;
+  ctx.stroke();
   if(!isActive){ctx.strokeStyle=_hr(col,0.45);ctx.lineWidth=0.7;ctx.stroke();}
 
   // ── Text — white pearl, existing font, flip for upper half ───────────────

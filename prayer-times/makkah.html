@@ -682,171 +682,280 @@ function updateDate(){
   document.getElementById('hero-date').innerHTML=greg+'<span class="hijri-sep"> · </span><span id="hijri-inline">'+hij+'</span>';
 }
 
+function drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive){
+  function _hr(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
+  const cos=Math.cos(ang), sin=Math.sin(ang);
+  const px=-sin, py=cos;
+
+  // Total length of this segment
+  const L = tipR - b1;
+
+  // ── Key positions along the axis (as fractions of L from b1) ──
+  // Wide base → taper → first ledge → shaft → second ledge → neck → dome → spire
+  const p = (f) => b1 + L*f; // position at fraction f
+
+  const baseW    = L * 0.055;  // half-width at wide base (connects to cartouche)
+  const taper1W  = L * 0.028;  // half-width after first taper
+  const ledge1W  = L * 0.042;  // half-width at first ledge flare
+  const shaftW   = L * 0.018;  // half-width of thin shaft
+  const ledge2W  = L * 0.038;  // half-width at second ledge (muezzin balcony)
+  const neckW    = L * 0.014;  // half-width of neck above second ledge
+  const domeW    = L * 0.024;  // half-width at dome swelling
+  const spireW   = L * 0.006;  // half-width at spire base
+
+  // Axis positions (fractions along L)
+  const f_base   = 0.00;
+  const f_t1a    = 0.10;  // start of first taper
+  const f_t1b    = 0.20;  // end of first taper
+  const f_l1a    = 0.22;  // start of first ledge
+  const f_l1b    = 0.28;  // end of first ledge
+  const f_l1c    = 0.32;  // ledge taper back to shaft
+  const f_sh1    = 0.35;  // shaft start
+  const f_sh2    = 0.52;  // shaft end
+  const f_l2a    = 0.54;  // second ledge start
+  const f_l2b    = 0.60;  // second ledge peak
+  const f_l2c    = 0.66;  // second ledge taper back
+  const f_neck   = 0.70;  // neck
+  const f_dome1  = 0.72;  // dome start
+  const f_dome2  = 0.82;  // dome peak
+  const f_dome3  = 0.88;  // dome end / spire base
+  const f_spire  = 0.92;  // spire shoulder
+  const f_tip    = 1.00;  // sharp point
+
+  function pt(f, w){
+    const d = p(f);
+    return [cx+cos*d+px*w, cy+sin*d+py*w];
+  }
+
+  // ── Build path — top side ──
+  ctx.save();
+  ctx.beginPath();
+
+  // Base
+  let [x,y] = pt(f_base, baseW); ctx.moveTo(x,y);
+
+  // Taper from base to narrow
+  [x,y] = pt(f_t1a, baseW);   ctx.lineTo(x,y);
+  [x,y] = pt(f_t1b, taper1W); ctx.lineTo(x,y);
+
+  // First ledge — step out then back
+  [x,y] = pt(f_l1a, taper1W); ctx.lineTo(x,y);
+  [x,y] = pt(f_l1b, ledge1W); ctx.lineTo(x,y);  // ledge flare
+  [x,y] = pt(f_l1c, taper1W); ctx.lineTo(x,y);  // taper back
+  [x,y] = pt(f_sh1, shaftW);  ctx.lineTo(x,y);  // narrow to shaft
+
+  // Thin shaft
+  [x,y] = pt(f_sh2, shaftW); ctx.lineTo(x,y);
+
+  // Second ledge (muezzin balcony) — step out then back
+  [x,y] = pt(f_l2a, shaftW);  ctx.lineTo(x,y);
+  [x,y] = pt(f_l2b, ledge2W); ctx.lineTo(x,y);  // balcony flare
+  [x,y] = pt(f_l2c, shaftW);  ctx.lineTo(x,y);  // taper back
+  [x,y] = pt(f_neck, neckW);  ctx.lineTo(x,y);  // narrow neck
+
+  // Dome — bezier swell
+  const [dx1,dy1] = pt(f_dome1, neckW);
+  const [dx2,dy2] = pt(f_dome2, domeW);
+  const [dx3,dy3] = pt(f_dome3, spireW);
+  ctx.lineTo(dx1,dy1);
+  ctx.bezierCurveTo(
+    cx+cos*p(f_dome1)+px*domeW*0.6, cy+sin*p(f_dome1)+py*domeW*0.6,
+    cx+cos*p(f_dome2)+px*domeW,     cy+sin*p(f_dome2)+py*domeW,
+    cx+cos*p(f_dome2)+px*domeW,     cy+sin*p(f_dome2)+py*domeW
+  );
+  ctx.bezierCurveTo(
+    cx+cos*p(f_dome2)+px*domeW,     cy+sin*p(f_dome2)+py*domeW,
+    cx+cos*p(f_dome3)+px*domeW*0.3, cy+sin*p(f_dome3)+py*domeW*0.3,
+    dx3, dy3
+  );
+
+  // Spire — sharp point
+  [x,y] = pt(f_spire, spireW); ctx.lineTo(x,y);
+  [x,y] = pt(f_tip, 0);        ctx.lineTo(x,y); // sharp tip
+
+  // ── Bottom side (mirror) ──
+  [x,y] = pt(f_spire, -spireW); ctx.lineTo(x,y);
+
+  const [dbx1,dby1] = pt(f_dome3, -spireW);
+  const [dbx2,dby2] = pt(f_dome2, -domeW);
+  ctx.lineTo(dbx1,dby1);
+  ctx.bezierCurveTo(
+    cx+cos*p(f_dome3)-px*domeW*0.3, cy+sin*p(f_dome3)-py*domeW*0.3,
+    cx+cos*p(f_dome2)-px*domeW,     cy+sin*p(f_dome2)-py*domeW,
+    cx+cos*p(f_dome2)-px*domeW,     cy+sin*p(f_dome2)-py*domeW
+  );
+  ctx.bezierCurveTo(
+    cx+cos*p(f_dome2)-px*domeW,     cy+sin*p(f_dome2)-py*domeW,
+    cx+cos*p(f_dome1)-px*domeW*0.6, cy+sin*p(f_dome1)-py*domeW*0.6,
+    cx+cos*p(f_dome1)-px*neckW,     cy+sin*p(f_dome1)-py*neckW
+  );
+
+  [x,y] = pt(f_neck,  -neckW);  ctx.lineTo(x,y);
+  [x,y] = pt(f_l2c,  -shaftW); ctx.lineTo(x,y);
+  [x,y] = pt(f_l2b, -ledge2W); ctx.lineTo(x,y);
+  [x,y] = pt(f_l2a,  -shaftW); ctx.lineTo(x,y);
+  [x,y] = pt(f_sh2,  -shaftW); ctx.lineTo(x,y);
+  [x,y] = pt(f_sh1,  -shaftW); ctx.lineTo(x,y);
+  [x,y] = pt(f_l1c, -taper1W); ctx.lineTo(x,y);
+  [x,y] = pt(f_l1b, -ledge1W); ctx.lineTo(x,y);
+  [x,y] = pt(f_l1a, -taper1W); ctx.lineTo(x,y);
+  [x,y] = pt(f_t1b, -taper1W); ctx.lineTo(x,y);
+  [x,y] = pt(f_t1a,  -baseW);  ctx.lineTo(x,y);
+  [x,y] = pt(f_base, -baseW);  ctx.lineTo(x,y);
+  ctx.closePath();
+
+  // Fill
+  // Metallic perpendicular gradient
+  const _mg2=ctx.createLinearGradient(
+    cx+cos*b1+px*baseW, cy+sin*b1+py*baseW,
+    cx+cos*b1-px*baseW, cy+sin*b1-py*baseW
+  );
+  _mg2.addColorStop(0,   'rgba(255,255,255,0.90)');
+  _mg2.addColorStop(0.20,'rgba(200,210,230,0.85)');
+  _mg2.addColorStop(0.50,'rgba(80,90,110,0.80)');
+  _mg2.addColorStop(0.80,'rgba(160,175,200,0.75)');
+  _mg2.addColorStop(1,   'rgba(255,255,255,0.50)');
+  ctx.fillStyle=_mg2;
+  ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,0.35)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.restore();
+}
+
 function drawPrayerNeedle(ctx, cx, cy, ang, length, col, isActive, timeStr, prayerKey){
   const cos=Math.cos(ang), sin=Math.sin(ang);
-  // px/py = perpendicular (left side of needle when pointing outward)
   const px=-sin, py=cos;
-  const tipX=cx+cos*length, tipY=cy+sin*length;
-  const tailLen=14, tailX=cx-cos*tailLen, tailY=cy-sin*tailLen;
-  const bodyW=(window.innerWidth>1024)?16:Math.min(16,length*0.085);
-  const bs=length*0.12, be=length*0.80, tipNeckD=length*0.86;
 
-  // Light source: upper-left (approx -0.7, -0.7 direction)
-  // lit side = top-left edge of needle, shadow side = bottom-right edge
-  const LX=-0.7, LY=-0.7; // light direction
-  // How much is this needle's left edge facing the light?
-  const litFace=Math.max(0, -(px*LX + py*LY)); // dot product of perpendicular vs light
-  const litAlpha=0.15+litFace*0.55; // 0.15 to 0.70
+  // ── Geometry ──────────────────────────────────────────────────────────────
+  const tipR    = length;      // tip touches prayer dot on track ring
+  const bulbD   = length * 0.42;   // cartouche centre — moved toward pivot
+  const spinW   = length * 0.088;  // needle stem half-width
+  const stemW   = length * 0.009;  // thin wire half-width
+  const spearW  = length * 0.003;  // spear base half-width
+  const spearL  = length * 0.10;   // spear taper length
+  const spinL   = length * 0.18;   // cartouche half-length zone
 
-  const baseA=(window.innerWidth>1024)?0.45:0.55;
-  ctx.save();
-  ctx.globalAlpha=baseA;
+  const pivR2   = length * (window.innerWidth<=1024?0.030:0.045);  // smaller on mobile
+  const stemS   = pivR2 + length*0.018;
+  const b0      = bulbD - spinL;   // cartouche left tip
+  const b1      = bulbD + spinL;   // cartouche right tip
+  const sp0     = tipR - spearL;   // spear base
 
-  // ── 1. Base fill with depth gradient (dark on shadow side, bright on lit side) ──
-  const bevelG=ctx.createLinearGradient(
-    cx-px*bodyW+cos*bs, cy-py*bodyW+sin*bs,  // left edge (lit side)
-    cx+px*bodyW+cos*bs, cy+py*bodyW+sin*bs   // right edge (shadow side)
-  );
-  // Lit side: slightly brighter than col, shadow side: much darker
-  bevelG.addColorStop(0, col);
-  bevelG.addColorStop(0.15, col);
-  bevelG.addColorStop(0.55, shadeCol(col, 0.55));
-  bevelG.addColorStop(1,   shadeCol(col, 0.25));
-  ctx.fillStyle=bevelG;
-  ctx.beginPath();
-  ctx.moveTo(tailX,tailY);
-  ctx.lineTo(cx-px*1.2-cos*(bs*0.3),cy-py*1.2-sin*(bs*0.3));
-  ctx.lineTo(cx-px*bodyW+cos*bs,cy-py*bodyW+sin*bs);
-  ctx.lineTo(cx-px*bodyW+cos*be,cy-py*bodyW+sin*be);
-  ctx.bezierCurveTo(cx-px*bodyW+cos*(be+(tipNeckD-be)*0.4),cy-py*bodyW+sin*(be+(tipNeckD-be)*0.4),cx-px*1.5+cos*tipNeckD,cy-py*1.5+sin*tipNeckD,tipX,tipY);
-  ctx.bezierCurveTo(cx+px*1.5+cos*tipNeckD,cy+py*1.5+sin*tipNeckD,cx+px*bodyW+cos*(be+(tipNeckD-be)*0.4),cy+py*bodyW+sin*(be+(tipNeckD-be)*0.4),cx+px*bodyW+cos*be,cy+py*bodyW+sin*be);
-  ctx.lineTo(cx+px*bodyW+cos*bs,cy+py*bodyW+sin*bs);
-  ctx.lineTo(cx+px*1.2-cos*(bs*0.3),cy+py*1.2-sin*(bs*0.3));
-  ctx.closePath();
-  ctx.fill();
-
-  // ── Active needle: glowing edge in the prayer's own color ──
-  if(isActive){
-    ctx.globalAlpha=0.9;
-    ctx.strokeStyle=liftCol(col,0.55);
-    ctx.lineWidth=1.3;
-    ctx.lineJoin='round';
-    ctx.shadowColor=col;
-    ctx.shadowBlur=6;
-    ctx.stroke();
-    ctx.shadowBlur=0;
-    ctx.globalAlpha=baseA;
+  // Self-contained color helper (hexRgba may be out of scope here)
+  function _hr(hex,a){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgba(${r},${g},${b},${a})`;}
+  // Helper — metallic perpendicular gradient
+  function metalGrad(x1,y1){
+    const mg=ctx.createLinearGradient(
+      x1+px*stemW, y1+py*stemW,
+      x1-px*stemW, y1-py*stemW
+    );
+    mg.addColorStop(0,   'rgba(255,255,255,0.55)');
+    mg.addColorStop(0.18, _hr(col,0.85));
+    mg.addColorStop(0.5,  _hr(col,0.40));
+    mg.addColorStop(0.82, _hr(col,0.60));
+    mg.addColorStop(1,   'rgba(255,255,255,0.12)');
+    return mg;
   }
 
-  // ── 2. Top-edge specular highlight (lit edge rim) ──
-  ctx.globalAlpha=litAlpha*0.35;
-  ctx.strokeStyle='rgba(255,255,255,0.9)';
-  ctx.lineWidth=0.8;
-  ctx.lineCap='round';
+  // ── Needle: two separate segments, flat prayer color, no metallic shine ──
+  // Segment 1: pivot → cartouche left tip (b0)
+  ctx.save();
   ctx.beginPath();
-  ctx.moveTo(cx-px*bodyW+cos*bs, cy-py*bodyW+sin*bs);
-  ctx.lineTo(cx-px*bodyW+cos*be, cy-py*bodyW+sin*be);
-  ctx.bezierCurveTo(
-    cx-px*bodyW+cos*(be+(tipNeckD-be)*0.4), cy-py*bodyW+sin*(be+(tipNeckD-be)*0.4),
-    cx-px*1.5+cos*tipNeckD, cy-py*1.5+sin*tipNeckD,
-    tipX, tipY
+  ctx.moveTo(cx+cos*stemS+px*stemW, cy+sin*stemS+py*stemW);
+  ctx.lineTo(cx+cos*b0+px*stemW,    cy+sin*b0+py*stemW);
+  ctx.lineTo(cx+cos*b0-px*stemW,    cy+sin*b0-py*stemW);
+  ctx.lineTo(cx+cos*stemS-px*stemW, cy+sin*stemS-py*stemW);
+  ctx.closePath();
+  // Metallic perpendicular gradient across needle width
+  const _mg1=ctx.createLinearGradient(
+    cx+cos*stemS+px*stemW, cy+sin*stemS+py*stemW,
+    cx+cos*stemS-px*stemW, cy+sin*stemS-py*stemW
   );
-  ctx.stroke();
-
-  // ── 3. Bottom-edge shadow rim ──
-  ctx.globalAlpha=0.15;
-  ctx.strokeStyle='rgba(0,0,0,0.8)';
-  ctx.lineWidth=1.2;
-  ctx.beginPath();
-  ctx.moveTo(cx+px*bodyW+cos*bs, cy+py*bodyW+sin*bs);
-  ctx.lineTo(cx+px*bodyW+cos*be, cy+py*bodyW+sin*be);
-  ctx.bezierCurveTo(
-    cx+px*bodyW+cos*(be+(tipNeckD-be)*0.4), cy+py*bodyW+sin*(be+(tipNeckD-be)*0.4),
-    cx+px*1.5+cos*tipNeckD, cy+py*1.5+sin*tipNeckD,
-    tipX, tipY
-  );
-  ctx.stroke();
-  ctx.lineCap='butt';
-
-  // ── 4. Central ridge highlight (simulates raised center spine) ──
-  ctx.globalAlpha=0.07;
-  const ridgeG=ctx.createLinearGradient(cx+cos*bs,cy+sin*bs,tipX,tipY);
-  ridgeG.addColorStop(0,'rgba(255,255,255,0)');
-  ridgeG.addColorStop(0.2,'rgba(255,255,255,0.9)');
-  ridgeG.addColorStop(0.85,'rgba(255,255,255,0.3)');
-  ridgeG.addColorStop(1,'rgba(255,255,255,0)');
-  ctx.strokeStyle=ridgeG;
-  ctx.lineWidth=1.5;
-  ctx.beginPath();
-  ctx.moveTo(cx+cos*bs,cy+sin*bs);
-  ctx.lineTo(tipX,tipY);
-  ctx.stroke();
-
-  ctx.globalAlpha=1;
+  _mg1.addColorStop(0,   'rgba(255,255,255,0.90)');
+  _mg1.addColorStop(0.20,'rgba(200,210,230,0.85)');
+  _mg1.addColorStop(0.50,'rgba(80,90,110,0.80)');
+  _mg1.addColorStop(0.80,'rgba(160,175,200,0.75)');
+  _mg1.addColorStop(1,   'rgba(255,255,255,0.50)');
+  ctx.fillStyle=_mg1;
+  ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,0.40)'; ctx.lineWidth=0.6; ctx.stroke();
   ctx.restore();
 
-  // ── Time text — engraved groove, prayer-color enamel fill ──
-  // The needle is metal. The time is carved into it. The groove is filled
-  // with the prayer's own color like enamel in a struck engraving.
-  const ishaH=cachedTimes?((cachedTimes.isha%24)+24)%24:0;
-  const lateIsha=ishaH>=22;
-  const _mob=window.innerWidth<=1024;
+  // ── Segment 2: minaret tip (cartouche right tip → track ring) ──────────────
+  drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive);
 
-  // Base label distance along the needle
-  let textD=length*(lateIsha?(_mob?0.38:0.42):(_mob?0.52:0.62));
-
-  // Time-based collision avoidance — only the needle that needs it moves.
-  // Fajr after 05:00 → pull inward (away from time capsule on right side).
-  // Isha after 21:00 → pull inward (away from city name + countdown at top).
-  // Each condition is independent. All other needles stay at default position.
-  if(cachedTimes && prayerKey){
-    const _fajrH=((cachedTimes.fajr%24)+24)%24;
-    const _ishaH=((cachedTimes.isha%24)+24)%24;
-    if(prayerKey==='fajr' && _fajrH>=5){
-      textD=length*(_mob?0.15:0.22); // pull past capsule toward pivot
-    }
-    if(prayerKey==='isha' && _ishaH>=21){
-      textD=length*(_mob?0.30:0.36);
-    }
-  }
-
-  const flip=cos<0;
+  // ── Islamic cartouche frame ───────────────────────────────────────────────
+  const bCX=cx+cos*bulbD, bCY=cy+sin*bulbD;
   ctx.save();
-  ctx.translate(cx+cos*textD, cy+sin*textD);
-  ctx.rotate(flip?ang+Math.PI:ang);
+  ctx.translate(bCX, bCY);
+  ctx.rotate(ang);
+
+  const cW=spinL*1.1, cH=spinW*0.72, cR=cH*0.45, cuspD=spinW*0.28;
+
+  ctx.beginPath();
+  ctx.moveTo(-cW, 0);
+  ctx.bezierCurveTo(-cW+cuspD*1.2,-cuspD*0.5, -cW+cuspD*2,-cH*0.55, -cW+cuspD*2.5,-cH);
+  ctx.arcTo(-cW+cuspD*3,-cH, cW-cuspD*3,-cH, cR);
+  ctx.lineTo(cW-cuspD*3,-cH);
+  ctx.arcTo(cW-cuspD*2.5,-cH, cW-cuspD*2,-cH*0.55, cR);
+  ctx.bezierCurveTo(cW-cuspD*2,-cH*0.55, cW-cuspD*1.2,-cuspD*0.5, cW,0);
+  ctx.bezierCurveTo(cW-cuspD*1.2,cuspD*0.5, cW-cuspD*2,cH*0.55, cW-cuspD*2.5,cH);
+  ctx.arcTo(cW-cuspD*3,cH, -cW+cuspD*3,cH, cR);
+  ctx.lineTo(-cW+cuspD*3,cH);
+  ctx.arcTo(-cW+cuspD*2.5,cH, -cW+cuspD*2,cH*0.55, cR);
+  ctx.bezierCurveTo(-cW+cuspD*2,cH*0.55, -cW+cuspD*1.2,cuspD*0.5, -cW,0);
+  ctx.closePath();
+
+  // Metallic semi-transparent fill
+  const cartG=ctx.createLinearGradient(0,-cH,0,cH);
+  cartG.addColorStop(0,   'rgba(255,255,255,0.55)');
+  cartG.addColorStop(0.20, 'rgba(200,215,235,0.50)');
+  cartG.addColorStop(0.50, 'rgba(40,50,70,0.65)');
+  cartG.addColorStop(0.80, 'rgba(180,200,220,0.45)');
+  cartG.addColorStop(1,   'rgba(255,255,255,0.35)');
+  ctx.fillStyle=cartG; ctx.fill();
+
+  // Prayer-color outline
+  ctx.beginPath();
+  ctx.moveTo(-cW, 0);
+  ctx.bezierCurveTo(-cW+cuspD*1.2,-cuspD*0.5, -cW+cuspD*2,-cH*0.55, -cW+cuspD*2.5,-cH);
+  ctx.arcTo(-cW+cuspD*3,-cH, cW-cuspD*3,-cH, cR);
+  ctx.lineTo(cW-cuspD*3,-cH);
+  ctx.arcTo(cW-cuspD*2.5,-cH, cW-cuspD*2,-cH*0.55, cR);
+  ctx.bezierCurveTo(cW-cuspD*2,-cH*0.55, cW-cuspD*1.2,-cuspD*0.5, cW,0);
+  ctx.bezierCurveTo(cW-cuspD*1.2,cuspD*0.5, cW-cuspD*2,cH*0.55, cW-cuspD*2.5,cH);
+  ctx.arcTo(cW-cuspD*3,cH, -cW+cuspD*3,cH, cR);
+  ctx.lineTo(-cW+cuspD*3,cH);
+  ctx.arcTo(-cW+cuspD*2.5,cH, -cW+cuspD*2,cH*0.55, cR);
+  ctx.bezierCurveTo(-cW+cuspD*2,cH*0.55, -cW+cuspD*1.2,cuspD*0.5, -cW,0);
+  ctx.closePath();
+  // Polished metallic outline — silver highlight
+  ctx.strokeStyle='rgba(255,255,255,0.85)';
+  ctx.lineWidth=1.4;
+  ctx.stroke();
+  // Subtle prayer-color inner glow layer
+  ctx.strokeStyle=_hr(col,0.45);
+  ctx.lineWidth=0.7;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(0,cH);
+  ctx.arcTo(-cW+cuspD*3,cH, -cW+cuspD*2.5,cH, cR);
+  ctx.bezierCurveTo(-cW+cuspD*2,cH*0.55, -cW+cuspD*1.2,cuspD*0.5, -cW,0);
+  // Polished metallic outline — silver highlight
+  ctx.strokeStyle='rgba(255,255,255,0.85)';
+  ctx.lineWidth=1.4;
+  ctx.stroke();
+  // Subtle prayer-color inner glow layer
+  ctx.strokeStyle=_hr(col,0.45);
+  ctx.lineWidth=0.7;
+  ctx.stroke();
+
+  // ── Text — white pearl, existing font, flip for upper half ───────────────
+  const flip=cos<0;
+  if(flip) ctx.rotate(Math.PI);
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.font=`700 11px 'Geist',sans-serif`;
-
-  // Layer 1 — deep groove shadow, bottom-right wall of the carved channel
-  ctx.save();
-  ctx.translate(0.9, 1.3);
-  ctx.fillStyle='rgba(0,0,0,0.9)';
-  ctx.shadowBlur=0;
+  ctx.fillStyle=isActive?'#ffffff':'rgba(220,230,255,0.85)';
   ctx.fillText(timeStr,0,0);
-  ctx.restore();
-
-  // Layer 2 — upper-left groove wall, slightly lighter
-  ctx.save();
-  ctx.translate(-0.5, -0.8);
-  ctx.fillStyle='rgba(0,0,0,0.55)';
-  ctx.fillText(timeStr,0,0);
-  ctx.restore();
-
-  // Layer 3 — enamel fill: prayer color sitting inside the groove
-  // Rich and opaque like paint in a carved channel, no glow
-  ctx.fillStyle=col;
-  ctx.globalAlpha=0.92;
-  ctx.shadowBlur=0;
-  ctx.fillText(timeStr,0,0);
-  ctx.globalAlpha=1;
-
-  // Layer 4 — thin bright highlight on the top rim of the groove
-  // Light catches the very top edge of the carved letter
-  ctx.save();
-  ctx.translate(-0.4, -0.9);
-  ctx.fillStyle='rgba(255,255,255,0.18)';
-  ctx.fillText(timeStr,0,0);
-  ctx.restore();
 
   ctx.restore();
 }
@@ -1005,10 +1114,10 @@ function drawArc(){
   ctx.clearRect(0,0,size,size);
   if(!cachedTimes)return;
   const cx=size/2,cy=size/2;
-  const R=size*0.34;
   const _mobR=window.innerWidth<=1024;
-  const RI=R+size*(_mobR?0.012:0.015);   // very tight band
-  const RO=R+size*(_mobR?0.078:0.048);   // wider on mobile so names fit
+  const R=size*(_mobR?0.38:0.34);
+  const RI=R+size*(_mobR?0.010:0.015);   // very tight band
+  const RO=R+size*(_mobR?0.048:0.048);   // narrowed on mobile   // wider on mobile so names fit
   const bandMid=(RI+RO)/2;
   // Single time snapshot — one cityNow() per frame prevents split-second drift
   const _frameNow=cityNow();
@@ -1144,7 +1253,7 @@ function drawArc(){
     ctx.save();
     ctx.textAlign='center'; ctx.textBaseline='middle';
     // City name
-    ctx.font=`700 ${Math.round(R*0.115)}px 'Playfair Display',serif`;
+    ctx.font=`700 ${Math.round(R*0.09)}px 'Playfair Display',serif`;
     ctx.fillStyle='rgba(235,230,218,0.88)';
     ctx.shadowColor='rgba(130,190,255,0.25)';
     ctx.shadowBlur=3;
@@ -1162,7 +1271,7 @@ function drawArc(){
       const _label=PMETA[_next2.name].en;
       const _y=cy-R*0.55;
       // Prayer name in its color
-      ctx.font=`600 ${Math.round(R*0.075)}px 'Geist',sans-serif`;
+      ctx.font=`600 ${Math.round(R*0.062)}px 'Geist',sans-serif`;
       ctx.fillStyle=_col;
       ctx.shadowColor=_col;
       ctx.shadowBlur=2;
@@ -1172,14 +1281,14 @@ function drawArc(){
       ctx.shadowBlur=0;
       const _inW=ctx.measureText(' in ').width;
       // countdown — fixed char width to prevent jitter
-      ctx.font=`700 ${Math.round(R*0.072)}px 'Geist',sans-serif`;
+      ctx.font=`700 ${Math.round(R*0.060)}px 'Geist',sans-serif`;
       const _charW=ctx.measureText('0').width;
       const _colonW=ctx.measureText(':').width*0.9;
       const _cdFixedW=_charW*6+_colonW*2; // HH:MM:SS
       const _totalW=_nameW+_inW+_cdFixedW;
       let _x=cx-_totalW/2;
       // Draw prayer name
-      ctx.font=`600 ${Math.round(R*0.075)}px 'Geist',sans-serif`;
+      ctx.font=`600 ${Math.round(R*0.062)}px 'Geist',sans-serif`;
       ctx.fillStyle=_col;
       ctx.shadowColor=_col; ctx.shadowBlur=2;
       ctx.textAlign='left';
@@ -1191,7 +1300,7 @@ function drawArc(){
       ctx.fillText(' in ', _x, _y);
       _x+=_inW;
       // Draw countdown chars at fixed width
-      ctx.font=`700 ${Math.round(R*0.072)}px 'Geist',sans-serif`;
+      ctx.font=`700 ${Math.round(R*0.060)}px 'Geist',sans-serif`;
       ctx.fillStyle='rgba(238,233,222,0.95)';
       ctx.shadowColor='rgba(238,233,222,0.2)'; ctx.shadowBlur=2;
       ctx.textAlign='left';
@@ -1212,7 +1321,15 @@ function drawArc(){
   // Sits on the right-side horizontal axis, between pivot and the "06" rim mark.
   {
     const pitW=R*0.44, pitH=R*0.115;
-    const pitX=cx+R*0.30, pitY=cy-pitH/2;
+    // When Fajr >= 05:00 the capsule shifts to the 08:00 position on the dial,
+    // pulled inward toward the pivot so it clears the Fajr needle body.
+    // This applies to any city in the world where Fajr falls after 05:00.
+    const _fajrForPit=((cachedTimes.fajr%24)+24)%24;
+    const _pitShift=_fajrForPit>=5;
+    const _pitAng=_pitShift?(8/24)*Math.PI*2-Math.PI/2:0;
+    const _pitR2=R*0.45;
+    const pitX=_pitShift?(cx+_pitR2*Math.cos(_pitAng)-pitW/2):(cx+R*0.30);
+    const pitY=_pitShift?(cy+_pitR2*Math.sin(_pitAng)-pitH/2):(cy-pitH/2);
     const pitR=pitH*0.45; // corner radius
 
 
@@ -1520,7 +1637,7 @@ function drawArc(){
   }
 
   // ── Premium screw pivot — Rolex-style crown ──
-  const pr=13; // outer radius
+  const pr=_mobR?8:13; // outer radius — smaller on mobile
   ctx.save();
 
   // Outer drop shadow

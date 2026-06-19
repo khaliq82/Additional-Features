@@ -1119,7 +1119,7 @@ function drawArc(){
   const _mobR=window.innerWidth<=1024;
   const R=size*(_mobR?0.38:0.34);
   const RI=R+size*(_mobR?0.010:0.015);   // very tight band
-  const RO=R+size*(_mobR?0.048:0.048);   // narrowed on mobile
+  const RO=R+size*(_mobR?0.048:0.048);   // narrowed on mobile   // narrowed on mobile
   const bandMid=(RI+RO)/2;
   // Single time snapshot — one cityNow() per frame prevents split-second drift
   const _frameNow=cityNow();

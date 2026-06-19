@@ -1136,7 +1136,7 @@ function drawKaaba(ctx, cx, cy) {
 }
 
 function drawArc(){
-  const canvas=document.getElementById('prayer-arc');
+  const canvas=document.getElementById('arcCanvas');
   const dpr=Math.min(window.devicePixelRatio||1,2);
   const wrap=canvas.parentElement;
   const size=Math.round(wrap.getBoundingClientRect().width)||wrap.offsetWidth||400;
@@ -1902,23 +1902,8 @@ function toggleCities(){
   more.style.display=open?'grid':'none';
   btn.textContent=open?'Show fewer cities ↑':'Show more cities ↓';
 }
-function tick(){
-  updateLocalTime();
-  updateCountdown();
-  updateSunArc();
-  updateActiveCard();
-  // drawArc runs in its own rAF loop — not called here
-}
-
-// ── INIT ────────────────────────────────────────────────────
-renderPrayers();
-updateDate();
-tick();
-// drawArc loops itself at 60fps for smooth countdown and clock hand
-function drawLoop(){
-  drawArc();
-  requestAnimationFrame(drawLoop);
-}
+// City-page tick replaced by hub tick below
+// drawLoop defined after hub initialisation
 
 // ── Format helpers ────────────────────────────────────────────────────────
 function fmtFH(fh){
@@ -2206,6 +2191,11 @@ function drawSunArc(){
   ctx2.fill();
   ctx2.shadowBlur=0;
 }
+
+// Initialise with default Makkah times so clock renders immediately
+cachedTimes=calcPrayers(CITY.lat,CITY.lon,CITY.tz,new Date());
+updateCards();
+updateRight();
 
 function drawLoop(){ drawArc(); requestAnimationFrame(drawLoop); }
 requestAnimationFrame(drawLoop);

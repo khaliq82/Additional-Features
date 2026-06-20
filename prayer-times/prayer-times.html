@@ -2017,6 +2017,23 @@ function selectCity(lat,lon){
 }
 
 
+
+function reverseGeocode(lat,lon,cb){
+  var url='https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lon+'&accept-language=en';
+  fetch(url,{headers:{'User-Agent':'AdhanLive/1.0 (adhanlive.com)'}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      var addr=d.address||{};
+      cb(null,{
+        cc:(addr.country_code||'').toUpperCase(),
+        state:addr.state||addr.province||addr.region||addr.county||'',
+        city:addr.city||addr.town||addr.village||addr.county||addr.state||'',
+        country:addr.country||''
+      });
+    })
+    .catch(function(e){cb(e,null);});
+}
+
 // ── Local cities dataset — loaded from /cities.json ──────────────────────
 var _CITIES=[];
 fetch('/cities.json')
@@ -2055,25 +2072,35 @@ function hubSearch(q){
       +'<div style="color:rgba(255,255,255,0.4);font-size:0.78rem;margin-top:2px;">'+c[1]+'</div>'; // cc shown until country resolved
     item.addEventListener('mouseover',function(){this.style.background='rgba(0,212,255,0.08)';});
     item.addEventListener('mouseout',function(){this.style.background='';});
-    (function(city,country,cc,lat,lon){
-      item.addEventListener('click',function(){
+    (function(city,cc,lat,lon){
+      item.addEventListener('mousedown',function(e){
+        e.preventDefault(); // stops blur from firing before mousedown completes
         var inp2=document.getElementById('hub-search');
         if(inp2)inp2.value=city;
         box.style.display='none';
-        // Update CITY directly from local data (no network needed for lat/lon)
-        CITY.name=city; CITY.country=country; CITY.cc=cc;
-        CITY.lat=lat; CITY.lon=lon; CITY.state=''; CITY.tzName='';
-        CITY.tz=Math.round(lon/15);
-        // Reverse geocode just to get the state for madhab resolution
-        reverseGeocode(lat,lon,function(err,info){
-          if(!err&&info){CITY.state=info.state||'';}
-          cachedTimes=calcPrayers(CITY.lat,CITY.lon,cityOffset(),new Date());
-          renderPrayers();
-          updateHeroPanel();
-          window.history.replaceState({},'','/prayer-times?lat='+lat.toFixed(4)+'&lon='+lon.toFixed(4));
+        // Update CITY immediately
+        CITY.name=city; CITY.cc=cc; CITY.country=cc;
+        CITY.lat=parseFloat(lat); CITY.lon=parseFloat(lon);
+        CITY.state=''; CITY.tzName='';
+        CITY.tz=Math.round(parseFloat(lon)/15)||0;
+        if(isNaN(CITY.tz))CITY.tz=0;
+        // Render immediately with rough tz
+        cachedTimes=calcPrayers(CITY.lat,CITY.lon,CITY.tz,new Date());
+        renderPrayers();
+        updateHeroPanel();
+        window.history.replaceState({},'','/prayer-times?lat='+parseFloat(lat).toFixed(4)+'&lon='+parseFloat(lon).toFixed(4));
+        // Enrich with Nominatim in background for state/country/tz
+        reverseGeocode(parseFloat(lat),parseFloat(lon),function(err,info){
+          if(!err&&info){
+            CITY.state=info.state||'';
+            CITY.country=info.country||'';
+            cachedTimes=calcPrayers(CITY.lat,CITY.lon,cityOffset(),new Date());
+            renderPrayers();
+            updateHeroPanel();
+          }
         });
       });
-    })(c[0],c[1],c[1],c[2],c[3]);
+    })(c[0],c[1],c[2],c[3]);
     box.appendChild(item);
   });
   box.style.display='block';
@@ -2101,7 +2128,7 @@ document.addEventListener('DOMContentLoaded',function(){
       _st=setTimeout(function(){ hubSearch(q); },80);
     });
     inp.addEventListener('blur',function(){
-      setTimeout(function(){var b=document.getElementById('hub-results');if(b)b.style.display='none';},200);
+      setTimeout(function(){var b=document.getElementById('hub-results');if(b)b.style.display='none';},300);
     });
   }
 

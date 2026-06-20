@@ -1936,6 +1936,9 @@ function shareMapMoment(platform){
 function hubTick(){
   cachedTimes=calcPrayers(CITY.lat,CITY.lon,cityOffset(),new Date());
   updateActiveCard();
+  updateSunArc();
+  updateLocalTime();
+  updateCountdown();
   // Next prayer name
   var lh=localH();
   var np=nextPrayer(cachedTimes,lh);
@@ -1945,22 +1948,6 @@ function hubTick(){
     var colors={fajr:'#4466ff',dhuhr:'#ffcc00',asr:'#e07a2f',maghrib:'#d94f3d',isha:'#9b59c4'};
     nameEl.style.color=colors[np.name]||'var(--cyan)';
     document.documentElement.style.setProperty('--np-color',colors[np.name]||'var(--cyan)');
-  }
-  // Sun path labels
-  if(cachedTimes){
-    var rl=document.getElementById('sun-rise-lbl');
-    var sl=document.getElementById('sun-set-lbl');
-    var se=document.getElementById('sehri-time');
-    var ift=document.getElementById('iftar-time');
-    function fmtFH2(fh){
-      var h=Math.floor(((fh%24)+24)%24),mn=Math.round((fh-Math.floor(fh))*60)%60;
-      var ap=h<12?'AM':'PM',hh=h%12||12;
-      return String(hh).padStart(2,'0')+':'+String(mn).padStart(2,'0')+' '+ap;
-    }
-    if(rl)rl.textContent=fmtFH2(cachedTimes.sunrise);
-    if(sl)sl.textContent=fmtFH2(cachedTimes.maghrib);
-    if(se)se.textContent=fmtFH2(cachedTimes.fajr);
-    if(ift)ift.textContent=fmtFH2(cachedTimes.maghrib);
   }
 }
 
@@ -1988,10 +1975,8 @@ function loadLocation(lat, lon){
       CITY.name=addr.city||addr.town||addr.village||addr.county||addr.state||d.display_name.split(',')[0]||'';
       CITY.country=addr.country||'';
       CITY.lat=lat; CITY.lon=lon;
-      // Set tzName from Intl using country code as hint
-      // Use rough lon-based offset as fallback
-      CITY.tz=Math.round(lon/15);
-      CITY.tzName=''; // cityOffset() will use Intl auto-detection
+      // Set timezone using IANA database — handles DST automatically
+      setTimezone(CITY.cc, lat, lon);
       cachedTimes=calcPrayers(CITY.lat,CITY.lon,cityOffset(),new Date());
       renderPrayers();
       updateHeroPanel();
@@ -2017,6 +2002,167 @@ function selectCity(lat,lon){
 }
 
 
+
+
+// ── Timezone resolver — CC + lon → IANA timezone ─────────────────────────
+// Browser Intl handles DST automatically once we have the IANA name.
+var _TZ_SINGLE = {
+  // Middle East
+  'SA':'Asia/Riyadh','AE':'Asia/Dubai','KW':'Asia/Kuwait',
+  'QA':'Asia/Qatar','BH':'Asia/Bahrain','OM':'Asia/Muscat',
+  'YE':'Asia/Aden','JO':'Asia/Amman','LB':'Asia/Beirut',
+  'SY':'Asia/Damascus','IQ':'Asia/Baghdad','IR':'Asia/Tehran',
+  'IL':'Asia/Jerusalem','PS':'Asia/Gaza',
+  // South Asia
+  'PK':'Asia/Karachi','BD':'Asia/Dhaka','LK':'Asia/Colombo',
+  'NP':'Asia/Kathmandu','BT':'Asia/Thimphu','MV':'Indian/Maldives',
+  'AF':'Asia/Kabul',
+  // SE Asia
+  'MY':'Asia/Kuala_Lumpur','SG':'Asia/Singapore',
+  'BN':'Asia/Brunei','TH':'Asia/Bangkok','MM':'Asia/Rangoon',
+  'KH':'Asia/Phnom_Penh','LA':'Asia/Vientiane','VN':'Asia/Ho_Chi_Minh',
+  'PH':'Asia/Manila','TL':'Asia/Dili',
+  // East Asia
+  'CN':'Asia/Shanghai','JP':'Asia/Tokyo','KR':'Asia/Seoul',
+  'MN':'Asia/Ulaanbaatar','HK':'Asia/Hong_Kong','MO':'Asia/Macau',
+  'TW':'Asia/Taipei',
+  // Central Asia
+  'KZ':'Asia/Almaty','UZ':'Asia/Tashkent','TM':'Asia/Ashgabat',
+  'TJ':'Asia/Dushanbe','KG':'Asia/Bishkek',
+  'AZ':'Asia/Baku','AM':'Asia/Yerevan','GE':'Asia/Tbilisi',
+  // North Africa
+  'EG':'Africa/Cairo','LY':'Africa/Tripoli','TN':'Africa/Tunis',
+  'DZ':'Africa/Algiers','MA':'Africa/Casablanca','SD':'Africa/Khartoum',
+  'SO':'Africa/Mogadishu','ET':'Africa/Addis_Ababa','DJ':'Africa/Djibouti',
+  'ER':'Africa/Asmara','KE':'Africa/Nairobi','TZ':'Africa/Dar_es_Salaam',
+  'UG':'Africa/Kampala','RW':'Africa/Kigali','BI':'Africa/Bujumbura',
+  'MZ':'Africa/Maputo','ZW':'Africa/Harare','ZM':'Africa/Lusaka',
+  'MW':'Africa/Blantyre','MG':'Indian/Antananarivo',
+  // West Africa
+  'NG':'Africa/Lagos','GH':'Africa/Accra','SN':'Africa/Dakar',
+  'ML':'Africa/Bamako','NE':'Africa/Niamey','BF':'Africa/Ouagadougou',
+  'GN':'Africa/Conakry','SL':'Africa/Freetown','LR':'Africa/Monrovia',
+  'CI':'Africa/Abidjan','TG':'Africa/Lome','BJ':'Africa/Porto-Novo',
+  'GM':'Africa/Banjul','GW':'Africa/Bissau','MR':'Africa/Nouakchott',
+  'CV':'Atlantic/Cape_Verde','ST':'Africa/Sao_Tome',
+  // Central Africa
+  'CM':'Africa/Douala','TD':'Africa/Ndjamena','CF':'Africa/Bangui',
+  'CG':'Africa/Brazzaville','CD':'Africa/Kinshasa','GA':'Africa/Libreville',
+  'GQ':'Africa/Malabo','AO':'Africa/Luanda',
+  // East/Southern Africa
+  'ZA':'Africa/Johannesburg','NA':'Africa/Windhoek','BW':'Africa/Gaborone',
+  'SZ':'Africa/Mbabane','LS':'Africa/Maseru',
+  // Europe
+  'GB':'Europe/London','IE':'Europe/Dublin','PT':'Europe/Lisbon',
+  'FR':'Europe/Paris','ES':'Europe/Madrid','DE':'Europe/Berlin',
+  'NL':'Europe/Amsterdam','BE':'Europe/Brussels','LU':'Europe/Luxembourg',
+  'CH':'Europe/Zurich','AT':'Europe/Vienna','IT':'Europe/Rome',
+  'MT':'Europe/Malta','DK':'Europe/Copenhagen','SE':'Europe/Stockholm',
+  'NO':'Europe/Oslo','FI':'Europe/Helsinki','EE':'Europe/Tallinn',
+  'LV':'Europe/Riga','LT':'Europe/Vilnius','PL':'Europe/Warsaw',
+  'CZ':'Europe/Prague','SK':'Europe/Bratislava','HU':'Europe/Budapest',
+  'RO':'Europe/Bucharest','BG':'Europe/Sofia','HR':'Europe/Zagreb',
+  'SI':'Europe/Ljubljana','BA':'Europe/Sarajevo','RS':'Europe/Belgrade',
+  'ME':'Europe/Podgorica','MK':'Europe/Skopje','AL':'Europe/Tirane',
+  'GR':'Europe/Athens','CY':'Asia/Nicosia','TR':'Europe/Istanbul',
+  'IS':'Atlantic/Reykjavik',
+  // Americas
+  'MX':'America/Mexico_City','GT':'America/Guatemala',
+  'BZ':'America/Belize','HN':'America/Tegucigalpa',
+  'SV':'America/El_Salvador','NI':'America/Managua',
+  'CR':'America/Costa_Rica','PA':'America/Panama',
+  'CU':'America/Havana','JM':'America/Jamaica','HT':'America/Port-au-Prince',
+  'DO':'America/Santo_Domingo','PR':'America/Puerto_Rico',
+  'TT':'America/Port_of_Spain','BB':'America/Barbados',
+  'GY':'America/Guyana','SR':'America/Paramaribo',
+  'PE':'America/Lima','BO':'America/La_Paz',
+  'PY':'America/Asuncion','UY':'America/Montevideo',
+  'AR':'America/Argentina/Buenos_Aires','CL':'America/Santiago',
+  'VE':'America/Caracas','EC':'America/Guayaquil',
+  'CO':'America/Bogota',
+  // Pacific & Oceania
+  'NZ':'Pacific/Auckland','FJ':'Pacific/Fiji',
+  'PG':'Pacific/Port_Moresby','SB':'Pacific/Guadalcanal',
+  'VU':'Pacific/Efate','WS':'Pacific/Apia',
+  'TO':'Pacific/Tongatapu','KI':'Pacific/Tarawa',
+};
+
+// Multi-timezone countries — use longitude bands
+var _TZ_MULTI = {
+  'US': function(lat,lon){
+    if(lon < -159) return 'Pacific/Honolulu';
+    if(lon < -130) return 'America/Anchorage';
+    if(lon < -114) return 'America/Los_Angeles';
+    if(lon < -104) return 'America/Denver';
+    if(lon < -87)  return 'America/Chicago';
+    return 'America/New_York';
+  },
+  'CA': function(lat,lon){
+    if(lon < -130) return 'America/Vancouver';
+    if(lon < -110) return 'America/Edmonton';
+    if(lon < -89)  return 'America/Winnipeg';
+    if(lon < -60)  return 'America/Toronto';
+    return 'America/Halifax';
+  },
+  'RU': function(lat,lon){
+    if(lon < 40)   return 'Europe/Moscow';
+    if(lon < 55)   return 'Europe/Samara';
+    if(lon < 67)   return 'Asia/Yekaterinburg';
+    if(lon < 80)   return 'Asia/Omsk';
+    if(lon < 95)   return 'Asia/Krasnoyarsk';
+    if(lon < 115)  return 'Asia/Irkutsk';
+    if(lon < 135)  return 'Asia/Yakutsk';
+    if(lon < 150)  return 'Asia/Vladivostok';
+    return 'Asia/Magadan';
+  },
+  'AU': function(lat,lon){
+    if(lon < 129)  return 'Australia/Perth';
+    if(lon < 138)  return 'Australia/Darwin';
+    if(lon < 141)  return 'Australia/Adelaide';
+    if(lon < 153)  return 'Australia/Sydney';
+    return 'Australia/Brisbane';
+  },
+  'BR': function(lat,lon){
+    if(lon < -60)  return 'America/Manaus';
+    if(lon < -44)  return 'America/Sao_Paulo';
+    return 'America/Fortaleza';
+  },
+  'ID': function(lat,lon){
+    if(lon < 115)  return 'Asia/Jakarta';
+    if(lon < 120)  return 'Asia/Makassar';
+    return 'Asia/Jayapura';
+  },
+  'IN': function(lat,lon){
+    return 'Asia/Kolkata'; // All India same tz
+  },
+  'CN': function(lat,lon){
+    return 'Asia/Shanghai'; // China unified tz
+  },
+  'KZ': function(lat,lon){
+    if(lon < 65) return 'Asia/Aqtau';
+    return 'Asia/Almaty';
+  },
+};
+
+function resolveTimezone(cc, lat, lon){
+  // Multi-tz country
+  if(_TZ_MULTI[cc]) return _TZ_MULTI[cc](lat, lon);
+  // Single-tz country
+  if(_TZ_SINGLE[cc]) return _TZ_SINGLE[cc];
+  // Fallback: rough lon-based UTC offset (no DST)
+  return null;
+}
+
+function setTimezone(cc, lat, lon){
+  var tz = resolveTimezone(cc, lat, lon);
+  if(tz){
+    CITY.tzName = tz;
+    CITY.tz = cityOffset(); // now uses Intl with DST
+  } else {
+    CITY.tzName = '';
+    CITY.tz = Math.round(lon/15);
+  }
+}
 
 function reverseGeocode(lat,lon,cb){
   var url='https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lon+'&accept-language=en';
@@ -2082,9 +2228,9 @@ function hubSearch(q){
         CITY.name=city; CITY.cc=cc; CITY.country=cc;
         CITY.lat=parseFloat(lat); CITY.lon=parseFloat(lon);
         CITY.state=''; CITY.tzName='';
-        CITY.tz=Math.round(parseFloat(lon)/15)||0;
-        if(isNaN(CITY.tz))CITY.tz=0;
-        // Render immediately with rough tz
+        // Set timezone properly using IANA database (handles DST)
+        setTimezone(cc, parseFloat(lat), parseFloat(lon));
+        // Render immediately with correct tz
         cachedTimes=calcPrayers(CITY.lat,CITY.lon,CITY.tz,new Date());
         renderPrayers();
         updateHeroPanel();

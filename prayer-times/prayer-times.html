@@ -77,7 +77,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .page{height:calc(100vh - 56px);display:grid;grid-template-columns:320px 1fr 300px;grid-template-rows:auto 1fr auto;overflow:hidden;}
 
 /* LEFT PANEL */
-.city-block{display:flex;flex-direction:column;justify-content:flex-end;padding:28px 24px 12px;border-right:1px solid var(--border);overflow:hidden;gap:0;grid-column:1;grid-row:1;background:var(--bg);}
+.city-block{display:flex;flex-direction:column;justify-content:flex-end;padding:28px 24px 12px;border-right:1px solid var(--border);overflow:visible;gap:0;grid-column:1;grid-row:1;background:var(--bg);}
 .hero-city{font-family:'Playfair Display',serif;font-size:clamp(38px,3.2vw,60px);font-weight:300;letter-spacing:-0.02em;line-height:0.9;color:#fff;margin-bottom:6px;}
 .hero-country{font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text2);margin-bottom:10px;}
 .hero-date{font-size:11px;color:var(--text2);margin-bottom:10px;letter-spacing:0.01em;}
@@ -349,7 +349,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
         <input type="text" id="hub-search" placeholder="Search any city..." autocomplete="off"
           style="width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(0,212,255,0.25);border-radius:10px;padding:10px 38px 10px 14px;font-size:0.88rem;color:#fff;font-family:Geist,sans-serif;outline:none;box-sizing:border-box;">
         <span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);color:rgba(0,212,255,0.5);pointer-events:none;font-size:1rem;">⌕</span>
-        <div id="hub-results" style="display:none;position:absolute;top:100%;left:0;right:0;background:#0e1018;border:1px solid rgba(0,212,255,0.2);border-top:none;border-radius:0 0 10px 10px;z-index:200;max-height:240px;overflow-y:auto;"></div>
+        <div id="hub-results" style="display:none;position:fixed;background:#0e1018;border:1px solid rgba(0,212,255,0.2);border-radius:10px;z-index:9999;max-height:260px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.6);"></div>
       </div>
     </div>
   </div>

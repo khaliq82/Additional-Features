@@ -1246,7 +1246,7 @@ function drawArc(){
     ctx.fillStyle='rgba(235,230,218,0.88)';
     ctx.shadowColor='rgba(130,190,255,0.25)';
     ctx.shadowBlur=3;
-    ctx.fillText('Makkah', cx, cy - R*0.68);
+    ctx.fillText(CITY.name||'—', cx, cy - R*0.68);
     ctx.shadowBlur=0;
     ctx.restore();
   }
@@ -1888,6 +1888,7 @@ function initNavDots(){
 }
 document.addEventListener('DOMContentLoaded', initNavDots);
 function toHijri(date){
+  // Use islamic-umalqura calendar (Saudi official)
   const jd=Math.floor((date.getTime()/86400000)+2440587.5);
   let l=jd-1948440+10632;
   const n=Math.floor((l-1)/10631);
@@ -1935,7 +1936,7 @@ function shareMapMoment(platform){
 function hubTick(){
   cachedTimes=calcPrayers(CITY.lat,CITY.lon,cityOffset(),new Date());
   updateActiveCard();
-  // Update next prayer name in right panel
+  // Next prayer name
   var lh=localH();
   var np=nextPrayer(cachedTimes,lh);
   var nameEl=document.getElementById('next-name');
@@ -1943,6 +1944,23 @@ function hubTick(){
     nameEl.textContent=np.name.charAt(0).toUpperCase()+np.name.slice(1);
     var colors={fajr:'#4466ff',dhuhr:'#ffcc00',asr:'#e07a2f',maghrib:'#d94f3d',isha:'#9b59c4'};
     nameEl.style.color=colors[np.name]||'var(--cyan)';
+    document.documentElement.style.setProperty('--np-color',colors[np.name]||'var(--cyan)');
+  }
+  // Sun path labels
+  if(cachedTimes){
+    var rl=document.getElementById('sun-rise-lbl');
+    var sl=document.getElementById('sun-set-lbl');
+    var se=document.getElementById('sehri-time');
+    var ift=document.getElementById('iftar-time');
+    function fmtFH2(fh){
+      var h=Math.floor(((fh%24)+24)%24),mn=Math.round((fh-Math.floor(fh))*60)%60;
+      var ap=h<12?'AM':'PM',hh=h%12||12;
+      return String(hh).padStart(2,'0')+':'+String(mn).padStart(2,'0')+' '+ap;
+    }
+    if(rl)rl.textContent=fmtFH2(cachedTimes.sunrise);
+    if(sl)sl.textContent=fmtFH2(cachedTimes.maghrib);
+    if(se)se.textContent=fmtFH2(cachedTimes.fajr);
+    if(ift)ift.textContent=fmtFH2(cachedTimes.maghrib);
   }
 }
 
@@ -1999,6 +2017,7 @@ function selectCity(lat,lon){
 }
 
 // Init on DOMContentLoaded
+var _st=null;
 document.addEventListener('DOMContentLoaded',function(){
   // Start draw loop
   cachedTimes=calcPrayers(CITY.lat,CITY.lon,CITY.tz,new Date());
@@ -2023,7 +2042,8 @@ document.addEventListener('DOMContentLoaded',function(){
         .then(function(results){
           var box=document.getElementById('hub-results');
           if(!box||!results.length){if(box)box.style.display='none';return;}
-          box.innerHTML=results.map(function(r){
+          box.innerHTML='';
+          results.forEach(function(r){
             var parts=r.display_name.split(',');
             var city=parts[0].trim(),country=parts[parts.length-1].trim();
             var item=document.createElement('div');
@@ -2032,9 +2052,15 @@ document.addEventListener('DOMContentLoaded',function(){
               +'<div style="color:rgba(255,255,255,0.4);font-size:0.78rem;margin-top:2px;">'+country+'</div>';
             item.addEventListener('mouseover',function(){this.style.background='rgba(0,212,255,0.08)';});
             item.addEventListener('mouseout',function(){this.style.background='';});
-            item.addEventListener('click',function(){selectCity(r.lat,r.lon);});
-            return item.outerHTML;
-          }).join('');
+            (function(lat,lon,name){
+              item.addEventListener('click',function(){
+                var inp2=document.getElementById('hub-search');
+                if(inp2)inp2.value=name;
+                selectCity(lat,lon);
+              });
+            })(r.lat,r.lon,city);
+            box.appendChild(item);
+          });
           box.style.display='block';
         }).catch(function(){});
       },350);

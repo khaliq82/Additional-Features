@@ -2052,7 +2052,7 @@ function hubSearch(q){
     var item=document.createElement('div');
     item.style.cssText='padding:10px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);';
     item.innerHTML='<div style="color:#fff;font-family:Geist,sans-serif;font-size:0.9rem;">'+c[0]+'</div>'
-      +'<div style="color:rgba(255,255,255,0.4);font-size:0.78rem;margin-top:2px;">'+c[1]+'</div>';
+      +'<div style="color:rgba(255,255,255,0.4);font-size:0.78rem;margin-top:2px;">'+c[1]+'</div>'; // cc shown until country resolved
     item.addEventListener('mouseover',function(){this.style.background='rgba(0,212,255,0.08)';});
     item.addEventListener('mouseout',function(){this.style.background='';});
     (function(city,country,cc,lat,lon){
@@ -2073,7 +2073,7 @@ function hubSearch(q){
           window.history.replaceState({},'','/prayer-times?lat='+lat.toFixed(4)+'&lon='+lon.toFixed(4));
         });
       });
-    })(c[0],c[1],c[2],c[3],c[4]);
+    })(c[0],c[1],c[1],c[2],c[3]);
     box.appendChild(item);
   });
   box.style.display='block';

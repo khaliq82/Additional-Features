@@ -194,8 +194,8 @@
           build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
 
     // North America
-    MX: { label:'ISNA, North America', verified:false,
-          build: function(){ return adhan.CalculationMethod.NorthAmerica(); } },
+    MX: { label:'Muslim World League', verified:false,
+          build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
     AU: { label:'Muslim World League', verified:false,
           build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
 

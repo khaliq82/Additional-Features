@@ -1253,7 +1253,11 @@ function drawArc(){
     ctx.fillStyle='rgba(235,230,218,0.88)';
     ctx.shadowColor='rgba(130,190,255,0.25)';
     ctx.shadowBlur=3;
-    ctx.fillText('Makkah', cx, cy - R*0.68);
+    ctx.fillText('Makkah', cx, cy - R*(_mobR?0.68:0.72));
+    ctx.shadowBlur=0;
+    ctx.font=`400 ${Math.round(R*0.055)}px 'Geist',sans-serif`;
+    ctx.fillStyle='rgba(180,175,165,0.65)';
+    ctx.fillText('Saudi Arabia', cx, cy - R*(_mobR?0.56:0.60));
     ctx.shadowBlur=0;
     ctx.restore();
   }
@@ -1962,6 +1966,97 @@ function shareMapMoment(platform){
     });
   }
 }
+
+function abbrevCountry(name){
+  if(!name) return '';
+  var map={
+    'United States of America':'USA','United States':'USA',
+    'United Arab Emirates':'UAE','United Kingdom':'UK',
+    'Bosnia and Herzegovina':'Bosnia','North Macedonia':'Macedonia',
+    'Trinidad and Tobago':'T&T','Papua New Guinea':'PNG',
+    'Democratic Republic of the Congo':'DR Congo',
+    'Republic of the Congo':'Congo','Central African Republic':'CAR',
+    'Dominican Republic':'Dominican Rep.','Solomon Islands':'Solomon Is.',
+    'Equatorial Guinea':'Eq. Guinea','São Tomé and Príncipe':'São Tomé',
+    'Saint Kitts and Nevis':'St Kitts','Saint Lucia':'St Lucia',
+    'Saint Vincent and the Grenadines':'St Vincent',
+    'Antigua and Barbuda':'Antigua','Korea, South':'South Korea',
+    'Korea, North':'North Korea','Russian Federation':'Russia',
+    'Czech Republic':'Czechia',
+  };
+  return map[name] || name;
+}
+
+// ── City page search — navigates to hub with selected city coordinates ────
+(function(){
+  // Load cities dataset
+  var _CITIES=[];
+  fetch('/cities.json')
+    .then(function(r){return r.json();})
+    .then(function(d){_CITIES=d;})
+    .catch(function(){});
+
+  var _st=null;
+  var inp=document.getElementById('hub-search');
+  if(!inp) return;
+
+  function hubSearch(q){
+    if(!q||q.length<2)return;
+    var box=document.getElementById('hub-results');
+    if(!box)return;
+    var ql=q.toLowerCase().trim();
+    var results=[];
+    for(var i=0;i<_CITIES.length;i++){
+      var c=_CITIES[i];
+      var nl=c[0].toLowerCase();
+      if(nl.startsWith(ql)) results.push([2,c]);
+      else if(nl.indexOf(ql)!==-1) results.push([1,c]);
+      if(results.length>=20) break;
+    }
+    results.sort(function(a,b){return b[0]-a[0]||a[1][0].localeCompare(b[1][0]);});
+    results=results.slice(0,7);
+    if(!results.length){box.style.display='none';return;}
+    box.innerHTML='';
+    results.forEach(function(rc){
+      var c=rc[1];
+      var item=document.createElement('div');
+      item.style.cssText='padding:10px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.05);';
+      item.innerHTML='<div style="color:#fff;font-family:Geist,sans-serif;font-size:0.9rem;">'+c[0]+'</div>'
+        +'<div style="color:rgba(255,255,255,0.4);font-size:0.78rem;margin-top:2px;">'+c[1]+'</div>';
+      item.addEventListener('mouseover',function(){this.style.background='rgba(0,212,255,0.08)';});
+      item.addEventListener('mouseout',function(){this.style.background='';});
+      (function(lat,lon){
+        item.addEventListener('click',function(){
+          // Navigate to hub page with coordinates
+          window.location.href='/prayer-times?lat='+parseFloat(lat).toFixed(4)+'&lon='+parseFloat(lon).toFixed(4);
+        });
+      })(c[2],c[3]);
+      box.appendChild(item);
+    });
+    var r=inp.getBoundingClientRect();
+    box.style.top=(r.bottom+4)+'px';
+    box.style.left=r.left+'px';
+    box.style.width=r.width+'px';
+    box.style.display='block';
+  }
+
+  inp.addEventListener('input',function(){
+    clearTimeout(_st);
+    var q=this.value.trim();
+    var box=document.getElementById('hub-results');
+    if(q.length<2){if(box)box.style.display='none';return;}
+    _st=setTimeout(function(){hubSearch(q);},80);
+  });
+  inp.addEventListener('blur',function(){
+    setTimeout(function(){var b=document.getElementById('hub-results');if(b)b.style.display='none';},200);
+  });
+  document.addEventListener('click',function(e){
+    if(!e.target.closest('#hub-search') && !e.target.closest('#hub-results')){
+      var b=document.getElementById('hub-results');if(b)b.style.display='none';
+    }
+  });
+})();
+
 </script>
 </body>
 </html>

@@ -1968,7 +1968,7 @@ function updateHeroPanel(){
   });
   var el;
   el=document.getElementById('hub-city-name'); if(el)el.textContent=CITY.name||'—';
-  el=document.getElementById('hub-country');   if(el)el.textContent=(CITY.country||'').toUpperCase();
+  el=document.getElementById('hub-country');   if(el)el.textContent=abbrevCountry(CITY.country||'').toUpperCase();
   el=document.getElementById('hub-date');      if(el)el.textContent=dateStr;
   el=document.getElementById('hub-method');    if(el)el.textContent=AdhanMethods.labelFor(CITY.cc,CITY.state);
 }
@@ -2192,6 +2192,27 @@ function setTimezone(cc, lat, lon){
     CITY.tzName = '';
     CITY.tz = Math.round(lon/15);
   }
+}
+
+
+function abbrevCountry(name){
+  if(!name) return '';
+  var map={
+    'United States of America':'USA','United States':'USA',
+    'United Arab Emirates':'UAE','United Kingdom':'UK',
+    'Bosnia and Herzegovina':'Bosnia','North Macedonia':'Macedonia',
+    'Trinidad and Tobago':'T&T','Papua New Guinea':'PNG',
+    'Democratic Republic of the Congo':'DR Congo',
+    'Republic of the Congo':'Congo','Central African Republic':'CAR',
+    'Dominican Republic':'Dominican Rep.','Solomon Islands':'Solomon Is.',
+    'Equatorial Guinea':'Eq. Guinea','São Tomé and Príncipe':'São Tomé',
+    'Saint Kitts and Nevis':'St Kitts','Saint Lucia':'St Lucia',
+    'Saint Vincent and the Grenadines':'St Vincent',
+    'Antigua and Barbuda':'Antigua','Korea, South':'South Korea',
+    'Korea, North':'North Korea','Russian Federation':'Russia',
+    'Czech Republic':'Czechia',
+  };
+  return map[name] || name;
 }
 
 function reverseGeocode(lat,lon,cb){

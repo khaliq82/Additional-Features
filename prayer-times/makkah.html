@@ -1916,17 +1916,23 @@ function initNavDots(){
 }
 document.addEventListener('DOMContentLoaded', initNavDots);
 function toHijri(date){
-  const jd=Math.floor((date.getTime()/86400000)+2440587.5);
-  let l=jd-1948440+10632;
-  const n=Math.floor((l-1)/10631);
-  l=l-10631*n+354;
-  const j=Math.floor((10985-l)/5316)*Math.floor((50*l)/17719)+Math.floor(l/5670)*Math.floor((43*l)/15238);
-  l=l-Math.floor((30-j)/15)*Math.floor((17719*j)/50)-Math.floor(j/16)*Math.floor((15238*j)/43)+29;
-  const month=Math.floor((24*l)/709);
-  const day=l-Math.floor((709*month)/24);
-  const year=30*n+j-30;
-  const hm=['Muharram','Safar','Rabi ul-Awwal','Rabi ul-Thani','Jumadal Awwal','Jumadal Thani','Rajab',"Sha'ban",'Ramadan','Shawwal',"Dhul Qa'dah",'Dhul Hijjah'];
-  return `${day} ${hm[month-1]} ${year}`;
+  const hm=['Muharram','Safar','Rabi ul-Awwal','Rabi ul-Thani','Jumadal Awwal',
+    'Jumadal Thani','Rajab',"Sha'ban",'Ramadan','Shawwal',"Dhul Qa'dah",'Dhul Hijjah'];
+  try {
+    const parts=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{
+      day:'numeric',month:'numeric',year:'numeric'
+    }).formatToParts(date);
+    const p={};parts.forEach(function(x){p[x.type]=x.value;});
+    const mn=parseInt(p.month)-1;
+    return `${p.day} ${hm[mn]||p.month} ${p.year.replace(' AH','')}`;
+  } catch(e) {
+    const parts=new Intl.DateTimeFormat('en-u-ca-islamic',{
+      day:'numeric',month:'numeric',year:'numeric'
+    }).formatToParts(date);
+    const p={};parts.forEach(function(x){p[x.type]=x.value;});
+    const mn=parseInt(p.month)-1;
+    return `${p.day} ${hm[mn]||p.month} ${p.year.replace(' AH','')}`;
+  }
 }
 function tickNavClock(){
   const n=new Date();

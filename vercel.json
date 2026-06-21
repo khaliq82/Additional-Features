@@ -1,53 +1,33 @@
 {
   "rewrites": [
-    {
-      "source": "/home",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/livemap",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/adhanclock",
-      "destination": "/pages/adhan-clock.html"
-    },
-    {
-      "source": "/arcs",
-      "destination": "/pages/prayer-arcs.html"
-    },
-    {
-      "source": "/ask",
-      "destination": "/pages/ask-adhanlive.html"
-    },
-    {
-      "source": "/about",
-      "destination": "/about.html"
-    },
-    {
-      "source": "/contact",
-      "destination": "/contact.html"
-    },
-    {
-      "source": "/prayer-times/makkah",
-      "destination": "/prayer-times/makkah.html"
-    }
+    { "source": "/home", "destination": "/index.html" },
+    { "source": "/livemap", "destination": "/index.html" },
+    { "source": "/adhanclock", "destination": "/pages/adhan-clock.html" },
+    { "source": "/arcs", "destination": "/pages/prayer-arcs.html" },
+    { "source": "/ask", "destination": "/pages/ask-adhanlive.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/prayer-times", "destination": "/prayer-times/prayer-times.html" },
+    { "source": "/prayer-times/makkah", "destination": "/prayer-times/makkah.html" },
+    { "source": "/prayer-times/madinah", "destination": "/prayer-times/madinah.html" },
+    { "source": "/prayer-times/cairo", "destination": "/prayer-times/cairo.html" },
+    { "source": "/prayer-times/istanbul", "destination": "/prayer-times/istanbul.html" },
+    { "source": "/prayer-times/jakarta", "destination": "/prayer-times/jakarta.html" },
+    { "source": "/prayer-times/dubai", "destination": "/prayer-times/dubai.html" },
+    { "source": "/prayer-times/london", "destination": "/prayer-times/london.html" },
+    { "source": "/prayer-times/karachi", "destination": "/prayer-times/karachi.html" },
+    { "source": "/prayer-times/dhaka", "destination": "/prayer-times/dhaka.html" },
+    { "source": "/prayer-times/new-york", "destination": "/prayer-times/new-york.html" },
+    { "source": "/prayer-times/kuala-lumpur", "destination": "/prayer-times/kuala-lumpur.html" },
+    { "source": "/prayer-times/jeddah", "destination": "/prayer-times/jeddah.html" },
+    { "source": "/prayer-times/riyadh", "destination": "/prayer-times/riyadh.html" },
+    { "source": "/prayer-times/singapore", "destination": "/prayer-times/singapore.html" },
+    { "source": "/prayer-times/mumbai", "destination": "/prayer-times/mumbai.html" },
+    { "source": "/prayer-times/paris", "destination": "/prayer-times/paris.html" }
   ],
   "redirects": [
-    {
-      "source": "/makkah.html",
-      "destination": "/prayer-times/makkah",
-      "permanent": true
-    },
-    {
-      "source": "/jakarta.html",
-      "destination": "/home",
-      "permanent": false
-    },
-    {
-      "source": "/kuala-lumpur.html",
-      "destination": "/home",
-      "permanent": false
-    }
+    { "source": "/makkah.html", "destination": "/prayer-times/makkah", "permanent": true },
+    { "source": "/jakarta.html", "destination": "/home", "permanent": false },
+    { "source": "/kuala-lumpur.html", "destination": "/home", "permanent": false }
   ]
 }

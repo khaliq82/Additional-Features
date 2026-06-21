@@ -209,7 +209,55 @@
     IT: { label:'Muslim World League', verified:false,
           build: function(){ return adhan.CalculationMethod.MuslimWorldLeague(); } },
 
-    // High-lat European countries — MWL + TwilightAngle
+    // Central Europe — needs TwilightAngle from ~48°N upward
+    CZ: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    SK: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    AT: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    HU: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    CH: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    FR: { label:'Union of Islamic Organisations of France (UOIF)', verified:false,
+          build: function(){ var p=angles(12,12); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    ES: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    IT: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    PT: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    LU: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    HR: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    SI: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    BA: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    RS: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    ME: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    MK: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    AL: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    XK: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    RO: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    BG: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    GR: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    UA: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    BY: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
+    MD: { label:'Muslim World League', verified:false,
+          build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
     NL: { label:'Muslim World League', verified:false,
           build: function(){ var p=adhan.CalculationMethod.MuslimWorldLeague(); p.highLatitudeRule=adhan.HighLatitudeRule.TwilightAngle; return p; } },
     DE: { label:'Muslim World League', verified:false,
@@ -243,10 +291,10 @@
   }
 
   // ── Latitude-based high-lat auto-detection ────────────────────────────────
-  // For hub page: if country isn't in HIGH_LAT_TWILIGHT but latitude > 51°,
+  // For hub page: if country isn't explicitly registered but latitude > 48°,
   // automatically apply TwilightAngle rule.
   function applyLatRule(params, lat) {
-    if (lat && Math.abs(lat) > 51) {
+    if (lat && Math.abs(lat) > 48) {
       if (!params.highLatitudeRule ||
           params.highLatitudeRule === adhan.HighLatitudeRule.MiddleOfTheNight) {
         params.highLatitudeRule = adhan.HighLatitudeRule.TwilightAngle;

@@ -1246,8 +1246,12 @@ function drawArc(){
     ctx.fillStyle='rgba(235,230,218,0.88)';
     ctx.shadowColor='rgba(130,190,255,0.25)';
     ctx.shadowBlur=3;
-    ctx.fillText(CITY.name||'—', cx, cy - R*0.68);
+    ctx.fillText(CITY.name||'—', cx, cy - R*0.72);
     ctx.shadowBlur=0;
+    // Country name below city
+    ctx.font=`400 ${Math.round(R*0.055)}px 'Geist',sans-serif`;
+    ctx.fillStyle='rgba(180,175,165,0.65)';
+    ctx.fillText(abbrevCountry(CITY.country)||CITY.cc||'', cx, cy - R*0.60);
     ctx.restore();
   }
 

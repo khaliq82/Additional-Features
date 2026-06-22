@@ -2191,10 +2191,37 @@ function drawQibla(heading){
       ctx.strokeStyle='rgba(180,140,50,0.4)';ctx.lineWidth=1;ctx.stroke();
     }
 
-    // Kaaba emoji
-    ctx.font=Math.round(sz*0.055)+'px serif';
-    ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText('🕋',kx,ky);
+    // Kaaba — canvas drawn (reliable cross-platform, no emoji rendering issues)
+    var ks=R*0.09; // kaaba size
+    ctx.save();
+    ctx.translate(kx,ky);
+    // Main cube body
+    ctx.fillStyle='rgba(20,20,25,0.95)';
+    ctx.fillRect(-ks*0.6,-ks*0.7,ks*1.2,ks*1.2);
+    // Gold border
+    ctx.strokeStyle=aligned?'rgba(0,220,80,0.9)':'rgba(180,140,50,0.85)';
+    ctx.lineWidth=aligned?2.5:1.5;
+    ctx.strokeRect(-ks*0.6,-ks*0.7,ks*1.2,ks*1.2);
+    // Kiswa (black cloth) dark drape
+    ctx.fillStyle='rgba(10,10,15,0.9)';
+    ctx.fillRect(-ks*0.6,-ks*0.7,ks*1.2,ks*0.85);
+    // Gold band (hizam)
+    ctx.fillStyle='rgba(200,160,50,0.85)';
+    ctx.fillRect(-ks*0.6,-ks*0.70+ks*0.55,ks*1.2,ks*0.18);
+    // Door outline
+    ctx.fillStyle='rgba(180,140,40,0.7)';
+    ctx.fillRect(-ks*0.14,-ks*0.70+ks*0.28,ks*0.28,ks*0.27);
+    // 3D top face (isometric)
+    ctx.beginPath();
+    ctx.moveTo(-ks*0.6,-ks*0.70);
+    ctx.lineTo(0,-ks*0.70-ks*0.25);
+    ctx.lineTo(ks*0.6,-ks*0.70);
+    ctx.lineTo(0,-ks*0.70-ks*0.0);
+    ctx.closePath();
+    ctx.fillStyle='rgba(35,30,20,0.85)';ctx.fill();
+    ctx.strokeStyle=aligned?'rgba(0,220,80,0.7)':'rgba(160,120,40,0.6)';
+    ctx.lineWidth=0.8;ctx.stroke();
+    ctx.restore();
   }
 
   ctx.restore(); // end rose rotation
@@ -2258,7 +2285,7 @@ function drawQibla(heading){
       'rgba(255,200,80,0.4)';
     ctx.fillText(
       _dH!==null?
-        (aligned2?'✓ Turn toward the Kaaba 🕋':'Rotate until needle meets 🕋'):
+        (aligned2?'✓ You are facing Makkah':'Rotate until needle meets the Kaaba'):
         'Allow compass for live direction',
       cx,cy+R*0.72
     );

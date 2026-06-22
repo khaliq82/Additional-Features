@@ -381,6 +381,9 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
     <!-- Qibla compass — overlays clock-face exactly -->
     <div id="qibla-face" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity 0.35s ease;opacity:0;pointer-events:none;background:var(--bg);">
       <canvas id="qiblaCanvas" style="width:min(100%,680px);height:min(100%,680px);aspect-ratio:1;display:block;"></canvas>
+      <button id="compass-btn" onclick="enableCompass()" style="position:absolute;bottom:18%;left:50%;transform:translateX(-50%);background:rgba(0,212,255,0.15);border:1px solid rgba(0,212,255,0.5);border-radius:8px;padding:8px 18px;color:#00d4ff;font-size:0.8rem;font-family:Geist,sans-serif;cursor:pointer;display:none;z-index:10;">
+        Tap to enable live compass
+      </button>
     </div>
 
   </div>
@@ -2205,16 +2208,45 @@ function drawQibla(h){
   ctx.strokeStyle='rgba(0,212,255,0.65)';ctx.lineWidth=1;ctx.stroke();
 }
 
+function enableCompass(){
+  var btn=document.getElementById('compass-btn');
+  function onO(e){
+    _dH=e.webkitCompassHeading!==undefined?e.webkitCompassHeading:(360-e.alpha+360)%360;
+    if(btn)btn.style.display='none';
+  }
+  if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
+    DeviceOrientationEvent.requestPermission()
+      .then(function(s){
+        if(s==='granted'){
+          window.addEventListener('deviceorientation',onO,true);
+        }
+      }).catch(function(){});
+  }
+}
+
 function startQibla(){
   var cLat=typeof CITY!=='undefined'?CITY.lat:21.4225;
   var cLon=typeof CITY!=='undefined'?CITY.lon:39.8262;
   _qB=_brg(cLat,cLon,21.4225,39.8262);
-  function onO(e){_dH=e.webkitCompassHeading!==undefined?e.webkitCompassHeading:(360-e.alpha)%360;}
+
+  var btn=document.getElementById('compass-btn');
+
+  function onO(e){
+    _dH=e.webkitCompassHeading!==undefined?e.webkitCompassHeading:(360-e.alpha+360)%360;
+    if(btn)btn.style.display='none';
+  }
+
   if(typeof DeviceOrientationEvent!=='undefined'){
     if(typeof DeviceOrientationEvent.requestPermission==='function'){
-      DeviceOrientationEvent.requestPermission().then(function(s){if(s==='granted')window.addEventListener('deviceorientation',onO,true);}).catch(function(){});
-    } else { window.addEventListener('deviceorientation',onO,true); }
+      // iOS 13+ — show button so user can tap to grant
+      if(btn)btn.style.display='block';
+      window.addEventListener('deviceorientation',onO,true); // try anyway
+    } else {
+      // Android / non-iOS — works without permission
+      window.addEventListener('deviceorientation',onO,true);
+    }
   }
+
   function loop(){if(!_qF)return;drawQibla(_dH);_qR=requestAnimationFrame(loop);}
   loop();
 }

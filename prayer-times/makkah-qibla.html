@@ -357,7 +357,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   </div>
 
   <!-- CENTRE: Clock + Qibla -->
-  <div class="centre-panel" style="position:relative;">
+  <div class="centre-panel" style="position:relative;overflow:hidden;">
 
     <!-- Flip button -->
     <button onclick="flipClock()" id="flip-btn" style="position:absolute;top:14px;right:14px;z-index:300;background:rgba(0,0,0,0.6);border:1px solid rgba(0,212,255,0.4);border-radius:8px;padding:7px 14px;color:#00d4ff;font-size:0.78rem;font-family:Geist,sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;letter-spacing:0.04em;">
@@ -2183,9 +2183,9 @@ function drawQibla(h){
     ctx.font=Math.round(sz*0.046)+'px serif';
     ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('🕋',kx,ky);
 
-    // Text
-    var cLat=typeof CITY!=='undefined'?CITY.lat:21.4225;
-    var cLon=typeof CITY!=='undefined'?CITY.lon:39.8262;
+    // Text — use device GPS position for accurate distance
+    var cLat=window._qiblaUserLat||(typeof CITY!=='undefined'?CITY.lat:21.4225);
+    var cLon=window._qiblaUserLon||(typeof CITY!=='undefined'?CITY.lon:39.8262);
     var dist=_dkm(cLat,cLon,21.4225,39.8262);
     var bear=Math.round(_qB);
     ctx.textAlign='center';
@@ -2225,11 +2225,32 @@ function enableCompass(){
 }
 
 function startQibla(){
-  var cLat=typeof CITY!=='undefined'?CITY.lat:21.4225;
-  var cLon=typeof CITY!=='undefined'?CITY.lon:39.8262;
-  _qB=_brg(cLat,cLon,21.4225,39.8262);
-
   var btn=document.getElementById('compass-btn');
+
+  function initBearing(lat,lon){
+    _qB=_brg(lat,lon,21.4225,39.8262);
+    // Update distance display
+    window._qiblaUserLat=lat;
+    window._qiblaUserLon=lon;
+  }
+
+  // Always use device GPS for Qibla — not the displayed city
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      function(pos){ initBearing(pos.coords.latitude,pos.coords.longitude); },
+      function(){ 
+        // GPS denied — fall back to displayed city
+        var cLat=typeof CITY!=='undefined'?CITY.lat:21.4225;
+        var cLon=typeof CITY!=='undefined'?CITY.lon:39.8262;
+        initBearing(cLat,cLon);
+      },
+      {timeout:5000,maximumAge:300000}
+    );
+  } else {
+    var cLat=typeof CITY!=='undefined'?CITY.lat:21.4225;
+    var cLon=typeof CITY!=='undefined'?CITY.lon:39.8262;
+    initBearing(cLat,cLon);
+  }
 
   function onO(e){
     _dH=e.webkitCompassHeading!==undefined?e.webkitCompassHeading:(360-e.alpha+360)%360;
@@ -2238,11 +2259,9 @@ function startQibla(){
 
   if(typeof DeviceOrientationEvent!=='undefined'){
     if(typeof DeviceOrientationEvent.requestPermission==='function'){
-      // iOS 13+ — show button so user can tap to grant
       if(btn)btn.style.display='block';
-      window.addEventListener('deviceorientation',onO,true); // try anyway
+      window.addEventListener('deviceorientation',onO,true);
     } else {
-      // Android / non-iOS — works without permission
       window.addEventListener('deviceorientation',onO,true);
     }
   }

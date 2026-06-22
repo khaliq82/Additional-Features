@@ -2084,11 +2084,21 @@ function abbrevCountry(name){
 
 // ── Qibla Compass ─────────────────────────────────────────────────────────
 var _qF=false,_dH=null,_qB=null,_qR=null;
-function _brg(a,b,c,d){var r=Math.PI/180,L=(d-b)*r;a*=r;c*=r;return((Math.atan2(Math.sin(L)*Math.cos(c),Math.cos(a)*Math.sin(c)-Math.sin(a)*Math.cos(c)*Math.cos(L))/r)+360)%360;}
-function _dkm(a,b,c,d){var R=6371,r=Math.PI/180,x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;return Math.round(R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)));}
+window._qiblaUserLat=null;
+window._qiblaUserLon=null;
+
+function _brg(lat1,lon1,lat2,lon2){
+  var r=Math.PI/180,dL=(lon2-lon1)*r;
+  lat1*=r;lat2*=r;
+  return((Math.atan2(Math.sin(dL)*Math.cos(lat2),Math.cos(lat1)*Math.sin(lat2)-Math.sin(lat1)*Math.cos(lat2)*Math.cos(dL))/r)+360)%360;
+}
+function _dkm(lat1,lon1,lat2,lon2){
+  var R=6371,r=Math.PI/180,a=Math.sin((lat2-lat1)*r/2)**2+Math.cos(lat1*r)*Math.cos(lat2*r)*Math.sin((lon2-lon1)*r/2)**2;
+  return Math.round(R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)));
+}
 function _ds(b){return b<23?'N':b<68?'NE':b<113?'E':b<158?'SE':b<203?'S':b<248?'SW':b<293?'W':b<338?'NW':'N';}
 
-function drawQibla(h){
+function drawQibla(heading){
   var cv=document.getElementById('qiblaCanvas');
   if(!cv)return;
   var wrap=document.getElementById('qibla-face');
@@ -2101,18 +2111,18 @@ function drawQibla(h){
   ctx.scale(dpr,dpr);
   ctx.clearRect(0,0,sz,sz);
 
-  var heading=h||0; // current device heading (degrees from North, clockwise)
+  var h=heading||0;
 
-  // Background circle
+  // ── Background ────────────────────────────────────────────────────────────
   ctx.beginPath();ctx.arc(cx,cy,R*1.04,0,Math.PI*2);
   var bg=ctx.createRadialGradient(cx,cy*0.7,0,cx,cy,R*1.04);
   bg.addColorStop(0,'#141820');bg.addColorStop(1,'#07090d');
   ctx.fillStyle=bg;ctx.fill();
 
-  // ── Rotating compass rose (rotates WITH device heading) ──────────────────
+  // ── Compass rose — rotates with device ───────────────────────────────────
   ctx.save();
   ctx.translate(cx,cy);
-  ctx.rotate(-heading*Math.PI/180); // rotate opposite to device turning
+  ctx.rotate(-h*Math.PI/180);
 
   // Outer ring
   ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);
@@ -2132,7 +2142,7 @@ function drawQibla(h){
     ctx.lineWidth=med?0.8:0.4;ctx.stroke();
   }
 
-  // N E S W labels and cardinal ticks
+  // N E S W
   var DIRS=['N','E','S','W'];
   for(var i=0;i<4;i++){
     var a2=(i*90-90)*Math.PI/180;
@@ -2155,69 +2165,106 @@ function drawQibla(h){
     ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=0.5;ctx.stroke();
   });
 
-  ctx.restore(); // end rose rotation
-
-  // ── Fixed Qibla needle (does NOT rotate — always points to Makkah) ───────
+  // ── Kaaba emoji — fixed on rose at exact Qibla bearing ───────────────────
   if(_qB!==null){
-    var needleAng=(_qB-90)*Math.PI/180; // fixed angle from North to Makkah
+    var qa=(_qB-90)*Math.PI/180; // Qibla angle on rose
+    var kx=Math.cos(qa)*R*0.72;
+    var ky=Math.sin(qa)*R*0.72;
 
-    ctx.save();
-    ctx.translate(cx,cy);
-    ctx.rotate(needleAng);
+    // Check alignment — needle (pointing up = 0°) vs Qibla bearing
+    // Needle points up (North on screen). User faces Makkah when heading ≈ qibla bearing
+    var diff=Math.abs(((h-_qB)+540)%360-180);
+    var aligned=diff<8; // within 8 degrees = facing Makkah
 
-    // Needle tip — cyan, points to Makkah
-    ctx.beginPath();
-    ctx.moveTo(0,-R*0.72);
-    ctx.bezierCurveTo(7,-R*0.35,8,-R*0.05,5,R*0.12);
-    ctx.lineTo(0,R*0.22);ctx.lineTo(-5,R*0.12);
-    ctx.bezierCurveTo(-8,-R*0.05,-7,-R*0.35,0,-R*0.72);
-    ctx.closePath();
-    var ng=ctx.createLinearGradient(0,-R*0.72,0,R*0.22);
-    ng.addColorStop(0,'rgba(0,240,255,1)');
-    ng.addColorStop(0.6,'rgba(0,170,220,0.9)');
-    ng.addColorStop(1,'rgba(0,80,160,0.7)');
-    ctx.fillStyle=ng;
-    ctx.shadowColor='rgba(0,212,255,0.75)';ctx.shadowBlur=18;
-    ctx.fill();ctx.shadowBlur=0;
+    // Green circle when aligned
+    if(aligned){
+      ctx.beginPath();ctx.arc(kx,ky,R*0.095,0,Math.PI*2);
+      ctx.strokeStyle='rgba(0,220,80,0.95)';ctx.lineWidth=3;
+      ctx.shadowColor='rgba(0,255,80,0.8)';ctx.shadowBlur=12;
+      ctx.stroke();ctx.shadowBlur=0;
+      // Pulsing fill
+      ctx.beginPath();ctx.arc(kx,ky,R*0.085,0,Math.PI*2);
+      ctx.fillStyle='rgba(0,220,80,0.15)';ctx.fill();
+    } else {
+      // Subtle gold ring around Kaaba when not aligned
+      ctx.beginPath();ctx.arc(kx,ky,R*0.075,0,Math.PI*2);
+      ctx.strokeStyle='rgba(180,140,50,0.4)';ctx.lineWidth=1;ctx.stroke();
+    }
 
-    // Highlight
-    ctx.beginPath();
-    ctx.moveTo(0,-R*0.72);ctx.lineTo(-3,-R*0.4);ctx.lineTo(-1,-R*0.05);ctx.lineTo(0,-R*0.72);
-    ctx.fillStyle='rgba(255,255,255,0.18)';ctx.fill();
-
-    // Tail
-    ctx.beginPath();
-    ctx.moveTo(0,R*0.22);ctx.lineTo(4,R*0.10);ctx.lineTo(0,-R*0.06);ctx.lineTo(-4,R*0.10);
-    ctx.closePath();ctx.fillStyle='rgba(50,70,90,0.8)';ctx.fill();
-
-    // Kaaba at tip
-    ctx.restore();
-    var kx=cx+Math.cos(needleAng)*R*0.48;
-    var ky=cy+Math.sin(needleAng)*R*0.48;
-    ctx.font=Math.round(sz*0.046)+'px serif';
+    // Kaaba emoji
+    ctx.font=Math.round(sz*0.055)+'px serif';
     ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText('🕋',kx,ky);
-  } else {
-    ctx.restore();
   }
 
-  // ── Fixed text (doesn't rotate) ───────────────────────────────────────────
-  var cLat=window._qiblaUserLat||(typeof CITY!=='undefined'?CITY.lat:21.4225);
-  var cLon=window._qiblaUserLon||(typeof CITY!=='undefined'?CITY.lon:39.8262);
-  var dist=_dkm(cLat,cLon,21.4225,39.8262);
-  var bear=_qB!==null?Math.round(_qB):0;
-  ctx.textAlign='center';
-  ctx.font='700 '+Math.round(sz*0.05)+'px Geist,sans-serif';
-  ctx.fillStyle='rgba(0,212,255,0.95)';
-  ctx.fillText(bear+'° '+_ds(bear),cx,cy+R*0.50);
-  ctx.font='400 '+Math.round(sz*0.028)+'px Geist,sans-serif';
-  ctx.fillStyle='rgba(255,255,255,0.35)';
-  ctx.fillText(dist.toLocaleString()+' km to Makkah',cx,cy+R*0.61);
-  ctx.font='400 '+Math.round(sz*0.023)+'px Geist,sans-serif';
-  ctx.fillStyle=_dH!==null?'rgba(0,212,255,0.4)':'rgba(255,200,80,0.4)';
-  ctx.fillText(_dH!==null?'Live compass active':'Hold device flat · allow compass',cx,cy+R*0.72);
+  ctx.restore(); // end rose rotation
 
-  // Pivot jewel
+  // ── Needle — fixed pointing UP (shows your facing direction) ─────────────
+  ctx.save();
+  ctx.translate(cx,cy);
+
+  // Needle tip (UP = your facing direction)
+  ctx.beginPath();
+  ctx.moveTo(0,-R*0.68);
+  ctx.bezierCurveTo(7,-R*0.32,8,-R*0.04,5,R*0.14);
+  ctx.lineTo(0,R*0.24);ctx.lineTo(-5,R*0.14);
+  ctx.bezierCurveTo(-8,-R*0.04,-7,-R*0.32,0,-R*0.68);
+  ctx.closePath();
+  var ng=ctx.createLinearGradient(0,-R*0.68,0,R*0.24);
+  ng.addColorStop(0,'rgba(0,240,255,1)');
+  ng.addColorStop(0.6,'rgba(0,170,220,0.9)');
+  ng.addColorStop(1,'rgba(0,80,160,0.7)');
+  ctx.fillStyle=ng;
+  ctx.shadowColor='rgba(0,212,255,0.7)';ctx.shadowBlur=16;
+  ctx.fill();ctx.shadowBlur=0;
+
+  // Needle highlight
+  ctx.beginPath();
+  ctx.moveTo(0,-R*0.68);ctx.lineTo(-3,-R*0.38);ctx.lineTo(-1,-R*0.04);ctx.lineTo(0,-R*0.68);
+  ctx.fillStyle='rgba(255,255,255,0.18)';ctx.fill();
+
+  // Needle tail
+  ctx.beginPath();
+  ctx.moveTo(0,R*0.24);ctx.lineTo(4,R*0.12);ctx.lineTo(0,-R*0.04);ctx.lineTo(-4,R*0.12);
+  ctx.closePath();ctx.fillStyle='rgba(50,70,90,0.8)';ctx.fill();
+  ctx.restore();
+
+  // ── Fixed text ────────────────────────────────────────────────────────────
+  if(_qB!==null){
+    var diff2=Math.abs(((h-_qB)+540)%360-180);
+    var aligned2=diff2<8;
+    var dist=_dkm(
+      window._qiblaUserLat||21.4225,
+      window._qiblaUserLon||39.8262,
+      21.4225,39.8262
+    );
+    var bear=Math.round(_qB);
+
+    // Bearing + direction
+    ctx.textAlign='center';
+    ctx.font='700 '+Math.round(sz*0.048)+'px Geist,sans-serif';
+    ctx.fillStyle=aligned2?'rgba(0,220,80,0.95)':'rgba(0,212,255,0.95)';
+    ctx.fillText(aligned2?'Facing Makkah':bear+'° '+_ds(bear),cx,cy+R*0.50);
+
+    // Distance
+    ctx.font='400 '+Math.round(sz*0.027)+'px Geist,sans-serif';
+    ctx.fillStyle='rgba(255,255,255,0.35)';
+    ctx.fillText(dist.toLocaleString()+' km to Makkah',cx,cy+R*0.61);
+
+    // Status
+    ctx.font='400 '+Math.round(sz*0.022)+'px Geist,sans-serif';
+    ctx.fillStyle=_dH!==null?
+      (aligned2?'rgba(0,220,80,0.6)':'rgba(0,212,255,0.4)'):
+      'rgba(255,200,80,0.4)';
+    ctx.fillText(
+      _dH!==null?
+        (aligned2?'✓ Turn toward the Kaaba 🕋':'Rotate until needle meets 🕋'):
+        'Allow compass for live direction',
+      cx,cy+R*0.72
+    );
+  }
+
+  // ── Pivot jewel ───────────────────────────────────────────────────────────
   ctx.beginPath();ctx.arc(cx,cy,10,0,Math.PI*2);
   var pj=ctx.createRadialGradient(cx-2,cy-2,1,cx,cy,10);
   pj.addColorStop(0,'rgba(180,220,255,1)');
@@ -2233,49 +2280,47 @@ function enableCompass(){
     _dH=e.webkitCompassHeading!==undefined?e.webkitCompassHeading:(360-e.alpha+360)%360;
     if(btn)btn.style.display='none';
   }
-  if(typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function'){
+  if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
     DeviceOrientationEvent.requestPermission()
-      .then(function(s){
-        if(s==='granted'){
-          window.addEventListener('deviceorientation',onO,true);
-        }
-      }).catch(function(){});
+      .then(function(s){if(s==='granted')window.addEventListener('deviceorientation',onO,true);})
+      .catch(function(){});
   }
 }
 
 function startQibla(){
   var btn=document.getElementById('compass-btn');
 
-  function initBearing(lat,lon){
-    _qB=_brg(lat,lon,21.4225,39.8262);
-    // Update distance display
+  // Step 1: Get PRECISE device GPS location for Qibla bearing
+  function setBearing(lat,lon){
     window._qiblaUserLat=lat;
     window._qiblaUserLon=lon;
+    _qB=_brg(lat,lon,21.4225,39.8262);
   }
 
-  // Always use device GPS for Qibla — not the displayed city
   if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(
-      function(pos){ initBearing(pos.coords.latitude,pos.coords.longitude); },
-      function(){ 
-        // GPS denied — fall back to displayed city
-        var cLat=typeof CITY!=='undefined'?CITY.lat:21.4225;
-        var cLon=typeof CITY!=='undefined'?CITY.lon:39.8262;
-        initBearing(cLat,cLon);
+      function(pos){setBearing(pos.coords.latitude,pos.coords.longitude);},
+      function(){
+        // GPS denied — use displayed city as fallback
+        setBearing(
+          typeof CITY!=='undefined'?CITY.lat:21.4225,
+          typeof CITY!=='undefined'?CITY.lon:39.8262
+        );
       },
-      {timeout:5000,maximumAge:300000}
+      {timeout:6000,maximumAge:60000,enableHighAccuracy:true}
     );
   } else {
-    var cLat=typeof CITY!=='undefined'?CITY.lat:21.4225;
-    var cLon=typeof CITY!=='undefined'?CITY.lon:39.8262;
-    initBearing(cLat,cLon);
+    setBearing(
+      typeof CITY!=='undefined'?CITY.lat:21.4225,
+      typeof CITY!=='undefined'?CITY.lon:39.8262
+    );
   }
 
+  // Step 2: Start device orientation (compass sensor)
   function onO(e){
     _dH=e.webkitCompassHeading!==undefined?e.webkitCompassHeading:(360-e.alpha+360)%360;
     if(btn)btn.style.display='none';
   }
-
   if(typeof DeviceOrientationEvent!=='undefined'){
     if(typeof DeviceOrientationEvent.requestPermission==='function'){
       if(btn)btn.style.display='block';
@@ -2285,10 +2330,16 @@ function startQibla(){
     }
   }
 
+  // Step 3: Draw loop
   function loop(){if(!_qF)return;drawQibla(_dH);_qR=requestAnimationFrame(loop);}
   loop();
 }
-function stopQibla(){if(_qR){cancelAnimationFrame(_qR);_qR=null;}_dH=null;}
+
+function stopQibla(){
+  if(_qR){cancelAnimationFrame(_qR);_qR=null;}
+  _dH=null;_qB=null;
+  window._qiblaUserLat=null;window._qiblaUserLon=null;
+}
 
 function flipClock(){
   _qF=!_qF;
@@ -2307,7 +2358,6 @@ function flipClock(){
     stopQibla();
   }
 }
-
 </script>
 </body>
 </html>

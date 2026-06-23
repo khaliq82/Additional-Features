@@ -347,28 +347,6 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 }
 
 
-/* ── Qibla toggle — top right corner, outside clock ── */
-#qibla-toggle {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  cursor: pointer;
-  z-index: 200;
-  border: 1px solid rgba(255,255,255,0.25);
-  background: radial-gradient(circle at 38% 35%,
-    rgba(55,58,65,0.97),
-    rgba(15,17,22,1.0)
-  );
-  box-shadow: 0 2px 8px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
-}
 #qibla-toggle:active { transform: scale(0.90); }
 #qibla-toggle:hover  { box-shadow: 0 2px 12px rgba(0,212,255,0.25), inset 0 1px 1px rgba(255,255,255,0.15); }
 
@@ -424,8 +402,9 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 
   <!-- CENTRE: Clock + Qibla -->
   <div class="centre-panel" style="position:relative;overflow:hidden;">
-    <button id="qibla-toggle" onclick="flipClock()" title="Toggle Qibla compass"><span id="flip-icon">🧭</span></button>
+    <button onclick="flipClock()" style="position:absolute;top:14px;right:14px;z-index:200;background:rgba(0,0,0,0.55);border:1px solid rgba(0,212,255,0.4);border-radius:8px;padding:7px 14px;color:#00d4ff;font-size:0.78rem;font-family:Geist,sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;letter-spacing:0.04em;backdrop-filter:blur(4px);"><span id="flip-icon">🧭</span>&nbsp;<span id="flip-label">Qibla</span></button>
 
+    
 <!-- flip button moved to canvas ring -->
 
     <!-- Prayer clock — stays in normal flow, gives panel its height -->
@@ -2555,14 +2534,17 @@ function flipClock(){
   var cf=document.getElementById('clock-face');
   var qf=document.getElementById('qibla-face');
   var ico=document.getElementById('flip-icon');
+  var lbl=document.getElementById('flip-label');
   if(_qF){
     cf.style.opacity='0';cf.style.pointerEvents='none';
     setTimeout(function(){qf.style.opacity='1';qf.style.pointerEvents='auto';startQibla();},350);
     if(ico)ico.textContent='🕌';
+    if(lbl)lbl.textContent='Prayer Times';
   } else {
     qf.style.opacity='0';qf.style.pointerEvents='none';
     setTimeout(function(){cf.style.opacity='1';cf.style.pointerEvents='auto';},350);
     if(ico)ico.textContent='🧭';
+    if(lbl)lbl.textContent='Qibla';
     stopQibla();
   }
 }

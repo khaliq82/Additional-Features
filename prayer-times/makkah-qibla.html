@@ -384,6 +384,16 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
       <button id="compass-btn" onclick="enableCompass()" style="position:absolute;bottom:18%;left:50%;transform:translateX(-50%);background:rgba(0,212,255,0.15);border:1px solid rgba(0,212,255,0.5);border-radius:8px;padding:8px 18px;color:#00d4ff;font-size:0.8rem;font-family:Geist,sans-serif;cursor:pointer;display:none;z-index:10;">
         Tap to enable live compass
       </button>
+      <!-- Desktop overlay -->
+      <div id="qibla-desktop-overlay" style="display:none;position:absolute;inset:0;background:rgba(8,10,16,0.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:50%;z-index:20;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
+        <canvas id="qiblaKaabaIcon" width="80" height="90" style="display:block;"></canvas>
+        <div style="text-align:center;padding:0 40px;">
+          <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:rgba(255,255,255,0.9);margin-bottom:8px;">Open on your phone</div>
+          <div style="font-family:Geist,sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.5;">The live Qibla compass uses your device's sensor. For accurate direction, open AdhanLive on your mobile.</div>
+          <div style="margin-top:16px;font-family:Geist,sans-serif;font-size:0.78rem;color:rgba(0,212,255,0.7);" id="desktop-bearing-text"></div>
+        </div>
+        <button onclick="dismissDesktopOverlay()" style="background:transparent;border:1px solid rgba(0,212,255,0.35);border-radius:8px;padding:9px 28px;color:#00d4ff;font-size:0.82rem;font-family:Geist,sans-serif;cursor:pointer;letter-spacing:0.05em;transition:background 0.2s;" onmouseover="this.style.background='rgba(0,212,255,0.1)'" onmouseout="this.style.background='transparent'">Got it</button>
+      </div>
     </div>
 
   </div>
@@ -2301,7 +2311,69 @@ function drawQibla(heading){
   ctx.strokeStyle='rgba(0,212,255,0.65)';ctx.lineWidth=1;ctx.stroke();
 }
 
-function enableCompass(){
+function isMobile(){
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+    ('ontouchstart' in window) ||
+    (typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function');
+}
+
+function drawKaabaIcon(canvasId){
+  var cv=document.getElementById(canvasId);
+  if(!cv)return;
+  var ctx=cv.getContext('2d');
+  var w=cv.width,h=cv.height;
+  ctx.clearRect(0,0,w,h);
+  // Body
+  ctx.fillStyle='rgba(15,15,20,0.95)';
+  ctx.fillRect(w*0.1,h*0.18,w*0.8,h*0.72);
+  // Border
+  ctx.strokeStyle='rgba(0,212,255,0.7)';
+  ctx.lineWidth=2;
+  ctx.strokeRect(w*0.1,h*0.18,w*0.8,h*0.72);
+  // Kiswa
+  ctx.fillStyle='rgba(8,8,12,0.92)';
+  ctx.fillRect(w*0.1,h*0.18,w*0.8,h*0.52);
+  // Gold band
+  ctx.fillStyle='rgba(200,160,50,0.85)';
+  ctx.fillRect(w*0.1,h*0.50,w*0.8,h*0.12);
+  // Door
+  ctx.fillStyle='rgba(180,140,40,0.7)';
+  ctx.fillRect(w*0.38,h*0.32,w*0.24,h*0.18);
+  // Top face
+  ctx.beginPath();
+  ctx.moveTo(w*0.1,h*0.18);
+  ctx.lineTo(w*0.5,h*0.02);
+  ctx.lineTo(w*0.9,h*0.18);
+  ctx.lineTo(w*0.5,h*0.18);
+  ctx.closePath();
+  ctx.fillStyle='rgba(30,25,15,0.9)';ctx.fill();
+  ctx.strokeStyle='rgba(0,212,255,0.4)';ctx.lineWidth=1;ctx.stroke();
+}
+
+function showDesktopOverlay(){
+  var overlay=document.getElementById('qibla-desktop-overlay');
+  if(!overlay)return;
+  overlay.style.display='flex';
+  drawKaabaIcon('qiblaKaabaIcon');
+  // Show static bearing if available
+  var txt=document.getElementById('desktop-bearing-text');
+  if(txt && _qB!==null){
+    var bear=Math.round(_qB);
+    var dist=_dkm(
+      window._qiblaUserLat||21.4225,
+      window._qiblaUserLon||39.8262,
+      21.4225,39.8262
+    );
+    txt.textContent='Qibla from your location: '+bear+'° '+_ds(bear)+' · '+dist.toLocaleString()+' km';
+  }
+}
+
+function dismissDesktopOverlay(){
+  var overlay=document.getElementById('qibla-desktop-overlay');
+  if(overlay)overlay.style.display='none';
+  // Flip back to prayer times
+  flipClock();
+}
   var btn=document.getElementById('compass-btn');
   function onO(e){
     _dH=e.webkitCompassHeading!==undefined?e.webkitCompassHeading:(360-e.alpha+360)%360;
@@ -2343,12 +2415,15 @@ function startQibla(){
     );
   }
 
-  // Step 2: Start device orientation (compass sensor)
+  // Step 2: Start device orientation OR show desktop overlay
   function onO(e){
     _dH=e.webkitCompassHeading!==undefined?e.webkitCompassHeading:(360-e.alpha+360)%360;
     if(btn)btn.style.display='none';
   }
-  if(typeof DeviceOrientationEvent!=='undefined'){
+  if(!isMobile()){
+    // Desktop — no compass sensor, show overlay after bearing computed
+    setTimeout(showDesktopOverlay, 400);
+  } else if(typeof DeviceOrientationEvent!=='undefined'){
     if(typeof DeviceOrientationEvent.requestPermission==='function'){
       if(btn)btn.style.display='block';
       window.addEventListener('deviceorientation',onO,true);

@@ -391,10 +391,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   <!-- CENTRE: Clock + Qibla -->
   <div class="centre-panel" style="position:relative;overflow:hidden;">
 
-    <!-- Flip button -->
-    <button onclick="flipClock()" id="flip-btn" style="position:absolute;top:14px;right:14px;z-index:300;background:rgba(0,0,0,0.6);border:1px solid rgba(0,212,255,0.4);border-radius:8px;padding:7px 14px;color:#00d4ff;font-size:0.78rem;font-family:Geist,sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;letter-spacing:0.04em;">
-      <span id="flip-icon">🧭</span>&nbsp;<span id="flip-label">Qibla</span>
-    </button>
+<!-- flip button moved to canvas ring -->
 
     <!-- Prayer clock — stays in normal flow, gives panel its height -->
     <div id="clock-face" style="transition:opacity 0.35s ease;opacity:1;width:min(100%,680px);aspect-ratio:1;position:relative;">
@@ -413,7 +410,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
     <!-- Qibla compass — overlays clock-face exactly -->
     <div id="qibla-face" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity 0.35s ease;opacity:0;pointer-events:none;background:var(--bg);">
       <canvas id="qiblaCanvas" style="width:min(100%,680px);height:min(100%,680px);aspect-ratio:1;display:block;"></canvas>
-      <button id="compass-btn" onclick="enableCompass()" style="position:absolute;bottom:18%;left:50%;transform:translateX(-50%);background:rgba(0,212,255,0.15);border:1px solid rgba(0,212,255,0.5);border-radius:8px;padding:8px 18px;color:#00d4ff;font-size:0.8rem;font-family:Geist,sans-serif;cursor:pointer;display:none;z-index:10;">
+      <button id="compass-btn" onclick="enableCompass()" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:transparent;border:none;color:rgba(255,255,255,0.85);font-size:0.82rem;font-family:Geist,sans-serif;cursor:pointer;display:none;z-index:10;text-align:center;letter-spacing:0.04em;text-shadow:0 0 12px rgba(0,212,255,0.6);">
         Tap to enable live compass
       </button>
       <!-- Desktop overlay -->
@@ -2222,6 +2219,76 @@ function drawQibla(heading){
     ctx.fillText(DIRS[i],0,0);ctx.restore();
   }
 
+  // Degree markers at 45° intervals
+  var DEG_MARKS=[45,135,225,315];
+  DEG_MARKS.forEach(function(deg){
+    var a=(deg-90)*Math.PI/180;
+    var tx=Math.cos(a)*(R-38), ty=Math.sin(a)*(R-38);
+    ctx.save();
+    ctx.translate(tx,ty);
+    ctx.font='500 '+Math.round(sz*0.028)+'px Geist,sans-serif';
+    ctx.fillStyle='rgba(255,255,255,0.22)';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(deg+'°',0,0);
+    ctx.restore();
+  });
+
+  // ── Ring toggle button at 3 o'clock (90°) ──────────────────────────────
+  var btnA=0; // 0 rad = 3 o'clock (East)
+  var btnX=Math.cos(btnA)*R, btnY=Math.sin(btnA)*R;
+  var btnR=sz*0.038;
+
+  // Shimmer/pulse animation — use time-based offset
+  var now=Date.now();
+  var pulse=(Math.sin(now/600)*0.5+0.5); // 0→1 oscillation
+
+  // Button base — metallic circle on the ring
+  ctx.save();
+  // Outer glow ring (the "something here" pulse)
+  ctx.beginPath();ctx.arc(btnX,btnY,btnR*1.55,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,'+(0.08+pulse*0.14)+')';
+  ctx.lineWidth=1;ctx.stroke();
+
+  // Sweeping shimmer arc on golden ring toward button
+  var shimmerAngle=(now/1200)%(Math.PI*2);
+  ctx.beginPath();
+  ctx.arc(0,0,R,shimmerAngle-0.4,shimmerAngle+0.4);
+  var shimGrad=ctx.createLinearGradient(
+    Math.cos(shimmerAngle)*R*0.9,Math.sin(shimmerAngle)*R*0.9,
+    Math.cos(shimmerAngle)*R*1.1,Math.sin(shimmerAngle)*R*1.1
+  );
+  shimGrad.addColorStop(0,'rgba(255,255,255,0)');
+  shimGrad.addColorStop(0.5,'rgba(255,255,255,'+(0.35+pulse*0.25)+')');
+  shimGrad.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.strokeStyle=shimGrad;ctx.lineWidth=1.5;ctx.stroke();
+
+  // Button metallic body
+  var btnGrad=ctx.createRadialGradient(btnX-btnR*0.3,btnY-btnR*0.3,0,btnX,btnY,btnR);
+  btnGrad.addColorStop(0,'rgba(220,225,235,0.95)');
+  btnGrad.addColorStop(0.4,'rgba(160,165,175,0.90)');
+  btnGrad.addColorStop(1,'rgba(60,65,75,0.95)');
+  ctx.beginPath();ctx.arc(btnX,btnY,btnR,0,Math.PI*2);
+  ctx.fillStyle=btnGrad;ctx.fill();
+
+  // Button border
+  ctx.beginPath();ctx.arc(btnX,btnY,btnR,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,0.5)';ctx.lineWidth=0.8;ctx.stroke();
+
+  // Icon inside button — compass or clock depending on state
+  ctx.save();
+  ctx.translate(btnX,btnY);
+  ctx.font='bold '+Math.round(btnR*1.1)+'px serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillStyle='rgba(30,30,35,0.9)';
+  ctx.fillText(_qF?'🕌':'🧭',0,0);
+  ctx.restore();
+
+  // Hit area stored for click detection
+  window._qiblaBtnX=cx+btnX;
+  window._qiblaBtnY=cy+btnY;
+  window._qiblaBtnR=btnR*1.2;
+  ctx.restore();
+
   // Guide rings
   [0.3,0.55,0.75].forEach(function(f){
     ctx.beginPath();ctx.arc(0,0,R*f,0,Math.PI*2);
@@ -2325,7 +2392,7 @@ function drawQibla(heading){
     ctx.textAlign='center';
     ctx.font='700 '+Math.round(sz*0.048)+'px Geist,sans-serif';
     ctx.fillStyle=aligned2?'rgba(0,220,80,0.95)':'rgba(0,212,255,0.95)';
-    ctx.fillText(aligned2?'Facing Makkah':bear+'° '+_ds(bear),cx,cy+R*0.50);
+    ctx.fillText(aligned2?'Facing Qibla':bear+'° '+_ds(bear),cx,cy+R*0.50);
 
     // Distance
     ctx.font='400 '+Math.round(sz*0.027)+'px Geist,sans-serif';
@@ -2523,6 +2590,39 @@ function flipClock(){
     stopQibla();
   }
 }
+
+// ── Ring button click handler ─────────────────────────────────────────────
+function handleCanvasClick(e){
+  var canvas=e.currentTarget;
+  var rect=canvas.getBoundingClientRect();
+  var x=(e.clientX||e.touches[0].clientX)-rect.left;
+  var y=(e.clientY||e.touches[0].clientY)-rect.top;
+  // Scale for devicePixelRatio
+  var dpr=window.devicePixelRatio||1;
+  x*=dpr;y*=dpr;
+  // Check prayer clock button
+  if(window._clockBtnX&&!_qF){
+    var dx=x-window._clockBtnX*dpr, dy=y-window._clockBtnY*dpr;
+    if(Math.sqrt(dx*dx+dy*dy)<window._clockBtnR*dpr*1.5){
+      flipClock();return;
+    }
+  }
+  // Check qibla button
+  if(window._qiblaBtnX&&_qF){
+    var dx2=x-window._qiblaBtnX*dpr, dy2=y-window._qiblaBtnY*dpr;
+    if(Math.sqrt(dx2*dx2+dy2*dy2)<window._qiblaBtnR*dpr*1.5){
+      flipClock();return;
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  var pc=document.getElementById('prayer-arc');
+  var qc=document.getElementById('qiblaCanvas');
+  if(pc){pc.addEventListener('click',handleCanvasClick);pc.addEventListener('touchend',handleCanvasClick);}
+  if(qc){qc.addEventListener('click',handleCanvasClick);qc.addEventListener('touchend',handleCanvasClick);}
+});
+
 </script>
 </body>
 </html>

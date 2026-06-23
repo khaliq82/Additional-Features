@@ -359,7 +359,11 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 }
 
 
-/* Qibla toggle — running highlight ON the border ring */
+  to   { transform: rotate(360deg); }
+}
+
+
+/* Qibla toggle — gradient running highlight on border */
 #qibla-toggle {
   position: relative;
   overflow: visible;
@@ -367,20 +371,23 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 #qibla-toggle::before {
   content: '';
   position: absolute;
-  inset: -2px;
+  inset: -2.5px;
   border-radius: 50%;
-  padding: 2px;
+  padding: 2.5px;
   background: conic-gradient(
     from 0deg,
     transparent 0deg,
-    transparent 240deg,
-    rgba(100,180,255,0.0) 260deg,
-    rgba(140,200,255,0.6) 285deg,
-    rgba(180,220,255,1.0) 300deg,
-    rgba(255,255,255,1.0) 310deg,
-    rgba(180,220,255,1.0) 320deg,
-    rgba(100,180,255,0.4) 340deg,
-    transparent 360deg
+    transparent 180deg,
+    rgba(100,220,255,0.0)  200deg,
+    rgba(100,220,255,0.3)  230deg,
+    rgba(140,200,255,0.7)  260deg,
+    rgba(180,230,255,0.95) 285deg,
+    rgba(255,255,255,1.0)  300deg,
+    rgba(200,240,255,1.0)  310deg,
+    rgba(100,180,255,0.85) 325deg,
+    rgba(80,140,255,0.5)   345deg,
+    rgba(60,100,220,0.15)  358deg,
+    transparent            360deg
   );
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
@@ -388,6 +395,32 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   animation: qibla-run 2.4s linear infinite;
+  filter: blur(0.4px);
+}
+#qibla-toggle::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  padding: 4px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 240deg,
+    rgba(100,200,255,0.0)  265deg,
+    rgba(100,200,255,0.18) 290deg,
+    rgba(180,230,255,0.35) 305deg,
+    rgba(100,200,255,0.18) 320deg,
+    transparent            340deg,
+    transparent            360deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: qibla-run 2.4s linear infinite;
+  filter: blur(1.5px);
 }
 @keyframes qibla-run {
   from { transform: rotate(0deg); }

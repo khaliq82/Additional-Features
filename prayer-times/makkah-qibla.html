@@ -343,83 +343,34 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 }
 
 
-/* ── Qibla toggle switch — 3 o'clock, outside clock ring ── */
+  50%       { box-shadow: 0 0 14px 4px rgba(255,255,255,0.18); }
+}
+
+
+/* ── Qibla toggle — top right corner, outside clock ── */
 #qibla-toggle {
   position: absolute;
-  /* 3 o'clock = right side, vertically centred */
-  right: -18px;
-  top: 50%;
-  transform: translateY(-50%);
+  top: 8px;
+  right: 8px;
   width: 36px;
   height: 36px;
   border-radius: 50%;
   cursor: pointer;
   z-index: 200;
-  border: 1px solid rgba(255,255,255,0.3);
-  outline: none;
-  padding: 0;
-  /* Dark metallic — black centre */
-  background: radial-gradient(circle at 38% 32%,
-    rgba(70,72,78,0.95) 0%,
-    rgba(30,32,38,0.98) 50%,
-    rgba(10,12,16,1.0) 100%
+  border: 1px solid rgba(255,255,255,0.25);
+  background: radial-gradient(circle at 38% 35%,
+    rgba(55,58,65,0.97),
+    rgba(15,17,22,1.0)
   );
-  box-shadow:
-    0 2px 10px rgba(0,0,0,0.8),
-    inset 0 1px 2px rgba(255,255,255,0.15),
-    inset 0 -1px 2px rgba(0,0,0,0.6);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.12);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1rem;
-  transition: transform 0.15s ease;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
-#qibla-toggle:active {
-  transform: translateY(-50%) scale(0.90);
-}
-
-/* Sweeping spotlight — single bright arc rotating around button */
-#qibla-toggle::before {
-  content: '';
-  position: absolute;
-  inset: -5px;
-  border-radius: 50%;
-  /* Only a short arc glows — the rest is transparent */
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    transparent 200deg,
-    rgba(255,255,255,0.0) 220deg,
-    rgba(255,255,255,0.9) 255deg,
-    rgba(255,255,255,0.0) 290deg,
-    transparent 310deg,
-    transparent 360deg
-  );
-  animation: qibla-sweep 2s linear infinite;
-  /* Mask to only show the thin ring area */
-  -webkit-mask: radial-gradient(circle, transparent 70%, black 72%, black 100%);
-  mask: radial-gradient(circle, transparent 70%, black 72%, black 100%);
-}
-
-/* Outer breathing glow ring */
-#qibla-toggle::after {
-  content: '';
-  position: absolute;
-  inset: -8px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.0);
-  box-shadow: 0 0 8px 2px rgba(255,255,255,0.08);
-  animation: qibla-pulse 2s ease-in-out infinite;
-}
-
-@keyframes qibla-sweep {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-@keyframes qibla-pulse {
-  0%, 100% { box-shadow: 0 0 6px 2px rgba(255,255,255,0.06); }
-  50%       { box-shadow: 0 0 14px 4px rgba(255,255,255,0.18); }
-}
+#qibla-toggle:active { transform: scale(0.90); }
+#qibla-toggle:hover  { box-shadow: 0 2px 12px rgba(0,212,255,0.25), inset 0 1px 1px rgba(255,255,255,0.15); }
 
 </style>
 </head>
@@ -472,7 +423,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   </div>
 
   <!-- CENTRE: Clock + Qibla -->
-  <div class="centre-panel" style="position:relative;overflow:visible;isolation:isolate;">
+  <div class="centre-panel" style="position:relative;overflow:hidden;">
     <button id="qibla-toggle" onclick="flipClock()" title="Toggle Qibla compass"><span id="flip-icon">🧭</span></button>
 
 <!-- flip button moved to canvas ring -->

@@ -402,7 +402,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 
   <!-- CENTRE: Clock + Qibla -->
   <div class="centre-panel" style="position:relative;overflow:hidden;">
-    <button onclick="flipClock()" style="position:absolute;top:14px;right:14px;z-index:200;background:rgba(0,0,0,0.55);border:1px solid rgba(0,212,255,0.4);border-radius:8px;padding:7px 14px;color:#00d4ff;font-size:0.78rem;font-family:Geist,sans-serif;cursor:pointer;display:flex;align-items:center;gap:6px;letter-spacing:0.04em;backdrop-filter:blur(4px);"><span id="flip-icon">🧭</span>&nbsp;<span id="flip-label">Qibla</span></button>
+    <button onclick="flipClock()" style="position:absolute;top:14px;right:14px;z-index:200;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,0.60);border:2px solid rgba(255,255,255,0.85);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.1rem;padding:0;backdrop-filter:blur(4px);transition:transform 0.12s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><span id="flip-icon">🧭</span></button>
 
     
 <!-- flip button moved to canvas ring -->
@@ -2534,17 +2534,14 @@ function flipClock(){
   var cf=document.getElementById('clock-face');
   var qf=document.getElementById('qibla-face');
   var ico=document.getElementById('flip-icon');
-  var lbl=document.getElementById('flip-label');
   if(_qF){
     cf.style.opacity='0';cf.style.pointerEvents='none';
     setTimeout(function(){qf.style.opacity='1';qf.style.pointerEvents='auto';startQibla();},350);
     if(ico)ico.textContent='🕌';
-    if(lbl)lbl.textContent='Prayer Times';
   } else {
     qf.style.opacity='0';qf.style.pointerEvents='none';
     setTimeout(function(){cf.style.opacity='1';cf.style.pointerEvents='auto';},350);
     if(ico)ico.textContent='🧭';
-    if(lbl)lbl.textContent='Qibla';
     stopQibla();
   }
 }

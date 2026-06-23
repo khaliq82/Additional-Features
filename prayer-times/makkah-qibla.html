@@ -2121,6 +2121,15 @@ function drawQibla(heading){
   ctx.scale(dpr,dpr);
   ctx.clearRect(0,0,sz,sz);
 
+  // If bearing not yet computed — show loading
+  if(_qB===null){
+    ctx.fillStyle='rgba(0,212,255,0.5)';
+    ctx.font='400 '+Math.round(sz*0.035)+'px Geist,sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('Locating your position...',sz/2,sz/2);
+    return;
+  }
+
   var h=heading||0;
 
   // ── Background ────────────────────────────────────────────────────────────
@@ -2421,8 +2430,9 @@ function startQibla(){
     if(btn)btn.style.display='none';
   }
   if(!isMobile()){
-    // Desktop — no compass sensor, show overlay after bearing computed
-    setTimeout(showDesktopOverlay, 400);
+    // Desktop — show overlay, no draw loop needed
+    setTimeout(showDesktopOverlay, 500);
+    return; // exit startQibla early on desktop
   } else if(typeof DeviceOrientationEvent!=='undefined'){
     if(typeof DeviceOrientationEvent.requestPermission==='function'){
       if(btn)btn.style.display='block';

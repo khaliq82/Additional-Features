@@ -355,27 +355,39 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 }
 
 
-/* Qibla toggle — close to clock, running highlight */
+  to   { transform: rotate(360deg); }
+}
+
+
+/* Qibla toggle — running highlight ON the border ring */
 #qibla-toggle {
-  animation: none !important;
-  box-shadow: none !important;
+  position: relative;
+  overflow: visible;
 }
 #qibla-toggle::before {
   content: '';
   position: absolute;
-  inset: -3px;
+  inset: -2px;
   border-radius: 50%;
+  padding: 2px;
   background: conic-gradient(
     from 0deg,
     transparent 0deg,
-    transparent 300deg,
-    rgba(0,212,255,0.95) 340deg,
-    rgba(255,255,255,1.0) 355deg,
-    rgba(0,212,255,0.95) 360deg
+    transparent 240deg,
+    rgba(100,180,255,0.0) 260deg,
+    rgba(140,200,255,0.6) 285deg,
+    rgba(180,220,255,1.0) 300deg,
+    rgba(255,255,255,1.0) 310deg,
+    rgba(180,220,255,1.0) 320deg,
+    rgba(100,180,255,0.4) 340deg,
+    transparent 360deg
   );
-  -webkit-mask: radial-gradient(circle, transparent 68%, black 70%);
-  mask: radial-gradient(circle, transparent 68%, black 70%);
-  animation: qibla-run 1.6s linear infinite;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: qibla-run 2.4s linear infinite;
 }
 @keyframes qibla-run {
   from { transform: rotate(0deg); }

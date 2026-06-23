@@ -2210,36 +2210,27 @@ function drawQibla(heading){
       ctx.strokeStyle='rgba(180,140,50,0.4)';ctx.lineWidth=1;ctx.stroke();
     }
 
-    // Kaaba — canvas drawn (reliable cross-platform, no emoji rendering issues)
-    var ks=R*0.09; // kaaba size
+    // Kaaba — canvas drawn cube (no triangle)
+    var ks=R*0.09;
     ctx.save();
     ctx.translate(kx,ky);
-    // Main cube body
-    ctx.fillStyle='rgba(20,20,25,0.95)';
-    ctx.fillRect(-ks*0.6,-ks*0.7,ks*1.2,ks*1.2);
-    // Gold border
-    ctx.strokeStyle=aligned?'rgba(0,220,80,0.9)':'rgba(180,140,50,0.85)';
-    ctx.lineWidth=aligned?2.5:1.5;
-    ctx.strokeRect(-ks*0.6,-ks*0.7,ks*1.2,ks*1.2);
-    // Kiswa (black cloth) dark drape
-    ctx.fillStyle='rgba(10,10,15,0.9)';
-    ctx.fillRect(-ks*0.6,-ks*0.7,ks*1.2,ks*0.85);
-    // Gold band (hizam)
+    // Body
+    ctx.fillStyle='rgba(8,8,12,0.95)';
+    ctx.fillRect(-ks*0.6,-ks*0.75,ks*1.2,ks*1.35);
+    // Gold band
     ctx.fillStyle='rgba(200,160,50,0.85)';
-    ctx.fillRect(-ks*0.6,-ks*0.70+ks*0.55,ks*1.2,ks*0.18);
-    // Door outline
-    ctx.fillStyle='rgba(180,140,40,0.7)';
-    ctx.fillRect(-ks*0.14,-ks*0.70+ks*0.28,ks*0.28,ks*0.27);
-    // 3D top face (isometric)
+    ctx.fillRect(-ks*0.6,-ks*0.75+ks*0.72,ks*1.2,ks*0.20);
+    // Door
+    ctx.fillStyle='rgba(160,120,35,0.8)';
+    ctx.fillRect(-ks*0.18,-ks*0.75+ks*0.25,ks*0.36,ks*0.36);
+    // Door arch
     ctx.beginPath();
-    ctx.moveTo(-ks*0.6,-ks*0.70);
-    ctx.lineTo(0,-ks*0.70-ks*0.25);
-    ctx.lineTo(ks*0.6,-ks*0.70);
-    ctx.lineTo(0,-ks*0.70-ks*0.0);
-    ctx.closePath();
-    ctx.fillStyle='rgba(35,30,20,0.85)';ctx.fill();
-    ctx.strokeStyle=aligned?'rgba(0,220,80,0.7)':'rgba(160,120,40,0.6)';
-    ctx.lineWidth=0.8;ctx.stroke();
+    ctx.arc(0,-ks*0.75+ks*0.25,ks*0.18,Math.PI,0);
+    ctx.fillStyle='rgba(160,120,35,0.8)';ctx.fill();
+    // Border
+    ctx.strokeStyle=aligned?'rgba(0,220,80,0.9)':'rgba(180,140,50,0.8)';
+    ctx.lineWidth=aligned?2.5:1.5;
+    ctx.strokeRect(-ks*0.6,-ks*0.75,ks*1.2,ks*1.35);
     ctx.restore();
   }
 
@@ -2332,30 +2323,47 @@ function drawKaabaIcon(canvasId){
   var ctx=cv.getContext('2d');
   var w=cv.width,h=cv.height;
   ctx.clearRect(0,0,w,h);
-  // Body
-  ctx.fillStyle='rgba(15,15,20,0.95)';
-  ctx.fillRect(w*0.1,h*0.18,w*0.8,h*0.72);
-  // Border
-  ctx.strokeStyle='rgba(0,212,255,0.7)';
-  ctx.lineWidth=2;
-  ctx.strokeRect(w*0.1,h*0.18,w*0.8,h*0.72);
-  // Kiswa
-  ctx.fillStyle='rgba(8,8,12,0.92)';
-  ctx.fillRect(w*0.1,h*0.18,w*0.8,h*0.52);
+
+  // Front face — main square body
+  var fx=w*0.08, fy=h*0.22, fw=w*0.72, fh=h*0.68;
+  ctx.fillStyle='rgba(8,8,12,0.95)';
+  ctx.fillRect(fx,fy,fw,fh);
+
   // Gold band
-  ctx.fillStyle='rgba(200,160,50,0.85)';
-  ctx.fillRect(w*0.1,h*0.50,w*0.8,h*0.12);
+  ctx.fillStyle='rgba(200,160,50,0.9)';
+  ctx.fillRect(fx,fy+fh*0.52,fw,fh*0.14);
+
   // Door
-  ctx.fillStyle='rgba(180,140,40,0.7)';
-  ctx.fillRect(w*0.38,h*0.32,w*0.24,h*0.18);
-  // Top face
+  ctx.fillStyle='rgba(160,120,35,0.85)';
+  ctx.fillRect(fx+fw*0.32,fy+fh*0.22,fw*0.36,fh*0.30);
   ctx.beginPath();
-  ctx.moveTo(w*0.1,h*0.18);
-  ctx.lineTo(w*0.5,h*0.02);
-  ctx.lineTo(w*0.9,h*0.18);
-  ctx.lineTo(w*0.5,h*0.18);
+  ctx.arc(fx+fw*0.50,fy+fh*0.22,fw*0.18,Math.PI,0);
+  ctx.fillStyle='rgba(160,120,35,0.85)';ctx.fill();
+
+  // Front border
+  ctx.strokeStyle='rgba(0,212,255,0.75)';
+  ctx.lineWidth=2;
+  ctx.strokeRect(fx,fy,fw,fh);
+
+  // Right side face — 3D effect
+  var rx=fx+fw, ry=fy, rw=w*0.18, rh=fh;
+  ctx.beginPath();
+  ctx.moveTo(rx,ry);
+  ctx.lineTo(rx+rw,ry-h*0.06);
+  ctx.lineTo(rx+rw,ry-h*0.06+rh);
+  ctx.lineTo(rx,ry+rh);
   ctx.closePath();
-  ctx.fillStyle='rgba(30,25,15,0.9)';ctx.fill();
+  ctx.fillStyle='rgba(20,15,8,0.85)';ctx.fill();
+  ctx.strokeStyle='rgba(0,212,255,0.4)';ctx.lineWidth=1;ctx.stroke();
+
+  // Top face — flat parallelogram
+  ctx.beginPath();
+  ctx.moveTo(fx,fy);                          // front-left
+  ctx.lineTo(fx+rw,fy-h*0.06);               // back-left
+  ctx.lineTo(fx+fw+rw,fy-h*0.06);            // back-right
+  ctx.lineTo(fx+fw,fy);                       // front-right
+  ctx.closePath();
+  ctx.fillStyle='rgba(35,28,12,0.9)';ctx.fill();
   ctx.strokeStyle='rgba(0,212,255,0.4)';ctx.lineWidth=1;ctx.stroke();
 }
 

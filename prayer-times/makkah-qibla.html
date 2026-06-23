@@ -426,6 +426,9 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+@media(max-width:1024px){
+  #qibla-toggle{ top:16%; right:-24px; width:44px; height:44px; }
+}
 
 
 /* Qibla toggle — div based with curved text canvas */
@@ -493,6 +496,9 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+@media(max-width:1024px){
+  #qibla-toggle{ top:16%; right:-24px; width:44px; height:44px; }
+}
 
 </style>
 </head>
@@ -545,8 +551,8 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   </div>
 
   <!-- CENTRE: Clock + Qibla -->
-  <div class="centre-panel" style="position:relative;overflow:hidden;">
-    <div id="qibla-toggle" onclick="flipClock()" style="position:absolute;top:8px;right:8px;z-index:200;width:52px;height:52px;border-radius:50%;cursor:pointer;">
+  <div class="centre-panel" style="position:relative;overflow:visible;">
+    <div id="qibla-toggle" onclick="flipClock()" style="position:absolute;top:18%;right:-26px;z-index:200;width:52px;height:52px;border-radius:50%;cursor:pointer;">
       <span id="flip-icon" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-45%);font-size:20px;line-height:1;z-index:1;">🧭</span>
       <canvas id="toggle-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></canvas>
     </div>

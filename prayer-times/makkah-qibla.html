@@ -2383,6 +2383,8 @@ function dismissDesktopOverlay(){
   // Flip back to prayer times
   flipClock();
 }
+
+function enableCompass(){
   var btn=document.getElementById('compass-btn');
   function onO(e){
     _dH=e.webkitCompassHeading!==undefined?e.webkitCompassHeading:(360-e.alpha+360)%360;

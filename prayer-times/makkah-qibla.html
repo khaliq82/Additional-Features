@@ -339,71 +339,77 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .qibla-kaaba-wrap .kf-front::after{content:"";position:absolute;width:11px;height:8px;left:3px;bottom:8px;background:radial-gradient(ellipse at 40% 40%,#3a2a1a,#1a0f08,#000);border:1px solid rgba(196,162,74,0.7);border-radius:50% 50% 50% 50%/40% 40% 60% 60%;}
 .qibla-kaaba-wrap .kaaba-ground{position:absolute;bottom:4px;left:0;right:0;width:80px;height:14px;transform:rotateX(90deg) translateZ(-2px);background:radial-gradient(ellipse at center,rgba(196,162,74,0.15) 0%,transparent 70%);border-radius:50%;}
 
-/* ── Qibla toggle switch — external, fixed at 3 o'clock ── */
+  50%       { opacity: 0.8; transform: scale(1.08); }
+}
+
+
+/* ── Qibla toggle switch — 3 o'clock, outside clock ring ── */
 #qibla-toggle {
   position: absolute;
-  /* 3 o'clock: right edge of clock, vertically centred */
-  right: -22px;
+  /* 3 o'clock = right side, vertically centred */
+  right: -18px;
   top: 50%;
   transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   cursor: pointer;
   z-index: 200;
-  border: none;
+  border: 1px solid rgba(255,255,255,0.3);
   outline: none;
   padding: 0;
-  background: radial-gradient(circle at 35% 35%,
-    rgba(225,230,240,0.96) 0%,
-    rgba(160,165,178,0.92) 40%,
-    rgba(55,60,72,0.96) 100%
+  /* Dark metallic — black centre */
+  background: radial-gradient(circle at 38% 32%,
+    rgba(70,72,78,0.95) 0%,
+    rgba(30,32,38,0.98) 50%,
+    rgba(10,12,16,1.0) 100%
   );
   box-shadow:
-    0 2px 8px rgba(0,0,0,0.6),
-    inset 0 1px 2px rgba(255,255,255,0.3),
-    inset 0 -1px 2px rgba(0,0,0,0.4);
+    0 2px 10px rgba(0,0,0,0.8),
+    inset 0 1px 2px rgba(255,255,255,0.15),
+    inset 0 -1px 2px rgba(0,0,0,0.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.15rem;
-  /* Subtle ring border */
-  outline: 1.5px solid rgba(255,255,255,0.35);
-  outline-offset: 2px;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  font-size: 1rem;
+  transition: transform 0.15s ease;
 }
 #qibla-toggle:active {
-  transform: translateY(-50%) scale(0.92);
+  transform: translateY(-50%) scale(0.90);
 }
 
-/* Sweeping highlight — the "game item" effect */
+/* Sweeping spotlight — single bright arc rotating around button */
 #qibla-toggle::before {
   content: '';
   position: absolute;
-  inset: -6px;
+  inset: -5px;
   border-radius: 50%;
-  border: 1.5px solid transparent;
-  background: transparent;
-  /* Conic gradient sweep — white light rotating around the button */
-  border-image: conic-gradient(
-    rgba(255,255,255,0) 0deg,
-    rgba(255,255,255,0.0) 200deg,
-    rgba(255,255,255,0.85) 260deg,
-    rgba(255,255,255,0.0) 310deg,
-    rgba(255,255,255,0) 360deg
-  ) 1;
-  animation: qibla-sweep 2.4s linear infinite;
-  border-radius: 50%;
+  /* Only a short arc glows — the rest is transparent */
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 200deg,
+    rgba(255,255,255,0.0) 220deg,
+    rgba(255,255,255,0.9) 255deg,
+    rgba(255,255,255,0.0) 290deg,
+    transparent 310deg,
+    transparent 360deg
+  );
+  animation: qibla-sweep 2s linear infinite;
+  /* Mask to only show the thin ring area */
+  -webkit-mask: radial-gradient(circle, transparent 70%, black 72%, black 100%);
+  mask: radial-gradient(circle, transparent 70%, black 72%, black 100%);
 }
 
-/* Outer ambient glow pulse */
+/* Outer breathing glow ring */
 #qibla-toggle::after {
   content: '';
   position: absolute;
-  inset: -10px;
+  inset: -8px;
   border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.12);
-  animation: qibla-pulse 2.4s ease-in-out infinite;
+  border: 1px solid rgba(255,255,255,0.0);
+  box-shadow: 0 0 8px 2px rgba(255,255,255,0.08);
+  animation: qibla-pulse 2s ease-in-out infinite;
 }
 
 @keyframes qibla-sweep {
@@ -411,8 +417,8 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   to   { transform: rotate(360deg); }
 }
 @keyframes qibla-pulse {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50%       { opacity: 0.8; transform: scale(1.08); }
+  0%, 100% { box-shadow: 0 0 6px 2px rgba(255,255,255,0.06); }
+  50%       { box-shadow: 0 0 14px 4px rgba(255,255,255,0.18); }
 }
 
 </style>
@@ -466,7 +472,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   </div>
 
   <!-- CENTRE: Clock + Qibla -->
-  <div class="centre-panel" style="position:relative;overflow:visible;">
+  <div class="centre-panel" style="position:relative;overflow:visible;isolation:isolate;">
     <button id="qibla-toggle" onclick="flipClock()" title="Toggle Qibla compass"><span id="flip-icon">🧭</span></button>
 
 <!-- flip button moved to canvas ring -->

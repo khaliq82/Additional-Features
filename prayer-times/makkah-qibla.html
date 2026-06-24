@@ -2352,7 +2352,7 @@ function drawQibla(heading){
   // ── Compass rose — rotates with device ───────────────────────────────────
   ctx.save();
   ctx.translate(cx,cy);
-  ctx.rotate(-h*Math.PI/180);
+  ctx.rotate(-h*Math.PI/180); // -h = rose rotates opposite to device turn
 
   // Outer ring
   ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);
@@ -2618,7 +2618,13 @@ function dismissDesktopOverlay(){
 function enableCompass(){
   var btn=document.getElementById('compass-btn');
   function onO(e){
-    _dH=e.webkitCompassHeading!==undefined?e.webkitCompassHeading:(360-e.alpha+360)%360;
+    if(e.webkitCompassHeading!==undefined&&e.webkitCompassHeading!==null){
+      _dH=e.webkitCompassHeading; // iOS true North heading, 0=North clockwise
+    } else if(e.absolute&&e.alpha!==null){
+      _dH=(360-e.alpha+360)%360; // Android absolute
+    } else if(e.alpha!==null){
+      _dH=(360-e.alpha+360)%360;
+    }
     if(btn)btn.style.display='none';
   }
   if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
@@ -2659,7 +2665,13 @@ function startQibla(){
 
   // Step 2: Start device orientation OR show desktop overlay
   function onO(e){
-    _dH=e.webkitCompassHeading!==undefined?e.webkitCompassHeading:(360-e.alpha+360)%360;
+    if(e.webkitCompassHeading!==undefined&&e.webkitCompassHeading!==null){
+      _dH=e.webkitCompassHeading; // iOS: true magnetic North heading
+    } else if(e.absolute&&e.alpha!==null){
+      _dH=(360-e.alpha+360)%360; // Android absolute
+    } else if(e.alpha!==null){
+      _dH=(360-e.alpha+360)%360;
+    }
     if(btn)btn.style.display='none';
   }
   if(!isMobile()){

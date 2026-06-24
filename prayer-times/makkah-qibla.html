@@ -500,6 +500,20 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   #qibla-toggle{ top:18px; right:10px; width:44px; height:44px; }
 }
 
+
+/* Explore CTA cards */
+.explore-cta-row{display:flex;gap:10px;width:100%;}
+.explore-cta-card{flex:1;display:flex;flex-direction:column;gap:8px;padding:16px 14px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.03);cursor:pointer;text-decoration:none;transition:border-color 0.25s,background 0.25s,transform 0.2s;position:relative;overflow:hidden;}
+.explore-cta-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(0,212,255,0.0),transparent);transition:background 0.25s;}
+.explore-cta-card:hover{border-color:rgba(0,212,255,0.30);background:rgba(0,212,255,0.04);transform:translateY(-2px);}
+.explore-cta-card:hover::before{background:linear-gradient(90deg,transparent,rgba(0,212,255,0.6),transparent);}
+.explore-cta-icon{font-size:1.3rem;line-height:1;}
+.explore-cta-title{font-size:0.72rem;font-weight:600;letter-spacing:0.10em;text-transform:uppercase;color:rgba(0,212,255,0.85);}
+.explore-cta-desc{font-size:0.72rem;line-height:1.55;color:rgba(255,255,255,0.38);flex:1;}
+.explore-cta-arrow{font-size:0.68rem;color:rgba(0,212,255,0.45);letter-spacing:0.05em;margin-top:4px;transition:color 0.2s,letter-spacing 0.2s;}
+.explore-cta-card:hover .explore-cta-arrow{color:rgba(0,212,255,0.9);letter-spacing:0.10em;}
+@media(max-width:600px){.explore-cta-row{flex-direction:column;}}
+
 </style>
 </head>
 <body>
@@ -669,43 +683,30 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 
 <!-- SEO content below fold -->
 <div class="seo-section">
-    <section class="content-section first-section">
-      <h2>About the Prayer Method</h2>
-      <p>Prayer times in Makkah follow the <strong>Umm al-Qura method</strong>, the official Islamic prayer calculation method of Saudi Arabia, published by Umm al-Qura University in Makkah itself. It is the method used by Al Masjid Al Haram and every mosque across the Kingdom, and the same method applied to all Saudi mosques on the <a href="/">AdhanLive globe</a>.</p>
-      <p>Each of the five prayers is anchored to a precise position of the sun, observed from the coordinates of the holy city:</p>
-      <div class="rules-grid">
-        <div class="rule-item">
-          <div class="r-name" style="color:var(--fajr)">FAJR</div>
-          <div class="r-text">Begins when the sun reaches 18.5 degrees below the eastern horizon, the first light of true dawn. The Fajr window ends at sunrise.</div>
-        </div>
-        <div class="rule-item">
-          <div class="r-name" style="color:var(--dhuhr)">DHUHR</div>
-          <div class="r-text">Begins at Zawaal, the moment the sun passes its highest point in the sky and begins its descent westward.</div>
-        </div>
-        <div class="rule-item">
-          <div class="r-name" style="color:var(--asr)">ASR</div>
-          <div class="r-text">Begins when the shadow of an object equals its own length, plus the length of its shadow at noon.</div>
-        </div>
-        <div class="rule-item">
-          <div class="r-name" style="color:var(--maghrib)">MAGHRIB</div>
-          <div class="r-text">Begins the moment the sun fully sets below the western horizon.</div>
-        </div>
-        <div class="rule-item">
-          <div class="r-name" style="color:var(--isha)">ISHA</div>
-          <div class="r-text">Begins 90 minutes after Maghrib, the fixed interval defined by the Umm al-Qura method.</div>
-        </div>
-      </div>
-    </section>
     <section class="content-section">
-      <div class="live-cta-card">
-        <div class="live-cta-inner">
-          <h2 class="live-cta-title">The Adhan Never Stops</h2>
-          <p class="live-cta-body">Somewhere on Earth, the call to prayer is always ringing. As the sun moves westward, the Adhan follows it, passing through every longitude. The Adhan is never silent, not even for a second. Watch it happen right now across 280,621 mosques and 150+ countries.</p>
-          <a href="/livemap" class="live-cta-btn">
-            <span class="live-cta-btn-dot"></span>
-            Watch the Live Globe
-          </a>
-        </div>
+      <div class="explore-cta-row">
+
+        <a class="explore-cta-card" href="/livemap">
+          <div class="explore-cta-icon">🌍</div>
+          <div class="explore-cta-title">Live Map</div>
+          <div class="explore-cta-desc">Right now, millions of Muslims are standing for prayer somewhere on Earth. As the planet turns, the call sweeps westward from mosque to mosque, city to city, continent to continent, without a single second of silence. Watch it happen.</div>
+          <div class="explore-cta-arrow">Watch it live →</div>
+        </a>
+
+        <a class="explore-cta-card" href="/adhanclock">
+          <div class="explore-cta-icon">🕐</div>
+          <div class="explore-cta-title">Adhan Clock</div>
+          <div class="explore-cta-desc">Imagine placing every mosque on Earth onto a single clock face. The result is not just a clock. It is a polar map of the Muslim world, a data portrait of 280,621 mosques arranged by the exact moment their Adhan is called each day.</div>
+          <div class="explore-cta-arrow">See the clock →</div>
+        </a>
+
+        <a class="explore-cta-card" href="/arcs">
+          <div class="explore-cta-icon">🌐</div>
+          <div class="explore-cta-title">Arc Explorer</div>
+          <div class="explore-cta-desc">Each of the five daily prayers traces a unique arc across the Earth as it travels from east to west, its shape determined entirely by the position of the sun at that precise moment. No two prayers draw the same line, and as the seasons shift, every arc shifts with them. Watching this change over a year is unlike anything else.</div>
+          <div class="explore-cta-arrow">Explore the arcs →</div>
+        </a>
+
       </div>
     </section>
     <div class="cities-section">

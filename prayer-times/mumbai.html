@@ -23,9 +23,9 @@
 {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "name": "Prayer Times Makkah Today | AdhanLive",
-  "description": "Accurate prayer times for Makkah (Mecca) today. Fajr, Dhuhr, Asr, Maghrib and Isha times calculated using the Umm al-Qura method. Live countdown to next prayer.",
-  "url": "https://www.adhanlive.com/prayer-times/makkah",
+  "name": "Prayer Times Mumbai Today | AdhanLive",
+  "description": "Accurate prayer times for Mumbai today. Fajr, Dhuhr, Asr, Maghrib and Isha times calculated using the University of Karachi method. Live countdown to next prayer.",
+  "url": "https://www.adhanlive.com/prayer-times/mumbai",
   "isPartOf": { "@type": "WebSite", "name": "AdhanLive", "url": "https://www.adhanlive.com" }
 }
 </script>
@@ -771,7 +771,7 @@ h1.hero-city { margin: 0; padding: 0; }
 <script>
 // ── CITY CONFIG ──────────────────────────────────────────────
 const CITY = {
-  name:'Mumbai', cc:'IN', lat:19.076, lon:72.8777, tz:5.5, tzName:'Asia/Kolkata'
+  name:'Mumbai', country:'India', slug:'mumbai', cc:'IN', lat:19.076, lon:72.8777, tz:5.5, tzName:'Asia/Kolkata'
 };
 // Returns the city's CURRENT UTC offset in hours, accounting for DST.
 // Uses the IANA tzName when present (always correct for today's date),
@@ -1505,11 +1505,11 @@ function drawArc(){
     ctx.fillStyle='rgba(235,230,218,0.88)';
     ctx.shadowColor='rgba(130,190,255,0.25)';
     ctx.shadowBlur=3;
-    ctx.fillText('Makkah', cx, cy - R*(_mobR?0.68:0.72));
+    ctx.fillText(CITY.name, cx, cy - R*(_mobR?0.68:0.72));
     ctx.shadowBlur=0;
     ctx.font=`400 ${Math.round(R*0.055)}px 'Geist',sans-serif`;
     ctx.fillStyle='rgba(180,175,165,0.65)';
-    ctx.fillText('Saudi Arabia', cx, cy - R*(_mobR?0.56:0.60));
+    ctx.fillText(CITY.country||'', cx, cy - R*(_mobR?0.56:0.60));
     ctx.shadowBlur=0;
     ctx.restore();
   }
@@ -2205,8 +2205,8 @@ function tickNavClock(){
 tickNavClock();
 setInterval(tickNavClock,1000);
 function shareMapMoment(platform){
-  const url='https://www.adhanlive.com/prayer-times/makkah';
-  const text='Live prayer times for Makkah, the holiest city in Islam. Watch the Adhan sweep the Earth on AdhanLive.';
+  const url='https://www.adhanlive.com/prayer-times/'+CITY.slug;
+  const text='Live prayer times for '+CITY.name+'. Watch the Adhan sweep the Earth on AdhanLive.';
   if(platform==='whatsapp'){window.open('https://wa.me/?text='+encodeURIComponent(text+' '+url),'_blank');}
   else if(platform==='twitter'){window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),'_blank');}
   else if(platform==='copy'){

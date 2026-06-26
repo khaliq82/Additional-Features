@@ -375,6 +375,39 @@ setInterval(tickNavClock,1000);
 // ── Qibla core ───────────────────────────────────────────────────────────────
 var _dH=null, _qB=null, _dist=null, _rAF=null;
 var _userLat=null, _userLon=null;
+var _wasAligned=false;
+var _audioCtx=null;
+
+function _unlockAudio(){
+  if(_audioCtx) return;
+  _audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  // iOS requires a silent buffer played on first gesture to fully unlock
+  var buf=_audioCtx.createBuffer(1,1,22050);
+  var src=_audioCtx.createBufferSource();
+  src.buffer=buf;src.connect(_audioCtx.destination);src.start(0);
+}
+
+function playAlignedSound(){
+  try{
+    if(!_audioCtx) _audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    if(_audioCtx.state==='suspended') _audioCtx.resume();
+    var t=_audioCtx.currentTime;
+    // Two soft ascending chime tones
+    [523.25, 783.99].forEach(function(freq, i){
+      var osc=_audioCtx.createOscillator();
+      var gain=_audioCtx.createGain();
+      osc.connect(gain);gain.connect(_audioCtx.destination);
+      osc.type='sine';osc.frequency.value=freq;
+      var start=t+i*0.18;
+      gain.gain.setValueAtTime(0,start);
+      gain.gain.linearRampToValueAtTime(0.18,start+0.04);
+      gain.gain.exponentialRampToValueAtTime(0.001,start+0.55);
+      osc.start(start);osc.stop(start+0.6);
+    });
+    // Vibration on Android
+    if(navigator.vibrate) navigator.vibrate([80,60,120]);
+  }catch(e){}
+}
 var KAABA_LAT=21.4225, KAABA_LON=39.8262;
 
 function _brg(lat1,lon1,lat2,lon2){
@@ -521,6 +554,10 @@ function drawQibla(heading){
   var qa=(_qB-90)*Math.PI/180;
   var kx=Math.cos(qa)*R*0.70,ky=Math.sin(qa)*R*0.70;
 
+  // Trigger sound + vibration on alignment
+  if(aligned && !_wasAligned) playAlignedSound();
+  _wasAligned=aligned;
+
   if(aligned){
     ctx.beginPath();ctx.arc(kx,ky,R*0.1,0,Math.PI*2);
     ctx.strokeStyle='rgba(0,220,80,0.95)';ctx.lineWidth=3;
@@ -581,6 +618,7 @@ function drawQibla(heading){
 }
 
 function enableCompass(){
+  _unlockAudio();
   document.getElementById('enable-compass-btn').style.display='none';
   function onO(e){
     if(e.webkitCompassHeading!==undefined&&e.webkitCompassHeading!==null){_dH=e.webkitCompassHeading;}
@@ -636,6 +674,7 @@ if(navigator.geolocation){
 }
 
 startCompass();
+document.getElementById('qiblaCanvas').addEventListener('click', _unlockAudio, {once:true});
 requestAnimationFrame(drawLoop);
 </script>
 </body>

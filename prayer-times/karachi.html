@@ -324,6 +324,22 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 .kf-front::after{content:"";position:absolute;width:4px;height:3px;left:0;bottom:3px;background:radial-gradient(ellipse at 40% 40%,#3a2a1a,#1a0f08,#000);border:0.5px solid rgba(196,162,74,0.6);border-radius:50% 50% 50% 50%/40% 40% 60% 60%;box-shadow:0 0 2px rgba(196,162,74,0.3);}
 .kaaba-ground{position:absolute;bottom:2px;left:0;right:0;width:28px;height:6px;transform:rotateX(90deg) translateZ(-1px);background:radial-gradient(ellipse at center,rgba(196,162,74,0.15) 0%,transparent 70%);border-radius:50%;}
 
+/* Desktop overlay Kaaba sizing */
+.qibla-kaaba-wrap{width:80px;height:80px;perspective:180px;flex-shrink:0;position:relative;margin-bottom:8px;}
+.qibla-kaaba-wrap .kaaba-scene{width:100%;height:100%;position:relative;transform-style:preserve-3d;transform:rotateX(-20deg);}
+.qibla-kaaba-wrap .kaaba{width:44px;height:44px;position:absolute;top:10px;left:18px;transform-style:preserve-3d;animation:tawaf 10s linear infinite;}
+.qibla-kaaba-wrap .kf{width:44px;height:44px;position:absolute;}
+.qibla-kaaba-wrap .kf::before,.qibla-kaaba-wrap .kf::after{}
+.qibla-kaaba-wrap .kf-front{background:#0a0805;border:1px solid rgba(196,162,74,0.5);transform:translateZ(22px);}
+.qibla-kaaba-wrap .kf-back{background:#080603;border:1px solid rgba(196,162,74,0.3);transform:rotateY(180deg) translateZ(22px);}
+.qibla-kaaba-wrap .kf-left{background:#090704;border:1px solid rgba(196,162,74,0.3);transform:rotateY(-90deg) translateZ(22px);}
+.qibla-kaaba-wrap .kf-right{background:#090704;border:1px solid rgba(196,162,74,0.3);transform:rotateY(90deg) translateZ(22px);}
+.qibla-kaaba-wrap .kf-top{background:#111008;border:1px solid rgba(196,162,74,0.4);transform:rotateX(90deg) translateZ(22px);}
+.qibla-kaaba-wrap .kf-bottom{background:#050403;transform:rotateX(-90deg) translateZ(22px);}
+.qibla-kaaba-wrap .kf-front::before,.qibla-kaaba-wrap .kf-back::before,.qibla-kaaba-wrap .kf-left::before,.qibla-kaaba-wrap .kf-right::before{content:"";position:absolute;left:0;right:0;top:12px;height:5px;background:linear-gradient(90deg,transparent,rgba(196,162,74,0.9),transparent);}
+.qibla-kaaba-wrap .kf-front::after{content:"";position:absolute;width:11px;height:8px;left:3px;bottom:8px;background:radial-gradient(ellipse at 40% 40%,#3a2a1a,#1a0f08,#000);border:1px solid rgba(196,162,74,0.7);border-radius:50% 50% 50% 50%/40% 40% 60% 60%;}
+.qibla-kaaba-wrap .kaaba-ground{position:absolute;bottom:4px;left:0;right:0;width:80px;height:14px;transform:rotateX(90deg) translateZ(-2px);background:radial-gradient(ellipse at center,rgba(196,162,74,0.15) 0%,transparent 70%);border-radius:50%;}
+
   50%       { opacity: 0.8; transform: scale(1.08); }
 }
 
@@ -332,20 +348,158 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 }
 
 
+#qibla-toggle:active { transform: scale(0.90); }
+#qibla-toggle:hover  { box-shadow: 0 2px 12px rgba(0,212,255,0.25), inset 0 1px 1px rgba(255,255,255,0.15); }
+
+
+  50%       { box-shadow: 0 0 10px 3px rgba(255,255,255,0.30); }
+}
+
+
+  to   { transform: rotate(360deg); }
+}
 
 
   to   { transform: rotate(360deg); }
 }
 
 
-  to   { transform: rotate(360deg); }
+/* Qibla toggle — gradient running highlight on border */
+#qibla-toggle {
+  position: relative;
+  overflow: visible;
 }
+#qibla-toggle::before {
+  content: '';
+  position: absolute;
+  inset: -2.5px;
+  border-radius: 50%;
+  padding: 2.5px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 180deg,
+    rgba(100,220,255,0.0)  200deg,
+    rgba(100,220,255,0.3)  230deg,
+    rgba(140,200,255,0.7)  260deg,
+    rgba(180,230,255,0.95) 285deg,
+    rgba(255,255,255,1.0)  300deg,
+    rgba(200,240,255,1.0)  310deg,
+    rgba(100,180,255,0.85) 325deg,
+    rgba(80,140,255,0.5)   345deg,
+    rgba(60,100,220,0.15)  358deg,
+    transparent            360deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: qibla-run 2.4s linear infinite;
+  filter: blur(0.4px);
+}
+#qibla-toggle::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  padding: 4px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 240deg,
+    rgba(100,200,255,0.0)  265deg,
+    rgba(100,200,255,0.18) 290deg,
+    rgba(180,230,255,0.35) 305deg,
+    rgba(100,200,255,0.18) 320deg,
+    transparent            340deg,
+    transparent            360deg
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: qibla-run 2.4s linear infinite;
+  filter: blur(1.5px);
+}
+@keyframes qibla-run {
+  from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
 @media(max-width:1024px){
+  #qibla-toggle{ top:18px; right:10px; width:44px; height:44px; }
+}
+
+
+/* Qibla toggle — div based with curved text canvas */
+#qibla-toggle {
+  background: rgba(10,12,18,0.95);
+  border: 1.5px solid rgba(255,255,255,0.40);
+  transition: transform 0.12s ease;
+}
+#qibla-toggle:hover { transform: scale(1.08); }
+#qibla-toggle:active { transform: scale(0.92); }
+/* Running gradient highlight — stays on border */
+#qibla-toggle::before {
+  content: '';
+  position: absolute;
+  inset: -2.5px;
+  border-radius: 50%;
+  padding: 2.5px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 180deg,
+    rgba(100,220,255,0.0)  200deg,
+    rgba(100,220,255,0.3)  230deg,
+    rgba(140,200,255,0.7)  260deg,
+    rgba(180,230,255,0.95) 285deg,
+    rgba(255,255,255,1.0)  300deg,
+    rgba(200,240,255,1.0)  310deg,
+    rgba(100,180,255,0.85) 325deg,
+    rgba(80,140,255,0.5)   345deg,
+    rgba(60,100,220,0.15)  358deg,
+    transparent            360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: qibla-run 2.4s linear infinite;
+  filter: blur(0.4px);
+  pointer-events: none;
+}
+#qibla-toggle::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  padding: 4px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 240deg,
+    rgba(100,200,255,0.0)  265deg,
+    rgba(100,200,255,0.18) 290deg,
+    rgba(180,230,255,0.35) 305deg,
+    rgba(100,200,255,0.18) 320deg,
+    transparent            340deg,
+    transparent            360deg
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: qibla-run 2.4s linear infinite;
+  filter: blur(1.5px);
+  pointer-events: none;
+}
+@keyframes qibla-run {
+  from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
 @media(max-width:1024px){
+  #qibla-toggle{ top:18px; right:10px; width:44px; height:44px; }
+}
 
 
 /* Explore CTA cards */
@@ -369,14 +523,6 @@ h1.hero-city { margin: 0; padding: 0; }
   color:rgba(255,255,255,0.45); display:block; letter-spacing:0.08em;
   margin-bottom:8px; }
 
-
-/* ── Qibla nav button ───────────────────────────────────────────────────── */
-#qibla-nav-btn{transition:transform 0.15s ease,border-color 0.2s ease;}
-#qibla-nav-btn:hover{transform:scale(1.08);border-color:rgba(0,212,255,0.5);}
-#qibla-nav-btn:active{transform:scale(0.92);}
-#qibla-nav-btn::before{content:'';position:absolute;inset:-2px;border-radius:50%;padding:2px;background:conic-gradient(from 0deg,transparent 0deg,rgba(0,212,255,0.0) 180deg,rgba(0,212,255,0.5) 260deg,rgba(255,255,255,0.9) 300deg,rgba(0,212,255,0.5) 340deg,transparent 360deg);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:qibla-run 2.4s linear infinite;pointer-events:none;}
-@keyframes qibla-run{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
-@media(max-width:1024px){#qibla-nav-btn{top:18px;right:10px;width:44px;height:44px;}}
 </style>
 </head>
 <body>
@@ -427,14 +573,15 @@ h1.hero-city { margin: 0; padding: 0; }
     <div class="prayer-stack" id="prayer-stack"></div>
   </div>
 
-  <!-- CENTRE: Clock -->
+  <!-- CENTRE: Clock + Qibla -->
   <div class="centre-panel" style="position:relative;overflow:hidden;">
-    <a href="/qibla" id="qibla-nav-btn" title="Find Qibla Direction" style="position:absolute;top:18px;right:12px;z-index:200;width:52px;height:52px;border-radius:50%;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-decoration:none;background:rgba(10,12,18,0.95);border:1.5px solid rgba(255,255,255,0.15);">
-      <span style="font-size:18px;line-height:1;">🧭</span>
-      <span style="font-size:7px;font-family:Geist,sans-serif;font-weight:600;letter-spacing:0.06em;color:rgba(0,212,255,0.8);text-transform:uppercase;">Qibla</span>
-    </a>
+    <div id="qibla-toggle" onclick="flipClock()" style="position:absolute;top:18px;right:12px;z-index:200;width:52px;height:52px;border-radius:50%;cursor:pointer;">
+      <span id="flip-icon" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-45%);font-size:20px;line-height:1;z-index:1;">🧭</span>
+      <canvas id="toggle-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;"></canvas>
+    </div>
 
     
+<!-- flip button moved to canvas ring -->
 
     <!-- Prayer clock — stays in normal flow, gives panel its height -->
     <div id="clock-face" style="transition:opacity 0.35s ease;opacity:1;width:min(100%,680px);aspect-ratio:1;position:relative;">
@@ -447,6 +594,36 @@ h1.hero-city { margin: 0; padding: 0; }
             <div class="kf kf-top"></div><div class="kf kf-bottom"></div>
           </div><div class="kaaba-ground"></div></div></div>
         </div>
+      </div>
+    </div>
+
+    <!-- Qibla compass — overlays clock-face exactly -->
+    <div id="qibla-face" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;transition:opacity 0.35s ease;opacity:0;pointer-events:none;background:var(--bg);">
+      <canvas id="qiblaCanvas" style="width:min(100%,680px);height:min(100%,680px);aspect-ratio:1;display:block;"></canvas>
+      <button id="compass-btn" onclick="enableCompass()" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:transparent;border:none;color:rgba(255,255,255,0.85);font-size:0.82rem;font-family:Geist,sans-serif;cursor:pointer;display:none;z-index:10;text-align:center;letter-spacing:0.04em;text-shadow:0 0 12px rgba(0,212,255,0.6);">
+        Tap to enable live compass
+      </button>
+      <!-- Desktop overlay -->
+      <div id="qibla-desktop-overlay" style="display:none;position:absolute;inset:0;background:rgba(8,10,16,0.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:50%;z-index:20;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
+        <div class="qibla-kaaba-wrap">
+          <div class="kaaba-scene">
+            <div class="kaaba">
+              <div class="kf kf-front"></div>
+              <div class="kf kf-back"></div>
+              <div class="kf kf-left"></div>
+              <div class="kf kf-right"></div>
+              <div class="kf kf-top"></div>
+              <div class="kf kf-bottom"></div>
+            </div>
+            <div class="kaaba-ground"></div>
+          </div>
+        </div>
+        <div style="text-align:center;padding:0 40px;">
+          <div style="font-family:'Playfair Display',serif;font-size:1.1rem;color:rgba(255,255,255,0.9);margin-bottom:8px;">Open on your phone</div>
+          <div style="font-family:Geist,sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.5;">The live Qibla compass uses your device's sensor. For accurate direction, open AdhanLive on your mobile.</div>
+          <div style="margin-top:16px;font-family:Geist,sans-serif;font-size:0.78rem;color:rgba(0,212,255,0.7);" id="desktop-bearing-text"></div>
+        </div>
+        <button onclick="dismissDesktopOverlay()" style="background:transparent;border:1px solid rgba(0,212,255,0.35);border-radius:8px;padding:9px 28px;color:#00d4ff;font-size:0.82rem;font-family:Geist,sans-serif;cursor:pointer;letter-spacing:0.05em;transition:background 0.2s;" onmouseover="this.style.background='rgba(0,212,255,0.1)'" onmouseout="this.style.background='transparent'">Got it</button>
       </div>
     </div>
 
@@ -2134,8 +2311,452 @@ function abbrevCountry(name){
     }
   });
 })();
-───────────
 
+
+// ── Qibla Compass ─────────────────────────────────────────────────────────
+var _qF=false,_dH=null,_qB=null,_qR=null;
+window._qiblaUserLat=null;
+window._qiblaUserLon=null;
+
+function _brg(lat1,lon1,lat2,lon2){
+  var r=Math.PI/180,dL=(lon2-lon1)*r;
+  lat1*=r;lat2*=r;
+  return((Math.atan2(Math.sin(dL)*Math.cos(lat2),Math.cos(lat1)*Math.sin(lat2)-Math.sin(lat1)*Math.cos(lat2)*Math.cos(dL))/r)+360)%360;
+}
+function _dkm(lat1,lon1,lat2,lon2){
+  var R=6371,r=Math.PI/180,a=Math.sin((lat2-lat1)*r/2)**2+Math.cos(lat1*r)*Math.cos(lat2*r)*Math.sin((lon2-lon1)*r/2)**2;
+  return Math.round(R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)));
+}
+function _ds(b){return b<23?'N':b<68?'NE':b<113?'E':b<158?'SE':b<203?'S':b<248?'SW':b<293?'W':b<338?'NW':'N';}
+
+function drawQibla(heading){
+  var cv=document.getElementById('qiblaCanvas');
+  if(!cv)return;
+  var wrap=document.getElementById('qibla-face');
+  var sz=Math.min(wrap.offsetWidth,wrap.offsetHeight,680);
+  if(sz<10)sz=Math.min(window.innerWidth,680);
+  var dpr=window.devicePixelRatio||1;
+  cv.width=Math.round(sz*dpr);cv.height=Math.round(sz*dpr);
+  cv.style.width=sz+'px';cv.style.height=sz+'px';
+  var ctx=cv.getContext('2d'),cx=sz/2,cy=sz/2,R=sz*0.44;
+  ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,sz,sz);
+
+  // If bearing not yet computed — show loading
+  if(_qB===null){
+    ctx.fillStyle='rgba(0,212,255,0.5)';
+    ctx.font='400 '+Math.round(sz*0.035)+'px Geist,sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('Locating your position...',sz/2,sz/2);
+    return;
+  }
+
+  var h=heading||0;
+
+  // ── Background ────────────────────────────────────────────────────────────
+  ctx.beginPath();ctx.arc(cx,cy,R*1.04,0,Math.PI*2);
+  var bg=ctx.createRadialGradient(cx,cy*0.7,0,cx,cy,R*1.04);
+  bg.addColorStop(0,'#141820');bg.addColorStop(1,'#07090d');
+  ctx.fillStyle=bg;ctx.fill();
+
+  // ── Compass rose — rotates with device ───────────────────────────────────
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.rotate(-h*Math.PI/180); // -h = rose rotates opposite to device turn
+
+  // Outer ring
+  ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);
+  ctx.strokeStyle='rgba(180,140,50,0.55)';ctx.lineWidth=1.5;ctx.stroke();
+  ctx.beginPath();ctx.arc(0,0,R+4,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,210,90,0.10)';ctx.lineWidth=0.6;ctx.stroke();
+
+  // Degree ticks
+  for(var d=0;d<360;d+=5){
+    if(d%90===0)continue;
+    var a=(d-90)*Math.PI/180,med=d%45===0,ten=d%10===0;
+    var len=med?14:ten?8:4;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(a)*(R-1),Math.sin(a)*(R-1));
+    ctx.lineTo(Math.cos(a)*(R-len),Math.sin(a)*(R-len));
+    ctx.strokeStyle=med?'rgba(255,255,255,0.28)':'rgba(255,255,255,0.08)';
+    ctx.lineWidth=med?0.8:0.4;ctx.stroke();
+  }
+
+  // N E S W
+  var DIRS=['N','E','S','W'];
+  for(var i=0;i<4;i++){
+    var a2=(i*90-90)*Math.PI/180;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(a2)*(R-1),Math.sin(a2)*(R-1));
+    ctx.lineTo(Math.cos(a2)*(R-20),Math.sin(a2)*(R-20));
+    ctx.strokeStyle=i===0?'rgba(220,60,60,0.9)':'rgba(255,255,255,0.5)';
+    ctx.lineWidth=1.4;ctx.stroke();
+    ctx.save();
+    ctx.translate(Math.cos(a2)*(R-33),Math.sin(a2)*(R-33));
+    ctx.font='700 '+Math.round(sz*0.042)+'px Geist,sans-serif';
+    ctx.fillStyle=i===0?'rgba(220,60,60,0.95)':'rgba(255,255,255,0.7)';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(DIRS[i],0,0);ctx.restore();
+  }
+
+  // Degree markers at 45° intervals
+  var DEG_MARKS=[45,135,225,315];
+  DEG_MARKS.forEach(function(deg){
+    var a=(deg-90)*Math.PI/180;
+    var tx=Math.cos(a)*(R-38), ty=Math.sin(a)*(R-38);
+    ctx.save();
+    ctx.translate(tx,ty);
+    ctx.font='500 '+Math.round(sz*0.028)+'px Geist,sans-serif';
+    ctx.fillStyle='rgba(255,255,255,0.22)';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(deg+'°',0,0);
+    ctx.restore();
+  });
+  // Guide rings
+  [0.3,0.55,0.75].forEach(function(f){
+    ctx.beginPath();ctx.arc(0,0,R*f,0,Math.PI*2);
+    ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=0.5;ctx.stroke();
+  });
+
+  // ── Kaaba emoji — fixed on rose at exact Qibla bearing ───────────────────
+  if(_qB!==null){
+    var qa=(_qB-90)*Math.PI/180; // Qibla angle on rose
+    var kx=Math.cos(qa)*R*0.72;
+    var ky=Math.sin(qa)*R*0.72;
+
+    // Check alignment — needle (pointing up = 0°) vs Qibla bearing
+    // Needle points up (North on screen). User faces Makkah when heading ≈ qibla bearing
+    var diff=Math.abs(((h-_qB)+540)%360-180);
+    var aligned=diff<8; // within 8 degrees = facing Makkah
+
+    // Green circle when aligned
+    if(aligned){
+      ctx.beginPath();ctx.arc(kx,ky,R*0.095,0,Math.PI*2);
+      ctx.strokeStyle='rgba(0,220,80,0.95)';ctx.lineWidth=3;
+      ctx.shadowColor='rgba(0,255,80,0.8)';ctx.shadowBlur=12;
+      ctx.stroke();ctx.shadowBlur=0;
+      // Pulsing fill
+      ctx.beginPath();ctx.arc(kx,ky,R*0.085,0,Math.PI*2);
+      ctx.fillStyle='rgba(0,220,80,0.15)';ctx.fill();
+    } else {
+      // Subtle gold ring around Kaaba when not aligned
+      ctx.beginPath();ctx.arc(kx,ky,R*0.075,0,Math.PI*2);
+      ctx.strokeStyle='rgba(180,140,50,0.4)';ctx.lineWidth=1;ctx.stroke();
+    }
+
+    // Kaaba — canvas drawn cube (no triangle)
+    var ks=R*0.09;
+    ctx.save();
+    ctx.translate(kx,ky);
+    // Body
+    ctx.fillStyle='rgba(8,8,12,0.95)';
+    ctx.fillRect(-ks*0.6,-ks*0.75,ks*1.2,ks*1.35);
+    // Gold band
+    ctx.fillStyle='rgba(200,160,50,0.85)';
+    ctx.fillRect(-ks*0.6,-ks*0.75+ks*0.72,ks*1.2,ks*0.20);
+    // Door
+    ctx.fillStyle='rgba(160,120,35,0.8)';
+    ctx.fillRect(-ks*0.18,-ks*0.75+ks*0.25,ks*0.36,ks*0.36);
+    // Door arch
+    ctx.beginPath();
+    ctx.arc(0,-ks*0.75+ks*0.25,ks*0.18,Math.PI,0);
+    ctx.fillStyle='rgba(160,120,35,0.8)';ctx.fill();
+    // Border
+    ctx.strokeStyle=aligned?'rgba(0,220,80,0.9)':'rgba(180,140,50,0.8)';
+    ctx.lineWidth=aligned?2.5:1.5;
+    ctx.strokeRect(-ks*0.6,-ks*0.75,ks*1.2,ks*1.35);
+    ctx.restore();
+  }
+
+  ctx.restore(); // end rose rotation
+
+  // ── Needle — fixed pointing UP (shows your facing direction) ─────────────
+  ctx.save();
+  ctx.translate(cx,cy);
+
+  // Needle tip (UP = your facing direction)
+  ctx.beginPath();
+  ctx.moveTo(0,-R*0.68);
+  ctx.bezierCurveTo(7,-R*0.32,8,-R*0.04,5,R*0.14);
+  ctx.lineTo(0,R*0.24);ctx.lineTo(-5,R*0.14);
+  ctx.bezierCurveTo(-8,-R*0.04,-7,-R*0.32,0,-R*0.68);
+  ctx.closePath();
+  var ng=ctx.createLinearGradient(0,-R*0.68,0,R*0.24);
+  ng.addColorStop(0,'rgba(0,240,255,1)');
+  ng.addColorStop(0.6,'rgba(0,170,220,0.9)');
+  ng.addColorStop(1,'rgba(0,80,160,0.7)');
+  ctx.fillStyle=ng;
+  ctx.shadowColor='rgba(0,212,255,0.7)';ctx.shadowBlur=16;
+  ctx.fill();ctx.shadowBlur=0;
+
+  // Needle highlight
+  ctx.beginPath();
+  ctx.moveTo(0,-R*0.68);ctx.lineTo(-3,-R*0.38);ctx.lineTo(-1,-R*0.04);ctx.lineTo(0,-R*0.68);
+  ctx.fillStyle='rgba(255,255,255,0.18)';ctx.fill();
+
+  // Needle tail
+  ctx.beginPath();
+  ctx.moveTo(0,R*0.24);ctx.lineTo(4,R*0.12);ctx.lineTo(0,-R*0.04);ctx.lineTo(-4,R*0.12);
+  ctx.closePath();ctx.fillStyle='rgba(50,70,90,0.8)';ctx.fill();
+  ctx.restore();
+
+  // ── Fixed text ────────────────────────────────────────────────────────────
+  if(_qB!==null){
+    var diff2=Math.abs(((h-_qB)+540)%360-180);
+    var aligned2=diff2<8;
+    var dist=_dkm(
+      window._qiblaUserLat||21.4225,
+      window._qiblaUserLon||39.8262,
+      21.4225,39.8262
+    );
+    var bear=Math.round(_qB);
+
+    // Bearing + direction
+    ctx.textAlign='center';
+    ctx.font='700 '+Math.round(sz*0.048)+'px Geist,sans-serif';
+    ctx.fillStyle=aligned2?'rgba(0,220,80,0.95)':'rgba(0,212,255,0.95)';
+    ctx.fillText(aligned2?'Facing Qibla':bear+'° '+_ds(bear),cx,cy+R*0.50);
+
+    // Distance
+    ctx.font='400 '+Math.round(sz*0.027)+'px Geist,sans-serif';
+    ctx.fillStyle='rgba(255,255,255,0.35)';
+    ctx.fillText(dist.toLocaleString()+' km to Makkah',cx,cy+R*0.61);
+
+    // Status
+    ctx.font='400 '+Math.round(sz*0.022)+'px Geist,sans-serif';
+    ctx.fillStyle=_dH!==null?
+      (aligned2?'rgba(0,220,80,0.6)':'rgba(0,212,255,0.4)'):
+      'rgba(255,200,80,0.4)';
+    ctx.fillText(
+      _dH!==null?
+        (aligned2?'✓ You are facing Makkah':'Rotate until needle meets the Kaaba'):
+        'Allow compass for live direction',
+      cx,cy+R*0.72
+    );
+  }
+
+  // ── Pivot jewel ───────────────────────────────────────────────────────────
+  ctx.beginPath();ctx.arc(cx,cy,10,0,Math.PI*2);
+  var pj=ctx.createRadialGradient(cx-2,cy-2,1,cx,cy,10);
+  pj.addColorStop(0,'rgba(180,220,255,1)');
+  pj.addColorStop(0.5,'rgba(0,100,200,0.9)');
+  pj.addColorStop(1,'rgba(0,15,50,1)');
+  ctx.fillStyle=pj;ctx.fill();
+  ctx.strokeStyle='rgba(0,212,255,0.65)';ctx.lineWidth=1;ctx.stroke();
+}
+
+function isMobile(){
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+    ('ontouchstart' in window) ||
+    (typeof DeviceOrientationEvent!=='undefined' && typeof DeviceOrientationEvent.requestPermission==='function');
+}
+
+function drawKaabaIcon(canvasId){
+  var cv=document.getElementById(canvasId);
+  if(!cv)return;
+  var ctx=cv.getContext('2d');
+  var w=cv.width,h=cv.height;
+  ctx.clearRect(0,0,w,h);
+
+  // Front face — main square body
+  var fx=w*0.08, fy=h*0.22, fw=w*0.72, fh=h*0.68;
+  ctx.fillStyle='rgba(8,8,12,0.95)';
+  ctx.fillRect(fx,fy,fw,fh);
+
+  // Gold band
+  ctx.fillStyle='rgba(200,160,50,0.9)';
+  ctx.fillRect(fx,fy+fh*0.52,fw,fh*0.14);
+
+  // Door
+  ctx.fillStyle='rgba(160,120,35,0.85)';
+  ctx.fillRect(fx+fw*0.32,fy+fh*0.22,fw*0.36,fh*0.30);
+  ctx.beginPath();
+  ctx.arc(fx+fw*0.50,fy+fh*0.22,fw*0.18,Math.PI,0);
+  ctx.fillStyle='rgba(160,120,35,0.85)';ctx.fill();
+
+  // Front border
+  ctx.strokeStyle='rgba(0,212,255,0.75)';
+  ctx.lineWidth=2;
+  ctx.strokeRect(fx,fy,fw,fh);
+
+  // Right side face — 3D effect
+  var rx=fx+fw, ry=fy, rw=w*0.18, rh=fh;
+  ctx.beginPath();
+  ctx.moveTo(rx,ry);
+  ctx.lineTo(rx+rw,ry-h*0.06);
+  ctx.lineTo(rx+rw,ry-h*0.06+rh);
+  ctx.lineTo(rx,ry+rh);
+  ctx.closePath();
+  ctx.fillStyle='rgba(20,15,8,0.85)';ctx.fill();
+  ctx.strokeStyle='rgba(0,212,255,0.4)';ctx.lineWidth=1;ctx.stroke();
+
+  // Top face — flat parallelogram
+  ctx.beginPath();
+  ctx.moveTo(fx,fy);                          // front-left
+  ctx.lineTo(fx+rw,fy-h*0.06);               // back-left
+  ctx.lineTo(fx+fw+rw,fy-h*0.06);            // back-right
+  ctx.lineTo(fx+fw,fy);                       // front-right
+  ctx.closePath();
+  ctx.fillStyle='rgba(35,28,12,0.9)';ctx.fill();
+  ctx.strokeStyle='rgba(0,212,255,0.4)';ctx.lineWidth=1;ctx.stroke();
+}
+
+function showDesktopOverlay(){
+  var overlay=document.getElementById('qibla-desktop-overlay');
+  if(!overlay)return;
+  overlay.style.display='flex';
+  // Show static bearing if available
+  var txt=document.getElementById('desktop-bearing-text');
+  if(txt && _qB!==null){
+    var bear=Math.round(_qB);
+    var dist=_dkm(
+      window._qiblaUserLat||21.4225,
+      window._qiblaUserLon||39.8262,
+      21.4225,39.8262
+    );
+    txt.textContent='Qibla from your location: '+bear+'° '+_ds(bear)+' · '+dist.toLocaleString()+' km';
+  }
+}
+
+function dismissDesktopOverlay(){
+  var overlay=document.getElementById('qibla-desktop-overlay');
+  if(overlay)overlay.style.display='none';
+  // Flip back to prayer times
+  flipClock();
+}
+
+function enableCompass(){
+  var btn=document.getElementById('compass-btn');
+  function onO(e){
+    if(e.webkitCompassHeading!==undefined&&e.webkitCompassHeading!==null){
+      _dH=e.webkitCompassHeading; // iOS true North heading, 0=North clockwise
+    } else if(e.absolute&&e.alpha!==null){
+      _dH=(360-e.alpha+360)%360; // Android absolute
+    } else if(e.alpha!==null){
+      _dH=(360-e.alpha+360)%360;
+    }
+    if(btn)btn.style.display='none';
+  }
+  if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+    DeviceOrientationEvent.requestPermission()
+      .then(function(s){if(s==='granted')window.addEventListener('deviceorientation',onO,true);})
+      .catch(function(){});
+  }
+}
+
+function startQibla(){
+  var btn=document.getElementById('compass-btn');
+
+  // Step 1: Get PRECISE device GPS location for Qibla bearing
+  function setBearing(lat,lon){
+    window._qiblaUserLat=lat;
+    window._qiblaUserLon=lon;
+    _qB=_brg(lat,lon,21.4225,39.8262);
+  }
+
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      function(pos){setBearing(pos.coords.latitude,pos.coords.longitude);},
+      function(){
+        // GPS denied — use displayed city as fallback
+        setBearing(
+          typeof CITY!=='undefined'?CITY.lat:21.4225,
+          typeof CITY!=='undefined'?CITY.lon:39.8262
+        );
+      },
+      {timeout:6000,maximumAge:60000,enableHighAccuracy:true}
+    );
+  } else {
+    setBearing(
+      typeof CITY!=='undefined'?CITY.lat:21.4225,
+      typeof CITY!=='undefined'?CITY.lon:39.8262
+    );
+  }
+
+  // Step 2: Start device orientation OR show desktop overlay
+  function onO(e){
+    if(e.webkitCompassHeading!==undefined&&e.webkitCompassHeading!==null){
+      _dH=e.webkitCompassHeading; // iOS: true magnetic North heading
+    } else if(e.absolute&&e.alpha!==null){
+      _dH=(360-e.alpha+360)%360; // Android absolute
+    } else if(e.alpha!==null){
+      _dH=(360-e.alpha+360)%360;
+    }
+    if(btn)btn.style.display='none';
+  }
+  if(!isMobile()){
+    // Desktop — show overlay, no draw loop needed
+    setTimeout(showDesktopOverlay, 500);
+    return; // exit startQibla early on desktop
+  } else if(typeof DeviceOrientationEvent!=='undefined'){
+    if(typeof DeviceOrientationEvent.requestPermission==='function'){
+      if(btn)btn.style.display='block';
+      window.addEventListener('deviceorientation',onO,true);
+    } else {
+      window.addEventListener('deviceorientation',onO,true);
+    }
+  }
+
+  // Step 3: Draw loop
+  function loop(){if(!_qF)return;drawQibla(_dH);_qR=requestAnimationFrame(loop);}
+  loop();
+}
+
+function stopQibla(){
+  if(_qR){cancelAnimationFrame(_qR);_qR=null;}
+  _dH=null;_qB=null;
+  window._qiblaUserLat=null;window._qiblaUserLon=null;
+}
+
+function flipClock(){
+  _qF=!_qF;
+  var cf=document.getElementById('clock-face');
+  var qf=document.getElementById('qibla-face');
+  var ico=document.getElementById('flip-icon');
+  if(_qF){
+    cf.style.opacity='0';cf.style.pointerEvents='none';
+    setTimeout(function(){qf.style.opacity='1';qf.style.pointerEvents='auto';startQibla();},350);
+    if(ico)ico.textContent='🕌';
+    drawToggleCurvedText('PRAYER');
+  } else {
+    qf.style.opacity='0';qf.style.pointerEvents='none';
+    setTimeout(function(){cf.style.opacity='1';cf.style.pointerEvents='auto';},350);
+    if(ico)ico.textContent='🧭';
+    drawToggleCurvedText('QIBLA');
+    stopQibla();
+  }
+}
+
+
+// ── Toggle button curved text ─────────────────────────────────────────────
+function drawToggleCurvedText(label){
+  var cv=document.getElementById('toggle-canvas');
+  if(!cv)return;
+  var sz=52, dpr=window.devicePixelRatio||2;
+  cv.width=sz*dpr; cv.height=sz*dpr;
+  cv.style.width=sz+'px'; cv.style.height=sz+'px';
+  var ctx=cv.getContext('2d');
+  ctx.scale(dpr,dpr);
+  var cx=sz/2, cy=sz/2, R=sz*0.47;
+  var chars=label.split(''), n=chars.length;
+  ctx.font=`600 ${sz*0.155}px 'Arial Narrow',Arial,sans-serif`;
+  ctx.fillStyle='rgba(255,255,255,0.58)';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  var tR=R*0.73, arcMid=Math.PI*1.5, arcSpan=Math.PI*0.50;
+  chars.forEach(function(ch,i){
+    var t=n===1?0.5:i/(n-1);
+    var a=(arcMid-arcSpan/2)+t*arcSpan;
+    ctx.save();
+    ctx.translate(cx+Math.cos(a)*tR, cy+Math.sin(a)*tR);
+    ctx.rotate(a+Math.PI/2);
+    ctx.fillText(ch,0,0);
+    ctx.restore();
+  });
+}
+// Draw initial state (clock showing → QIBLA)
+document.addEventListener('DOMContentLoaded',function(){
+  drawToggleCurvedText('QIBLA');
+});
 
 </script>
 </body>

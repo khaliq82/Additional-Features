@@ -79,6 +79,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
 /* LEFT PANEL */
 .city-block{display:flex;flex-direction:column;justify-content:flex-end;padding:28px 24px 12px;border-right:1px solid var(--border);overflow:visible;gap:0;grid-column:1;grid-row:1;background:var(--bg);}
 .hero-city{font-family:'Playfair Display',serif;font-size:clamp(44px,3.8vw,68px);font-weight:700;letter-spacing:-0.02em;line-height:0.9;color:#fff;margin-bottom:6px;}
+.seo-prefix{font-family:'Geist',sans-serif;font-size:12px;font-weight:400;color:rgba(255,255,255,0.45);display:block;letter-spacing:0.08em;margin-bottom:8px;}
 .hero-country{font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text2);margin-top:8px;margin-bottom:10px;}
 .hero-date{font-size:11px;color:var(--text2);margin-bottom:10px;letter-spacing:0.01em;}
 .hero-date span{color:var(--cyan);font-weight:600;}
@@ -362,7 +363,7 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
   <!-- LEFT: City identity — dynamic hub version -->
   <div class="city-block">
     <div class="city-name-block">
-      <div class="hero-city" id="hub-city-name">Makkah</div>
+      <div class="hero-city" id="hub-city-name"><span class="seo-prefix">Prayer Times in</span><span id="hub-city-text">Makkah</span></div>
       <div class="hero-country" id="hub-country">Saudi Arabia</div>
       <div class="hero-date" id="hero-date"><span id="hub-date">Thursday, 19 June 2026</span> · <span id="hijri-inline"></span></div>
       <div class="hero-method" id="hub-method">Umm al-Qura University, Makkah</div>
@@ -721,16 +722,19 @@ function updateDate(){
   const d=cityNow();
   const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  let dateStr=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-  try{
-    const hijri=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{
-      day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Riyadh'
-    }).format(new Date());
-    dateStr+=` \u00b7 ${hijri}`;
-  }catch(e){}
-  const greg=dateStr.split(' · ')[0];
-  const hij=dateStr.split(' · ')[1]||'';
+  const greg=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  const hij=toHijri(d);
   document.getElementById('hero-date').innerHTML=greg+'<span class="hijri-sep"> · </span><span id="hijri-inline">'+hij+'</span>';
+}
+
+// Re-run updateDate at city midnight, then every 24h
+function scheduleDateRefresh(){
+  const d=cityNow();
+  const msUntilMidnight=((24-d.getHours())*3600-(d.getMinutes()*60+d.getSeconds()))*1000;
+  setTimeout(function(){
+    updateDate();
+    setInterval(updateDate, 24*3600*1000);
+  }, msUntilMidnight);
 }
 
 function drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive){
@@ -2029,7 +2033,7 @@ function updateHeroPanel(){
     weekday:'long', year:'numeric', month:'long', day:'numeric'
   });
   var el;
-  el=document.getElementById('hub-city-name'); if(el)el.textContent=CITY.name||'—';
+  el=document.getElementById('hub-city-text'); if(el)el.textContent=CITY.name||'—';
   el=document.getElementById('hub-country');   if(el)el.textContent=abbrevCountry(CITY.country||'').toUpperCase();
   el=document.getElementById('hub-date');      if(el)el.textContent=dateStr;
   el=document.getElementById('hub-method');    if(el)el.textContent=AdhanMethods.labelFor(CITY.cc,CITY.state);
@@ -2372,6 +2376,7 @@ document.addEventListener('DOMContentLoaded',function(){
   cachedTimes=calcPrayers(CITY.lat,CITY.lon,CITY.tz,new Date());
   renderPrayers();
   updateDate();
+  scheduleDateRefresh();
   updateHeroPanel();
   requestAnimationFrame(function loop(){ drawArc(); requestAnimationFrame(loop); });
   setInterval(hubTick,1000);

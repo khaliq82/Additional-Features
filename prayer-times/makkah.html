@@ -771,7 +771,7 @@ h1.hero-city { margin: 0; padding: 0; }
 <script>
 // ── CITY CONFIG ──────────────────────────────────────────────
 const CITY = {
-  name:'Makkah', cc:'SA', lat:21.4225, lon:39.8262, tz:3, tzName:'Asia/Riyadh', method:'Makkah'
+  name:'Makkah', country:'Saudi Arabia', slug:'makkah', cc:'SA', lat:21.4225, lon:39.8262, tz:3, tzName:'Asia/Riyadh', method:'Makkah'
 };
 // Returns the city's CURRENT UTC offset in hours, accounting for DST.
 // Uses the IANA tzName when present (always correct for today's date),
@@ -922,16 +922,19 @@ function updateDate(){
   const d=cityNow();
   const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  let dateStr=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-  try{
-    const hijri=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{
-      day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Riyadh'
-    }).format(new Date());
-    dateStr+=` \u00b7 ${hijri}`;
-  }catch(e){}
-  const greg=dateStr.split(' · ')[0];
-  const hij=dateStr.split(' · ')[1]||'';
+  const greg=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  const hij=toHijri(d);
   document.getElementById('hero-date').innerHTML=greg+'<span class="hijri-sep"> · </span><span id="hijri-inline">'+hij+'</span>';
+}
+
+// Re-run updateDate at city midnight, then every 24h
+function scheduleDateRefresh(){
+  const d=cityNow();
+  const msUntilMidnight=((24-d.getHours())*3600-(d.getMinutes()*60+d.getSeconds()))*1000;
+  setTimeout(function(){
+    updateDate();
+    setInterval(updateDate, 24*3600*1000);
+  }, msUntilMidnight);
 }
 
 function drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive){
@@ -1505,11 +1508,11 @@ function drawArc(){
     ctx.fillStyle='rgba(235,230,218,0.88)';
     ctx.shadowColor='rgba(130,190,255,0.25)';
     ctx.shadowBlur=3;
-    ctx.fillText('Makkah', cx, cy - R*(_mobR?0.68:0.72));
+    ctx.fillText(CITY.name, cx, cy - R*(_mobR?0.68:0.72));
     ctx.shadowBlur=0;
     ctx.font=`400 ${Math.round(R*0.055)}px 'Geist',sans-serif`;
     ctx.fillStyle='rgba(180,175,165,0.65)';
-    ctx.fillText('Saudi Arabia', cx, cy - R*(_mobR?0.56:0.60));
+    ctx.fillText(CITY.country||'', cx, cy - R*(_mobR?0.56:0.60));
     ctx.shadowBlur=0;
     ctx.restore();
   }
@@ -2127,6 +2130,7 @@ function tick(){
 // ── INIT ────────────────────────────────────────────────────
 renderPrayers();
 updateDate();
+scheduleDateRefresh();
 tick();
 // drawArc loops itself at 60fps for smooth countdown and clock hand
 function drawLoop(){
@@ -2205,8 +2209,8 @@ function tickNavClock(){
 tickNavClock();
 setInterval(tickNavClock,1000);
 function shareMapMoment(platform){
-  const url='https://www.adhanlive.com/prayer-times/makkah';
-  const text='Live prayer times for Makkah, the holiest city in Islam. Watch the Adhan sweep the Earth on AdhanLive.';
+  const url='https://www.adhanlive.com/prayer-times/'+CITY.slug;
+  const text='Live prayer times for '+CITY.name+'. Watch the Adhan sweep the Earth on AdhanLive.';
   if(platform==='whatsapp'){window.open('https://wa.me/?text='+encodeURIComponent(text+' '+url),'_blank');}
   else if(platform==='twitter'){window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(url),'_blank');}
   else if(platform==='copy'){

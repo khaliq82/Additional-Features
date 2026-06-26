@@ -922,16 +922,19 @@ function updateDate(){
   const d=cityNow();
   const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  let dateStr=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-  try{
-    const hijri=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{
-      day:'numeric',month:'long',year:'numeric',timeZone:'Asia/Riyadh'
-    }).format(new Date());
-    dateStr+=` \u00b7 ${hijri}`;
-  }catch(e){}
-  const greg=dateStr.split(' · ')[0];
-  const hij=dateStr.split(' · ')[1]||'';
+  const greg=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  const hij=toHijri(d);
   document.getElementById('hero-date').innerHTML=greg+'<span class="hijri-sep"> · </span><span id="hijri-inline">'+hij+'</span>';
+}
+
+// Re-run updateDate at city midnight, then every 24h
+function scheduleDateRefresh(){
+  const d=cityNow();
+  const msUntilMidnight=((24-d.getHours())*3600-(d.getMinutes()*60+d.getSeconds()))*1000;
+  setTimeout(function(){
+    updateDate();
+    setInterval(updateDate, 24*3600*1000);
+  }, msUntilMidnight);
 }
 
 function drawMinaretTip(ctx, cx, cy, ang, b1, tipR, col, isActive){
@@ -2127,6 +2130,7 @@ function tick(){
 // ── INIT ────────────────────────────────────────────────────
 renderPrayers();
 updateDate();
+scheduleDateRefresh();
 tick();
 // drawArc loops itself at 60fps for smooth countdown and clock hand
 function drawLoop(){

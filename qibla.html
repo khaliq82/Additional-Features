@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Qibla Finder — Live Compass Direction to Makkah | AdhanLive</title>
+<meta name="description" content="Find the Qibla direction from anywhere in the world. Live compass auto-detects your location and points toward the Kaaba in Makkah. Free online Qibla finder — no app needed.">
+<link rel="canonical" href="https://www.adhanlive.com/qibla">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.adhanlive.com/qibla">
+<meta property="og:title" content="Qibla Finder — Live Compass Direction to Makkah | AdhanLive">
+<meta property="og:description" content="Find the Qibla direction from anywhere in the world. Live compass auto-detects your location and points toward the Kaaba in Makkah. Free online Qibla finder.">
+<meta property="og:image" content="https://www.adhanlive.com/og-image.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Qibla Finder — Live Compass Direction to Makkah | AdhanLive">
+<meta name="twitter:description" content="Find the Qibla direction from anywhere in the world. Auto-detects your GPS location and points toward the Kaaba. Free online Qibla finder.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Qibla Finder | AdhanLive",
+  "description": "Find the Qibla direction from anywhere in the world. Live compass auto-detects your location and points toward the Kaaba in Makkah.",
+  "url": "https://www.adhanlive.com/qibla",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "isPartOf": { "@type": "WebSite", "name": "AdhanLive", "url": "https://www.adhanlive.com" }
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;700&family=Cormorant:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & base ────────────────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#07090d;--bg2:#0c0f17;--border:rgba(255,255,255,0.07);
+  --text1:#fff;--text2:rgba(255,255,255,0.55);--text3:rgba(255,255,255,0.28);
+  --cyan:#00d4ff;--gold:rgba(196,162,74,0.85);
+}
+html,body{height:100%;background:var(--bg);color:var(--text1);font-family:'Geist',system-ui,sans-serif;overflow-x:hidden;}
+a{color:inherit;text-decoration:none;}
+
+/* ── Nav ─────────────────────────────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(7,9,13,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;letter-spacing:0.02em;color:#fff;}
+.nav-logo span{color:var(--cyan);}
+.nav-links{display:flex;gap:32px;align-items:center;}
+.nav-links a{font-size:11px;letter-spacing:0.12em;color:rgba(255,255,255,0.7);font-weight:600;text-decoration:none;cursor:pointer;transition:color 0.2s;text-transform:uppercase;position:relative;}
+.nav-links a:hover{color:#fff;}
+.nav-links a.active{color:var(--cyan);}
+.nav-utc{display:flex;align-items:stretch;padding:0;border:1px solid rgba(255,255,255,0.1);border-radius:6px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;}
+.nav-utc-dates{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:5px 12px;}
+.nav-utc-hijri{font-size:9px;letter-spacing:0.04em;color:var(--cyan);font-weight:600;}
+.nav-utc-greg{font-size:9px;letter-spacing:0.03em;color:rgba(255,255,255,0.5);}
+.nav-utc-divider{width:1px;background:rgba(255,255,255,0.1);align-self:stretch;}
+.nav-utc-time{display:flex;align-items:center;justify-content:center;padding:5px 12px;font-size:13px;font-weight:600;letter-spacing:0.04em;color:#fff;}
+.nav-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
+.nav-burger span{width:22px;height:1.5px;background:#fff;display:block;transition:all 0.3s;}
+
+/* ── Main layout ─────────────────────────────────────────────────────────── */
+.page-wrap{min-height:100vh;padding-top:56px;display:flex;flex-direction:column;}
+.hero{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px 0;}
+.hero-inner{display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:center;max-width:1100px;width:100%;min-height:calc(100vh - 56px - 40px);}
+
+/* ── Left panel ──────────────────────────────────────────────────────────── */
+.left-panel{display:flex;flex-direction:column;gap:0;}
+.qibla-label{font-family:'Geist',sans-serif;font-size:11px;font-weight:400;color:rgba(255,255,255,0.45);letter-spacing:0.08em;display:block;margin-bottom:8px;}
+.qibla-title{font-family:'Playfair Display',serif;font-size:clamp(44px,3.8vw,68px);font-weight:700;letter-spacing:-0.02em;line-height:0.9;color:#fff;margin-bottom:12px;}
+.qibla-subtitle{font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text2);margin-bottom:16px;}
+
+/* Data readout */
+.qibla-data{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
+.qibla-data-row{display:flex;flex-direction:column;gap:2px;}
+.qibla-data-label{font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);}
+.qibla-data-value{font-size:15px;font-weight:600;color:#fff;letter-spacing:0.02em;}
+.qibla-data-value.bearing{color:var(--cyan);font-size:22px;}
+.qibla-data-value.loading{color:var(--text3);font-size:13px;font-style:italic;}
+
+/* Location status */
+.location-status{font-size:11px;color:var(--text3);margin-bottom:24px;display:flex;align-items:center;gap:6px;}
+.location-dot{width:6px;height:6px;border-radius:50%;background:var(--text3);flex-shrink:0;}
+.location-dot.active{background:#00e676;box-shadow:0 0 6px rgba(0,230,118,0.6);}
+.location-dot.error{background:#ff5252;}
+
+/* Prayer times button */
+.prayer-times-btn{display:inline-flex;align-items:center;gap:10px;padding:12px 22px;border-radius:8px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.25);color:var(--cyan);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;transition:all 0.25s;width:fit-content;margin-bottom:20px;}
+.prayer-times-btn:hover{background:rgba(0,212,255,0.16);border-color:rgba(0,212,255,0.5);}
+.prayer-times-btn-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 6px var(--cyan);animation:pulse-dot 1.5s infinite;flex-shrink:0;}
+@keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+/* Enable compass button */
+#enable-compass-btn{display:none;padding:10px 20px;border-radius:8px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--cyan);font-size:11px;font-weight:600;letter-spacing:0.08em;cursor:pointer;margin-bottom:12px;transition:all 0.2s;}
+#enable-compass-btn:hover{background:rgba(0,212,255,0.2);}
+
+/* ── Compass canvas ──────────────────────────────────────────────────────── */
+.compass-wrap{display:flex;align-items:center;justify-content:center;position:relative;}
+#qiblaCanvas{width:min(100%,560px);height:min(100%,560px);aspect-ratio:1;display:block;border-radius:50%;}
+
+/* Desktop overlay */
+#desktop-overlay{display:none;position:absolute;inset:0;background:rgba(8,10,16,0.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:50%;z-index:20;flex-direction:column;align-items:center;justify-content:center;gap:20px;text-align:center;padding:40px;}
+#desktop-overlay .overlay-icon{font-size:2.5rem;}
+#desktop-overlay .overlay-title{font-family:'Playfair Display',serif;font-size:1.1rem;color:rgba(255,255,255,0.9);}
+#desktop-overlay .overlay-body{font-size:0.8rem;color:rgba(255,255,255,0.45);line-height:1.6;max-width:240px;}
+#desktop-overlay .overlay-data{font-size:0.82rem;color:rgba(0,212,255,0.8);font-weight:600;margin-top:4px;}
+#desktop-overlay .overlay-btn{background:transparent;border:1px solid rgba(0,212,255,0.35);border-radius:8px;padding:9px 28px;color:var(--cyan);font-size:0.82rem;font-family:Geist,sans-serif;cursor:pointer;letter-spacing:0.05em;transition:background 0.2s;}
+#desktop-overlay .overlay-btn:hover{background:rgba(0,212,255,0.1);}
+
+/* ── SEO section ─────────────────────────────────────────────────────────── */
+.seo-section{max-width:1100px;margin:0 auto;padding:64px 24px 80px;width:100%;}
+.seo-section h2{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:16px;}
+.seo-section p{font-size:0.88rem;line-height:1.75;color:var(--text2);margin-bottom:16px;}
+.seo-section strong{color:rgba(255,255,255,0.75);font-weight:600;}
+.seo-divider{border:none;border-top:1px solid var(--border);margin:40px 0;}
+
+/* City Qibla grid */
+.city-qibla-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:24px;}
+.city-qibla-card{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;padding:14px 16px;transition:border-color 0.2s,background 0.2s;}
+.city-qibla-card:hover{border-color:rgba(0,212,255,0.25);background:rgba(0,212,255,0.04);}
+.city-qibla-card .city-name{font-size:0.82rem;font-weight:600;color:#fff;margin-bottom:4px;}
+.city-qibla-card .city-bearing{font-size:1rem;font-weight:700;color:var(--cyan);}
+.city-qibla-card .city-dist{font-size:0.72rem;color:var(--text3);margin-top:2px;}
+
+/* Prayer times CTA */
+.bottom-cta{background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.15);border-radius:16px;padding:40px;display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:40px;}
+.bottom-cta-text h3{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:700;color:#fff;margin-bottom:8px;}
+.bottom-cta-text p{font-size:0.84rem;color:var(--text2);line-height:1.6;}
+.bottom-cta-btn{display:inline-flex;align-items:center;gap:10px;padding:14px 28px;border-radius:8px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--cyan);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;transition:all 0.25s;white-space:nowrap;flex-shrink:0;}
+.bottom-cta-btn:hover{background:rgba(0,212,255,0.2);border-color:rgba(0,212,255,0.6);}
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.footer-left{font-size:11px;color:var(--text3);}
+.footer-links{display:flex;gap:24px;}
+.footer-links a{font-size:11px;color:var(--text3);text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--text2);}
+
+/* ── Mobile ──────────────────────────────────────────────────────────────── */
+@media(max-width:900px){
+  nav{padding:0 20px;}
+  .nav-links{display:none;position:fixed;top:56px;left:0;right:0;z-index:9999;background:rgba(0,0,0,0.97);backdrop-filter:blur(24px);flex-direction:column;gap:0;border-bottom:1px solid rgba(255,255,255,0.08);}
+  .nav-links.mobile-open{display:flex;}
+  .nav-links a{padding:16px 24px;font-size:14px;letter-spacing:0.06em;border-bottom:1px solid rgba(255,255,255,0.06);width:100%;}
+  .nav-utc{display:none !important;}
+  .nav-burger{display:flex;}
+  .hero-inner{grid-template-columns:1fr;gap:0;min-height:unset;padding-bottom:32px;}
+  .left-panel{order:1;padding-bottom:24px;}
+  .compass-wrap{order:2;}
+  #qiblaCanvas{width:min(90vw,380px);height:min(90vw,380px);}
+  .qibla-title{font-size:clamp(32px,7.5vw,44px);}
+  .hero{padding:20px 16px 0;}
+  .bottom-cta{flex-direction:column;text-align:center;}
+  .city-qibla-grid{grid-template-columns:repeat(2,1fr);}
+  footer{flex-direction:column;text-align:center;gap:12px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/home" class="nav-logo">Adhan<span>Live</span></a>
+  <div class="nav-links" id="nav-links">
+    <a href="/livemap">Live Map</a>
+    <a href="/adhanclock">Adhan Clock</a>
+    <a href="/arcs">Arc Explorer</a>
+    <a href="/prayer-times">Prayer Times</a>
+    <a href="/qibla" class="active">Qibla</a>
+    <a href="/ask">Ask</a>
+    <a href="/about">About</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="nav-utc" id="utc-clock">
+      <div class="nav-utc-dates">
+        <div class="nav-utc-greg" id="utc-greg"></div>
+        <div class="nav-utc-hijri" id="utc-hijri"></div>
+      </div>
+      <div class="nav-utc-divider"></div>
+      <div class="nav-utc-time" id="utc-time">--:--:--</div>
+    </div>
+    <div class="nav-burger" id="nav-burger" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="hero">
+    <div class="hero-inner">
+
+      <!-- LEFT: Data panel -->
+      <div class="left-panel">
+        <span class="qibla-label">Find Qibla Direction</span>
+        <div class="qibla-title">Qibla</div>
+        <div class="qibla-subtitle" id="your-location">Locating you...</div>
+
+        <div class="qibla-data">
+          <div class="qibla-data-row">
+            <span class="qibla-data-label">Direction</span>
+            <span class="qibla-data-value bearing" id="qibla-bearing">—</span>
+          </div>
+          <div class="qibla-data-row">
+            <span class="qibla-data-label">Distance to Kaaba</span>
+            <span class="qibla-data-value" id="qibla-distance">—</span>
+          </div>
+          <div class="qibla-data-row">
+            <span class="qibla-data-label">Status</span>
+            <span class="qibla-data-value" id="qibla-aligned" style="font-size:13px;color:var(--text3);">Waiting for compass...</span>
+          </div>
+        </div>
+
+        <div class="location-status">
+          <div class="location-dot" id="loc-dot"></div>
+          <span id="loc-status">Requesting location...</span>
+        </div>
+
+        <button id="enable-compass-btn" onclick="enableCompass()">Tap to enable live compass</button>
+
+        <a href="/prayer-times" class="prayer-times-btn">
+          <span class="prayer-times-btn-dot"></span>
+          Prayer Times
+        </a>
+      </div>
+
+      <!-- RIGHT: Compass -->
+      <div class="compass-wrap">
+        <canvas id="qiblaCanvas"></canvas>
+        <div id="desktop-overlay">
+          <div class="overlay-icon">📱</div>
+          <div class="overlay-title">Open on your phone</div>
+          <div class="overlay-body">The live Qibla compass uses your device's orientation sensor. For the live needle, open AdhanLive on your mobile.</div>
+          <div class="overlay-data" id="overlay-data"></div>
+          <button class="overlay-btn" onclick="dismissOverlay()">Got it</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SEO section -->
+  <div class="seo-section">
+
+    <h2>What is Qibla?</h2>
+    <p>The Qibla (Arabic: قِبْلَة) is the direction Muslims face during the five daily prayers. It points toward the Kaaba — the cube-shaped structure at the centre of Masjid al-Haram in Makkah, Saudi Arabia. Every Muslim on Earth, regardless of where they stand, faces this single point. The result is a spiritual geometry that unites over a billion people simultaneously in one direction.</p>
+    <p>The obligation to face the Qibla is established directly in the Quran: <strong>"Turn your face toward al-Masjid al-Haram. And wherever you are, turn your faces toward it."</strong> (Quran 2:144). Knowing your Qibla direction is therefore a prerequisite for every valid prayer.</p>
+
+    <hr class="seo-divider">
+
+    <h2>How this Qibla finder works</h2>
+    <p>When you open this page, your browser requests your GPS coordinates. The tool then calculates the <strong>great circle bearing</strong> from your exact position to the Kaaba at coordinates 21.4225° N, 39.8262° E. The great circle is the shortest path across the curved surface of the Earth — the same path a plane would fly. This is the theologically correct method for determining Qibla direction, agreed upon by scholars across all four major madhabs.</p>
+    <p>On mobile devices, your phone's magnetometer (compass sensor) is used to rotate the needle in real time. On desktop, the bearing and distance are shown as static data since desktops do not have orientation sensors.</p>
+
+    <hr class="seo-divider">
+
+    <h2>Qibla direction from major cities</h2>
+    <p>The Qibla direction varies depending on where you are. Here are the accurate bearings from cities around the world.</p>
+
+    <div class="city-qibla-grid">
+      <div class="city-qibla-card">
+        <div class="city-name">London, UK</div>
+        <div class="city-bearing">119° Southeast</div>
+        <div class="city-dist">4,794 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">New York, USA</div>
+        <div class="city-bearing">58° Northeast</div>
+        <div class="city-dist">10,306 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">Paris, France</div>
+        <div class="city-bearing">119° Southeast</div>
+        <div class="city-dist">4,496 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">Istanbul, Turkey</div>
+        <div class="city-bearing">152° Southeast</div>
+        <div class="city-dist">2,405 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">Cairo, Egypt</div>
+        <div class="city-bearing">136° Southeast</div>
+        <div class="city-dist">1,287 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">Dubai, UAE</div>
+        <div class="city-bearing">258° West</div>
+        <div class="city-dist">1,631 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">Karachi, Pakistan</div>
+        <div class="city-bearing">268° West</div>
+        <div class="city-dist">2,800 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">Mumbai, India</div>
+        <div class="city-bearing">280° West</div>
+        <div class="city-dist">3,452 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">Dhaka, Bangladesh</div>
+        <div class="city-bearing">278° West</div>
+        <div class="city-dist">5,172 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">Kuala Lumpur, Malaysia</div>
+        <div class="city-bearing">293° Northwest</div>
+        <div class="city-dist">6,974 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">Singapore</div>
+        <div class="city-bearing">293° Northwest</div>
+        <div class="city-dist">7,269 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">Jakarta, Indonesia</div>
+        <div class="city-bearing">295° Northwest</div>
+        <div class="city-dist">7,920 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">Riyadh, Saudi Arabia</div>
+        <div class="city-bearing">244° Southwest</div>
+        <div class="city-dist">793 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">Jeddah, Saudi Arabia</div>
+        <div class="city-bearing">76° East</div>
+        <div class="city-dist">63 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">Madeena, Saudi Arabia</div>
+        <div class="city-bearing">176° South</div>
+        <div class="city-dist">346 km to Kaaba</div>
+      </div>
+      <div class="city-qibla-card">
+        <div class="city-name">Makkah, Saudi Arabia</div>
+        <div class="city-bearing">319° Northwest</div>
+        <div class="city-dist">5 km to Kaaba</div>
+      </div>
+    </div>
+
+    <hr class="seo-divider">
+
+    <div class="bottom-cta">
+      <div class="bottom-cta-text">
+        <h3>Prayer Times for your city</h3>
+        <p>Accurate Fajr, Dhuhr, Asr, Maghrib and Isha times with a live 24-hour prayer clock. Auto-detects your location.</p>
+      </div>
+      <a href="/prayer-times" class="bottom-cta-btn">
+        <span class="prayer-times-btn-dot"></span>
+        Find Prayer Times
+      </a>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-left">© 2026 AdhanLive. 280,621 mosques across 153 countries.</div>
+    <div class="footer-links">
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+      <a href="/prayer-times">Prayer Times</a>
+      <a href="/livemap">Live Map</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+// ── Nav ──────────────────────────────────────────────────────────────────────
+function toggleMobileMenu(){
+  document.getElementById('nav-links').classList.toggle('mobile-open');
+}
+
+// ── Nav clock ─────────────────────────────────────────────────────────────────
+function toHijri(date){
+  try{
+    const h=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(date);
+    return h;
+  }catch(e){return '';}
+}
+function tickNavClock(){
+  const n=new Date();
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const ge=document.getElementById('utc-greg');
+  const hi=document.getElementById('utc-hijri');
+  const ti=document.getElementById('utc-time');
+  if(ge) ge.textContent=days[n.getUTCDay()]+', '+n.getUTCDate()+' '+months[n.getUTCMonth()]+' '+n.getUTCFullYear();
+  if(hi) hi.textContent=toHijri(n);
+  if(ti){
+    const h=String(n.getUTCHours()).padStart(2,'0');
+    const m=String(n.getUTCMinutes()).padStart(2,'0');
+    const s=String(n.getUTCSeconds()).padStart(2,'0');
+    ti.textContent=h+':'+m+':'+s+' UTC';
+  }
+}
+tickNavClock();
+setInterval(tickNavClock,1000);
+
+// ── Qibla core ───────────────────────────────────────────────────────────────
+var _dH=null, _qB=null, _dist=null, _rAF=null;
+var _userLat=null, _userLon=null;
+var KAABA_LAT=21.4225, KAABA_LON=39.8262;
+
+function _brg(lat1,lon1,lat2,lon2){
+  var r=Math.PI/180,dL=(lon2-lon1)*r;
+  lat1*=r;lat2*=r;
+  return((Math.atan2(Math.sin(dL)*Math.cos(lat2),Math.cos(lat1)*Math.sin(lat2)-Math.sin(lat1)*Math.cos(lat2)*Math.cos(dL))/r)+360)%360;
+}
+function _dkm(lat1,lon1,lat2,lon2){
+  var R=6371,r=Math.PI/180,a=Math.sin((lat2-lat1)*r/2)**2+Math.cos(lat1*r)*Math.cos(lat2*r)*Math.sin((lon2-lon1)*r/2)**2;
+  return Math.round(R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)));
+}
+function _ds(b){return b<23?'North':b<68?'Northeast':b<113?'East':b<158?'Southeast':b<203?'South':b<248?'Southwest':b<293?'West':b<338?'Northwest':'North';}
+
+function isMobile(){
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)||('ontouchstart' in window)||
+    (typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function');
+}
+
+function setLocation(lat,lon,label){
+  _userLat=lat; _userLon=lon;
+  _qB=_brg(lat,lon,KAABA_LAT,KAABA_LON);
+  _dist=_dkm(lat,lon,KAABA_LAT,KAABA_LON);
+  var bear=Math.round(_qB);
+  var dir=_ds(_qB);
+  document.getElementById('your-location').textContent=label||'Your location';
+  document.getElementById('qibla-bearing').textContent=bear+'° '+dir;
+  document.getElementById('qibla-distance').textContent=_dist.toLocaleString()+' km';
+  var dot=document.getElementById('loc-dot');
+  dot.className='location-dot active';
+  document.getElementById('loc-status').textContent='Location detected';
+  // Desktop overlay
+  if(!isMobile()){
+    var overlay=document.getElementById('desktop-overlay');
+    var od=document.getElementById('overlay-data');
+    if(od) od.textContent='Qibla: '+bear+'° '+dir+' · '+_dist.toLocaleString()+' km';
+    overlay.style.display='flex';
+  }
+}
+
+function locationError(){
+  document.getElementById('loc-dot').className='location-dot error';
+  document.getElementById('loc-status').textContent='Location unavailable — using Makkah as default';
+  document.getElementById('your-location').textContent='Default: Makkah';
+  setLocation(21.3891,39.8579,'Makkah, Saudi Arabia');
+}
+
+function reverseGeocode(lat,lon){
+  // Use browser Intl timezone as a rough city label
+  try{
+    var tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
+    var parts=tz.split('/');
+    var city=parts[parts.length-1].replace(/_/g,' ');
+    setLocation(lat,lon,city);
+  }catch(e){
+    setLocation(lat,lon,'Your location');
+  }
+}
+
+// ── Compass drawing ───────────────────────────────────────────────────────────
+function drawQibla(heading){
+  var cv=document.getElementById('qiblaCanvas');
+  if(!cv)return;
+  var wrap=cv.parentElement;
+  var sz=Math.min(wrap.offsetWidth,wrap.offsetHeight,560);
+  if(sz<80)sz=Math.min(window.innerWidth*0.88,380);
+  var dpr=window.devicePixelRatio||1;
+  cv.width=Math.round(sz*dpr);cv.height=Math.round(sz*dpr);
+  cv.style.width=sz+'px';cv.style.height=sz+'px';
+  var ctx=cv.getContext('2d'),cx=sz/2,cy=sz/2,R=sz*0.44;
+  ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,sz,sz);
+
+  if(_qB===null){
+    var bg0=ctx.createRadialGradient(cx,cy*0.7,0,cx,cy,R*1.04);
+    bg0.addColorStop(0,'#141820');bg0.addColorStop(1,'#07090d');
+    ctx.beginPath();ctx.arc(cx,cy,R*1.04,0,Math.PI*2);ctx.fillStyle=bg0;ctx.fill();
+    ctx.fillStyle='rgba(0,212,255,0.4)';
+    ctx.font='400 '+Math.round(sz*0.032)+'px Geist,sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('Detecting your location...',cx,cy);
+    return;
+  }
+
+  var h=heading||0;
+
+  // Background
+  ctx.beginPath();ctx.arc(cx,cy,R*1.04,0,Math.PI*2);
+  var bg=ctx.createRadialGradient(cx,cy*0.7,0,cx,cy,R*1.04);
+  bg.addColorStop(0,'#141820');bg.addColorStop(1,'#07090d');
+  ctx.fillStyle=bg;ctx.fill();
+
+  // Outer rim
+  ctx.beginPath();ctx.arc(cx,cy,R*1.04,0,Math.PI*2);
+  var rim=ctx.createLinearGradient(cx-R,cy-R,cx+R,cy+R);
+  rim.addColorStop(0,'rgba(180,140,50,0.6)');rim.addColorStop(0.5,'rgba(120,90,30,0.3)');rim.addColorStop(1,'rgba(180,140,50,0.6)');
+  ctx.strokeStyle=rim;ctx.lineWidth=3;ctx.stroke();
+
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.rotate(-h*Math.PI/180);
+
+  // Compass circle
+  ctx.beginPath();ctx.arc(0,0,R,0,Math.PI*2);
+  ctx.strokeStyle='rgba(180,140,50,0.45)';ctx.lineWidth=1.2;ctx.stroke();
+
+  // Tick marks
+  for(var d=0;d<360;d+=5){
+    if(d%90===0)continue;
+    var a=(d-90)*Math.PI/180,med=d%45===0,ten=d%10===0;
+    var len=med?14:ten?8:4;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(a)*(R-1),Math.sin(a)*(R-1));
+    ctx.lineTo(Math.cos(a)*(R-len),Math.sin(a)*(R-len));
+    ctx.strokeStyle=med?'rgba(255,255,255,0.3)':'rgba(255,255,255,0.09)';
+    ctx.lineWidth=med?0.9:0.4;ctx.stroke();
+  }
+
+  // Cardinal directions
+  var DIRS=['N','E','S','W'];
+  for(var i=0;i<4;i++){
+    var a2=(i*90-90)*Math.PI/180;
+    ctx.beginPath();
+    ctx.moveTo(Math.cos(a2)*(R-1),Math.sin(a2)*(R-1));
+    ctx.lineTo(Math.cos(a2)*(R-22),Math.sin(a2)*(R-22));
+    ctx.strokeStyle=i===0?'rgba(220,60,60,0.9)':'rgba(255,255,255,0.5)';
+    ctx.lineWidth=1.5;ctx.stroke();
+    ctx.save();
+    ctx.translate(Math.cos(a2)*(R-36),Math.sin(a2)*(R-36));
+    ctx.font='700 '+Math.round(sz*0.045)+'px Geist,sans-serif';
+    ctx.fillStyle=i===0?'rgba(220,60,60,0.95)':'rgba(255,255,255,0.75)';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(DIRS[i],0,0);ctx.restore();
+  }
+
+  // Grid circles
+  [0.28,0.52,0.76].forEach(function(f){
+    ctx.beginPath();ctx.arc(0,0,R*f,0,Math.PI*2);
+    ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=0.5;ctx.stroke();
+  });
+
+  // Kaaba marker
+  var diff=Math.abs(((h-_qB)+540)%360-180);
+  var aligned=diff<8;
+  var qa=(_qB-90)*Math.PI/180;
+  var kx=Math.cos(qa)*R*0.70,ky=Math.sin(qa)*R*0.70;
+
+  if(aligned){
+    ctx.beginPath();ctx.arc(kx,ky,R*0.1,0,Math.PI*2);
+    ctx.strokeStyle='rgba(0,220,80,0.95)';ctx.lineWidth=3;
+    ctx.shadowColor='rgba(0,255,80,0.8)';ctx.shadowBlur=14;ctx.stroke();ctx.shadowBlur=0;
+    ctx.beginPath();ctx.arc(kx,ky,R*0.09,0,Math.PI*2);
+    ctx.fillStyle='rgba(0,220,80,0.12)';ctx.fill();
+  }
+
+  // Kaaba icon (drawn, not emoji)
+  var ks=R*0.095;
+  ctx.save();ctx.translate(kx,ky);
+  ctx.fillStyle='rgba(8,8,12,0.97)';ctx.fillRect(-ks*0.6,-ks*0.78,ks*1.2,ks*1.4);
+  ctx.fillStyle='rgba(200,160,50,0.9)';ctx.fillRect(-ks*0.6,-ks*0.78+ks*0.74,ks*1.2,ks*0.22);
+  ctx.fillStyle='rgba(140,100,25,0.8)';ctx.fillRect(-ks*0.19,-ks*0.78+ks*0.26,ks*0.38,ks*0.38);
+  ctx.beginPath();ctx.arc(0,-ks*0.78+ks*0.26,ks*0.19,Math.PI,0);
+  ctx.fillStyle='rgba(140,100,25,0.8)';ctx.fill();
+  ctx.strokeStyle=aligned?'rgba(0,220,80,0.9)':'rgba(180,140,50,0.85)';
+  ctx.lineWidth=aligned?2.5:1.5;ctx.strokeRect(-ks*0.6,-ks*0.78,ks*1.2,ks*1.4);
+  ctx.restore();
+
+  ctx.restore();
+
+  // Needle (always points up = Qibla direction)
+  ctx.save();ctx.translate(cx,cy);
+  ctx.beginPath();
+  ctx.moveTo(0,-R*0.72);ctx.bezierCurveTo(7,-R*0.34,8,-R*0.05,5,R*0.16);
+  ctx.lineTo(0,R*0.26);ctx.lineTo(-5,R*0.16);
+  ctx.bezierCurveTo(-8,-R*0.05,-7,-R*0.34,0,-R*0.72);ctx.closePath();
+  var ng=ctx.createLinearGradient(0,-R*0.72,0,R*0.26);
+  ng.addColorStop(0,'rgba(0,240,255,1)');ng.addColorStop(0.6,'rgba(0,170,220,0.9)');ng.addColorStop(1,'rgba(0,80,160,0.7)');
+  ctx.fillStyle=ng;ctx.shadowColor='rgba(0,212,255,0.7)';ctx.shadowBlur=18;ctx.fill();ctx.shadowBlur=0;
+  ctx.beginPath();ctx.moveTo(0,-R*0.72);ctx.lineTo(-3,-R*0.4);ctx.lineTo(-1,-R*0.05);ctx.lineTo(0,-R*0.72);
+  ctx.fillStyle='rgba(255,255,255,0.2)';ctx.fill();
+  ctx.beginPath();ctx.moveTo(0,R*0.26);ctx.lineTo(4,R*0.13);ctx.lineTo(0,-R*0.04);ctx.lineTo(-4,R*0.13);
+  ctx.closePath();ctx.fillStyle='rgba(40,60,80,0.85)';ctx.fill();
+  ctx.restore();
+
+  // Pivot
+  ctx.beginPath();ctx.arc(cx,cy,11,0,Math.PI*2);
+  var pj=ctx.createRadialGradient(cx-2,cy-2,1,cx,cy,11);
+  pj.addColorStop(0,'rgba(180,220,255,1)');pj.addColorStop(0.5,'rgba(0,100,200,0.9)');pj.addColorStop(1,'rgba(0,15,50,1)');
+  ctx.fillStyle=pj;ctx.fill();
+  ctx.strokeStyle='rgba(0,212,255,0.65)';ctx.lineWidth=1.2;ctx.stroke();
+
+  // Status text
+  ctx.textAlign='center';
+  if(_qB!==null){
+    var diff2=Math.abs(((h-_qB)+540)%360-180);
+    var aligned2=diff2<8;
+    ctx.font='600 '+Math.round(sz*0.038)+'px Geist,sans-serif';
+    ctx.fillStyle=aligned2?'rgba(0,220,80,0.95)':'rgba(0,212,255,0.9)';
+    ctx.fillText(aligned2?'Facing Qibla':Math.round(_qB)+'° '+_ds(_qB),cx,cy+R*0.52);
+    ctx.font='400 '+Math.round(sz*0.026)+'px Geist,sans-serif';
+    ctx.fillStyle='rgba(255,255,255,0.3)';
+    ctx.fillText((_dist||0).toLocaleString()+' km to Kaaba',cx,cy+R*0.63);
+    // Update panel
+    var alignEl=document.getElementById('qibla-aligned');
+    if(alignEl){
+      if(_dH!==null){
+        alignEl.textContent=aligned2?'Facing Qibla':'Rotate until needle meets the Kaaba';
+        alignEl.style.color=aligned2?'rgba(0,220,80,0.95)':'rgba(255,255,255,0.6)';
+      } else {
+        alignEl.textContent='Compass not active';
+        alignEl.style.color='var(--text3)';
+      }
+    }
+  }
+}
+
+function enableCompass(){
+  document.getElementById('enable-compass-btn').style.display='none';
+  function onO(e){
+    if(e.webkitCompassHeading!==undefined&&e.webkitCompassHeading!==null){_dH=e.webkitCompassHeading;}
+    else if(e.alpha!==null){_dH=(360-e.alpha+360)%360;}
+  }
+  if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+    DeviceOrientationEvent.requestPermission()
+      .then(function(s){if(s==='granted')window.addEventListener('deviceorientation',onO,true);})
+      .catch(function(){});
+  } else {
+    window.addEventListener('deviceorientation',onO,true);
+  }
+}
+
+function dismissOverlay(){
+  document.getElementById('desktop-overlay').style.display='none';
+}
+
+function startCompass(){
+  function onO(e){
+    if(e.webkitCompassHeading!==undefined&&e.webkitCompassHeading!==null){_dH=e.webkitCompassHeading;}
+    else if(e.alpha!==null){_dH=(360-e.alpha+360)%360;}
+  }
+  if(!isMobile()){
+    // Desktop: static compass, no sensor
+    return;
+  }
+  if(typeof DeviceOrientationEvent!=='undefined'){
+    if(typeof DeviceOrientationEvent.requestPermission==='function'){
+      // iOS 13+ — need user gesture
+      document.getElementById('enable-compass-btn').style.display='block';
+      window.addEventListener('deviceorientation',onO,true);
+    } else {
+      window.addEventListener('deviceorientation',onO,true);
+    }
+  }
+}
+
+function drawLoop(){
+  drawQibla(_dH);
+  _rAF=requestAnimationFrame(drawLoop);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+if(navigator.geolocation){
+  navigator.geolocation.getCurrentPosition(
+    function(pos){reverseGeocode(pos.coords.latitude,pos.coords.longitude);},
+    function(){locationError();},
+    {timeout:8000,maximumAge:60000,enableHighAccuracy:true}
+  );
+} else {
+  locationError();
+}
+
+startCompass();
+requestAnimationFrame(drawLoop);
+</script>
+</body>
+</html>

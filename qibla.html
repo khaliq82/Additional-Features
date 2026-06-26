@@ -190,8 +190,7 @@ footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-i
       <!-- LEFT: Data panel -->
       <div class="left-panel">
         <span class="qibla-label">Find Qibla Direction</span>
-        <div class="qibla-title">Qibla</div>
-        <div class="qibla-subtitle" id="your-location">Locating you...</div>
+        <div class="qibla-title">Qibla Finder</div>
 
         <div class="qibla-data">
           <div class="qibla-data-row">
@@ -199,12 +198,8 @@ footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-i
             <span class="qibla-data-value bearing" id="qibla-bearing">—</span>
           </div>
           <div class="qibla-data-row">
-            <span class="qibla-data-label">Distance to Kaaba</span>
+            <span class="qibla-data-label">Distance to Makkah</span>
             <span class="qibla-data-value" id="qibla-distance">—</span>
-          </div>
-          <div class="qibla-data-row">
-            <span class="qibla-data-label">Status</span>
-            <span class="qibla-data-value" id="qibla-aligned" style="font-size:13px;color:var(--text3);">Waiting for compass...</span>
           </div>
         </div>
 
@@ -422,7 +417,7 @@ function setLocation(lat,lon,label){
   _dist=_dkm(lat,lon,KAABA_LAT,KAABA_LON);
   var bear=Math.round(_qB);
   var dir=_ds(_qB);
-  document.getElementById('your-location').textContent=label||'Your location';
+
   document.getElementById('qibla-bearing').textContent=bear+'° '+dir;
   document.getElementById('qibla-distance').textContent=_dist.toLocaleString()+' km';
   var dot=document.getElementById('loc-dot');
@@ -440,7 +435,7 @@ function setLocation(lat,lon,label){
 function locationError(){
   document.getElementById('loc-dot').className='location-dot error';
   document.getElementById('loc-status').textContent='Location unavailable — using Makkah as default';
-  document.getElementById('your-location').textContent='Default: Makkah';
+
   setLocation(21.3891,39.8579,'Makkah, Saudi Arabia');
 }
 
@@ -599,17 +594,7 @@ function drawQibla(heading){
     ctx.font='400 '+Math.round(sz*0.026)+'px Geist,sans-serif';
     ctx.fillStyle='rgba(255,255,255,0.3)';
     ctx.fillText((_dist||0).toLocaleString()+' km to Kaaba',cx,cy+R*0.63);
-    // Update panel
-    var alignEl=document.getElementById('qibla-aligned');
-    if(alignEl){
-      if(_dH!==null){
-        alignEl.textContent=aligned2?'Facing Qibla':'Rotate until needle meets the Kaaba';
-        alignEl.style.color=aligned2?'rgba(0,220,80,0.95)':'rgba(255,255,255,0.6)';
-      } else {
-        alignEl.textContent='Compass not active';
-        alignEl.style.color='var(--text3)';
-      }
-    }
+
   }
 }
 

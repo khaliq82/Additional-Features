@@ -90,8 +90,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;display:flex;al
 @keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:0.4;}}
 
 /* Enable compass button */
-#enable-compass-btn{display:none;padding:10px 20px;border-radius:8px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);color:var(--cyan);font-size:11px;font-weight:600;letter-spacing:0.08em;cursor:pointer;margin-bottom:12px;transition:all 0.2s;}
-#enable-compass-btn:hover{background:rgba(0,212,255,0.2);}
+#enable-compass-btn{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);padding:12px 24px;border-radius:10px;background:#000;border:1px solid rgba(0,212,255,0.6);color:var(--cyan);font-size:12px;font-weight:600;letter-spacing:0.08em;cursor:pointer;z-index:30;box-shadow:0 0 20px rgba(0,212,255,0.25),inset 0 0 12px rgba(0,212,255,0.05);transition:all 0.2s;white-space:nowrap;}
+#enable-compass-btn:hover{background:rgba(0,212,255,0.1);box-shadow:0 0 28px rgba(0,212,255,0.4);}
 
 /* ── Compass canvas ──────────────────────────────────────────────────────── */
 .compass-wrap{display:flex;align-items:center;justify-content:center;position:relative;}
@@ -189,7 +189,6 @@ footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-i
 
       <!-- LEFT: Data panel -->
       <div class="left-panel">
-        <span class="qibla-label">Find Qibla Direction</span>
         <div class="qibla-title">Qibla Finder</div>
 
         <div class="qibla-data">
@@ -208,17 +207,12 @@ footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-i
           <span id="loc-status">Requesting location...</span>
         </div>
 
-        <button id="enable-compass-btn" onclick="enableCompass()">Tap to enable live compass</button>
-
-        <a href="/prayer-times" class="prayer-times-btn">
-          <span class="prayer-times-btn-dot"></span>
-          Prayer Times
-        </a>
       </div>
 
       <!-- RIGHT: Compass -->
       <div class="compass-wrap">
         <canvas id="qiblaCanvas"></canvas>
+        <button id="enable-compass-btn" onclick="enableCompass()">Enable Live Compass</button>
         <div id="desktop-overlay">
           <div class="overlay-icon">📱</div>
           <div class="overlay-title">Open on your phone</div>
@@ -332,18 +326,6 @@ footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-i
       </div>
     </div>
 
-    <hr class="seo-divider">
-
-    <div class="bottom-cta">
-      <div class="bottom-cta-text">
-        <h3>Prayer Times for your city</h3>
-        <p>Accurate Fajr, Dhuhr, Asr, Maghrib and Isha times with a live 24-hour prayer clock. Auto-detects your location.</p>
-      </div>
-      <a href="/prayer-times" class="bottom-cta-btn">
-        <span class="prayer-times-btn-dot"></span>
-        Find Prayer Times
-      </a>
-    </div>
 
   </div>
 

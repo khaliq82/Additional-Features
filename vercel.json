@@ -34,7 +34,7 @@
     },
     {
       "source": "/prayer-times",
-      "destination": "/prayer-times/prayer-times.html"
+      "destination": "/prayer-times.html"
     },
     {
       "source": "/prayer-times/makkah",

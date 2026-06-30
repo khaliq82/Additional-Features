@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Qibla Finder — Live Compass Direction to Makkah | AdhanLive</title>
-<meta name="description" content="Find the Qibla direction from anywhere in the world. Live compass auto-detects your location and points toward the Kaaba in Makkah. Free online Qibla finder — no app needed.">
+<title>Qibla Finder: Live Compass Direction to Makkah | AdhanLive</title>
+<meta name="description" content="Find the Qibla direction from anywhere in the world. Live compass auto-detects your location and points toward the Kaaba in Makkah. Free online Qibla finder, no app needed.">
 <link rel="canonical" href="https://www.adhanlive.com/qibla">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.adhanlive.com/qibla">
-<meta property="og:title" content="Qibla Finder — Live Compass Direction to Makkah | AdhanLive">
+<meta property="og:title" content="Qibla Finder: Live Compass Direction to Makkah | AdhanLive">
 <meta property="og:description" content="Find the Qibla direction from anywhere in the world. Live compass auto-detects your location and points toward the Kaaba in Makkah. Free online Qibla finder.">
 <meta property="og:image" content="https://www.adhanlive.com/og-image.jpg">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Qibla Finder — Live Compass Direction to Makkah | AdhanLive">
+<meta name="twitter:title" content="Qibla Finder: Live Compass Direction to Makkah | AdhanLive">
 <meta name="twitter:description" content="Find the Qibla direction from anywhere in the world. Auto-detects your GPS location and points toward the Kaaba. Free online Qibla finder.">
 <script type="application/ld+json">
 {
@@ -119,6 +119,9 @@ nav{position:sticky;top:0;z-index:500;height:56px;display:flex;align-items:cente
 .seo-section p{font-size:0.88rem;line-height:1.75;color:var(--text2);margin-bottom:16px;}
 .seo-section strong{color:rgba(255,255,255,0.75);font-weight:600;}
 .seo-divider{border:none;border-top:1px solid var(--border);margin:40px 0;}
+.accuracy-note{background:rgba(255,180,60,0.05);border:1px solid rgba(255,180,60,0.2);border-radius:10px;padding:18px 20px;margin-top:20px;}
+.accuracy-note-title{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,180,60,0.85);margin-bottom:8px;}
+.accuracy-note p{font-size:0.82rem;line-height:1.65;color:rgba(255,255,255,0.5);margin-bottom:0;}
 
 /* City Qibla grid */
 .city-qibla-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:24px;}
@@ -239,14 +242,19 @@ footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-i
   <div class="seo-section">
 
     <h2>What is Qibla?</h2>
-    <p>The Qibla (Arabic: قِبْلَة) is the direction Muslims face during the five daily prayers. It points toward the Kaaba — the cube-shaped structure at the centre of Masjid al-Haram in Makkah, Saudi Arabia. Every Muslim on Earth, regardless of where they stand, faces this single point. The result is a spiritual geometry that unites over a billion people simultaneously in one direction.</p>
+    <p>The Qibla (Arabic: قِبْلَة) is the direction Muslims face during the five daily prayers. It points toward the Kaaba, the cube-shaped structure at the centre of Masjid al-Haram in Makkah, Saudi Arabia. Every Muslim on Earth, regardless of where they stand, faces this single point. The result is a spiritual geometry that unites over a billion people simultaneously in one direction.</p>
     <p>The obligation to face the Qibla is established directly in the Quran: <strong>"Turn your face toward al-Masjid al-Haram. And wherever you are, turn your faces toward it."</strong> (Quran 2:144). Knowing your Qibla direction is therefore a prerequisite for every valid prayer.</p>
 
     <hr class="seo-divider">
 
     <h2>How this Qibla finder works</h2>
-    <p>When you open this page, your browser requests your GPS coordinates. The tool then calculates the <strong>great circle bearing</strong> from your exact position to the Kaaba at coordinates 21.4225° N, 39.8262° E. The great circle is the shortest path across the curved surface of the Earth — the same path a plane would fly. This is the theologically correct method for determining Qibla direction, agreed upon by scholars across all four major madhabs.</p>
+    <p>When you open this page, your browser requests your GPS coordinates. The tool then calculates the <strong>great circle bearing</strong> from your exact position to the Kaaba at coordinates 21.4225° N, 39.8262° E. The great circle is the shortest path across the curved surface of the Earth, the same path a plane would fly. This is the theologically correct method for determining Qibla direction, agreed upon by scholars across all four major madhabs.</p>
     <p>On mobile devices, your phone's magnetometer (compass sensor) is used to rotate the needle in real time. On desktop, the bearing and distance are shown as static data since desktops do not have orientation sensors.</p>
+
+    <div class="accuracy-note">
+      <div class="accuracy-note-title">For an accurate reading</div>
+      <p>Phone compasses can be thrown off by nearby metal objects, magnets, and electronics. Step away from desks, laptops, speakers, and magnetic phone cases or mounts before checking direction, and avoid using the compass inside cars or near structural steel. If the needle seems off, recalibrate by moving your phone in a slow figure-8 motion a few times.</p>
+    </div>
 
     <hr class="seo-divider">
 
@@ -476,7 +484,7 @@ function setLocation(lat,lon,label){
 
 function locationError(){
   document.getElementById('loc-dot').className='location-dot error';
-  document.getElementById('loc-status').textContent='Location unavailable — using Makkah as default';
+  document.getElementById('loc-status').textContent='Location unavailable, using Makkah as default';
 
   setLocation(21.3891,39.8579,'Makkah, Saudi Arabia');
 }

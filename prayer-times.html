@@ -2119,6 +2119,12 @@ function initNavDots(){
   });
 }
 document.addEventListener('DOMContentLoaded', initNavDots);
+
+// Force a fresh page load when restored from back/forward cache (bfcache),
+// so nav and content always reflect the latest deployed version.
+window.addEventListener('pageshow', function(e){
+  if(e.persisted){ window.location.reload(); }
+});
 function toHijri(date){
   // Use Intl islamic-umalqura — matches official Saudi Umm al-Qura calendar
   const hm=['Muharram','Safar','Rabi ul-Awwal','Rabi ul-Thani','Jumadal Awwal',

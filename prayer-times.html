@@ -54,7 +54,7 @@ nav{position:sticky;top:0;z-index:500;height:56px;display:flex;align-items:cente
 .logo-dot::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(0,212,255,0.4);animation:logoPulse 2.4s ease-out infinite;}
 @keyframes logoPulse{0%{transform:scale(1);opacity:1}100%{transform:scale(2.8);opacity:0}}
 .nav-right{display:flex;align-items:center;gap:12px;}
-.nav-links{display:flex;gap:32px;align-items:center;}
+.nav-links{display:flex;gap:24px;align-items:center;}
 .nav-links a{font-size:11px;letter-spacing:0.12em;color:rgba(255,255,255,0.7);font-weight:600;text-decoration:none;cursor:pointer;transition:color 0.2s;text-transform:uppercase;position:relative;display:inline-block;}
 .nav-links a:hover{color:#ffffff;}
 .nav-links a.active{color:#00d4ff;}
@@ -514,6 +514,8 @@ body{background:var(--bg);color:var(--text);font-family:'Geist',sans-serif;-webk
     <a href="/livemap" onclick="closeMobileMenu()">Live Map</a>
     <a href="/adhanclock" onclick="closeMobileMenu();markVisited('clock')" id="nav-clock-link">Adhan Clock<span class="nav-dot-badge" id="dot-clock"></span></a>
     <a href="/arcs" onclick="closeMobileMenu();markVisited('arc')" id="nav-arc">Arc Explorer<span class="nav-dot-badge" id="dot-arc"></span></a>
+    <a href="/prayer-times" class="active" onclick="closeMobileMenu()">Prayer Times</a>
+    <a href="/qibla" onclick="closeMobileMenu()">Qibla</a>
     <a href="/ask" onclick="closeMobileMenu();markVisited('ask')" id="nav-ask">Ask AdhanLive<span class="nav-dot-badge" id="dot-ask"></span></a>
     <a href="/about" onclick="closeMobileMenu()">About</a>
     <a href="/contact" onclick="closeMobileMenu()">Contact</a>

@@ -42,9 +42,11 @@ html,body{height:100%;background:var(--bg);color:var(--text1);font-family:'Geist
 a{color:inherit;text-decoration:none;}
 
 /* ── Nav ─────────────────────────────────────────────────────────────────── */
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(7,9,13,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
-.nav-logo{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;letter-spacing:0.02em;color:#fff;}
-.nav-logo span{color:var(--cyan);}
+nav{position:sticky;top:0;z-index:500;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(0,0,0,0.85);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);flex-shrink:0;}
+.logo{font-family:'Geist',sans-serif;font-weight:800;font-size:18px;letter-spacing:-0.02em;display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none;color:#fff;}
+.logo-dot{width:9px;height:9px;border-radius:50%;background:#00d4ff;box-shadow:0 0 12px #00d4ff;position:relative;flex-shrink:0;}
+.logo-dot::after{content:'';position:absolute;inset:-5px;border-radius:50%;border:1px solid rgba(0,212,255,0.4);animation:logoPulse 2.4s ease-out infinite;}
+@keyframes logoPulse{0%{transform:scale(1);opacity:1}100%{transform:scale(2.8);opacity:0}}
 .nav-links{display:flex;gap:24px;align-items:center;}
 .nav-links a{font-size:11px;letter-spacing:0.12em;color:rgba(255,255,255,0.7);font-weight:600;text-decoration:none;cursor:pointer;transition:color 0.2s;text-transform:uppercase;position:relative;}
 .nav-links a:hover{color:#fff;}
@@ -55,11 +57,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;display:flex;al
 .nav-utc-greg{font-size:9px;letter-spacing:0.03em;color:rgba(255,255,255,0.5);}
 .nav-utc-divider{width:1px;background:rgba(255,255,255,0.1);align-self:stretch;}
 .nav-utc-time{display:flex;align-items:center;justify-content:center;padding:5px 12px;font-size:13px;font-weight:600;letter-spacing:0.04em;color:#fff;}
-.nav-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;}
-.nav-burger span{width:22px;height:1.5px;background:#fff;display:block;transition:all 0.3s;}
+.hamburger{display:none;flex-direction:column;justify-content:center;gap:5px;width:32px;height:32px;background:none;border:none;cursor:pointer;padding:4px;position:relative;}
+.hamburger span{display:block;width:22px;height:2px;background:#fff;border-radius:2px;transition:transform 0.3s,opacity 0.3s;}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+#mobile-menu-overlay{display:none;position:fixed;inset:0;z-index:498;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);}
+#mobile-menu-overlay.visible{display:block;}
 
 /* ── Main layout ─────────────────────────────────────────────────────────── */
-.page-wrap{min-height:100vh;padding-top:56px;display:flex;flex-direction:column;}
+.page-wrap{min-height:100vh;display:flex;flex-direction:column;}
 .hero{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px 0;}
 .hero-inner{display:grid;grid-template-columns:280px 1fr;gap:48px;align-items:center;max-width:1100px;width:100%;min-height:calc(100vh - 56px - 40px);}
 
@@ -142,7 +149,7 @@ footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-i
   .nav-links.mobile-open{display:flex;}
   .nav-links a{padding:16px 24px;font-size:14px;letter-spacing:0.06em;border-bottom:1px solid rgba(255,255,255,0.06);width:100%;}
   .nav-utc{display:none !important;}
-  .nav-burger{display:flex;}
+  .hamburger{display:flex;}
   .hero-inner{grid-template-columns:1fr;gap:0;min-height:unset;padding-bottom:32px;}
   .left-panel{order:1;padding-bottom:24px;}
   .compass-wrap{order:2;}
@@ -158,17 +165,17 @@ footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-i
 <body>
 
 <nav>
-  <a href="/home" class="nav-logo">Adhan<span>Live</span></a>
+  <a href="/home" class="logo"><div class="logo-dot"></div><span style="display:inline">Adhan<span style="color:#00d4ff">Live</span></span></a>
   <div class="nav-links" id="nav-links">
-    <a href="/home">Home</a>
-    <a href="/livemap">Live Map</a>
-    <a href="/adhanclock">Adhan Clock</a>
-    <a href="/arcs">Arc Explorer</a>
-    <a href="/prayer-times">Prayer Times</a>
-    <a href="/qibla" class="active">Qibla</a>
-    <a href="/ask">Ask AdhanLive</a>
-    <a href="/about">About</a>
-    <a href="/contact">Contact</a>
+    <a href="/home" onclick="closeMobileMenu()">Home</a>
+    <a href="/livemap" onclick="closeMobileMenu()">Live Map</a>
+    <a href="/adhanclock" onclick="closeMobileMenu()">Adhan Clock</a>
+    <a href="/arcs" onclick="closeMobileMenu()">Arc Explorer</a>
+    <a href="/prayer-times" onclick="closeMobileMenu()">Prayer Times</a>
+    <a href="/qibla" class="active" onclick="closeMobileMenu()">Qibla</a>
+    <a href="/ask" onclick="closeMobileMenu()">Ask AdhanLive</a>
+    <a href="/about" onclick="closeMobileMenu()">About</a>
+    <a href="/contact" onclick="closeMobileMenu()">Contact</a>
   </div>
   <div style="display:flex;align-items:center;gap:16px;">
     <div class="nav-utc" id="utc-clock">
@@ -179,11 +186,12 @@ footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-i
       <div class="nav-utc-divider"></div>
       <div class="nav-utc-time" id="utc-time">--:--:--</div>
     </div>
-    <div class="nav-burger" id="nav-burger" onclick="toggleMobileMenu()">
+    <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
       <span></span><span></span><span></span>
-    </div>
+    </button>
   </div>
 </nav>
+<div id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
 
 <div class="page-wrap">
   <div class="hero">
@@ -346,30 +354,47 @@ footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-i
 // ── Nav ──────────────────────────────────────────────────────────────────────
 function toggleMobileMenu(){
   document.getElementById('nav-links').classList.toggle('mobile-open');
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobile-menu-overlay').classList.toggle('visible');
+}
+function closeMobileMenu(){
+  document.getElementById('nav-links').classList.remove('mobile-open');
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu-overlay').classList.remove('visible');
 }
 
 // ── Nav clock ─────────────────────────────────────────────────────────────────
 function toHijri(date){
-  try{
-    const h=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(date);
-    return h;
-  }catch(e){return '';}
+  const hm=['Muharram','Safar','Rabi ul-Awwal','Rabi ul-Thani','Jumadal Awwal',
+    'Jumadal Thani','Rajab',"Sha'ban",'Ramadan','Shawwal',"Dhul Qa'dah",'Dhul Hijjah'];
+  try {
+    const parts=new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{
+      day:'numeric',month:'numeric',year:'numeric'
+    }).formatToParts(date);
+    const p={};parts.forEach(function(x){p[x.type]=x.value;});
+    const mn=parseInt(p.month)-1;
+    return `${p.day} ${hm[mn]||p.month} ${p.year.replace(' AH','')}`;
+  } catch(e) {
+    const parts=new Intl.DateTimeFormat('en-u-ca-islamic',{
+      day:'numeric',month:'numeric',year:'numeric'
+    }).formatToParts(date);
+    const p={};parts.forEach(function(x){p[x.type]=x.value;});
+    const mn=parseInt(p.month)-1;
+    return `${p.day} ${hm[mn]||p.month} ${p.year.replace(' AH','')}`;
+  }
 }
 function tickNavClock(){
   const n=new Date();
   const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const lh=n.getHours(),lm=n.getMinutes(),ls=n.getSeconds();
+  const ap=lh<12?'AM':'PM',hh=lh%12||12;
   const ge=document.getElementById('utc-greg');
   const hi=document.getElementById('utc-hijri');
-  const ti=document.getElementById('utc-time');
-  if(ge) ge.textContent=days[n.getUTCDay()]+', '+n.getUTCDate()+' '+months[n.getUTCMonth()]+' '+n.getUTCFullYear();
+  const te=document.getElementById('utc-time');
+  if(ge) ge.textContent=`${days[n.getDay()]}, ${n.getDate()} ${months[n.getMonth()]} ${n.getFullYear()}`;
   if(hi) hi.textContent=toHijri(n);
-  if(ti){
-    const h=String(n.getUTCHours()).padStart(2,'0');
-    const m=String(n.getUTCMinutes()).padStart(2,'0');
-    const s=String(n.getUTCSeconds()).padStart(2,'0');
-    ti.textContent=h+':'+m+':'+s+' UTC';
-  }
+  if(te) te.textContent=`${String(hh).padStart(2,'0')}:${String(lm).padStart(2,'0')}:${String(ls).padStart(2,'0')} ${ap}`;
 }
 tickNavClock();
 setInterval(tickNavClock,1000);

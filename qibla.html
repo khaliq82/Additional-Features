@@ -139,11 +139,19 @@ nav{position:sticky;top:0;z-index:500;height:56px;display:flex;align-items:cente
 .bottom-cta-btn:hover{background:rgba(0,212,255,0.2);border-color:rgba(0,212,255,0.6);}
 
 /* ── Footer ──────────────────────────────────────────────────────────────── */
-footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
-.footer-left{font-size:11px;color:var(--text3);}
-.footer-links{display:flex;gap:24px;}
-.footer-links a{font-size:11px;color:var(--text3);text-decoration:none;transition:color 0.2s;}
-.footer-links a:hover{color:var(--text2);}
+.bottom-bar{position:sticky;bottom:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:44px;background:rgba(6,10,16,0.97);backdrop-filter:blur(12px);border-top:1px solid var(--border);flex-shrink:0;}
+.bb-left{display:flex;align-items:center;gap:8px;}
+.bb-logo{font-family:'Geist',sans-serif;font-weight:800;font-size:13px;display:flex;align-items:center;gap:7px;color:#fff;text-decoration:none;}
+.bb-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);}
+.bb-tagline{font-size:9px;color:rgba(255,255,255,0.25);letter-spacing:0.06em;border-left:1px solid rgba(255,255,255,0.08);padding-left:10px;}
+.bb-center{font-size:9px;color:rgba(255,255,255,0.15);letter-spacing:0.04em;}
+.bb-right{display:flex;align-items:center;gap:16px;}
+.bb-link{font-size:10px;color:rgba(255,255,255,0.4);letter-spacing:0.04em;text-decoration:none;transition:color 0.2s;}
+.bb-link:hover{color:rgba(255,255,255,0.75);}
+@media(max-width:900px){
+  .bb-tagline{display:none;}
+  .bb-center{display:none;}
+}
 
 /* ── Mobile ──────────────────────────────────────────────────────────────── */
 @media(max-width:900px){
@@ -347,15 +355,17 @@ footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-i
 
   </div>
 
-  <footer>
-    <div class="footer-left">© 2026 AdhanLive. 280,621 mosques across 153 countries.</div>
-    <div class="footer-links">
-      <a href="/about">About</a>
-      <a href="/contact">Contact</a>
-      <a href="/prayer-times">Prayer Times</a>
-      <a href="/livemap">Live Map</a>
+  <div class="bottom-bar">
+    <div class="bb-left">
+      <a href="/home" class="bb-logo"><div class="bb-dot"></div><span>Adhan<span style="color:#00d4ff">Live</span></span></a>
+      <div class="bb-tagline">The live global visualization of Islamic prayer</div>
     </div>
-  </footer>
+    <div class="bb-center">&copy; 2026 AdhanLive &middot; Mosque data &copy; OpenStreetMap contributors</div>
+    <div class="bb-right">
+      <a href="/prayer-times" class="bb-link">Prayer Times</a>
+      <a href="/livemap" class="bb-link">Live Map</a>
+    </div>
+  </div>
 </div>
 
 <script>

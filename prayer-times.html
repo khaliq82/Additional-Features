@@ -2333,6 +2333,8 @@ var _TZ_MULTI = {
     if(lon < -155) return 'Pacific/Honolulu';   // Hawaii
     if(lon < -138) return 'America/Anchorage';  // Alaska
     if(lon < -114) return 'America/Los_Angeles';// Pacific
+    // Arizona (most of state) does not observe DST — needs its own zone
+    if(lon < -109 && lon > -114.8 && lat > 31 && lat < 37) return 'America/Phoenix';
     if(lon < -100) return 'America/Denver';     // Mountain
     if(lon < -84)  return 'America/Chicago';    // Central
     return 'America/New_York';                  // Eastern
@@ -2342,18 +2344,20 @@ var _TZ_MULTI = {
     if(lon < -110) return 'America/Edmonton';   // Alberta
     if(lon < -89)  return 'America/Winnipeg';   // Manitoba
     if(lon < -60)  return 'America/Toronto';    // Ontario/Quebec
-    return 'America/Halifax';                   // Atlantic
+    if(lon < -52)  return 'America/Halifax';    // Atlantic (Nova Scotia, NB, PEI)
+    return 'America/St_Johns';                  // Newfoundland — UTC-3:30, distinct half-hour offset
   },
   'MX': function(lat,lon){
-    // Cancun/Quintana Roo — UTC-5, no DST (since 2015)
-    if(lon > -88) return 'America/Cancun';
-    // Sonora/Hermosillo — UTC-7, no DST
-    if(lon < -109 && lat > 26) return 'America/Hermosillo';
-    // Baja California (Tijuana) — follows US Pacific
-    if(lon < -114) return 'America/Tijuana';
-    // Chihuahua/Ojinaga — Mountain time
-    if(lon < -103 && lat > 26) return 'America/Chihuahua';
-    // Default: Central (Mexico City)
+    // Quintana Roo (Cancún, Southeast Zone) — UTC-5, no DST, far east
+    if(lon > -90) return 'America/Cancun';
+    // Baja California (Tijuana, Mexicali — Northwest Zone) — UTC-8, follows US Pacific DST
+    // Distinguished from Baja California Sur by latitude: BC starts ~lat 28+
+    if(lon < -112 && lat > 28) return 'America/Tijuana';
+    // Sonora (Hermosillo, Pacific Zone) — UTC-7, no DST
+    if(lon < -108 && lat > 26 && lat < 32) return 'America/Hermosillo';
+    // Baja California Sur, Sinaloa, Nayarit (Pacific Zone) — UTC-7, no DST since 2022
+    if(lon < -104 && lat < 26) return 'America/Mazatlan';
+    // Default: Central Zone (Mexico City, Chihuahua since 2022 reform, and most of the country) — UTC-6
     return 'America/Mexico_City';
   },
   'RU': function(lat,lon){

@@ -2210,6 +2210,13 @@ function tickNavClock(){
 }
 tickNavClock();
 setInterval(tickNavClock,1000);
+
+// Force a fresh page load when restored from back/forward cache (bfcache),
+// so nav and content always reflect the latest deployed version.
+window.addEventListener('pageshow', function(e){
+  if(e.persisted){ window.location.reload(); }
+});
+
 function shareMapMoment(platform){
   const url='https://www.adhanlive.com/prayer-times/'+CITY.slug;
   const text='Live prayer times for '+CITY.name+'. Watch the Adhan sweep the Earth on AdhanLive.';

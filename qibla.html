@@ -45,7 +45,7 @@ a{color:inherit;text-decoration:none;}
 nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;background:rgba(7,9,13,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);}
 .nav-logo{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;letter-spacing:0.02em;color:#fff;}
 .nav-logo span{color:var(--cyan);}
-.nav-links{display:flex;gap:32px;align-items:center;}
+.nav-links{display:flex;gap:24px;align-items:center;}
 .nav-links a{font-size:11px;letter-spacing:0.12em;color:rgba(255,255,255,0.7);font-weight:600;text-decoration:none;cursor:pointer;transition:color 0.2s;text-transform:uppercase;position:relative;}
 .nav-links a:hover{color:#fff;}
 .nav-links a.active{color:var(--cyan);}
@@ -160,13 +160,15 @@ footer{border-top:1px solid var(--border);padding:24px 32px;display:flex;align-i
 <nav>
   <a href="/home" class="nav-logo">Adhan<span>Live</span></a>
   <div class="nav-links" id="nav-links">
+    <a href="/home">Home</a>
     <a href="/livemap">Live Map</a>
     <a href="/adhanclock">Adhan Clock</a>
     <a href="/arcs">Arc Explorer</a>
     <a href="/prayer-times">Prayer Times</a>
     <a href="/qibla" class="active">Qibla</a>
-    <a href="/ask">Ask</a>
+    <a href="/ask">Ask AdhanLive</a>
     <a href="/about">About</a>
+    <a href="/contact">Contact</a>
   </div>
   <div style="display:flex;align-items:center;gap:16px;">
     <div class="nav-utc" id="utc-clock">
